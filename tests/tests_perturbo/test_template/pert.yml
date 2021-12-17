@@ -1,0 +1,58 @@
+perturbo:
+   prefix: test
+   calc_mode: square
+   alpha: 0.1
+   beta: 5.0
+   xmin: -1.0
+   xmax: 1.0
+   dx: 0.01
+
+test_info:
+   # A simple executable that creates a small output
+   executable: perturbo.py 
+   # List of authors that created a given test block
+   authors:
+      - I. Maliyov
+      - S. D. Pineda Flores
+   # Files required for the job to run
+   req_files:
+      - empty_epwan.h5
+   # Tags that identify a job
+   tags:
+      - example
+   # Description
+   desc: 
+      (
+      " A template for the tests containing an input file, simple Python script, "
+      "and an output."
+      )
+   # Names of object to test. They all must be in the output YAML file. 
+   # They can be numbers or matrices
+   test_keywords:
+      output_matrix: 
+         # Absolute tolerance for every element
+         tol_abs: 1e-3
+         # Relative tolerance for every element in percents
+         tol_rel: 1.0
+
+      output_number:
+         { tol_abs: 1e-7, tol_rel: 0.01 }
+
+   # TODO:
+   # Files that must be linked in the folder
+   # files_to_link:
+   #    - [path1, filename1]
+   #    - [path2, filename2]
+
+   # TODO: comparison of HDF5 files, field-by-field
+   # HDF5 files that are an output from the calculation 
+   # and that have to be compared to the reference
+   # test_hdf5:
+   #   - file1.h5
+   #   - file2.h5
+
+   # TODO: chained tests
+   # Name of folders/calculations that must be run before this one
+   # depends_on:
+   #    - test1
+   #    - test2
