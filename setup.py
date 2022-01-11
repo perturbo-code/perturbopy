@@ -7,7 +7,8 @@ setup(
    install_requires=[
       'numpy>=1.21.4',
       'pytest',
-      'h5py'
+      'h5py',
+      'PyYAML'
    ],
    extras_require={
       'interactive': ['matplotlib>=2.2.0', 'jupyter'],
