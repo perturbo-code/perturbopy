@@ -1,0 +1,5 @@
+&perturbo
+  prefix      = 'gaas'
+  calc_mode   = 'bands'
+  fklist   = 'gaas_band.kpt'
+/

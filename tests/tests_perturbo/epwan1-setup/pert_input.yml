@@ -1,0 +1,30 @@
+# TODO: generate pert.in automatically
+perturbo:
+   prefix: gaas
+
+# TODO:
+#required files:
+
+test info:
+   executable: perturbo.x 
+
+   authors:
+      - I. Maliyov
+      - S. D. Pineda Flores
+
+   tags:
+      - epwan1
+      - norm-conserving
+      - HDF5 output
+
+   desc:
+      (
+      "Interpolation of the band structure following the k-point path from gaas_band.kpt"
+      )
+
+   test files:
+      pert_output.yml: 
+         ignore keywords:
+            input parameters
+      
+      gaas_tet.h5:
