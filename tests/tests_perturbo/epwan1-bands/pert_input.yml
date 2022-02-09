@@ -32,5 +32,5 @@ test info:
          tolerance:
             default:
                1e-10      
-            band list:
+            band index:
                1e-11
