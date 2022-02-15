@@ -6,7 +6,9 @@ setup(
    python_requires='>=3.7.12',
    install_requires=[
       'numpy>=1.21.4',
-      'pytest'
+      'pytest',
+      'h5py',
+      'PyYAML'
    ],
    extras_require={
       'interactive': ['matplotlib>=2.2.0', 'jupyter'],
