@@ -45,7 +45,7 @@ def equal_values(file1, file2):
       
       Returns
       -----
-         equal_vlaues boolean spcifying if both yaml files 
+         equal_vlaues boolean specifying if both yaml files 
                       contain the same keys and values
       
       Warns
