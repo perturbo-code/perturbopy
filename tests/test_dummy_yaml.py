@@ -1,6 +1,6 @@
 import os
 import subprocess
-from perturbopy.compare_data.yaml import *
+from perturbopy.compare_data.compare import equal_values 
 
 
 def test_yaml_module():

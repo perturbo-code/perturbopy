@@ -1,6 +1,6 @@
 import os
 import subprocess
-from perturbopy.compare_data.yaml import *
+from perturbopy.compare_data.compare import equal_values 
 
 
 def test_epwan1_setup():
@@ -28,7 +28,7 @@ def test_epwan1_setup():
    
    # output files to check against reference data
    out_files = ['/pert_output.yml',
-                #'gaas_tet.h5',
+                'gaas_tet.h5',
                ]
 
    cwd = os.getcwd()
