@@ -1,11 +1,25 @@
 #!/bin/bash
 
 #
+# Parallelization
+#
+
+# On Tempo, omp * mpi MUST be 20
+mpi=5
+omp=4
+
+export PBS_NUM_PPN=$mpi
+
+export OMP_NUM_THREADS=$omp
+export OMP_STACKSIZE=64M
+
+#
 # Libraries
 #
-source /usr/local/Intel/19.4/compilers_and_libraries/linux/bin/compilervars.sh intel64
-export PATH=/home/timescale/Jinjian/libraries/hdf5-1.8.18-ifort/bin:$PATH
-export LD_LIBRARY_PATH=/home/timescale/Jinjian/libraries/hdf5-1.8.18-ifort/lib:$LD_LIBRARY_PATH
+
+module load compilers/intel/19.4
+source /usr/local/Intel/19.4/impi/2019.4.243/intel64/bin/mpivars.sh
+
 
 #
 # Go to the work folder
@@ -13,23 +27,9 @@ export LD_LIBRARY_PATH=/home/timescale/Jinjian/libraries/hdf5-1.8.18-ifort/lib:$
 #cd $PBS_O_WORKDIR
 
 #
-# Parallelization
-#
-
-# On Tempo, omp * mpi MUST be 20
-omp=4
-mpi=5
-
-export PBS_NUM_PPN=$mpi
-
-export OMP_NUM_THREADS=$omp
-export OMP_STACKSIZE=64M
-
-
-#
 # Run command
 #
-PT=/home/timescale/testsuite/perturbo.x
+PT=/home/timescale/testsuite/new_executable_and_script/perturbo.x
 RUN="mpirun -np $mpi $PT -npools $mpi -i pert.in"
 
 echo `date`

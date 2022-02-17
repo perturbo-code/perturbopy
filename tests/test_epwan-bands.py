@@ -4,7 +4,7 @@ from perturbopy.compare_data.compare import equal_values
 from perturbopy.compare_data.yaml import open_yaml
 
 
-def test_epwan1_setup():
+def test_epwan1_bands():
    """
       driver to run tests_perturbo/epwan1-setup/ test
 
@@ -21,7 +21,7 @@ def test_epwan1_setup():
          None
    """
    # test name (also test dir name)
-   test_name               = 'epwan1-setup'
+   test_name               = 'epwan1-bands'
    # suffixes of paths needed to find driver/utils/references
    driver_path_suffix      = 'tests_perturbo/'+test_name
    test_utils_path_suffix  = 'test_utils'
