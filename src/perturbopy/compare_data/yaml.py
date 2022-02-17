@@ -1,7 +1,7 @@
 """
    This module contains functions to compare yaml files
 """
-from yaml        import load,dump
+from yaml import load,dump
 try:
     from yaml import CLoader as Loader, CDumper as Dumper
 except ImportError:
@@ -15,8 +15,6 @@ def open_yaml(file_name):
       load yaml file as dictionary
    """
    with open(file_name,'r') as file:
-      #NOTE: yaml loaded as list so we take 'first' element of list
-      #yaml_dict = yaml.load(file, Loader=yaml.FullLoader)
       yaml_dict = load(file, Loader=Loader)
    return yaml_dict
 
@@ -75,11 +73,11 @@ def equivalent(obj1, obj2, key, tol):
       obj2 = np.array(obj2)
       return np.allclose(obj1, obj2, atol=float(delta), rtol=0.0, equal_nan=True)
 
-def equal_dict(yaml1, yaml2, kw_n_tol):
+def equal_dict(yaml1, yaml2, ig_n_tol):
    """
    """
-   # find tolerances for comparisons
-   tol = kw_n_tol['tolerance']
+   # dict of tolerances for comparisons
+   tol = ig_n_tol['tolerance']
 
    # total set of keys
    keys = set(yaml1.keys())
@@ -89,7 +87,7 @@ def equal_dict(yaml1, yaml2, kw_n_tol):
 
    for key in yaml1.keys():
       # remove 'ignore keys'
-      if key in set(kw_n_tol['ignore keywords']):
+      if key in set(ig_n_tol['ignore keywords']):
          keys.remove(key)
       # set aside nested dictionaries
       elif isinstance(yaml1[key], dict):
@@ -100,14 +98,14 @@ def equal_dict(yaml1, yaml2, kw_n_tol):
    equal_per_key = [equivalent(yaml1[key], yaml2[key],key,tol) for key in keys]
 
    for key in keys_to_dicts:
-      equal_per_key.append(equal_dict(yaml1[key], yaml2[key], kw_n_tol))
+      equal_per_key.append(equal_dict(yaml1[key], yaml2[key], ig_n_tol))
    
    # equal dicts produce list of only bool=True
    equal_values  = (len(equal_per_key) == sum(equal_per_key))
 
    return equal_values 
 
-def equal_values(file1, file2, kw_n_tol):
+def equal_values(file1, file2, ig_n_tol):
    """
       Determines if two yaml files contain the same value
       for the same key 
@@ -116,7 +114,7 @@ def equal_values(file1, file2, kw_n_tol):
       -----
          file1       first  yaml file
          file2       second yaml file
-         kw_n_tol    dictionary of keywords and tolerances
+         ig_n_tol    dictionary of keywords and tolerances
                      needed to make comparison on files
       
       Returns
@@ -135,7 +133,7 @@ def equal_values(file1, file2, kw_n_tol):
    yaml1 = open_yaml(file1)
    yaml2 = open_yaml(file2)
 
-   return equal_dict(yaml1, yaml2, kw_n_tol)
+   return equal_dict(yaml1, yaml2, ig_n_tol)
 
 
 

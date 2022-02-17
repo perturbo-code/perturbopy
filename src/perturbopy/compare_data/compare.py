@@ -5,7 +5,7 @@ import perturbopy.compare_data.yaml as cyaml
 import perturbopy.compare_data.h5 as ch5
 
 
-def equal_values(file1, file2, kw_n_tol):
+def equal_values(file1, file2, ign_n_tol):
    """
       1) determines file types
       2) determins if files containe the same values
@@ -17,7 +17,7 @@ def equal_values(file1, file2, kw_n_tol):
       -----
          file1       first  file
          file2       second file
-         kw_n_tol    dictionary of keywords and tolerances
+         ign_n_tol   dictionary of ignore keywords and tolerances
                      needed to make comparison on files
 
       Returns
@@ -44,7 +44,7 @@ def equal_values(file1, file2, kw_n_tol):
 
    # use appropriate compare function for file type
    if file_type == "yaml" or file_type == "yml":
-      equal_values = cyaml.equal_values(file1, file2, kw_n_tol)
+      equal_values = cyaml.equal_values(file1, file2, ign_n_tol)
 
    elif file_type == "h5" or file_type == "hdf5":
       equal_values = ch5.equal_values(file1, file2)
