@@ -13,6 +13,18 @@ import numpy as np
 def open_yaml(file_name):
    """ 
       load yaml file as dictionary
+      
+      Parameters
+      -----
+         file_name  name of yaml file to be loaded 
+      
+      Returns
+      -----
+         yaml_dict   yaml file loaded as dict      
+      
+      Warns
+      -----
+         None
    """
    with open(file_name,'r') as file:
       yaml_dict = load(file, Loader=Loader)
@@ -32,8 +44,8 @@ def equal_scalar(scalar1, scalar2, key, ig_n_tol):
       
       Returns
       -----
-         equal_vlaue  boolean specifying if both scalars 
-                      contain the same values
+         bool     boolean specifying if both scalars 
+                  contain the same values
       
       Warns
       -----
@@ -63,15 +75,15 @@ def equal_list(list1, list2, key, ig_n_tol):
 
       Parameters
       -----
-         list1    first  dict
-         list2    second dict
-         ig_n_tol dict of ignore keywords and tolerances
-                  needed to make comparison on values
+         list1        first  list 
+         list2        second list 
+         ig_n_tol     dict of ignore keywords and tolerances
+                      needed to make comparison on values
       
       Returns
       -----
-         equal_vlaues boolean specifying if both dicts 
-                      contain the same keys and values
+         equal_vlaues boolean specifying if both lists 
+                      are equivalent 
       
       Warns
       -----
@@ -118,10 +130,10 @@ def equal_dict(dict1, dict2, ig_n_tol):
 
       Parameters
       -----
-         dict1       first  dict
-         dict2       second dict
-         ig_n_tol    dict of ignore keywords and tolerances
-                     needed to make comparison on values
+         dict1        first  dict
+         dict2        second dict
+         ig_n_tol     dict of ignore keywords and tolerances
+                      needed to make comparison on values
       
       Returns
       -----
