@@ -36,16 +36,16 @@ def equal_scalar(scalar1, scalar2, key, ig_n_tol):
 
       Parameters
       -----
-         scalar1  first  scalar 
-         scalar2  second scalar 
-         key      key associated with this scalar
-         ig_n_tol dict of ignore keywords and tolerances
-                  needed to make comparison on values
+         scalar1     first  scalar 
+         scalar2     second scalar 
+         key         key associated with this scalar
+         ig_n_tol    dict of ignore keywords and tolerances
+                     needed to make comparison on values
       
       Returns
       -----
-         bool     boolean specifying if both scalars 
-                  contain the same values
+         equal_value boolean specifying if both scalars 
+                     contain the same values
       
       Warns
       -----
@@ -63,11 +63,12 @@ def equal_scalar(scalar1, scalar2, key, ig_n_tol):
    else:
       delta = tol['default']
 
-   return np.allclose(np.array(scalar1),
-                      np.array(scalar2),
-                      atol=float(delta),
-                      rtol=0.0,
-                      equal_nan=True)
+   equal_value = np.allclose(np.array(scalar1),
+                             np.array(scalar2),
+                             atol=float(delta),
+                             rtol=0.0,
+                             equal_nan=True)
+   return equal_value 
 
 def equal_list(list1, list2, key, ig_n_tol):
    """
@@ -94,7 +95,7 @@ def equal_list(list1, list2, key, ig_n_tol):
    assert isinstance(list1,list) and isinstance(list2,list), errmsg
    
    errmsg = ('list1/2 are not the same length')
-   assert len(list1) = len(list2), errmsg
+   assert len(list1) == len(list2), errmsg
    
    # a list of bool values
    equal_per_item = []
@@ -113,14 +114,19 @@ def equal_list(list1, list2, key, ig_n_tol):
       elif isinstance(item1, Number):
          equal_per_item.append(equal_scalar(item1, item2, key, ig_n_tol))
       
+      elif isinstance(item1, str):
+         equal_per_item.append(item1==item2)
+      
+      elif isinstance(item1, type(None)):
+         equal_per_item.append(dict1[key]==dict2[key])
+      
       else:
-         errmsg = ('list must only contain values of type dict, list, or scalar')
+         errmsg = ('list must only contain values of type dict, list, scalar, None, or str')
          known_types_present = False
          assert known_types_present, errmsg 
 
    # equal dicts produce list of only bool=True
    equal_values  = (len(equal_per_item) == sum(equal_per_item))
-
    return equal_values 
 
 def equal_dict(dict1, dict2, ig_n_tol):
@@ -166,7 +172,7 @@ def equal_dict(dict1, dict2, ig_n_tol):
    for key in keys:
       errmsg = (f'dict1/2 values associated with key:{key} '
                 f'are not of the same type')
-      assert type(dict1[key]), type(dict2[key]), errmsg
+      assert type(dict1[key]) == type(dict2[key]), errmsg
       
       if isinstance(dict1[key],dict):
          equal_per_key.append(equal_dict(dict1[key], dict2[key],ig_n_tol))
@@ -177,14 +183,20 @@ def equal_dict(dict1, dict2, ig_n_tol):
       elif isinstance(dict1[key],Number):
          equal_per_key.append(equal_scalar(dict1[key], dict2[key], key, ig_n_tol))
       
+      elif isinstance(dict1[key],str):
+         equal_per_key.append(dict1[key]==dict2[key])
+      
+      elif isinstance(dict1[key],type(None)):
+         equal_per_key.append(dict1[key]==dict2[key])
+      
       else:
-         errmsg = ('dict must only contain values of type dict, list, or scalar')
+         errmsg = (f'dict must only contain values of type dict, list, scalar, None, or str '
+                   f'but found type {type(dict1[key])}')
          known_types_present = False
          assert known_types_present, errmsg 
 
    # equal dicts produce list of only bool=True
    equal_values  = (len(equal_per_key) == sum(equal_per_key))
-
    return equal_values 
 
 def equal_values(file1, file2, ig_n_tol):

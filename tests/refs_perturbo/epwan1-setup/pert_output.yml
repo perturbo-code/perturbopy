@@ -1,37 +1,56 @@
 ---
+program: perturbo
+
+start date and time:
+   date: 17 February 2022
+   time: "10:51:24"
+
+parallelization:
+   type: MPI+OpenMP
+   number of MPI tasks:   5
+   number of OpenMP threads:   4
+   number of nodes:   1
+
 input parameters:
    band_max:                   5
    band_min:                   5
-   boltz_de:           1.0000000000000000E+00
-   boltz_emax:           6.2649999999999997E+00
-   boltz_emin:           5.6650000000000000E+00
+   boltz_de:           7.3498617648950546E-05
+   boltz_emax:           4.6046883957067519E-01
+   boltz_emin:           4.1636966898130490E-01
    boltz_init_dist:          
-   boltz_init_e0:          -9.9990000000000000E+03
-   boltz_init_smear:           2.0000000000000000E+01
+   boltz_init_e0:          -7.3491267787185654E+02
+   boltz_init_smear:           1.4699723529790110E-03
    boltz_kdim:          [        20,          20,          20,  ]
    boltz_nstep:                   0
-   boltz_qdim:          [         0,           0,           0,  ]
+   boltz_qdim:          [        20,          20,          20,  ]
    calc_mode:          setup
    cauchy_scale:           5.0000000745058060E-02
    debug:          False
-   delta_smear:           1.0000000000000000E+01
+   delta_smear:           7.3498617648950549E-04
    fklist:          
    fqlist:          
    ftemper:          gaas.temper
+   full_ite:          False
    hole:          False
    load_scatter_eph:          False
    nsamples:              100000
    output_nstep:                   1
    output_yaml:          True 
-   phfreq_cutoff:           1.0000000000000000E+00
+   phfreq_cutoff:           7.3498617648950546E-05
    polar_split:          
    prefix:          gaas
    sampling:          uniform
    solver:          rk4
-   time_step:           1.0000000000000000E+00
+   time_step:           2.0670686467503085E+01
    tmp_dir:          ./
    trans_thr:           2.0000000000000000E-03
    yaml_fname:          pert_output.yml
+
+grid:
+   number of  tetrahedra selected:      16392
+   number of reducible k-points:       4029
+   number of irreducible k-points:        208
+
 
 DOS:
 
@@ -1261,13 +1280,22 @@ carrier density:
 
    configuration index:
 
-         1:
-            temperature: 200.00
-            chemical potential:   5.6645869141
-            concentration:  0.8854854E+20
+      1:
+         temperature: 200.00
+         chemical potential:   5.6645869141
+         concentration:  0.8854854E+20
 
-         2:
-            temperature: 300.00
-            chemical potential:   5.6645869141
-            concentration:  0.1308795E+21
+      2:
+         temperature: 300.00
+         chemical potential:   5.6645869141
+         concentration:  0.1308795E+21
+
+timings:
+
+   time units: s
+
+   PERTURBO:
+      cpu:         0.31695200
+      wall:        0.11115003
+      calls:         1
 ...
