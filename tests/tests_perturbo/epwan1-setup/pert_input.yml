@@ -24,7 +24,11 @@ test info:
 
    test files:
       pert_output.yml: 
-
+         
+         #only applies to top dict
+         keep keywords:
+            - DOS 
+         #applies to dict at all levels
          ignore keywords:
             - input parameters
             - start date and time
