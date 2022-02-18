@@ -163,8 +163,9 @@ def equal_dict(dict1, dict2, ig_n_tol):
 
    for key in dict1.keys():
       # remove 'ignore keys'
-      if key in ig_n_tol['ignore keywords']:
-         keys.remove(key)
+      if 'ignore keywords' in ig_n_tol:
+         if key in ig_n_tol['ignore keywords']:
+            keys.remove(key)
    
    # a list of bool values
    equal_per_key = []

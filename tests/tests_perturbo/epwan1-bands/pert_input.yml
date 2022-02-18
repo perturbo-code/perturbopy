@@ -26,16 +26,16 @@ test info:
    test files:
       pert_output.yml: 
          
-         #only applies to top dict
+         #only applies to top dict of yaml
          keep keywords:
             - bands 
-
-         #applies to dict at all levels
+         #applies to dict at all levels to both yaml and h5
          ignore keywords:
             - input parameters
             - start date and time
             - timings
 
+         #applies to dict at all levels to both yaml and h5
          tolerance:
             default:
                1e-10      
