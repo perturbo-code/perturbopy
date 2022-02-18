@@ -183,17 +183,18 @@ def equal_values(file1, file2, ig_n_tol):
    h51_dict = dict(hdfdict.load(file1))
    h52_dict = dict(hdfdict.load(file2))
 
-   #h51_del_keys = [ key for key in h51_dict.keys() if key not in ig_n_tol['keep keywords'] ]
-   #h52_del_keys = [ key for key in h52_dict.keys() if key not in ig_n_tol['keep keywords'] ]
+   if 'test keywords' in ig_n_tol:
+      h51_del_keys = [ key for key in h51_dict.keys() if key not in ig_n_tol['test keywords'] ]
+      h52_del_keys = [ key for key in h52_dict.keys() if key not in ig_n_tol['test keywords'] ]
 
-   #for key in h51_del_keys:
-   #   del h51_dict[key]
-   #for key in h52_del_keys:
-   #   del h52_dict[key]
+      for key in h51_del_keys:
+         del h51_dict[key]
+      for key in h52_del_keys:
+         del h52_dict[key]
 
-   #errmsg = ('no entries left in dict after applying \'keep keywords\'')
-   #assert len(h51_dict) > 0, errmsg
-   #assert len(h52_dict) > 0, errmsg
+      errmsg = ('no entries left in dict after applying \'test keywords\'')
+      assert len(h51_dict) > 0, errmsg
+      assert len(h52_dict) > 0, errmsg
 
 
    return equal_dict(h51_dict, h52_dict, ig_n_tol)

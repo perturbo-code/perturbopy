@@ -203,7 +203,7 @@ def equal_dict(dict1, dict2, ig_n_tol):
 def equal_values(file1, file2, ig_n_tol):
    """
       Determines if two yaml files contain the same value
-      for the same keys. keys must be in 'keep keywords' 
+      for the same keys. keys must be in 'test keywords' 
 
       Parameters
       -----
@@ -224,17 +224,18 @@ def equal_values(file1, file2, ig_n_tol):
    yaml1_dict = open_yaml(file1)
    yaml2_dict = open_yaml(file2)
 
-   yaml1_del_keys = [ key for key in yaml1_dict.keys() if key not in ig_n_tol['keep keywords'] ]
-   yaml2_del_keys = [ key for key in yaml2_dict.keys() if key not in ig_n_tol['keep keywords'] ]
+   if 'test keywords' in ig_n_tol:
+      yaml1_del_keys = [ key for key in yaml1_dict.keys() if key not in ig_n_tol['test keywords'] ]
+      yaml2_del_keys = [ key for key in yaml2_dict.keys() if key not in ig_n_tol['test keywords'] ]
 
-   for key in yaml1_del_keys:
-      del yaml1_dict[key]
-   for key in yaml2_del_keys:
-      del yaml2_dict[key]
+      for key in yaml1_del_keys:
+         del yaml1_dict[key]
+      for key in yaml2_del_keys:
+         del yaml2_dict[key]
 
-   errmsg = ('no entries left in dict after applying \'keep keywords\'')
-   assert len(yaml1_dict) > 0, errmsg
-   assert len(yaml2_dict) > 0, errmsg
+      errmsg = ('no entries left in dict after applying \'test keywords\'')
+      assert len(yaml1_dict) > 0, errmsg
+      assert len(yaml2_dict) > 0, errmsg
 
 
    return equal_dict(yaml1_dict, yaml2_dict, ig_n_tol)
