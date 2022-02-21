@@ -8,6 +8,7 @@ setup(
       'numpy>=1.21.4',
       'pytest',
       'h5py',
+      'hdfdict',
       'PyYAML'
    ],
    extras_require={
