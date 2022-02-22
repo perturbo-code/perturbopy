@@ -29,5 +29,5 @@ Contents
 
 .. toctree::
 
-   usage
-   api/perturbopy
+   Usage <usage>
+   API reference <api/_autosummary/perturbopy>

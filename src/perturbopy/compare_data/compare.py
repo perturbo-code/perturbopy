@@ -7,8 +7,9 @@ import perturbopy.compare_data.h5 as ch5
 
 def equal_values(file1, file2, ig_n_tol):
    """
-   1) determines file types
-   2) determins if files containe the same values for both yaml/h5 the objects of the highest level are checked then checks are performed on common objects
+   Compare two files:
+      #. determines file types
+      #. determins if files containe the same values for both yaml/h5 the objects of the highest level are checked then checks are performed on common objects
 
    Parameters
    ----------

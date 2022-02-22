@@ -1,7 +1,7 @@
 Usage
 =====
 
-Environement
+Environment
 ------------
 
 We suggest using perturbopy inside a Python virtual environment created with `venv` or `anaconda`. We will call this environment `pertpy`.

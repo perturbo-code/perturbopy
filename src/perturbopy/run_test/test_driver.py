@@ -1,31 +1,30 @@
+"""
+   Run an executable for the testsuite.
+"""
 import os
 import subprocess
 from perturbopy.compare_data.yaml import open_yaml
 
 def run_perturbo(cwd, perturbo_driver_dir_path, interactive_job_script):
    """
-      function to run perturbo and produce output files
+   Function to run Perturbo and produce output files
 
 
-      Parameters
-      -----
-         cwd                        path of current working directory
-         perturbo_driver_dir_path   path to dir with pert.in file
-         interactive_job_script     path to dir with run_interactive.sh script
-
-      
-      Returns
-      -----
-         ref_outs       list of paths to reference files        
-         new_outs       list of paths to outputted files
-         igns_n_tols    dictionary containing the ignore keywords and tolerances
-                        needed to performance comparison of ref_outs and new_outs
-      
-      Warns
-      -----
-         None
+   Parameters
+   ----------
+   cwd : str
+      path of current working directory
+   perturbo_driver_dir_path : str
+      path to dir with pert.in file
+   interactive_job_script : str
+      path to dir with run_interactive.sh script
+   
+   Returns
+   -------
+   None
 
    """
+
    os.chdir(perturbo_driver_dir_path)
    print(f'{os.getcwd()}')
    print(f'{interactive_job_script}/run_interactive.sh')
@@ -35,25 +34,25 @@ def run_perturbo(cwd, perturbo_driver_dir_path, interactive_job_script):
 
 def get_test_materials(test_name):
    """
-      function to 1) run perturbo.exe to produce output files
-                  2) determine paths to files for comparison
-                  3) associated settings for file comparison with
-                     file paths
+   Run one test:
+      #. run perturbo.x to produce output files
+      #. determine paths to files for comparison
+      #. associated settings for file comparison with file paths
 
-      Parameters
-      -----
-         test_name   name of test  
-      
-      Returns
-      -----
-         ref_outs       list of paths to reference files        
-         new_outs       list of paths to outputted files
-         igns_n_tols    dictionary containing the ignore keywords and tolerances
-                        needed to performance comparison of ref_outs and new_outs
-      
-      Warns
-      -----
-         None
+   Parameters
+   ----------
+   test_name : str
+      name of test  
+   
+   Returns
+   -----
+   ref_outs :
+      list of paths to reference files        
+   new_outs :
+      list of paths to outputted files
+   igns_n_tols :
+      dictionary containing the ignore keywords and tolerances needed to performance comparison of ref_outs and new_outs
+   
    """
    # suffixes of paths needed to find driver/utils/references
    driver_path_suffix      = 'tests_perturbo/'+test_name
