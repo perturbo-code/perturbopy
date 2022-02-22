@@ -1,4 +1,4 @@
 Pyturbo
 =======
 
-**Pyturbo** is a suite of Python scripts for Perturbo testing and postprocessing.
+**Perturbopy** is a suite of Python scripts for Perturbo testing and postprocessing.
