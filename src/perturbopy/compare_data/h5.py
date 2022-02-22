@@ -6,24 +6,24 @@ import numpy as np
 
 def equal_scalar(scalar1, scalar2, key, ig_n_tol):
    """
-      Determines if two scalars contain the same value
+   Determines if two scalars contain the same value
 
-      Parameters
-      -----
-         scalar1     first  scalar (numpy.dtype) 
-         scalar2     second scalar (numpy.dtype)
-         key         key associated with this scalar
-         ig_n_tol    dict of ignore keywords and tolerances
-                     needed to make comparison on values
-      
-      Returns
-      -----
-         equal_value boolean specifying if both scalars 
-                     contain the same values
-      
-      Warns
-      -----
-         None
+   Parameters
+   ----------
+   scalar1 : numpy.dtype
+      first  scalar
+   scalar2 : numpy.dtype
+      second scalar 
+   key : str
+      key associated with this scalar
+   ig_n_tol : dict  
+      dictionary of ignore keywords and tolerances needed to make comparison on values
+   
+   Returns
+   -------
+   equal_value : bool
+      boolean specifying if both scalars contain the same values
+   
    """
    # check that scalar1 and scalar2 are Numbers 
    errmsg = ('scalar1/2 are not float64 or int32')
@@ -50,23 +50,22 @@ def equal_scalar(scalar1, scalar2, key, ig_n_tol):
 
 def equal_ndarray(ndarray1, ndarray2, key, ig_n_tol):
    """
-      Determines if two ndarrays contain the same values
+   Determines if two ndarrays contain the same values
 
-      Parameters
-      -----
-         ndarray1     first numpy ndarray  
-         ndarray2     second numpy ndarray 
-         ig_n_tol     dict of ignore keywords and tolerances
-                      needed to make comparison on values
-      
-      Returns
-      -----
-         equal_vlaues boolean specifying if both ndarrays 
-                      are equivalent 
-      
-      Warns
-      -----
-         None
+   Parameters
+   ----------
+   ndarray1 : numpy.ndarray
+      first numpy ndarray  
+   ndarray2 : numpy.ndarray
+      second numpy ndarray 
+   ig_n_tol : dict
+      dictionary of ignore keywords and tolerances needed to make comparison on values
+   
+   Returns
+   -------
+   equal_vlaues : bool
+      boolean specifying if both ndarrays are equivalent 
+   
    """
    errmsg = ('ndarray1/2 are not ndarrays')
    assert isinstance(ndarray1, np.ndarray) and isinstance(ndarray2, np.ndarray)
@@ -85,34 +84,30 @@ def equal_ndarray(ndarray1, ndarray2, key, ig_n_tol):
                              rtol=0.0,
                              equal_nan=True)
    return equal_value 
-   
-
-
 
 def equal_dict(dict1, dict2, ig_n_tol):
-   """
-      Determines if two dicts contain the same value
-      for the same key 
+   r"""
+   Determines if two dicts contain the same value
+   for the same key 
    
-      NOTE: Dict structure is assumed to be composed of 
-      other dictionaries, numpy.ndarray, numpy.int32 and
-      numpy.float64
+   ..note:: Dict structure is assumed to be composed of 
+   other dictionaries, numpy.ndarray, numpy.int32 and
+   numpy.float64
 
-      Parameters
-      -----
-         dict1        first  dict
-         dict2        second dict
-         ig_n_tol     dict of ignore keywords and tolerances
-                      needed to make comparison on values
-      
-      Returns
-      -----
-         equal_vlaues boolean specifying if both dicts 
-                      contain the same keys and values
-      
-      Warns
-      -----
-         None
+   Parameters
+   ----------
+   dict1 : dict
+      first  dictionary
+   dict2 : dict
+      second dictionary
+   ig_n_tol : dict
+      dictionary of ignore keywords and tolerances needed to make comparison on values
+   
+   Returns
+   -------
+   equal_values : bool
+      boolean specifying if both dicts contain the same keys and values
+   
    """
    # check that dict1 and dict2 are dictionaries
    errmsg = ('dic1/2 are not dictionaries')
@@ -160,25 +155,23 @@ def equal_dict(dict1, dict2, ig_n_tol):
 
 def equal_values(file1, file2, ig_n_tol):
    """
-      Checks if two h5 files contain the same 
-      hierarchy/groups/datasets
+   Checks if two h5 files contain the same hierarchy/groups/datasets
 
 
-      Parameters
-      -----
-         file1       first  h5 file
-         file2       second h5 file
-         ig_n_tol    dictionary of keywords and tolerances
-                     needed to make comparison on files
-      
-      Returns
-      -----
-         equal_vlaues boolean specifying if both h5 files 
-                      contain the same information 
-      
-      Warns
-      -----
-         None
+   Parameters
+   ----------
+   file1 : str
+      first  HDF5 file name
+   file2 : str
+      second  HDF5 file name
+   ig_n_tol : dict
+      dictionary of keywords and tolerances needed to make comparison on files
+   
+   Returns
+   -------
+   equal_values : bool
+      boolean specifying if both h5 files contain the same information 
+   
    """
    h51_dict = dict(hdfdict.load(file1))
    h52_dict = dict(hdfdict.load(file2))

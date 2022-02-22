@@ -1,5 +1,5 @@
 """
-   This module is wrapper to functions that compare yaml or h5 files
+   This module is wrapper to functions that compare yaml or HDF5 files
 """
 import perturbopy.compare_data.yaml as cyaml
 import perturbopy.compare_data.h5 as ch5
@@ -7,27 +7,24 @@ import perturbopy.compare_data.h5 as ch5
 
 def equal_values(file1, file2, ig_n_tol):
    """
-      1) determines file types
-      2) determins if files containe the same values
-         -for both yaml/h5 the objects of the highest level
-          are checked then checks are performed on common
-          objects
+   1) determines file types
+   2) determins if files containe the same values for both yaml/h5 the objects of the highest level are checked then checks are performed on common objects
 
-      Parameters
-      -----
-         file1       first  file
-         file2       second file
-         ig_n_tol   dictionary of ignore keywords and tolerances
-                     needed to make comparison on files
+   Parameters
+   ----------
+   file1 : str
+      first  filename 
 
-      Returns
-      -----
-         equal_vlaues boolean specifying if both files 
-                      contain the same group/datasets/keys/values
-      
-      Warns
-      -----
-         None
+   file2 : str
+      second filename
+   ig_n_tol : dict
+      dictionary of ignore keywords and tolerances needed to make comparison on files
+
+   Returns
+   -------
+   equal_vlaues : bool
+      boolean specifying if both files contain the same group/datasets/keys/values
+
    """
    # get file extension 
    file1_type = file1.split(".")[-1]
