@@ -1,6 +1,6 @@
-from perturbopy.run_test.test_driver import get_test_materials
-from perturbopy.compare_data.compare import equal_values 
-from perturbopy.compare_data.yaml import open_yaml
+from perturbopy.test_utils.run_test.test_driver import get_test_materials
+from perturbopy.test_utils.compare_data.compare import equal_values 
+from perturbopy.test_utils.compare_data.yaml import open_yaml
 
 import os
 import subprocess

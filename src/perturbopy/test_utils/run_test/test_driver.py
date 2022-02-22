@@ -3,7 +3,7 @@
 """
 import os
 import subprocess
-from perturbopy.compare_data.yaml import open_yaml
+from perturbopy.test_utils.compare_data.yaml import open_yaml
 
 def run_perturbo(cwd, perturbo_driver_dir_path, interactive_job_script):
    """
@@ -56,13 +56,13 @@ def get_test_materials(test_name):
    """
    # suffixes of paths needed to find driver/utils/references
    driver_path_suffix      = 'tests_perturbo/'+test_name
-   test_utils_path_suffix  = 'test_utils'
+   test_scripts_path_suffix  = 'test_scripts'
    ref_data_path_suffix    = 'refs_perturbo/'+test_name
    
    cwd = os.getcwd()
  
    # determine needed paths
-   interactive_job_script   = [x[0] for x in os.walk(cwd) if x[0].endswith(test_utils_path_suffix)][0]
+   interactive_job_script   = [x[0] for x in os.walk(cwd) if x[0].endswith(test_scripts_path_suffix)][0]
    perturbo_driver_dir_path = [x[0] for x in os.walk(cwd) if x[0].endswith(driver_path_suffix)][0]
    out_path                 = perturbo_driver_dir_path
    ref_path                 = [x[0] for x in os.walk(cwd) if x[0].endswith(ref_data_path_suffix)][0]

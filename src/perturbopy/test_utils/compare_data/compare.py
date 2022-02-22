@@ -1,8 +1,8 @@
 """
    This module is wrapper to functions that compare yaml or HDF5 files
 """
-import perturbopy.compare_data.yaml as cyaml
-import perturbopy.compare_data.h5 as ch5
+import perturbopy.test_utils.compare_data.yaml as cyaml
+import perturbopy.test_utils.compare_data.h5 as ch5
 
 
 def equal_values(file1, file2, ig_n_tol):
