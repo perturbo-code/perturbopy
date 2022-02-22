@@ -1,5 +1,5 @@
 """
-   This module contains functions to compare yaml files
+   This module contains functions to compare YAML files
 """
 from yaml import load,dump
 try:
@@ -12,19 +12,18 @@ import numpy as np
 
 def open_yaml(file_name):
    """ 
-      load yaml file as dictionary
-      
-      Parameters
-      -----
-         file_name  name of yaml file to be loaded 
-      
-      Returns
-      -----
-         yaml_dict   yaml file loaded as dict      
-      
-      Warns
-      -----
-         None
+   Load YAML file as dictionary
+   
+   Parameters
+   ----------
+   file_name : str
+      name of YAML file to be loaded 
+   
+   Returns
+   -------
+   yaml_dict : dict
+      YAML file loaded as dict      
+   
    """
    with open(file_name,'r') as file:
       yaml_dict = load(file, Loader=Loader)
@@ -32,24 +31,24 @@ def open_yaml(file_name):
 
 def equal_scalar(scalar1, scalar2, key, ig_n_tol):
    """
-      Determines if two scalars contain the same value
+   Determines if two scalars contain the same value
 
-      Parameters
-      -----
-         scalar1     first  scalar 
-         scalar2     second scalar 
-         key         key associated with this scalar
-         ig_n_tol    dict of ignore keywords and tolerances
-                     needed to make comparison on values
-      
-      Returns
-      -----
-         equal_value boolean specifying if both scalars 
-                     contain the same values
-      
-      Warns
-      -----
-         None
+   Parameters
+   ----------
+   scalar1 : numpy.dtype
+      first  scalar
+   scalar2 : numpy.dtype
+      second scalar
+   key : str
+      key associated with this scalar
+   ig_n_tol : dict
+      dictionary of ignore keywords and tolerances needed to make comparison on values
+
+   Returns
+   -------
+   equal_value : bool
+      boolean specifying if both scalars contain the same values
+
    """
    # check that scalar1 and scalar2 are Numbers 
    errmsg = ('scalar1/2 are not Numbers')
@@ -72,23 +71,22 @@ def equal_scalar(scalar1, scalar2, key, ig_n_tol):
 
 def equal_list(list1, list2, key, ig_n_tol):
    """
-      Determines if two lists contain the same values
+   Determines if two lists contain the same values
 
-      Parameters
-      -----
-         list1        first  list 
-         list2        second list 
-         ig_n_tol     dict of ignore keywords and tolerances
-                      needed to make comparison on values
-      
-      Returns
-      -----
-         equal_vlaues boolean specifying if both lists 
-                      are equivalent 
-      
-      Warns
-      -----
-         None
+   Parameters
+   ----------
+   list1 : list
+      first  list 
+   list2 : list
+      second list 
+   ig_n_tol : dict
+      dictionary of ignore keywords and tolerances needed to make comparison on values
+   
+   Returns
+   -------
+   equal_vlaues : bool
+      boolean specifying if both lists are equivalent 
+   
    """
    # check that list1 and list2 are lists 
    errmsg = ('list1/2 are not lists')
@@ -131,24 +129,23 @@ def equal_list(list1, list2, key, ig_n_tol):
 
 def equal_dict(dict1, dict2, ig_n_tol):
    """
-      Determines if two dicts contain the same value
-      for the same key 
+   Determines if two dicts contain the same value
+   for the same key 
 
-      Parameters
-      -----
-         dict1        first  dict
-         dict2        second dict
-         ig_n_tol     dict of ignore keywords and tolerances
-                      needed to make comparison on values
-      
-      Returns
-      -----
-         equal_vlaues boolean specifying if both dicts 
-                      contain the same keys and values
-      
-      Warns
-      -----
-         None
+   Parameters
+   ----------
+   dict1 : dict
+      first  dictionary
+   dict2 : dict
+      second dictionary
+   ig_n_tol : dict
+      dictionary of ignore keywords and tolerances needed to make comparison on values
+   
+   Returns
+   -------
+   equal_vlaues : bool
+      boolean specifying if both dicts contain the same keys and values
+   
    """
    # check that dict1 and dict2 are dictionaries
    errmsg = ('dic1/2 are not dictionaries')
@@ -202,24 +199,23 @@ def equal_dict(dict1, dict2, ig_n_tol):
 
 def equal_values(file1, file2, ig_n_tol):
    """
-      Determines if two yaml files contain the same value
-      for the same keys. keys must be in 'test keywords' 
+   Determines if two YAML files contain the same value
+   for the same keys. keys must be in 'test keywords' 
 
-      Parameters
-      -----
-         file1       first  yaml file
-         file2       second yaml file
-         ig_n_tol    dictionary of keywords and tolerances
-                     needed to make comparison on files
-      
-      Returns
-      -----
-         equal_vlaues boolean specifying if both yaml files 
-                      contain the same keys and values
-      
-      Warns
-      -----
-         None
+   Parameters
+   ----------
+   file1 : str
+      first  YAML file name
+   file2 : str
+      second YAML file name
+   ig_n_tol : dict
+      dictionary of keywords and tolerances needed to make comparison on files
+   
+   Returns
+   -------
+   equal_vlaues : bool 
+      boolean specifying if both YAML files contain the same keys and values
+   
    """
    yaml1_dict = open_yaml(file1)
    yaml2_dict = open_yaml(file2)

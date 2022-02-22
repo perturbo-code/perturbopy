@@ -90,9 +90,11 @@ def equal_dict(dict1, dict2, ig_n_tol):
    Determines if two dicts contain the same value
    for the same key 
    
-   ..note:: Dict structure is assumed to be composed of 
-   other dictionaries, numpy.ndarray, numpy.int32 and
-   numpy.float64
+   .. note:: 
+
+      Dict structure is assumed to be composed of 
+      other dictionaries, numpy.ndarray, numpy.int32 and
+      numpy.float64
 
    Parameters
    ----------
