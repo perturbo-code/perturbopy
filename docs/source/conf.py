@@ -10,16 +10,16 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+#import os
+#import sys
+#sys.path.insert(0, os.path.abspath('../src/perturbopy/'))
 
 
 # -- Project information -----------------------------------------------------
 
 project = 'perturbopy'
-copyright = '2022, I. Maliyov, S. D. Pineda Flores'
-author = 'I. Maliyov, S. D. Pineda Flores'
+copyright = '2022, Perturbo developers'
+author = 'Perturbo developers'
 
 # The full version, including alpha/beta/rc tags
 release = '0.1'
@@ -32,6 +32,9 @@ release = '0.1'
 # ones.
 extensions = [
    'sphinx.ext.duration',
+   'sphinx.ext.mathjax',
+   'sphinx.ext.autodoc',
+   'sphinx.ext.autosummary',
 ]
 
 # Add any paths that contain templates here, relative to this directory.

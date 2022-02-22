@@ -30,3 +30,4 @@ Contents
 .. toctree::
 
    usage
+   api/perturbopy
