@@ -12,7 +12,6 @@ For more information about the main code Perturbo, please visit `this page <http
 For installation, check the :doc:`usage` section.
 
 .. toctree::
-   :maxdepth: 2
    :caption: Contents:
 
 
@@ -28,6 +27,7 @@ Contents
 --------
 
 .. toctree::
+   :maxdepth: 2
 
    Usage <usage>
    API reference <api/_autosummary/perturbopy>
