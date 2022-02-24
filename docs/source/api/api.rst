@@ -2,7 +2,7 @@ perturbopy API
 ==============
 
 .. autosummary::
-   :toctree: 
+   :toctree: _autosummary
    :recursive:
 
    perturbopy
