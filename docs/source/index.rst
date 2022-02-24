@@ -15,7 +15,6 @@ For installation, check the :doc:`usage` section.
    :caption: Contents:
 
 
-
 Indices and tables
 ==================
 
