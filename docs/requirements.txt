@@ -1,4 +1,4 @@
-autodocsumm
 sphinx
 sphinx-rtd-theme
-
+pydata-sphinx-theme
+sphinx-autodoc-typehints
