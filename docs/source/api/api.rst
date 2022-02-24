@@ -3,8 +3,7 @@ perturbopy API
 
 .. autosummary::
    :toctree: _autosummary
+   :template: custom-module-template.rst
    :recursive:
 
    perturbopy
-.. :template: custom-module-template.rst
-
