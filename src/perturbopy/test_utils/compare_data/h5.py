@@ -58,6 +58,9 @@ def equal_ndarray(ndarray1, ndarray2, key, ig_n_tol):
       first numpy ndarray  
    ndarray2 : numpy.ndarray
       second numpy ndarray 
+   key: str
+      A key for the tolerance. If this key is not specified in the tolerance dict,
+      a default tolerance will be applied
    ig_n_tol : dict
       dictionary of ignore keywords and tolerances needed to make comparison on values
    

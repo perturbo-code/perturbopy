@@ -14,7 +14,7 @@ def equal_values(file1, file2, ig_n_tol):
    Parameters
    ----------
    file1 : str
-      first  filename 
+      first  filename
 
    file2 : str
       second filename
@@ -27,7 +27,7 @@ def equal_values(file1, file2, ig_n_tol):
       boolean specifying if both files contain the same group/datasets/keys/values
 
    """
-   # get file extension 
+   # get file extension
    file1_type = file1.split(".")[-1]
    file2_type = file2.split(".")[-1]
    
@@ -50,4 +50,4 @@ def equal_values(file1, file2, ig_n_tol):
                 "yaml, yml, hdf5, or h5")
       raise ValueError(errmsg)
 
-   return equal_values 
+   return equal_values

@@ -82,6 +82,9 @@ def equal_list(list1, list2, key, ig_n_tol):
       first  list
    list2 : list
       second list
+   key: str
+      A key for the tolerance. If this key is not specified in the tolerance dict,
+      a default tolerance will be applied
    ig_n_tol : dict
       dictionary of ignore keywords and tolerances needed to make comparison on values
 
