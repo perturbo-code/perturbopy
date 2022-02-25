@@ -29,4 +29,4 @@ Contents
    :maxdepth: 2
 
    Usage <usage>
-   API reference <api>
+   API reference <_autosummary/perturbopy>
