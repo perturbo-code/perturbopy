@@ -122,7 +122,7 @@ def equal_list(list1, list2, key, ig_n_tol):
          equal_per_item.append(item1 == item2)
       
       elif isinstance(item1, type(None)):
-         equal_per_item.append(dict1[key] == dict2[key])
+         equal_per_item.append(item1 == item2)
       
       else:
          errmsg = ('list must only contain values of type dict, list, scalar, None, or str')
