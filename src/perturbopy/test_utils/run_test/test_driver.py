@@ -2,13 +2,21 @@
    Run an executable for the testsuite.
 """
 import os
+import shlex
 import subprocess
 from perturbopy.test_utils.compare_data.yaml import open_yaml
+from perturbopy.test_utils.run_test.env_utils import perturbo_run_from_env
 
 
-def run_perturbo(cwd, perturbo_driver_dir_path, interactive_job_script):
+def run_perturbo(cwd, perturbo_driver_dir_path, interactive_job_script, 
+                 input_name = 'pert.in', output_name = 'pert.out'):
    """
    Function to run Perturbo and produce output files
+
+   .. note ::
+      The Perturbo run command must be specified in the PERTURBO_RUN environment
+      variable. A user can manually setup this variable or provide a YAML file
+      env_perturbo.yml with the parameters for the run.
 
 
    Parameters
@@ -19,6 +27,10 @@ def run_perturbo(cwd, perturbo_driver_dir_path, interactive_job_script):
       path to dir with pert.in file
    interactive_job_script : str
       path to dir with run_interactive.sh script
+   input_name : str, optional
+      name of the input file, default: 'pert.in'
+   output_name : str, optional
+      name of the output file, default: 'pert.out'
 
    Returns
    -------
@@ -26,10 +38,16 @@ def run_perturbo(cwd, perturbo_driver_dir_path, interactive_job_script):
 
    """
 
+   perturbo_run = perturbo_run_from_env()
+
+   perturbo_run = f'{perturbo_run} -i {input_name} | tee {output_name}'
+
    os.chdir(perturbo_driver_dir_path)
    print(f'{os.getcwd()}')
-   print(f'{interactive_job_script}/run_interactive.sh')
-   subprocess.call(f"{interactive_job_script}/run_interactive.sh")
+   print(f'Running Perturbo:\n{perturbo_run}')
+
+   subprocess.run(shlex.split(perturbo_run))
+
    os.chdir(cwd)
 
 
