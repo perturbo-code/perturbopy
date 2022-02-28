@@ -2,8 +2,6 @@
    Set up the environment for Perturbo runs.
 """
 import os
-import subprocess
-from perturbopy.test_utils.compare_data.yaml import open_yaml
 
 
 def perturbo_run_from_env():
@@ -30,10 +28,10 @@ def perturbo_run_from_env():
    try:
       perturbo_run = os.environ['PERTURBO_RUN']
    except KeyError:
-      errmsg = ( 'To run Perturbo in the testsuite,\n'
-                 'the PERTURBO_RUN environmental variable must be set.\n'
-                 'Example:\n'
-                 'export PERTURBO_RUN="mpirun -np 4 <path>/perturbo.x -npools 4"'
+      errmsg = ('To run Perturbo in the testsuite,\n'
+                'the PERTURBO_RUN environmental variable must be set.\n'
+                'Example:\n'
+                'export PERTURBO_RUN="mpirun -np 4 <path>/perturbo.x -npools 4"'
                )
       raise EnvironmentError(errmsg)
 

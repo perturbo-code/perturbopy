@@ -8,8 +8,8 @@ from perturbopy.test_utils.compare_data.yaml import open_yaml
 from perturbopy.test_utils.run_test.env_utils import perturbo_run_from_env
 
 
-def run_perturbo(cwd, perturbo_driver_dir_path, interactive_job_script, 
-                 input_name = 'pert.in', output_name = 'pert.out'):
+def run_perturbo(cwd, perturbo_driver_dir_path, interactive_job_script,
+                 input_name='pert.in', output_name='pert.out'):
    """
    Function to run Perturbo and produce output files
 
