@@ -15,8 +15,8 @@ def run_perturbo(cwd, perturbo_driver_dir_path, interactive_job_script,
 
    .. note ::
       The Perturbo run command must be specified in the PERTURBO_RUN environment
-      variable. A user can manually setup this variable or provide a YAML file
-      env_perturbo.yml with the parameters for the run.
+      variable. Check the perturbopy/tests/test_scripts/env_setup_examples.sh script
+      for examples.
 
 
    Parameters

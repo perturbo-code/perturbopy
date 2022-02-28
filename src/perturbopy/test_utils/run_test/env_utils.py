@@ -20,7 +20,7 @@ def perturbo_run_from_env():
    Returns
    -------
    perturbo_run : str
-      string of a command to run Perturbo
+      string containing a command to run Perturbo
 
    """
 
