@@ -8,7 +8,7 @@ from perturbopy.test_utils.compare_data.yaml import open_yaml
 from perturbopy.test_utils.run_test.env_utils import perturbo_run_from_env
 
 
-def run_perturbo(cwd, perturbo_driver_dir_path, interactive_job_script, 
+def run_perturbo(cwd, perturbo_driver_dir_path, 
                  input_name = 'pert.in', output_name = 'pert.out'):
    """
    Function to run Perturbo and produce output files
@@ -25,8 +25,6 @@ def run_perturbo(cwd, perturbo_driver_dir_path, interactive_job_script,
       path of current working directory
    perturbo_driver_dir_path : str
       path to dir with pert.in file
-   interactive_job_script : str
-      path to dir with run_interactive.sh script
    input_name : str, optional
       name of the input file, default: 'pert.in'
    output_name : str, optional
@@ -81,13 +79,12 @@ def get_test_materials(test_name):
    cwd = os.getcwd()
 
    # determine needed paths
-   interactive_job_script   = [x[0] for x in os.walk(cwd) if x[0].endswith(test_scripts_path_suffix)][0]
    perturbo_driver_dir_path = [x[0] for x in os.walk(cwd) if x[0].endswith(driver_path_suffix)][0]
    out_path                 = perturbo_driver_dir_path
    ref_path                 = [x[0] for x in os.walk(cwd) if x[0].endswith(ref_data_path_suffix)][0]
 
    # run perturbo.exe to produce outputs
-   run_perturbo(cwd, perturbo_driver_dir_path, interactive_job_script)
+   run_perturbo(cwd, perturbo_driver_dir_path)
 
    # input yaml for perturbo job
    pert_input = open_yaml(f'{perturbo_driver_dir_path}/pert_input.yml')
