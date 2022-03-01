@@ -73,7 +73,6 @@ def get_test_materials(test_name):
    """
    # suffixes of paths needed to find driver/utils/references
    driver_path_suffix = 'tests_perturbo/' + test_name
-   test_scripts_path_suffix = 'test_scripts'
    ref_data_path_suffix = 'refs_perturbo/' + test_name
 
    cwd = os.getcwd()
