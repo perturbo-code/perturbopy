@@ -17,6 +17,8 @@ Here is an example to create and activate this environment with `anaconda`:
    (pertpy) $ python --version
    Python 3.10.0
 
+.. _Installation:
+
 Installation
 ------------
 

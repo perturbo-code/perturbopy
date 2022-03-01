@@ -11,7 +11,7 @@ For the Perturbo code download and installation, please refer to `this page <htt
 Running testsuite
 -----------------
 
-We assume that the `pertpy` Python environment is :ref:`activated <Conda activate>`.
+We assume that the `pertpy` Python environment is :ref:`activated <Conda activate>` and `perturbopy` is :ref:`installed <Installation>`.
 
 The testsuite automatically launches the Perturbo executable and verifies that the produced output is the same as the reference output produced beforehand. Therefore, the testsuite must have access to the Perturbo executable. This is done through the PERTURBO_RUN environmental variable.
 
@@ -85,6 +85,7 @@ Job submission
 
 #. The testsuite output will be written into the `pytest_output` file.
 
+Note that the job must be submitted from the `tests` folder and the `pertpy` environment is not activated manually (it is activated from the submission script).
 
 Interactive mode
 ................
