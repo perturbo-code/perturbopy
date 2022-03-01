@@ -29,4 +29,5 @@ Contents
    :maxdepth: 2
 
    Usage <usage>
+   Testsuite <testsuite>
    API reference <_autosummary/perturbopy>

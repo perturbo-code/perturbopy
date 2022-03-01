@@ -8,15 +8,15 @@ from perturbopy.test_utils.compare_data.yaml import open_yaml
 from perturbopy.test_utils.run_test.env_utils import perturbo_run_from_env
 
 
-def run_perturbo(cwd, perturbo_driver_dir_path, 
-                 input_name = 'pert.in', output_name = 'pert.out'):
+def run_perturbo(cwd, perturbo_driver_dir_path,
+                 input_name='pert.in', output_name='pert.out'):
    """
    Function to run Perturbo and produce output files
 
    .. note ::
       The Perturbo run command must be specified in the PERTURBO_RUN environment
-      variable. A user can manually setup this variable or provide a YAML file
-      env_perturbo.yml with the parameters for the run.
+      variable. Check the perturbopy/tests/test_scripts/env_setup_examples.sh script
+      for examples.
 
 
    Parameters
