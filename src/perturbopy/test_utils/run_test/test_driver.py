@@ -2,6 +2,7 @@
    Run an executable for the testsuite.
 """
 import os
+import sys
 import shlex
 import subprocess
 from perturbopy.test_utils.compare_data.yaml import open_yaml
@@ -41,8 +42,9 @@ def run_perturbo(cwd, perturbo_driver_dir_path,
    perturbo_run = f'{perturbo_run} -i {input_name} | tee {output_name}'
 
    os.chdir(perturbo_driver_dir_path)
-   print(f'{os.getcwd()}')
+   print(f'{os.getcwd()}\n')
    print(f'Running Perturbo:\n{perturbo_run}')
+   sys.stdout.flush()
 
    subprocess.run(shlex.split(perturbo_run))
 
