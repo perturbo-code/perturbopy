@@ -1,20 +1,7 @@
-# TODO: generate pert.in automatically
-perturbo:
-   prefix: gaas
-
-# TODO:
-#required files:
-
 test info:
    executable: perturbo.x 
 
-   authors:
-      - I. Maliyov
-      - S. D. Pineda Flores
-
    tags:
-      - epwan1
-      - norm-conserving
       - HDF5 output
 
    desc:
@@ -28,17 +15,11 @@ test info:
          #only applies to top dict 
          test keywords:
             - DOS 
+
          #applies to dict at all levels
          ignore keywords:
             - input parameters
             - start date and time
             - timings
 
-         #applies to dict at all levels
-         tolerance:
-            default:
-               1e-10      
       gaas_tet.h5:
-         tolerance:
-            default:
-               1e-10      

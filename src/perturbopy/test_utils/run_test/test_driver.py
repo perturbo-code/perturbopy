@@ -63,12 +63,12 @@ def get_test_materials(test_name):
 
    Returns
    -----
-   ref_outs :
+   ref_outs : list
       list of paths to reference files
-   new_outs :
+   new_outs : list
       list of paths to outputted files
-   igns_n_tols :
-      dictionary containing the ignore keywords and tolerances needed to performance comparison of ref_outs and new_outs
+   igns_n_tols : list
+      list of dictionaries containing the ignore keywords and tolerances needed to performance comparison of ref_outs and new_outs
 
    """
    # suffixes of paths needed to find driver/utils/references
@@ -100,6 +100,55 @@ def get_test_materials(test_name):
    # tolerances (information about how to compare outputs)
    igns_n_tols = [test_files[out_file] for out_file in out_files]
 
+   igns_n_tols = setup_default_tol(igns_n_tols)
+
    return (ref_outs,
            new_outs,
            igns_n_tols)
+
+def setup_default_tol(igns_n_tols):
+   """
+   Setup the default tolerances for each file to compare if the tolerances are
+   not specified in the pert_input.yml file.
+
+   This function ensures that every output file to compare has the following
+   dictionary structure:
+
+   .. code-block :: python
+
+      output_file.yml:
+         tolerance:
+            default:
+               1e-10
+
+   Parameters
+   ----------
+   igns_n_tols : dict 
+      dictionary containing the ignore keywords and tolerances needed to performance comparison of ref_outs and new_outs
+   
+   Returns
+   -------
+   igns_n_tols_updated : dict 
+      **updated** dictionary containing the ignore keywords and tolerances
+
+   """
+
+   default_tolerance = 1e-10
+
+   igns_n_tols_updated = []
+
+   for outfile in igns_n_tols:
+
+      if not isinstance(outfile, dict):
+         outfile = { 'tolerance': {'default': default_tolerance}}
+      
+      elif 'tolerance' not in outfile.keys():
+         outfile['tolerance'] = {'default': default_tolerance}
+
+      elif 'default' not in outfile['tolerance'].keys():
+         outfile['tolerance']['default'] = default_tolerance
+
+      igns_n_tols_updated.append(outfile)
+
+   return igns_n_tols_updated
+
