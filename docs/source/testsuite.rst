@@ -1,6 +1,9 @@
 Testing Perturbo
 ================
 
+.. contents::
+   :depth: 3
+
 To test Perturbo (``perturbo.x`` executable), we provide a testsuite within the `perturbopy` package. We recommend to run the testsuite:
 
 * to verify that the code runs correctly after download and installation
