@@ -1,10 +1,12 @@
 epwan1:
    prefix: gaas
    SOC: True
+   polar: True
    description: "GaAs with SOC"
    pseudopotential: Ga and As from Pseudo-Dojo
-   polar: True
    tags:
+      - SOC
+      - polar
       - norm-conserving
       - lda
       - fully-relativistic
@@ -12,10 +14,12 @@ epwan1:
 epwan2:
    prefix: mos2
    SOC: True
+   polar: True
    description: "MoS2 with SOC and 2D Coulomb cutoff"
    pseudopotential: Mo and S from Pseudo-Dojo
-   polar: True
    tags:
+      - SOC
+      - polar
       - norm-conserving
       - lda
       - fully-relativistic
@@ -24,9 +28,9 @@ epwan2:
 epwan3:
    prefix: graphene
    SOC: False
+   polar: False
    description: "Graphene, with 2D Coulomb cutoff and no SOC"
    pseudopotential: C from Pseudo-Dojo
-   polar: False
    tags:
       - norm-conserving
       - LDA

@@ -4,7 +4,7 @@ from perturbopy.test_utils.run_test.run_utils import read_test_tags
 
 test_folder_list = [
                     'epwan1-bands',
-                    #'epwan1-setup',
+                    'epwan1-setup',
                    ]
 
 command_line_args = sys.argv[1:]
@@ -17,4 +17,6 @@ print('')
 sys.stdout.flush()
 
 
-read_test_tags(test_folder_list[0])
+print('TAGS:')
+print(read_test_tags(test_folder_list[0]), '\n')
+print(read_test_tags(test_folder_list[1]), '\n')

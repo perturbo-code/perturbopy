@@ -8,7 +8,8 @@ from perturbopy.test_utils.compare_data.yaml import open_yaml
 
 def read_test_tags(test_name):
    """
-   Get a list of tags for a given test.
+   Get a list of tags for a given test. List of tags is combined from the tags from
+   pert_input.yml and epwan_info.yml for a given epwan file.
 
    Parameters
    ----------
@@ -32,5 +33,17 @@ def read_test_tags(test_name):
    if 'tags' in pert_input:
       input_tags = pert_input['tags']
 
-   print(pert_input)
-   sys.stdout.flush()
+   epwan_name = pert_input['epwan']
+
+   epwan_dict_path = os.path.join('refs_perturbo','epwan_files','epwan_info.yml')
+
+   epwan_info = open_yaml(epwan_dict_path)
+
+   epwan_tags = []
+   if 'tags' in epwan_info:
+      epwan_tags = epwan_info['tags']
+
+   tag_list = input_tags + epwan_tags
+   tag_list = list(set(tag_list))
+
+   return tag_list

@@ -140,4 +140,30 @@ Here are the commands to run the Perturbo testsuite on Cori in the `interactive 
 
       (pertpy) $ pytest -s
 
+Adding new tests
+----------------
+
+The following keys **must be present** in the ``test info`` section of `pert_input.yml` file:
+
+* ``executable``
+* ``epwan``
+* ``desc``
+* ``test files``
+
+The following keys **are optional** in the ``test info`` section of `pert_input.yml` file:
+
+* ``tags``,
+
+also a _tolerance_ for the comparison can be optionally specified in the following way:
+
+.. code-block :: python
+
+      output_file.yml:
+         tolerance:
+            default:
+               1e-10
+            key:
+               1e-8
+
+where ``key`` referes to one of the keywords of a value of matrix to compare.
 

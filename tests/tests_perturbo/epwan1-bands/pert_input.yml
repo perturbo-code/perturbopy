@@ -1,9 +1,7 @@
 test info:
    executable: perturbo.x 
 
-   tags:
-      - epwan1
-      - norm-conserving
+   epwan: gaas_epwan.h5
 
    desc:
       (

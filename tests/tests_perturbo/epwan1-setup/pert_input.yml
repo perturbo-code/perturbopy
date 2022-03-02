@@ -1,8 +1,10 @@
 test info:
    executable: perturbo.x 
 
+   epwan: gaas_epwan.h5
+
    tags:
-      - HDF5 output
+      - HDF5-output
 
    desc:
       (
