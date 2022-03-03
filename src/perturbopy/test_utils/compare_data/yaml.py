@@ -11,6 +11,7 @@ from numbers import Number
 import numpy as np
 import perturbopy.test_utils.compare_data.h5 as ch5
 
+
 def open_yaml(file_name):
    """
    Load YAML file as dictionary
@@ -102,9 +103,8 @@ def equal_list(list1, list2, key, ig_n_tol):
    assert len(list1) == len(list2), errmsg
 
    # check if lists can be converted to ndarray
-   if (all(isinstance(x, Number) for x in list1) and
-       all(isinstance(x, Number) for x in list2) ):
-   # compare lists as nparrays for speed up 
+   if (all(isinstance(x, Number) for x in list1) and all(isinstance(x, Number) for x in list2)):
+      # compare lists as nparrays for speed up
       return ch5.equal_ndarray(np.array(list1),
                                np.array(list2),
                                key,
