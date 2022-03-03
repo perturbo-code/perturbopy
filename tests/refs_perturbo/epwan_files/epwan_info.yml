@@ -1,5 +1,6 @@
 epwan1:
    prefix: gaas
+   filename: gaas_epwan.h5
    SOC: True
    polar: True
    description: "GaAs with SOC"
@@ -13,6 +14,7 @@ epwan1:
       
 epwan2:
    prefix: mos2
+   filename: mos2_epwan.h5
    SOC: True
    polar: True
    description: "MoS2 with SOC and 2D Coulomb cutoff"
@@ -27,6 +29,7 @@ epwan2:
 
 epwan3:
    prefix: graphene
+   filename: graphene_epwan.h5
    SOC: False
    polar: False
    description: "Graphene, with 2D Coulomb cutoff and no SOC"

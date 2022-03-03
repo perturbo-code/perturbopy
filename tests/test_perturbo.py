@@ -5,9 +5,10 @@ import os
 import sys
 import pytest
 import subprocess
-import setup_tests
+###import setup_tests
 
-@pytest.mark.parametrize('test_name', setup_tests.test_folder_list)
+
+###@pytest.mark.parametrize('test_name', setup_tests.test_folder_list)
 def test_epwan1_bands(test_name):
    """
    Driver to run the tests for the perturbo.x executable.

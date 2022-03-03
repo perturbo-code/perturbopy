@@ -4,6 +4,7 @@
 """
 import os
 import sys
+import argparse
 from perturbopy.test_utils.compare_data.yaml import open_yaml
 
 def read_test_tags(test_name):
@@ -29,21 +30,54 @@ def read_test_tags(test_name):
 
    pert_input = open_yaml(f'{perturbo_driver_dir_path}/pert_input.yml')
 
+   # Read the tags from pert_input.yml
    input_tags = []
-   if 'tags' in pert_input:
-      input_tags = pert_input['tags']
+   if 'tags' in pert_input['test info'].keys():
+      input_tags = pert_input['test info']['tags']
 
-   epwan_name = pert_input['epwan']
+   # Read the tags from epwan_info.yml
+   epwan_name = pert_input['test info']['epwan']
 
    epwan_dict_path = os.path.join('refs_perturbo','epwan_files','epwan_info.yml')
 
    epwan_info = open_yaml(epwan_dict_path)
 
    epwan_tags = []
-   if 'tags' in epwan_info:
-      epwan_tags = epwan_info['tags']
+   if 'tags' in epwan_info[epwan_name].keys():
+      epwan_tags = epwan_info[epwan_name]['tags']
 
    tag_list = input_tags + epwan_tags
-   tag_list = list(set(tag_list))
+   tag_list = sorted(list(set(tag_list)))
 
    return tag_list
+
+def parse_args(command_line_args):
+   """
+   Parse the command line arguments of pytest. This parsing happens before
+   the internal pytest parsing.
+
+   Parameters
+   ----------
+   command_line_args : list
+      list of command line arguments
+
+   Returns
+   -------
+   args : instance of :class:`argparse
+      parsed command line arguments
+   """
+
+   help_description = 'Perturbo testsuite. For more details, refer to: https://perturbopy.readthedocs.io/en/latest/testsuite.html '
+   parser = argparse.ArgumentParser(description=help_description)
+
+   parser.add_argument('--tags', 
+                       help = 'List of tags to include in this testsuite run.', 
+                       nargs='*', default = None)
+
+   parser.add_argument('--exclude-tags', 
+                       help = 'List of tags to exclude from this testsuite run.', 
+                       nargs='*', default = None)
+
+   args = parser.parse_args(command_line_args)
+
+#def output_run_info(tests_folder_run_list, )

@@ -1,7 +1,7 @@
 test info:
    executable: perturbo.x 
 
-   epwan: gaas_epwan.h5
+   epwan: epwan1
 
    desc:
       (
