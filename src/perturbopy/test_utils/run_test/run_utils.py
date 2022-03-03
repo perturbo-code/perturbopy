@@ -51,33 +51,4 @@ def read_test_tags(test_name):
 
    return tag_list
 
-def parse_args(command_line_args):
-   """
-   Parse the command line arguments of pytest. This parsing happens before
-   the internal pytest parsing.
-
-   Parameters
-   ----------
-   command_line_args : list
-      list of command line arguments
-
-   Returns
-   -------
-   args : instance of :class:`argparse
-      parsed command line arguments
-   """
-
-   help_description = 'Perturbo testsuite. For more details, refer to: https://perturbopy.readthedocs.io/en/latest/testsuite.html '
-   parser = argparse.ArgumentParser(description=help_description)
-
-   parser.add_argument('--tags', 
-                       help = 'List of tags to include in this testsuite run.', 
-                       nargs='*', default = None)
-
-   parser.add_argument('--exclude-tags', 
-                       help = 'List of tags to exclude from this testsuite run.', 
-                       nargs='*', default = None)
-
-   args = parser.parse_args(command_line_args)
-
 #def output_run_info(tests_folder_run_list, )
