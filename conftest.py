@@ -5,12 +5,12 @@ test_folder_list = [
 
 def pytest_addoption(parser):
 
-   parser.addoption('--tags',
-                    help = 'List of tags to include in this testsuite run.',
+   parser.addoption('--fnames',
+                    help = 'List of folder names to include in this testsuite run.',
                     nargs='*', default = None)
 
-   parser.addoption('--names',
-                    help = 'List of folder names to include in this testsuite run.',
+   parser.addoption('--tags',
+                    help = 'List of tags to include in this testsuite run.',
                     nargs='*', default = None)
 
    parser.addoption('--exclude-tags',
