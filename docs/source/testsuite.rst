@@ -41,6 +41,12 @@ To see a verbose output, run:
 
    (pertpy) $ pytest -s
 
+To print the duration for each test, run:
+
+.. code-block:: console
+
+   (pertpy) $ pytest --durations=0
+
 On clusters and supercomputers, the testsuite can be launched both in the interactive mode and as a job. 
 
 Running testsuite on NERSC

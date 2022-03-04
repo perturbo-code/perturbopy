@@ -1,3 +1,11 @@
+#
+# The Perturbo tests are organized by corresponding epwan HDF5 files: 
+# epwan1, epwan2, etc.
+# Each epwan file has a set of tests associated with it. 
+# Each test has a correspoding folder, the foldername is made in the following way:
+# epwan<n>-<testname>, where n is the index of the epwan file 
+# and <testname> is a name of a given test.
+#
 epwan1:
    prefix: gaas
    filename: gaas_epwan.h5
@@ -11,7 +19,10 @@ epwan1:
       - norm-conserving
       - lda
       - fully-relativistic
-      
+   tests:
+      - bands
+      - setup
+
 epwan2:
    prefix: mos2
    filename: mos2_epwan.h5

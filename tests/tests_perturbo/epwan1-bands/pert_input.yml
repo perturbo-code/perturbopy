@@ -4,9 +4,8 @@ test info:
    epwan: epwan1
 
    desc:
-      (
-      "Interpolation of the band structure following the k-point path from gaas_band.kpt"
-      )
+      "Interpolation of the band structure following the k-point path from 
+       prefix_band.kpt"
 
    test files:
       pert_output.yml: 

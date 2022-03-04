@@ -7,9 +7,7 @@ test info:
       - HDF5-output
 
    desc:
-      (
-      "Interpolation of the band structure following the k-point path from gaas_band.kpt"
-      )
+      "Set up transport property calculations"
 
    test files:
       pert_output.yml: 
