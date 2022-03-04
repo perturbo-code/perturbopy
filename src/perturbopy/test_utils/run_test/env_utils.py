@@ -4,6 +4,7 @@
 import os
 import shutil
 
+
 def perturbo_run_from_env():
    """
    Check if the PERTURBO_RUN variable is present among the environment variables
@@ -37,10 +38,11 @@ def perturbo_run_from_env():
 
    return perturbo_run
 
-def perturbo_scratch_dir_from_env(perturbo_inputs_dir_path, test_name):
+
+def perturbo_scratch_dir_from_env(cwd, perturbo_inputs_dir_path, test_name, rm_preexist_dir=True):
    """
    Check if the PERTURBO_SCRATCH variable is present among the environment variables
-   and read its value. If not present use path to the test dir present in package
+   and read its value. If not present use default path setup in present in package
 
    Example to set the PERTURBO_SCRATCH variable:
 
@@ -48,10 +50,12 @@ def perturbo_scratch_dir_from_env(perturbo_inputs_dir_path, test_name):
 
    Parameters
    ----------
-   perturbo_inputs_dir_path : str
-      path to dir containing perturbo input files
+   cwd : str
+      path to cwd which should be .../perturbopy/tests
    test_name : str
       name of test
+   rm_preexist_dir : bool
+      whether to remove dir if it preexists
 
    Returns
    -------
@@ -60,21 +64,24 @@ def perturbo_scratch_dir_from_env(perturbo_inputs_dir_path, test_name):
       outputs for test_name will be generated
 
    """
-   # get test name
-
    # Read the perturbo_run variable from the environment
+   perturbo_scratch_dir_prefix   = cwd + "/PERTURBO_SCRATCH"
    try:
-      perturbo_scratch_dir_preix = os.environ['PERTURBO_SCRATCH']
-      perturbo_scratch_dir = perturbo_scratch_dir_preix + f'/{test_name}'
-      # copy over input files to scratch dir
-      src = perturbo_inputs_dir_path
-      dst = perturbo_scratch_dir
-      if os.path.isdir(dst):
-         shutil.rmtree(dst)
-         shutil.copytree(src,dst)
-      else:
-         shutil.copytree(src,dst)
+      perturbo_scratch_dir_prefix    = os.environ['PERTURBO_SCRATCH']
    except KeyError:
-      perturbo_scratch_dir = perturbo_inputs_dir_path
+      print(f'env var PERTURBO_SCRATCH not set. using default location of {perturbo_scratch_dir_prefix}')
+
+   perturbo_scratch_dir = perturbo_scratch_dir_prefix + f'/{test_name}'
+   if not rm_preexist_dir:
+      return perturbo_scratch_dir
+
+   # copy over input files to scratch dir
+   src = perturbo_inputs_dir_path
+   dst = perturbo_scratch_dir
+   if os.path.isdir(dst):
+      shutil.rmtree(dst)
+      shutil.copytree(src, dst)
+   else:
+      shutil.copytree(src, dst)
 
    return perturbo_scratch_dir

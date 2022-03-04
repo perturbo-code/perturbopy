@@ -55,6 +55,7 @@ def run_perturbo(cwd, perturbo_driver_dir_path,
 
    os.chdir(cwd)
 
+
 def get_test_materials(test_name):
    """
    Run one test:
@@ -85,7 +86,7 @@ def get_test_materials(test_name):
 
    # determine needed paths
    perturbo_inputs_dir_path = [x[0] for x in os.walk(cwd) if x[0].endswith(inputs_path_suffix)][0]
-   work_path                = perturbo_scratch_dir_from_env(perturbo_inputs_dir_path, test_name)
+   work_path                = perturbo_scratch_dir_from_env(cwd, perturbo_inputs_dir_path, test_name)
    ref_path                 = [x[0] for x in os.walk(cwd) if x[0].endswith(ref_data_path_suffix)][0]
 
    # input yaml for perturbo job
@@ -99,7 +100,7 @@ def get_test_materials(test_name):
    # list of full paths to new outputs
    new_outs    = [work_path + '/' + out_file for out_file in out_files]
 
-   #remove outputs if they already exist
+   # remove outputs if they already exist
    for out_file in new_outs:
       if os.path.exists(out_file):
          os.remove(out_file)
@@ -119,6 +120,7 @@ def get_test_materials(test_name):
    return (ref_outs,
            new_outs,
            igns_n_tols)
+
 
 def clean_test_materials(test_name, new_outs):
    """
@@ -144,18 +146,11 @@ def clean_test_materials(test_name, new_outs):
 
    # determine paths
    perturbo_inputs_dir_path = [x[0] for x in os.walk(cwd) if x[0].endswith(inputs_path_suffix)][0]
-   work_path                = perturbo_scratch_dir_from_env(perturbo_inputs_dir_path, test_name)
+   work_path                = perturbo_scratch_dir_from_env(cwd, perturbo_inputs_dir_path, test_name, rm_preexist_dir=False)
 
-   # check if outputs are in $PERTURBO_SCRATCH or in default package location
-   if work_path != perturbo_inputs_dir_path:
-      #remove whole dir if in $PERTURBO_SCRATCH location
-      if os.path.isdir(work_path):
-         shutil.rmtree(work_path)
-   else:
-      #remove just out_files otherwise
-      for out_file in new_outs:
-         if os.path.exists(out_file):
-            os.remove(out_file)
+   if os.path.isdir(work_path):
+      print(f'Test:{test_name} passed. Removing {work_path} ...')
+      shutil.rmtree(work_path)
 
    return None
 
