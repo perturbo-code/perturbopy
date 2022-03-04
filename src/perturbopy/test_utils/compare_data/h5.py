@@ -91,7 +91,7 @@ def equal_ndarray(ndarray1, ndarray2, key, ig_n_tol):
    return equal_value
 
 
-def equal_dict(dict1, dict2, ig_n_tol):
+def equal_dict(dict1, dict2, ig_n_tol, path):
    r"""
    Determines if two dicts contain the same value
    for the same key
@@ -110,6 +110,8 @@ def equal_dict(dict1, dict2, ig_n_tol):
       second dictionary
    ig_n_tol : dict
       dictionary of ignore keywords and tolerances needed to make comparison on values
+   path : str
+      pseudo path to this item being compared
 
    Returns
    -------
@@ -142,14 +144,16 @@ def equal_dict(dict1, dict2, ig_n_tol):
                 f'are not of the same type')
       assert type(dict1[key]) == type(dict2[key]), errmsg
 
+      # pseudo path to current item being compared
+      key_path = (f'{path}.{key}')
       if isinstance(dict1[key], dict):
-         equal_per_key.append(equal_dict(dict1[key], dict2[key], ig_n_tol))
+         equal_value = equal_dict(dict1[key], dict2[key], ig_n_tol, key_path)
 
       elif isinstance(dict1[key], np.ndarray):
-         equal_per_key.append(equal_ndarray(dict1[key], dict2[key], key, ig_n_tol))
+         equal_value = equal_ndarray(dict1[key], dict2[key], key, ig_n_tol)
 
       elif (dict1[key].dtype == 'int32' or dict1[key].dtype == 'float64'):
-         equal_per_key.append(equal_scalar(dict1[key], dict2[key], key, ig_n_tol))
+         equal_value = equal_scalar(dict1[key], dict2[key], key, ig_n_tol)
 
       else:
          errmsg = (f'dict must only contain values of type dict, np.ndarray, np.int32,or np.float64 '
@@ -157,6 +161,9 @@ def equal_dict(dict1, dict2, ig_n_tol):
          known_types_present = False
          assert known_types_present, errmsg
 
+      equal_per_key.append(equal_value)
+      if not equal_value:
+         print(f'!!! discrepancy found at {key_path}')
    # equal dicts produce list of only bool=True
    equal_values  = (len(equal_per_key) == sum(equal_per_key))
    return equal_values
@@ -198,4 +205,4 @@ def equal_values(file1, file2, ig_n_tol):
       assert len(h51_dict) > 0, errmsg
       assert len(h52_dict) > 0, errmsg
 
-   return equal_dict(h51_dict, h52_dict, ig_n_tol)
+   return equal_dict(h51_dict, h52_dict, ig_n_tol, 'top of h5')

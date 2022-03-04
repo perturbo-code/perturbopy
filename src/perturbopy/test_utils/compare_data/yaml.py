@@ -73,7 +73,7 @@ def equal_scalar(scalar1, scalar2, key, ig_n_tol):
    return equal_value
 
 
-def equal_list(list1, list2, key, ig_n_tol):
+def equal_list(list1, list2, key, ig_n_tol, path):
    """
    Determines if two lists contain the same values
 
@@ -88,6 +88,8 @@ def equal_list(list1, list2, key, ig_n_tol):
       a default tolerance will be applied
    ig_n_tol : dict
       dictionary of ignore keywords and tolerances needed to make comparison on values
+   path : str
+      pseudo path to this item being compared
 
    Returns
    -------
@@ -101,9 +103,11 @@ def equal_list(list1, list2, key, ig_n_tol):
 
    errmsg = ('list1/2 are not the same length')
    assert len(list1) == len(list2), errmsg
+   indices = range(len(list1))
 
    # check if lists can be converted to ndarray
    if (all(isinstance(x, Number) for x in list1) and all(isinstance(x, Number) for x in list2)):
+
       # compare lists as nparrays for speed up
       return ch5.equal_ndarray(np.array(list1),
                                np.array(list2),
@@ -113,37 +117,42 @@ def equal_list(list1, list2, key, ig_n_tol):
    # a list of bool values
    equal_per_item = []
 
-   for item1, item2 in zip(list1, list2):
+   for item1, item2, index in zip(list1, list2, indices):
       errmsg = ('list1/2 values'
                 'are not of the same type')
       assert type(item1) == type(item2), errmsg
 
+      # pseudo path to current item being compared
+      item_path = (f'{path}.list[{index}]')
       if isinstance(item1, dict):
-         equal_per_item.append(equal_dict(item1, item2, ig_n_tol))
+         equal_value = equal_dict(item1, item2, ig_n_tol, item_path)
 
       elif isinstance(item1, list):
-         equal_per_item.append(equal_list(item1, item2, key, ig_n_tol))
+         equal_value = equal_list(item1, item2, key, ig_n_tol, item_path)
 
       elif isinstance(item1, Number):
-         equal_per_item.append(equal_scalar(item1, item2, key, ig_n_tol))
+         equal_value = equal_scalar(item1, item2, key, ig_n_tol)
 
       elif isinstance(item1, str):
-         equal_per_item.append(item1 == item2)
+         equal_value = item1 == item2
 
       elif isinstance(item1, type(None)):
-         equal_per_item.append(item1 == item2)
+         equal_value = item1 == item2
 
       else:
          errmsg = ('list must only contain values of type dict, list, scalar, None, or str')
          known_types_present = False
          assert known_types_present, errmsg
 
+      equal_per_item.append(equal_value)
+      if not equal_value:
+         print(f'!!! discrepancy found at {item_path}')
    # equal dicts produce list of only bool=True
    equal_values  = (len(equal_per_item) == sum(equal_per_item))
    return equal_values
 
 
-def equal_dict(dict1, dict2, ig_n_tol):
+def equal_dict(dict1, dict2, ig_n_tol, path):
    """
    Determines if two dicts contain the same value
    for the same key
@@ -156,6 +165,8 @@ def equal_dict(dict1, dict2, ig_n_tol):
       second dictionary
    ig_n_tol : dict
       dictionary of ignore keywords and tolerances needed to make comparison on values
+   path : str
+      pseudo path to this item being compared
 
    Returns
    -------
@@ -188,20 +199,22 @@ def equal_dict(dict1, dict2, ig_n_tol):
                 f'are not of the same type')
       assert type(dict1[key]) == type(dict2[key]), errmsg
 
+      # pseudo path to current item being compared
+      key_path = (f'{path}.{key}')
       if isinstance(dict1[key], dict):
-         equal_per_key.append(equal_dict(dict1[key], dict2[key], ig_n_tol))
+         equal_value = equal_dict(dict1[key], dict2[key], ig_n_tol, key_path)
 
       elif isinstance(dict1[key], list):
-         equal_per_key.append(equal_list(dict1[key], dict2[key], key, ig_n_tol))
+         equal_value = equal_list(dict1[key], dict2[key], key, ig_n_tol, key_path)
 
       elif isinstance(dict1[key], Number):
-         equal_per_key.append(equal_scalar(dict1[key], dict2[key], key, ig_n_tol))
+         equal_value = equal_scalar(dict1[key], dict2[key], key, ig_n_tol)
 
       elif isinstance(dict1[key], str):
-         equal_per_key.append(dict1[key] == dict2[key])
+         equal_value = dict1[key] == dict2[key]
 
       elif isinstance(dict1[key], type(None)):
-         equal_per_key.append(dict1[key] == dict2[key])
+         equal_value = dict1[key] == dict2[key]
 
       else:
          errmsg = (f'dict must only contain values of type dict, list, scalar, None, or str '
@@ -209,6 +222,9 @@ def equal_dict(dict1, dict2, ig_n_tol):
          known_types_present = False
          assert known_types_present, errmsg
 
+      equal_per_key.append(equal_value)
+      if not equal_value:
+         print(f'!!! discrepancy found at {key_path}')
    # equal dicts produce list of only bool=True
    equal_values  = (len(equal_per_key) == sum(equal_per_key))
    return equal_values
@@ -250,4 +266,4 @@ def equal_values(file1, file2, ig_n_tol):
       assert len(yaml1_dict) > 0, errmsg
       assert len(yaml2_dict) > 0, errmsg
 
-   return equal_dict(yaml1_dict, yaml2_dict, ig_n_tol)
+   return equal_dict(yaml1_dict, yaml2_dict, ig_n_tol, 'top_of_yaml')
