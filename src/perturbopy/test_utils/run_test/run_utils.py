@@ -5,8 +5,8 @@
 import os
 import sys
 import copy
-import argparse
 from perturbopy.test_utils.compare_data.yaml import open_yaml
+
 
 def read_test_tags(test_name):
    """
@@ -26,7 +26,7 @@ def read_test_tags(test_name):
 
    cwd = os.getcwd()
 
-   driver_path_suffix = 'tests_perturbo/' + test_name 
+   driver_path_suffix = 'tests_perturbo/' + test_name
    perturbo_driver_dir_path = [x[0] for x in os.walk(cwd) if x[0].endswith(driver_path_suffix)][0]
 
    pert_input = open_yaml(f'{perturbo_driver_dir_path}/pert_input.yml')
@@ -73,7 +73,7 @@ def get_all_tests():
       if 'tests' in epwan_info[epwan].keys():
          test_list = epwan_info[epwan]['tests']
 
-         test_folder_list += [ f'{epwan}-{t}' for t in test_list ]
+         test_folder_list += [f'{epwan}-{t}' for t in test_list]
 
    return test_folder_list
 
@@ -173,8 +173,7 @@ def filter_tests(all_test_list, tags, exclude_tags, test_names):
    if test_names is not None:
 
       if tags is not None or exclude_tags is not None:
-         errmsg = (
-                   'If the --test-names option is specified, \n'
+         errmsg = ('If the --test-names option is specified, \n'
                    '--tags and --exclude_tags must NOT be specified.'
                   )
 
@@ -182,8 +181,7 @@ def filter_tests(all_test_list, tags, exclude_tags, test_names):
       
       for test_name_cmd in test_names:
          if test_name_cmd not in all_test_list:
-            errmsg = (
-                      f'Test {test_name_cmd} does not exist, \n'
+            errmsg = (f'Test {test_name_cmd} does not exist, \n'
                       'but specified in --test-names option.'
                      )
             raise ValueError(errmsg)

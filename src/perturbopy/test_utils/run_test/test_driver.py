@@ -114,6 +114,7 @@ def get_test_materials(test_name):
            new_outs,
            igns_n_tols)
 
+
 def setup_default_tol(igns_n_tols):
    """
    Setup the default tolerances for each file to compare if the tolerances are
@@ -131,12 +132,12 @@ def setup_default_tol(igns_n_tols):
 
    Parameters
    ----------
-   igns_n_tols : dict 
+   igns_n_tols : dict
       dictionary containing the ignore keywords and tolerances needed to performance comparison of ref_outs and new_outs
    
    Returns
    -------
-   igns_n_tols_updated : dict 
+   igns_n_tols_updated : dict
       **updated** dictionary containing the ignore keywords and tolerances
 
    """
@@ -148,7 +149,7 @@ def setup_default_tol(igns_n_tols):
    for outfile in igns_n_tols:
 
       if not isinstance(outfile, dict):
-         outfile = { 'tolerance': {'default': default_tolerance}}
+         outfile = {'tolerance': {'default': default_tolerance}}
       
       elif 'tolerance' not in outfile.keys():
          outfile['tolerance'] = {'default': default_tolerance}
@@ -159,4 +160,3 @@ def setup_default_tol(igns_n_tols):
       igns_n_tols_updated.append(outfile)
 
    return igns_n_tols_updated
-
