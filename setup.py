@@ -9,7 +9,8 @@ setup(
       'pytest',
       'h5py',
       'hdfdict',
-      'PyYAML'
+      'PyYAML',
+      'pytest-profiling'
    ],
    extras_require={
       'interactive': ['matplotlib>=2.2.0', 'jupyter'],
