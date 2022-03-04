@@ -3,6 +3,9 @@ test info:
 
    epwan: epwan1
 
+   tags:
+      - bands
+
    desc:
       "Interpolation of the band structure following the k-point path from 
        prefix_band.kpt"

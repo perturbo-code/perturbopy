@@ -2,49 +2,50 @@
 program: perturbo
 
 start date and time:
-   date: 17 February 2022
-   time: "11:32:24"
+   date:  4 March 2022
+   time: "15: 5:25"
 
 parallelization:
    type: MPI+OpenMP
-   number of MPI tasks:   5
-   number of OpenMP threads:   4
+   number of MPI tasks:   8
+   number of OpenMP threads:   8
    number of nodes:   1
 
 input parameters:
-   band_max:             9999999
-   band_min:                   1
-   boltz_de:           7.3498617648950546E-05
-   boltz_emax:           7.3491267787185654E+02
-   boltz_emin:          -7.3491267787185654E+02
-   boltz_init_dist:          
-   boltz_init_e0:          -7.3491267787185654E+02
-   boltz_init_smear:           1.4699723529790110E-03
-   boltz_kdim:          [         1,           1,           1,  ]
-   boltz_nstep:                   0
-   boltz_qdim:          [         1,           1,           1,  ]
-   calc_mode:          bands
-   cauchy_scale:           5.0000000745058060E-02
-   debug:          False
-   delta_smear:           7.3498617648950549E-04
-   fklist:          gaas_band.kpt
-   fqlist:          
-   ftemper:          
-   full_ite:          False
-   hole:          False
-   load_scatter_eph:          False
-   nsamples:              100000
-   output_nstep:                   1
-   output_yaml:          True 
-   phfreq_cutoff:           7.3498617648950546E-05
-   polar_split:          
-   prefix:          gaas
-   sampling:          uniform
-   solver:          rk4
-   time_step:           2.0670686467503085E+01
-   tmp_dir:          ./
-   trans_thr:           2.0000000000000000E-03
-   yaml_fname:          pert_output.yml
+   after conversion:
+      band_max:             9999999
+      band_min:                   1
+      boltz_de:           7.3498617648950546E-05
+      boltz_emax:           7.3491267787185654E+02
+      boltz_emin:          -7.3491267787185654E+02
+      boltz_init_dist:          
+      boltz_init_e0:          -7.3491267787185654E+02
+      boltz_init_smear:           1.4699723529790110E-03
+      boltz_kdim:          [         1,           1,           1,  ]
+      boltz_nstep:                   0
+      boltz_qdim:          [         1,           1,           1,  ]
+      calc_mode:          bands
+      cauchy_scale:           5.0000000745058060E-02
+      debug:          False
+      delta_smear:           7.3498617648950549E-04
+      fklist:          gaas_band.kpt
+      fqlist:          
+      ftemper:          
+      full_ite:          False
+      hole:          False
+      load_scatter_eph:          False
+      nsamples:              100000
+      output_nstep:                   1
+      output_yaml:          True 
+      phfreq_cutoff:           7.3498617648950546E-05
+      polar_split:          
+      prefix:          gaas
+      sampling:          uniform
+      solver:          rk4
+      time_step:           2.0670686467503085E+01
+      tmp_dir:          ./
+      trans_thr:           2.0000000000000000E-03
+      yaml_fname:          pert_output.yml
 
 bands:
 
@@ -3619,12 +3620,15 @@ bands:
          -   13.0173401892
          -   13.0081597517
 
+      17:
+         - 123
+
 timings:
 
    time units: s
 
    PERTURBO:
-      cpu:         0.13597900
-      wall:        0.07281303
+      cpu:         1.97349600
+      wall:        0.58021498
       calls:         1
 ...
