@@ -44,6 +44,12 @@ To see a verbose output, run:
 
    (pertpy) $ pytest -s
 
+To print the duration for each test, run:
+
+.. code-block:: console
+
+   (pertpy) $ pytest --durations=0
+
 On clusters and supercomputers, the testsuite can be launched both in the interactive mode and as a job. 
 
 Running testsuite on NERSC
@@ -143,4 +149,30 @@ Here are the commands to run the Perturbo testsuite on Cori in the `interactive 
 
       (pertpy) $ pytest -s
 
+Adding new tests
+----------------
+
+The following keys **must be present** in the ``test info`` section of `pert_input.yml` file:
+
+* ``executable``
+* ``epwan``
+* ``desc``
+* ``test files``
+
+The following keys **are optional** in the ``test info`` section of `pert_input.yml` file:
+
+* ``tags``
+
+Also a *tolerance* for the comparison can be optionally specified in the following way:
+
+.. code-block :: python
+
+      output_file.yml:
+         tolerance:
+            default:
+               1e-10
+            key:
+               1e-8
+
+where ``key`` referes a keyword of a value of matrix to compare.
 

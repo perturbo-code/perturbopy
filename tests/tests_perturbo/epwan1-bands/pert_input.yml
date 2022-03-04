@@ -1,27 +1,11 @@
-# TODO: generate pert.in automatically
-perturbo:
-   prefix: gaas
-
-# TODO:
-#required files:
-#   - gaas_epwan.h5
-#   - gaas_band.kpt
-
 test info:
    executable: perturbo.x 
 
-   authors:
-      - I. Maliyov
-      - S. D. Pineda Flores
-
-   tags:
-      - epwan1
-      - norm-conserving
+   epwan: epwan1
 
    desc:
-      (
-      "Interpolation of the band structure following the k-point path from gaas_band.kpt"
-      )
+      "Interpolation of the band structure following the k-point path from 
+       prefix_band.kpt"
 
    test files:
       pert_output.yml: 
@@ -29,6 +13,7 @@ test info:
          #only applies to top dict 
          test keywords:
             - bands 
+
          #applies to dict at all levels
          ignore keywords:
             - input parameters
