@@ -93,12 +93,12 @@ def equal_list(list1, list2, key, ig_n_tol):
    -------
    equal_vlaues : bool
       boolean specifying if both lists are equivalent
-   
+
    """
    # check that list1 and list2 are lists
    errmsg = ('list1/2 are not lists')
    assert isinstance(list1, list) and isinstance(list2, list), errmsg
-   
+
    errmsg = ('list1/2 are not the same length')
    assert len(list1) == len(list2), errmsg
 
@@ -109,7 +109,7 @@ def equal_list(list1, list2, key, ig_n_tol):
                                np.array(list2),
                                key,
                                ig_n_tol)
-   
+
    # a list of bool values
    equal_per_item = []
 
@@ -117,22 +117,22 @@ def equal_list(list1, list2, key, ig_n_tol):
       errmsg = ('list1/2 values'
                 'are not of the same type')
       assert type(item1) == type(item2), errmsg
-      
+
       if isinstance(item1, dict):
          equal_per_item.append(equal_dict(item1, item2, ig_n_tol))
-      
+
       elif isinstance(item1, list):
          equal_per_item.append(equal_list(item1, item2, key, ig_n_tol))
-      
+
       elif isinstance(item1, Number):
          equal_per_item.append(equal_scalar(item1, item2, key, ig_n_tol))
-      
+
       elif isinstance(item1, str):
          equal_per_item.append(item1 == item2)
-      
+
       elif isinstance(item1, type(None)):
          equal_per_item.append(item1 == item2)
-      
+
       else:
          errmsg = ('list must only contain values of type dict, list, scalar, None, or str')
          known_types_present = False
@@ -156,12 +156,12 @@ def equal_dict(dict1, dict2, ig_n_tol):
       second dictionary
    ig_n_tol : dict
       dictionary of ignore keywords and tolerances needed to make comparison on values
-   
+
    Returns
    -------
    equal_vlaues : bool
       boolean specifying if both dicts contain the same keys and values
-   
+
    """
    # check that dict1 and dict2 are dictionaries
    errmsg = ('dic1/2 are not dictionaries')
@@ -170,7 +170,7 @@ def equal_dict(dict1, dict2, ig_n_tol):
    # check that dictionaries have the same keys
    errmsg = ('dict1/2  do not have the same keys')
    assert dict1.keys() == dict2.keys(), errmsg
-   
+
    # total set of keys
    keys = set(dict1.keys())
 
@@ -179,7 +179,7 @@ def equal_dict(dict1, dict2, ig_n_tol):
       if 'ignore keywords' in ig_n_tol:
          if key in ig_n_tol['ignore keywords']:
             keys.remove(key)
-   
+
    # a list of bool values
    equal_per_key = []
 
@@ -187,22 +187,22 @@ def equal_dict(dict1, dict2, ig_n_tol):
       errmsg = (f'dict1/2 values associated with key:{key} '
                 f'are not of the same type')
       assert type(dict1[key]) == type(dict2[key]), errmsg
-      
+
       if isinstance(dict1[key], dict):
          equal_per_key.append(equal_dict(dict1[key], dict2[key], ig_n_tol))
-      
+
       elif isinstance(dict1[key], list):
          equal_per_key.append(equal_list(dict1[key], dict2[key], key, ig_n_tol))
-      
+
       elif isinstance(dict1[key], Number):
          equal_per_key.append(equal_scalar(dict1[key], dict2[key], key, ig_n_tol))
-      
+
       elif isinstance(dict1[key], str):
          equal_per_key.append(dict1[key] == dict2[key])
-      
+
       elif isinstance(dict1[key], type(None)):
          equal_per_key.append(dict1[key] == dict2[key])
-      
+
       else:
          errmsg = (f'dict must only contain values of type dict, list, scalar, None, or str '
                    f'but found type {type(dict1[key])}')
@@ -227,12 +227,12 @@ def equal_values(file1, file2, ig_n_tol):
       second YAML file name
    ig_n_tol : dict
       dictionary of keywords and tolerances needed to make comparison on files
-   
+
    Returns
    -------
    equal_vlaues : bool
       boolean specifying if both YAML files contain the same keys and values
-   
+
    """
    yaml1_dict = open_yaml(file1)
    yaml2_dict = open_yaml(file2)
