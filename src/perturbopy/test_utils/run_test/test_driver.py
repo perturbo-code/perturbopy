@@ -4,9 +4,11 @@
 import os
 import sys
 import shlex
+import shutil
 import subprocess
 from perturbopy.test_utils.compare_data.yaml import open_yaml
 from perturbopy.test_utils.run_test.env_utils import perturbo_run_from_env
+from perturbopy.test_utils.run_test.env_utils import perturbo_scratch_dir_from_env
 from perturbopy.test_utils.run_test.run_utils import print_test_info
 
 
@@ -53,7 +55,6 @@ def run_perturbo(cwd, perturbo_driver_dir_path,
 
    os.chdir(cwd)
 
-
 def get_test_materials(test_name):
    """
    Run one test:
@@ -77,33 +78,38 @@ def get_test_materials(test_name):
 
    """
    # suffixes of paths needed to find driver/utils/references
-   driver_path_suffix = 'tests_perturbo/' + test_name
+   inputs_path_suffix = 'tests_perturbo/' + test_name
    ref_data_path_suffix = 'refs_perturbo/' + test_name
 
    cwd = os.getcwd()
 
    # determine needed paths
-   perturbo_driver_dir_path = [x[0] for x in os.walk(cwd) if x[0].endswith(driver_path_suffix)][0]
-   out_path                 = perturbo_driver_dir_path
+   perturbo_inputs_dir_path = [x[0] for x in os.walk(cwd) if x[0].endswith(inputs_path_suffix)][0]
+   work_path                = perturbo_scratch_dir_from_env(perturbo_inputs_dir_path, test_name)
    ref_path                 = [x[0] for x in os.walk(cwd) if x[0].endswith(ref_data_path_suffix)][0]
 
    # input yaml for perturbo job
-   pert_input = open_yaml(f'{perturbo_driver_dir_path}/pert_input.yml')
+   pert_input = open_yaml(f'{work_path}/pert_input.yml')
    # dictionary containing information about files to check
    test_files = pert_input['test info']['test files']
    # names of files to check
    out_files  = test_files.keys()
+   # list of full paths to reference outputs
+   ref_outs    = [ref_path + '/' + out_file for out_file in out_files]
+   # list of full paths to new outputs
+   new_outs    = [work_path + '/' + out_file for out_file in out_files]
+
+   #remove outputs if they already exist
+   for out_file in new_outs:
+      if os.path.exists(out_file):
+         os.remove(out_file)
 
    # print the test information before the run
    print_test_info(test_name, pert_input)
 
    # run Perturbo to produce outputs
-   run_perturbo(cwd, perturbo_driver_dir_path)
+   run_perturbo(cwd, work_path)
 
-   # list of full paths to reference outputs
-   ref_outs    = [ref_path + '/' + out_file for out_file in out_files]
-   # list of full paths to new outputs
-   new_outs    = [out_path + '/' + out_file for out_file in out_files]
    # list of dict. Each dict contains ignore keywords and
    # tolerances (information about how to compare outputs)
    igns_n_tols = [test_files[out_file] for out_file in out_files]
@@ -113,6 +119,45 @@ def get_test_materials(test_name):
    return (ref_outs,
            new_outs,
            igns_n_tols)
+
+def clean_test_materials(test_name, new_outs):
+   """
+   clean one test:
+      #. removes new files and dirs produced by test
+
+   Parameters
+   ----------
+   test_name : str
+      name of test
+   new_outs : list
+      list of paths to produced outputs
+
+   Returns
+   -----
+   None
+
+   """
+   # suffixes of paths needed to find driver/utils/references
+   inputs_path_suffix = 'tests_perturbo/' + test_name
+
+   cwd = os.getcwd()
+
+   # determine paths
+   perturbo_inputs_dir_path = [x[0] for x in os.walk(cwd) if x[0].endswith(inputs_path_suffix)][0]
+   work_path                = perturbo_scratch_dir_from_env(perturbo_inputs_dir_path, test_name)
+
+   # check if outputs are in $PERTURBO_SCRATCH or in default package location
+   if work_path != perturbo_inputs_dir_path:
+      #remove whole dir if in $PERTURBO_SCRATCH location
+      if os.path.isdir(work_path):
+         shutil.rmtree(work_path)
+   else:
+      #remove just out_files otherwise
+      for out_file in new_outs:
+         if os.path.exists(out_file):
+            os.remove(out_file)
+
+   return None
 
 
 def setup_default_tol(igns_n_tols):

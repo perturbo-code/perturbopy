@@ -1,5 +1,6 @@
 from perturbopy.test_utils.run_test.test_driver import get_test_materials
-from perturbopy.test_utils.compare_data.compare import equal_values 
+from perturbopy.test_utils.run_test.test_driver import clean_test_materials
+from perturbopy.test_utils.compare_data.compare import equal_values
 
 import os
 import sys
@@ -15,7 +16,7 @@ def test_epwan1_bands(test_name):
    -----
       test_name : str
          name of the folder inside the tests/ folder
-   
+
    Returns
    -----
       None
@@ -34,4 +35,6 @@ def test_epwan1_bands(test_name):
       errmsg = (f'files {ref_file} and {new_file} do not match')
       assert equal_values(ref_file, new_file, ign_n_tol), errmsg
 
+   #clean up test materials
+   clean_test_materials(test_name, new_outs)
    print('')
