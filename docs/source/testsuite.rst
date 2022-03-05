@@ -214,10 +214,12 @@ The following keys **must be present** in the ``test info`` section of `pert_inp
 * ``epwan``
 * ``desc``
 * ``test files``
+* ``test keywords``
 
 The following keys **are optional** in the ``test info`` section of `pert_input.yml` file:
 
 * ``tags``
+* ``ignore keywords``
 
 Also a *tolerance* for the comparison can be optionally specified for each output file in the following way:
 
@@ -230,5 +232,5 @@ Also a *tolerance* for the comparison can be optionally specified for each outpu
             key:
                1e-8
 
-where ``key`` referes a keyword of a value of matrix to compare.
+where ``output_file.yml`` is the name of an output file (not only a YAML one) and ``key`` referes a keyword of a value of matrix to compare.
 
