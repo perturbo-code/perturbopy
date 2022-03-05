@@ -21,6 +21,7 @@ epwan1:
       - fully-relativistic
    tests:
       - bands
+      - phdisp
       - setup
 
 epwan2:
