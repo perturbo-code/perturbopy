@@ -162,8 +162,11 @@ def equal_dict(dict1, dict2, ig_n_tol, path):
          assert known_types_present, errmsg
 
       equal_per_key.append(equal_value)
+
       if not equal_value:
          print(f'!!! discrepancy found at {key_path}')
+         print(f' tolerance not respected: {ig_n_tol["tolerance"]}')
+
    # equal dicts produce list of only bool=True
    equal_values  = (len(equal_per_key) == sum(equal_per_key))
    return equal_values

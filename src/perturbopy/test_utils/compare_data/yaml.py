@@ -147,6 +147,8 @@ def equal_list(list1, list2, key, ig_n_tol, path):
       equal_per_item.append(equal_value)
       if not equal_value:
          print(f'!!! discrepancy found at {item_path}')
+         print(f' tolerance not respected: {ig_n_tol["tolerance"]}')
+
    # equal dicts produce list of only bool=True
    equal_values  = (len(equal_per_item) == sum(equal_per_item))
    return equal_values
@@ -225,6 +227,8 @@ def equal_dict(dict1, dict2, ig_n_tol, path):
       equal_per_key.append(equal_value)
       if not equal_value:
          print(f'!!! discrepancy found at {key_path}')
+         print(f' tolerance not respected: {ig_n_tol["tolerance"]}')
+      
    # equal dicts produce list of only bool=True
    equal_values  = (len(equal_per_key) == sum(equal_per_key))
    return equal_values
