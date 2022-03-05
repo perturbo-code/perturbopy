@@ -13,6 +13,6 @@ module load python
 # Here we assume that py310pert conda environment is created
 conda activate pertpy
 
-source test_scripts/env_setup_examples.sh KNL
+source test_scripts/env_setup_example.sh KNL
 
 pytest -s

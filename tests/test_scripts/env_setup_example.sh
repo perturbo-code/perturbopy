@@ -48,3 +48,13 @@ export PERTURBO_RUN="srun -n $mpi_tasks -c $cpus_per_task --cpu_bind=cores $PERT
 
 echo "PERTURBO_RUN COMMAND:"
 echo $PERTURBO_RUN
+
+# setup the run directory
+export PERTURBO_SCRATCH=$SCRATCH"/tmp_tests_perturbo"
+
+echo ""
+echo "PERTURBO_SCRATCH DIRECTORY:"
+echo $PERTURBO_SCRATCH
+
+# HDF5 locking
+export HDF5_USE_FILE_LOCKING=FALSE
