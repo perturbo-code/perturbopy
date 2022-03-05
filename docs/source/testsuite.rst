@@ -43,7 +43,7 @@ Once, the PERTURBO_RUN variable is set up, navigate to the `perturbopy/tests` fo
 
 In the case of successful run of all tests, one will see **<n> passed** as the final line of the output, where <n> is the number of tests.
 
-By default, the tests wil be run in the *perturbopy/tests/PERTURBO_SCRATCH* directory. If all tests passed, this directory will be empty after the pytest run. In the case of a failure of one or more tests, the corresponding test folder(s) will be not removed from the *tests/PERTURBO_SCRATCH* directory.
+By default, the tests wil be run in the *perturbopy/tests/PERTURBO_SCRATCH* directory. If all tests are passed, this directory will be empty after the pytest run. In the case of a failure of one or more tests, the corresponding test folder(s) will be not removed from the *tests/PERTURBO_SCRATCH* directory.
 
 On clusters and supercomputers, the testsuite can be launched both in the interactive mode and as a job. 
 
@@ -91,9 +91,7 @@ The example scripts and job submission files are in the `test_scripts` folder:
 .. warning ::
 
    On NERSC Cori, the testsuite must be run in the $SCRATCH directory (not $HOME).
-
    The HDF5 file locking must be disabled. 
-
    Both issues are addressed in the `nersc_cori_knl_job_example.slurm` script.
 
 Job submission
@@ -177,6 +175,39 @@ Here are the commands to run the Perturbo testsuite on Cori in the `interactive 
 Adding new tests
 ----------------
 
+* epwan_info
+* test folder names
+* what is inside folder
+
+Each test must have the pert_input.yml file, that has the following structure:
+
+.. code-block :: python
+
+test info:
+   executable: perturbo.x
+
+   epwan: epwan1
+
+   tags:
+      - tag1
+      - tag2
+
+   desc:
+      "Test description"
+
+   test files:
+      pert_output.yml:
+
+         #only applies to top dict
+         test keywords:
+            - bands
+
+         #applies to dict at all levels
+         ignore keywords:
+            - input parameters
+            - start date and time
+            - timings
+
 The following keys **must be present** in the ``test info`` section of `pert_input.yml` file:
 
 * ``executable``
@@ -188,7 +219,7 @@ The following keys **are optional** in the ``test info`` section of `pert_input.
 
 * ``tags``
 
-Also a *tolerance* for the comparison can be optionally specified in the following way:
+Also a *tolerance* for the comparison can be optionally specified for each output file in the following way:
 
 .. code-block :: python
 
