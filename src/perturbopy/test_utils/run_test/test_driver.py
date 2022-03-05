@@ -48,7 +48,7 @@ def run_perturbo(cwd, perturbo_driver_dir_path,
 
    print(f'\n ====== Path ======= :\n {os.getcwd()}\n')
 
-   print(f'Running Perturbo:\n{perturbo_run}')
+   print(f' === Running Perturbo === :\n {perturbo_run}')
    sys.stdout.flush()
 
    subprocess.run(shlex.split(perturbo_run))

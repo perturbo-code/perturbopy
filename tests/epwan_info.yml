@@ -22,6 +22,7 @@ epwan1:
    tests:
       - bands
       - phdisp
+      - ephmat
       - setup
 
 epwan2:

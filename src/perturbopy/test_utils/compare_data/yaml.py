@@ -70,7 +70,10 @@ def equal_scalar(scalar1, scalar2, key, ig_n_tol):
                              atol=float(delta),
                              rtol=0.0,
                              equal_nan=True)
-   return equal_value
+
+   diff = np.abs(scalar1 - scalar2)
+
+   return equal_value, f'{diff:.1e}'
 
 
 def equal_list(list1, list2, key, ig_n_tol, path):
@@ -125,19 +128,21 @@ def equal_list(list1, list2, key, ig_n_tol, path):
       # pseudo path to current item being compared
       item_path = (f'{path}.list[{index}]')
       if isinstance(item1, dict):
-         equal_value = equal_dict(item1, item2, ig_n_tol, item_path)
+         equal_value, diff = equal_dict(item1, item2, ig_n_tol, item_path)
 
       elif isinstance(item1, list):
-         equal_value = equal_list(item1, item2, key, ig_n_tol, item_path)
+         equal_value, diff = equal_list(item1, item2, key, ig_n_tol, item_path)
 
       elif isinstance(item1, Number):
-         equal_value = equal_scalar(item1, item2, key, ig_n_tol)
+         equal_value, diff = equal_scalar(item1, item2, key, ig_n_tol)
 
       elif isinstance(item1, str):
          equal_value = item1 == item2
+         diff = f'{item1} {item2}'
 
       elif isinstance(item1, type(None)):
          equal_value = item1 == item2
+         diff = None
 
       else:
          errmsg = ('list must only contain values of type dict, list, scalar, None, or str')
@@ -146,12 +151,22 @@ def equal_list(list1, list2, key, ig_n_tol, path):
 
       equal_per_item.append(equal_value)
       if not equal_value:
-         print(f'!!! discrepancy found at {item_path}')
+         print(f'\n !!! discrepancy found at {item_path}')
+         print(f' difference: {diff}')
          print(f' tolerance not respected: {ig_n_tol["tolerance"]}')
 
    # equal dicts produce list of only bool=True
-   equal_values  = (len(equal_per_item) == sum(equal_per_item))
-   return equal_values
+   nitems = len(equal_per_item)
+   ncompared = sum(equal_per_item)
+
+   equal_values  = (nitems == ncompared)
+   
+   if equal_values:
+      diff = None
+   else:
+      diff = f'among {nitems} elements, {nitems - ncompared} failed comparison'
+
+   return equal_values, diff
 
 
 def equal_dict(dict1, dict2, ig_n_tol, path):
@@ -204,19 +219,21 @@ def equal_dict(dict1, dict2, ig_n_tol, path):
       # pseudo path to current item being compared
       key_path = (f'{path}.{key}')
       if isinstance(dict1[key], dict):
-         equal_value = equal_dict(dict1[key], dict2[key], ig_n_tol, key_path)
+         equal_value, diff = equal_dict(dict1[key], dict2[key], ig_n_tol, key_path)
 
       elif isinstance(dict1[key], list):
-         equal_value = equal_list(dict1[key], dict2[key], key, ig_n_tol, key_path)
+         equal_value, diff = equal_list(dict1[key], dict2[key], key, ig_n_tol, key_path)
 
       elif isinstance(dict1[key], Number):
-         equal_value = equal_scalar(dict1[key], dict2[key], key, ig_n_tol)
+         equal_value, diff = equal_scalar(dict1[key], dict2[key], key, ig_n_tol)
 
       elif isinstance(dict1[key], str):
          equal_value = dict1[key] == dict2[key]
-
+         diff = f'{dict1[key]} {dict2[key]}'
+   
       elif isinstance(dict1[key], type(None)):
          equal_value = dict1[key] == dict2[key]
+         diff = None
 
       else:
          errmsg = (f'dict must only contain values of type dict, list, scalar, None, or str '
@@ -226,12 +243,22 @@ def equal_dict(dict1, dict2, ig_n_tol, path):
 
       equal_per_key.append(equal_value)
       if not equal_value:
-         print(f'!!! discrepancy found at {key_path}')
+         print(f'\n !!! discrepancy found at {key_path}')
+         print(f' difference: {diff}')
          print(f' tolerance not respected: {ig_n_tol["tolerance"]}')
       
    # equal dicts produce list of only bool=True
-   equal_values  = (len(equal_per_key) == sum(equal_per_key))
-   return equal_values
+   nitems = len(equal_per_key)
+   ncompared = sum(equal_per_key)
+
+   equal_values  = (nitems == ncompared)
+
+   if equal_values:
+      diff = None
+   else:
+      diff = f'among {nitems} elements, {nitems - ncompared} failed comparison'
+
+   return equal_values, diff
 
 
 def equal_values(file1, file2, ig_n_tol):
@@ -270,4 +297,4 @@ def equal_values(file1, file2, ig_n_tol):
       assert len(yaml1_dict) > 0, errmsg
       assert len(yaml2_dict) > 0, errmsg
 
-   return equal_dict(yaml1_dict, yaml2_dict, ig_n_tol, 'top_of_yaml')
+   return equal_dict(yaml1_dict, yaml2_dict, ig_n_tol, 'top of yaml')

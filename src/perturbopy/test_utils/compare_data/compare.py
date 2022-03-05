@@ -40,14 +40,17 @@ def equal_values(file1, file2, ig_n_tol):
 
    # use appropriate compare function for file type
    if file_type == "yaml" or file_type == "yml":
-      equal_values = cyaml.equal_values(file1, file2, ig_n_tol)
+      equal_values, diff = cyaml.equal_values(file1, file2, ig_n_tol)
 
    elif file_type == "h5" or file_type == "hdf5":
-      equal_values = ch5.equal_values(file1, file2, ig_n_tol)
+      equal_values, diff = ch5.equal_values(file1, file2, ig_n_tol)
 
    else:
       errmsg = ("Can only compare files with extensions "
                 "yaml, yml, hdf5, or h5")
       raise ValueError(errmsg)
+
+   if not equal_values:
+      print(f' difference: {diff}')
 
    return equal_values

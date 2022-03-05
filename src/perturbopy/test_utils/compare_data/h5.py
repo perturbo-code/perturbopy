@@ -46,7 +46,10 @@ def equal_scalar(scalar1, scalar2, key, ig_n_tol):
                              atol=float(delta),
                              rtol=0.0,
                              equal_nan=True)
-   return equal_value
+
+   diff = np.abs(scalar1 - scalar2)
+
+   return equal_value, f'{diff:.1e}'
 
 
 def equal_ndarray(ndarray1, ndarray2, key, ig_n_tol):
@@ -88,7 +91,10 @@ def equal_ndarray(ndarray1, ndarray2, key, ig_n_tol):
                              atol=float(delta),
                              rtol=0.0,
                              equal_nan=True)
-   return equal_value
+
+   diff = np.max(np.abs(ndarray1 - ndarray2))
+
+   return equal_value, f'{diff:.1e}'
 
 
 def equal_dict(dict1, dict2, ig_n_tol, path):
@@ -147,13 +153,13 @@ def equal_dict(dict1, dict2, ig_n_tol, path):
       # pseudo path to current item being compared
       key_path = (f'{path}.{key}')
       if isinstance(dict1[key], dict):
-         equal_value = equal_dict(dict1[key], dict2[key], ig_n_tol, key_path)
+         equal_value, diff = equal_dict(dict1[key], dict2[key], ig_n_tol, key_path)
 
       elif isinstance(dict1[key], np.ndarray):
-         equal_value = equal_ndarray(dict1[key], dict2[key], key, ig_n_tol)
+         equal_value, diff = equal_ndarray(dict1[key], dict2[key], key, ig_n_tol)
 
       elif (dict1[key].dtype == 'int32' or dict1[key].dtype == 'float64'):
-         equal_value = equal_scalar(dict1[key], dict2[key], key, ig_n_tol)
+         equal_value, diff = equal_scalar(dict1[key], dict2[key], key, ig_n_tol)
 
       else:
          errmsg = (f'dict must only contain values of type dict, np.ndarray, np.int32,or np.float64 '
@@ -164,12 +170,21 @@ def equal_dict(dict1, dict2, ig_n_tol, path):
       equal_per_key.append(equal_value)
 
       if not equal_value:
-         print(f'!!! discrepancy found at {key_path}')
+         print(f'\n !!! discrepancy found at {key_path}')
          print(f' tolerance not respected: {ig_n_tol["tolerance"]}')
 
    # equal dicts produce list of only bool=True
-   equal_values  = (len(equal_per_key) == sum(equal_per_key))
-   return equal_values
+   nitems = len(equal_per_key)
+   ncompared = sum(equal_per_key)
+
+   equal_values  = (nitems == ncompared)
+
+   if equal_values:
+      diff = None
+   else:
+      diff = f'among {nitems} elements, {ntimes - ncompared} failed comparison'
+
+   return equal_values, diff
 
 
 def equal_values(file1, file2, ig_n_tol):
