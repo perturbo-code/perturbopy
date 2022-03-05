@@ -13,6 +13,6 @@ module load python
 # Here we assume that py310pert conda environment is created
 conda activate pertpy
 
-source test_scripts/env_setup_examples.sh HSW
+source test_scripts/env_setup_example.sh HSW
 
 pytest -s

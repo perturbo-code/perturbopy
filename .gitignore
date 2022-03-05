@@ -1,3 +1,6 @@
+# Perturbo run directory by default
+PERTURBO_SCRATCH
+
 # VIM swp files
 *.swp
 

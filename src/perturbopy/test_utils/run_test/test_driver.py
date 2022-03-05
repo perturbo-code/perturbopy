@@ -149,7 +149,7 @@ def clean_test_materials(test_name, new_outs):
    work_path                = perturbo_scratch_dir_from_env(cwd, perturbo_inputs_dir_path, test_name, rm_preexist_dir=False)
 
    if os.path.isdir(work_path):
-      print(f'Test:{test_name} passed. Removing {work_path} ...')
+      print(f'\n === Test: {test_name} passed. ===\n\n Removing {work_path} ...')
       shutil.rmtree(work_path)
 
    return None

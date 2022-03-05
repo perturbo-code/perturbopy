@@ -14,6 +14,9 @@ For the Perturbo code download and installation, please refer to `this page <htt
 Running testsuite
 -----------------
 
+Basic run
+~~~~~~~~~
+
 We assume that the `pertpy` Python environment is :ref:`activated <Conda activate>` and `perturbopy` is :ref:`installed <Installation>`.
 
 The testsuite automatically launches the Perturbo executable and verifies that the produced output is the same as the reference output produced beforehand. Therefore, the testsuite must have access to the Perturbo executable. This is done through the PERTURBO_RUN environmental variable.
@@ -38,6 +41,17 @@ Once, the PERTURBO_RUN variable is set up, navigate to the `perturbopy/tests` fo
 
    (pertpy) $ pytest
 
+In the case of successful run of all tests, one will see **<n> passed** as the final line of the output, where <n> is the number of tests.
+
+By default, the tests wil be run in the *perturbopy/tests/PERTURBO_SCRATCH* directory. If all tests passed, this directory will be empty after the pytest run. In the case of a failure of one or more tests, the corresponding test folder(s) will be not removed from the *tests/PERTURBO_SCRATCH* directory.
+
+On clusters and supercomputers, the testsuite can be launched both in the interactive mode and as a job. 
+
+Parametrization of testsuite
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Using the command-line options and environmental variables, one can parametrize running the testsuite.
+
 To see a verbose output, run:
 
 .. code-block:: console
@@ -50,7 +64,11 @@ To print the duration for each test, run:
 
    (pertpy) $ pytest --durations=0
 
-On clusters and supercomputers, the testsuite can be launched both in the interactive mode and as a job. 
+To specify the folder where the tests should be run, set the following environmental variable:
+
+.. code-block:: console
+
+   (pertpy) $ export PERTURBO_SCRATCH='dir/to/run/tests'
 
 Running testsuite on NERSC
 --------------------------
@@ -70,6 +88,13 @@ The example scripts and job submission files are in the `test_scripts` folder:
    Copy and modify these files to make them consistent with your **paths**, 
    number of **MPI tasks**, **OpenMP threads**, **job parameters** etc.
    
+.. warning ::
+
+   On NERSC Cori, the testsuite must be run in the $SCRATCH directory (not $HOME).
+
+   The HDF5 file locking must be disabled. 
+
+   Both issues are addressed in the `nersc_cori_knl_job_example.slurm` script.
 
 Job submission
 ..............
