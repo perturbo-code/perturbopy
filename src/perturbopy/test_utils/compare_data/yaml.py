@@ -175,11 +175,11 @@ def equal_dict(dict1, dict2, ig_n_tol, path):
 
    """
    # check that dict1 and dict2 are dictionaries
-   errmsg = ('dict1/2 are not dictionaries')
+   errmsg = (f'dict1/2 at {path} are not dictionaries')
    assert isinstance(dict1, dict) and isinstance(dict2, dict), errmsg
 
    # check that dictionaries have the same keys
-   errmsg = ('dict1/2 do not have the same keys')
+   errmsg = (f'dict1/2 found at {path} do not have the same keys')
    assert dict1.keys() == dict2.keys(), errmsg
 
    # total set of keys
