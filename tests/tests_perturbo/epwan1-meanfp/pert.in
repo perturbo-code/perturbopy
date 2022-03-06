@@ -2,7 +2,7 @@
   prefix      = 'gaas'
   calc_mode   = 'meanfp'
 
-  band_min    = 7
+  band_min    = 9
   band_max    = 10
 
   fklist      = 'gaas_tet.kpt'
