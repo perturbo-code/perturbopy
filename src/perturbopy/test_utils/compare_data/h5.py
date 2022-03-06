@@ -51,7 +51,7 @@ def equal_scalar(scalar1, scalar2, key, ig_n_tol):
 
    if np.abs(scalar1) > 1e-10:
       rdiff = np.abs((scalar2 - scalar1) / scalar1)
-      diff_str = f'{diff:.1e}, {rdiff*100:.1f}%'
+      diff_str = f'{diff:.1e}, {rdiff*100:.2f}%, {scalar1 = }, {scalar2 = }'
 
    else:
       diff_str = f'{diff:.1e}'
@@ -104,7 +104,20 @@ def equal_ndarray(ndarray1, ndarray2, key, ig_n_tol):
 
    diff = np.max(np.abs(ndarray1 - ndarray2))
 
-   return equal_value, f'{diff:.1e}'
+   # find max diff only if comparison fails
+   if not equal_value:
+      idxmax_flat = np.argmax(np.abs(ndarray1 - ndarray2))
+      idxmax = np.unravel_index(idxmax_flat, ndarray1.shape)
+      vmax1 = ndarray1[idxmax] 
+      vmax2 = ndarray2[idxmax] 
+
+      rdiff = np.abs((vmax2 - vmax1) / vmax1)
+      diff_str = f'{diff:.1e}, {rdiff*100:.2f}%, {vmax1 = }, {vmax2 = }'
+   
+   else:
+      diff_str = f'{diff:.1e}'
+
+   return equal_value, diff_str
 
 
 def equal_dict(dict1, dict2, ig_n_tol, path):

@@ -75,7 +75,7 @@ def equal_scalar(scalar1, scalar2, key, ig_n_tol):
 
    if np.abs(scalar1) > 1e-10:
       rdiff = np.abs((scalar2 - scalar1) / scalar1)
-      diff_str = f'{diff:.1e}, {rdiff*100:.1f}%'
+      diff_str = f'{diff:.1e}, {rdiff*100:.2f}%, {scalar1 = }, {scalar2 = }'
 
    else:
       diff_str = f'{diff:.1e}'
