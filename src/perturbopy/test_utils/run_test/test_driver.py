@@ -101,9 +101,10 @@ def get_test_materials(test_name):
    new_outs    = [work_path + '/' + out_file for out_file in out_files]
 
    # remove outputs if they already exist
-   for out_file in new_outs:
-      if os.path.exists(out_file):
-         os.remove(out_file)
+   # COMMENTED OUT for now. the output files can sometimes serve as inputs
+   #for out_file in new_outs:
+   #   if os.path.exists(out_file):
+   #      os.remove(out_file)
 
    # print the test information before the run
    print_test_info(test_name, pert_input)

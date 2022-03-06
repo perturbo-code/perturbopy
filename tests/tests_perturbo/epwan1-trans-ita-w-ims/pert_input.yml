@@ -8,6 +8,8 @@ test info:
       - trans-ita
       - compute-eph
       - load-imsigma
+      - HDF5-output
+      - HDF5-load
 
    desc:
       "The phonon-limited conductivity and carrier mobility.

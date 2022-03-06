@@ -1,0 +1,25 @@
+test info:
+   executable: perturbo.x 
+
+   epwan: epwan1
+
+   tags:
+      - trans
+      - trans-rta
+      - trans-rta-pp
+      - postproc
+      - HDF5-load
+
+   desc:
+      "Postprocessing of the transport calculation:\n
+       Seebeck coefficient.\n"
+
+   test files:
+
+      pert_output.yml: 
+
+         test keywords:
+            - trans
+
+         tolerance:
+            default: 1e-6

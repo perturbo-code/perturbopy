@@ -108,8 +108,8 @@ def equal_ndarray(ndarray1, ndarray2, key, ig_n_tol):
    if not equal_value:
       idxmax_flat = np.argmax(np.abs(ndarray1 - ndarray2))
       idxmax = np.unravel_index(idxmax_flat, ndarray1.shape)
-      vmax1 = ndarray1[idxmax] 
-      vmax2 = ndarray2[idxmax] 
+      vmax1 = ndarray1[idxmax]
+      vmax2 = ndarray2[idxmax]
 
       rdiff = np.abs((vmax2 - vmax1) / vmax1)
       diff_str = f'{diff:.1e}, {rdiff*100:.2f}%, {vmax1 = }, {vmax2 = }'
