@@ -24,6 +24,7 @@ epwan1:
       - phdisp
       - ephmat
       - setup
+      - imsigma
 
 epwan2:
    prefix: mos2

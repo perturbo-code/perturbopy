@@ -11,9 +11,12 @@ test info:
        prefix_band.qpt"
 
    test files:
+
       pert_output.yml: 
+
          test keywords:
             - bands 
+
          tolerance:
             default:
                1e-6

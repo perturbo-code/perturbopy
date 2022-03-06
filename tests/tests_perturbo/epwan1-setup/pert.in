@@ -2,12 +2,14 @@
   prefix      = 'gaas'
   calc_mode   = 'setup'
   
-  boltz_kdim(1) = 20
-  boltz_kdim(2) = 20
-  boltz_kdim(3) = 20
+  boltz_kdim(1) = 10
+  boltz_kdim(2) = 10
+  boltz_kdim(3) = 10
+
   boltz_emin = 5.665  !CBM=6.065
   boltz_emax = 6.265  !CBM+200meV
-  band_min = 5, band_max = 5
+
+  band_min = 5, band_max = 8
 
   ftemper = 'gaas.temper'
  /
