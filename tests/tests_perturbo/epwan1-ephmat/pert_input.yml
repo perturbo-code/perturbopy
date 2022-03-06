@@ -10,7 +10,8 @@ test info:
       "The absolute values of the e-ph matrix elements, 
        summed over the number of electronic bands 
        following the k-point path from prefix_band.kpt 
-       and q-point path from prefix_band.qpt"
+       and q-point path from prefix_band.qpt.
+       25 k- and q- points are randomly generated over the Brillouin zone."
 
    test files:
       pert_output.yml: 
