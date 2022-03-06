@@ -4,12 +4,14 @@ test info:
    epwan: epwan1
 
    tags:
-      - meanfp
+      - trans
+      - trans-rta
       - load-imsigma
       - random-q
 
    desc:
-      "Electron-phonon mean free path. States are in a range of bands.
+      "The phonon-limited conductivity and carrier mobility.
+       Relaxation-time approximation.\n
        The prefix.imsigma is different from the one from epwan1-imsigma."
 
    test files:
@@ -17,7 +19,8 @@ test info:
       pert_output.yml: 
 
          test keywords:
-            - meanfp 
+            - grid
+            - trans
 
          tolerance:
-            default: 1e-4
+            default: 1e-6

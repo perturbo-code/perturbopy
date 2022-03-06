@@ -4,6 +4,7 @@ test info:
    epwan: epwan1
 
    tags:
+      - high-sym-q
       - phdisp
 
    desc:

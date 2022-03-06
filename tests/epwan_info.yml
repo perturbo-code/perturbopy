@@ -26,6 +26,7 @@ epwan1:
       - setup
       - imsigma
       - meanfp
+      - trans-rta
 
 epwan2:
    prefix: mos2

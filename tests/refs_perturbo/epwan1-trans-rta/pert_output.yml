@@ -1,0 +1,260 @@
+---
+program: perturbo
+
+start date and time:
+   date:  6 March 2022
+   time: "12:14:31"
+
+parallelization:
+   type: MPI+OpenMP
+   number of MPI tasks:   8
+   number of OpenMP threads:   8
+   number of nodes:   1
+
+input parameters:
+   after conversion:
+      band_max:                  10
+      band_min:                   9
+      boltz_de:           7.3498617648950546E-05
+      boltz_emax:           7.6438562354908579E-01
+      boltz_emin:           6.9823686766503024E-01
+      boltz_init_dist:          
+      boltz_init_e0:          -7.3491267787185654E+02
+      boltz_init_smear:           1.4699723529790110E-03
+      boltz_kdim:          [        10,          10,          10,  ]
+      boltz_nstep:                   0
+      boltz_qdim:          [        10,          10,          10,  ]
+      calc_mode:          trans
+      cauchy_scale:           5.0000000745058060E-02
+      debug:          False
+      delta_smear:           7.3498617648950549E-04
+      fklist:          
+      fqlist:          
+      ftemper:          gaas.temper
+      full_ite:          False
+      hole:          False
+      load_scatter_eph:          False
+      nsamples:              100000
+      output_nstep:                   1
+      output_yaml:          True 
+      phfreq_cutoff:           7.3498617648950546E-05
+      polar_split:          
+      prefix:          gaas
+      sampling:          uniform
+      solver:          rk4
+      time_step:           2.0670686467503085E+01
+      tmp_dir:          ./
+      trans_thr:           2.0000000000000000E-03
+      yaml_fname:          pert_output.yml
+
+grid:
+   number of  tetrahedra selected:        672
+   number of reducible k-points:        310
+   number of irreducible k-points:         34
+
+
+trans:
+
+   temperature units: K
+
+   chemical potential units: eV
+
+   concentration units: cm-3
+
+   conductivity units: 1/Ohm/m
+
+   mobility units: cm2/V/s
+
+   Seebeck coefficient units: mV/K
+
+   # Electronic contribution
+   # Not well tested, use with caution
+   thermal conductivity units: W/m/K
+
+   # Cofiguration means one line in the temper file:
+   # temperature efermi concentration
+   number of configurations:   2
+
+   configuration index:
+
+      1:
+
+         temperature: 100.00000
+
+         chemical potential:   9.8000000000
+
+         concentration:  0.3748568E+18
+
+         conductivity:
+
+            components:
+               xx:   0.21891611E+04
+               xy:   0.77067007E+02
+               yy:   0.21891611E+04
+               xz:   0.77067023E+02
+               yz:   0.77067005E+02
+               zz:   0.21891611E+04
+               yx:   0.77067007E+02
+               zx:   0.77067023E+02
+               zy:   0.77067005E+02
+
+
+            tensor:
+               - [    0.21891611E+04,    0.77067007E+02,    0.77067023E+02,  ]
+               - [    0.77067007E+02,    0.21891611E+04,    0.77067005E+02,  ]
+               - [    0.77067023E+02,    0.77067005E+02,    0.21891611E+04,  ]
+
+         mobility:
+
+            components:
+               xx:   0.36450358E+03
+               xy:   0.12831947E+02
+               yy:   0.36450358E+03
+               xz:   0.12831950E+02
+               yz:   0.12831947E+02
+               zz:   0.36450358E+03
+               yx:   0.12831947E+02
+               zx:   0.12831950E+02
+               zy:   0.12831947E+02
+
+
+            tensor:
+               - [    0.36450358E+03,    0.12831947E+02,    0.12831950E+02,  ]
+               - [    0.12831947E+02,    0.36450358E+03,    0.12831947E+02,  ]
+               - [    0.12831950E+02,    0.12831947E+02,    0.36450358E+03,  ]
+
+         Seebeck coefficient:
+
+            components:
+               xx:  -0.81496197E-01
+               xy:  -0.28944067E-12
+               yy:  -0.81496197E-01
+               xz:  -0.28912726E-12
+               yz:  -0.28936961E-12
+               zz:  -0.81496197E-01
+               yx:  -0.28944067E-12
+               zx:  -0.28912726E-12
+               zy:  -0.28936961E-12
+
+
+            tensor:
+               - [   -0.81496197E-01,   -0.28944067E-12,   -0.28912726E-12,  ]
+               - [   -0.28944067E-12,   -0.81496197E-01,   -0.28936961E-12,  ]
+               - [   -0.28912726E-12,   -0.28936961E-12,   -0.81496197E-01,  ]
+
+            # Thermal conductivity: not well tested, use with caution
+
+         thermal conductivity:
+
+            components:
+               xx:   0.54515293E-02
+               xy:   0.19191509E-03
+               yy:   0.54515294E-02
+               xz:   0.19191513E-03
+               yz:   0.19191508E-03
+               zz:   0.54515293E-02
+               yx:   0.19191509E-03
+               zx:   0.19191513E-03
+               zy:   0.19191508E-03
+
+
+            tensor:
+               - [    0.54515293E-02,    0.19191509E-03,    0.19191513E-03,  ]
+               - [    0.19191509E-03,    0.54515294E-02,    0.19191508E-03,  ]
+               - [    0.19191513E-03,    0.19191508E-03,    0.54515293E-02,  ]
+
+      2:
+
+         temperature: 300.00000
+
+         chemical potential:   9.8000000000
+
+         concentration:  0.6497839E+18
+
+         conductivity:
+
+            components:
+               xx:   0.15558715E+04
+               xy:   0.54467614E+02
+               yy:   0.15558715E+04
+               xz:   0.54467625E+02
+               yz:   0.54467614E+02
+               zz:   0.15558715E+04
+               yx:   0.54467614E+02
+               zx:   0.54467625E+02
+               zy:   0.54467614E+02
+
+
+            tensor:
+               - [    0.15558715E+04,    0.54467614E+02,    0.54467625E+02,  ]
+               - [    0.54467614E+02,    0.15558715E+04,    0.54467614E+02,  ]
+               - [    0.54467625E+02,    0.54467614E+02,    0.15558715E+04,  ]
+
+         mobility:
+
+            components:
+               xx:   0.14944941E+03
+               xy:   0.52318927E+01
+               yy:   0.14944941E+03
+               xz:   0.52318937E+01
+               yz:   0.52318926E+01
+               zz:   0.14944941E+03
+               yx:   0.52318927E+01
+               zx:   0.52318937E+01
+               zy:   0.52318926E+01
+
+
+            tensor:
+               - [    0.14944941E+03,    0.52318927E+01,    0.52318937E+01,  ]
+               - [    0.52318927E+01,    0.14944941E+03,    0.52318926E+01,  ]
+               - [    0.52318937E+01,    0.52318926E+01,    0.14944941E+03,  ]
+
+         Seebeck coefficient:
+
+            components:
+               xx:  -0.18942123E+00
+               xy:  -0.18915057E-05
+               yy:  -0.18942123E+00
+               xz:  -0.18915055E-05
+               yz:  -0.18915058E-05
+               zz:  -0.18942123E+00
+               yx:  -0.18915057E-05
+               zx:  -0.18915055E-05
+               zy:  -0.18915058E-05
+
+
+            tensor:
+               - [   -0.18942123E+00,   -0.18915057E-05,   -0.18915055E-05,  ]
+               - [   -0.18915057E-05,   -0.18942123E+00,   -0.18915058E-05,  ]
+               - [   -0.18915055E-05,   -0.18915058E-05,   -0.18942123E+00,  ]
+
+            # Thermal conductivity: not well tested, use with caution
+
+         thermal conductivity:
+
+            components:
+               xx:   0.12494345E-01
+               xy:   0.43851555E-03
+               yy:   0.12494346E-01
+               xz:   0.43851564E-03
+               yz:   0.43851555E-03
+               zz:   0.12494345E-01
+               yx:   0.43851555E-03
+               zx:   0.43851564E-03
+               zy:   0.43851555E-03
+
+
+            tensor:
+               - [    0.12494345E-01,    0.43851555E-03,    0.43851564E-03,  ]
+               - [    0.43851555E-03,    0.12494346E-01,    0.43851555E-03,  ]
+               - [    0.43851564E-03,    0.43851555E-03,    0.12494345E-01,  ]
+
+timings:
+
+   time units: s
+
+   PERTURBO:
+      cpu:         5.20818800
+      wall:        1.63683891
+      calls:         1
+...
