@@ -73,7 +73,14 @@ def equal_scalar(scalar1, scalar2, key, ig_n_tol):
 
    diff = np.abs(scalar1 - scalar2)
 
-   return equal_value, f'{diff:.1e}'
+   if np.abs(scalar1) > 1e-10:
+      rdiff = np.abs( (scalar2 -scalar1) / scalar1 )
+      diff_str = f'{diff:.1e}, {rdiff*100:.1f}%'
+
+   else:
+      diff_str = f'{diff:.1e}'
+
+   return equal_value, diff_str
 
 
 def equal_list(list1, list2, key, ig_n_tol, path):

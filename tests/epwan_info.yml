@@ -25,6 +25,7 @@ epwan1:
       - ephmat
       - setup
       - imsigma
+      - meanfp
 
 epwan2:
    prefix: mos2

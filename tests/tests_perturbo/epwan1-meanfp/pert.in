@@ -1,6 +1,6 @@
 &perturbo
   prefix      = 'gaas'
-  calc_mode   = 'imsigma'
+  calc_mode   = 'meanfp'
 
   band_min    = 7
   band_max    = 10

@@ -49,7 +49,14 @@ def equal_scalar(scalar1, scalar2, key, ig_n_tol):
 
    diff = np.abs(scalar1 - scalar2)
 
-   return equal_value, f'{diff:.1e}'
+   if np.abs(scalar1) > 1e-10:
+      rdiff = np.abs( (scalar2 -scalar1) / scalar1 )
+      diff_str = f'{diff:.1e}, {rdiff*100:.1f}%'
+
+   else:
+      diff_str = f'{diff:.1e}'
+
+   return equal_value, diff_str
 
 
 def equal_ndarray(ndarray1, ndarray2, key, ig_n_tol):
@@ -77,6 +84,9 @@ def equal_ndarray(ndarray1, ndarray2, key, ig_n_tol):
    errmsg = ('ndarray1/2 are not ndarrays')
    assert isinstance(ndarray1, np.ndarray) and isinstance(ndarray2, np.ndarray), \
           errmsg
+
+   errmsg = ('ndarray1/2 have different shapes')
+   assert ndarray1.shape == ndarray2.shape, errmsg
 
    # dict of tolerances for comparisons
    tol = ig_n_tol['tolerance']
@@ -171,6 +181,7 @@ def equal_dict(dict1, dict2, ig_n_tol, path):
 
       if not equal_value:
          print(f'\n !!! discrepancy found at {key_path}')
+         print(f' difference: {diff}')
          print(f' tolerance not respected: {ig_n_tol["tolerance"]}')
 
    # equal dicts produce list of only bool=True

@@ -4,19 +4,18 @@ test info:
    epwan: epwan1
 
    tags:
-      - imsigma
+      - meanfp
       - random-q
 
    desc:
-      "Imaginary part of the lowest-order e-ph self-energy.
-      States are in a range of bands."
+      "Electron-phonon mean free path. States are in a range of bands."
 
    test files:
 
       pert_output.yml: 
 
          test keywords:
-            - imsigma 
+            - meanfp 
 
          tolerance:
-            default: 1e-2
+            default: 1e-4
