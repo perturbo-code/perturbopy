@@ -28,7 +28,7 @@ epwan1:
       - meanfp
       - trans-rta
       - trans-ita
-      #- trans-ita-w-ims
+      - trans-ita-w-ims
 
 epwan2:
    prefix: mos2

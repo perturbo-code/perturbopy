@@ -168,7 +168,7 @@ def setup_default_tol(igns_n_tols):
       output_file.yml:
          tolerance:
             default:
-               1e-10
+               1e-8
 
    Parameters
    ----------
@@ -182,7 +182,7 @@ def setup_default_tol(igns_n_tols):
 
    """
 
-   default_tolerance = 1e-10
+   default_tolerance = 1e-8
 
    igns_n_tols_updated = []
 

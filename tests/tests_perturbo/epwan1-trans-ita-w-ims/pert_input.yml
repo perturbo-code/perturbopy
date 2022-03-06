@@ -5,13 +5,14 @@ test info:
 
    tags:
       - trans
-      - trans-rta
+      - trans-ita
+      - compute-eph
       - load-imsigma
 
    desc:
       "The phonon-limited conductivity and carrier mobility.
-       Relaxation-time approximation.\n
-       The prefix.imsigma is different from the one from epwan1-imsigma."
+       Iterative approach.\n
+       With loading prefix.imsigma."
 
    test files:
 
@@ -22,6 +23,6 @@ test info:
             - trans
 
          tolerance:
-            default: 1e-6
+            default: 5e-2
 
       gaas_tdf.h5:            
