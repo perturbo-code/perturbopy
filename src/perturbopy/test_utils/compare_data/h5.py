@@ -182,7 +182,7 @@ def equal_dict(dict1, dict2, ig_n_tol, path):
    if equal_values:
       diff = None
    else:
-      diff = f'among {nitems} elements, {ntimes - ncompared} failed comparison'
+      diff = f'among {nitems} elements, {nitems - ncompared} failed comparison'
 
    return equal_values, diff
 

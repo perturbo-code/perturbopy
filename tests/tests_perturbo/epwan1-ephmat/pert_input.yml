@@ -1,0 +1,22 @@
+test info:
+   executable: perturbo.x 
+
+   epwan: epwan1
+
+   tags:
+      - ephmat
+
+   desc:
+      "The absolute values of the e-ph matrix elements, 
+       summed over the number of electronic bands 
+       following the k-point path from prefix_band.kpt 
+       and q-point path from prefix_band.qpt"
+
+   test files:
+      pert_output.yml: 
+         test keywords:
+            - ephmat 
+         tolerance:
+            default: 1e-6
+            deformation potential: 2e-5
+            e-ph matrix elements: 5e-4
