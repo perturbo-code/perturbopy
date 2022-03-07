@@ -236,8 +236,9 @@ def equal_values(file1, file2, ig_n_tol):
       boolean specifying if both h5 files contain the same information
 
    """
-   #h51_dict = dict(hdfdict.load(file1))
-   #h52_dict = dict(hdfdict.load(file2))
+
+   # h51_dict = dict(hdfdict.load(file1))
+   # h52_dict = dict(hdfdict.load(file2))
 
    h51_dict = hdfdict.load(file1)
    h52_dict = hdfdict.load(file2)
