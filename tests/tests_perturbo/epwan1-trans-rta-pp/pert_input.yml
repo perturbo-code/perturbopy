@@ -5,7 +5,6 @@ test info:
 
    tags:
       - trans
-      - trans-rta
       - trans-rta-pp
       - postproc
       - HDF5-load

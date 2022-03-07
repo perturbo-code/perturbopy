@@ -181,7 +181,7 @@ def filter_tests(all_test_list, tags, exclude_tags, test_names):
       
       for test_name_cmd in test_names:
          if test_name_cmd not in all_test_list:
-            errmsg = (f'Test {test_name_cmd} does not exist, \n'
+            errmsg = (f'Test {test_name_cmd} is not listed in epwan_info.yml, \n'
                       'but specified in --test-names option.'
                      )
             raise ValueError(errmsg)

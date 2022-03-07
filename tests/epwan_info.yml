@@ -30,6 +30,7 @@ epwan1:
       - trans-ita
       - trans-ita-w-ims
       - trans-rta-pp
+      - trans-ita-pp
 
 epwan2:
    prefix: mos2
