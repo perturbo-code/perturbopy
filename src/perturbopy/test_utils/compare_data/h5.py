@@ -2,6 +2,7 @@
    This module contains functions to compare hdf5 files
 """
 import hdfdict
+from hdfdict.hdfdict import LazyHdfDict
 import numpy as np
 
 
@@ -148,6 +149,10 @@ def equal_dict(dict1, dict2, ig_n_tol, path):
       boolean specifying if both dicts contain the same keys and values
 
    """
+   if isinstance(dict1, LazyHdfDict) or isinstance(dict2, LazyHdfDict):
+      dict1 = dict(dict1)
+      dict2 = dict(dict2)
+
    # check that dict1 and dict2 are dictionaries
    errmsg = ('dic1/2 are not dictionaries')
    assert isinstance(dict1, dict) and isinstance(dict2, dict), errmsg
@@ -175,7 +180,7 @@ def equal_dict(dict1, dict2, ig_n_tol, path):
 
       # pseudo path to current item being compared
       key_path = (f'{path}.{key}')
-      if isinstance(dict1[key], dict):
+      if isinstance(dict1[key], dict) or isinstance(dict1[key], LazyHdfDict):
          equal_value, diff = equal_dict(dict1[key], dict2[key], ig_n_tol, key_path)
 
       elif isinstance(dict1[key], np.ndarray):
@@ -231,8 +236,14 @@ def equal_values(file1, file2, ig_n_tol):
       boolean specifying if both h5 files contain the same information
 
    """
-   h51_dict = dict(hdfdict.load(file1))
-   h52_dict = dict(hdfdict.load(file2))
+   #h51_dict = dict(hdfdict.load(file1))
+   #h52_dict = dict(hdfdict.load(file2))
+
+   h51_dict = hdfdict.load(file1)
+   h52_dict = hdfdict.load(file2)
+
+   h51_dict.unlazy()
+   h52_dict.unlazy()
 
    if 'test keywords' in ig_n_tol:
       h51_del_keys = [key for key in h51_dict.keys() if key not in ig_n_tol['test keywords']]
