@@ -28,6 +28,7 @@ epwan1:
       - meanfp
       - trans-rta
       - trans-ita
+      - trans-rta-w-ims
       - trans-ita-w-ims
       - trans-rta-pp
       - trans-ita-pp

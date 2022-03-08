@@ -2,8 +2,8 @@
 program: perturbo
 
 start date and time:
-   date:  8 March 2022
-   time: "12:54:24"
+   date:  6 March 2022
+   time: "18:35: 1"
 
 parallelization:
    type: MPI+OpenMP
@@ -22,9 +22,9 @@ input parameters:
       boltz_init_e0:          -7.3491267787185654E+02
       boltz_init_smear:           1.4699723529790110E-03
       boltz_kdim:          [        10,          10,          10,  ]
-      boltz_nstep:                  50
+      boltz_nstep:                   0
       boltz_qdim:          [        10,          10,          10,  ]
-      calc_mode:          trans-pp
+      calc_mode:          trans
       cauchy_scale:           5.0000000745058060E-02
       debug:          False
       delta_smear:           7.3498617648950549E-04
@@ -46,6 +46,12 @@ input parameters:
       tmp_dir:          ./
       trans_thr:           2.0000000000000000E-03
       yaml_fname:          pert_output.yml
+
+grid:
+   number of  tetrahedra selected:        672
+   number of reducible k-points:        310
+   number of irreducible k-points:         34
+
 
 trans:
 
@@ -248,7 +254,7 @@ timings:
    time units: s
 
    PERTURBO:
-      cpu:         0.00000000
-      wall:        0.17008090
+      cpu:         3.14414100
+      wall:        0.69996405
       calls:         1
 ...

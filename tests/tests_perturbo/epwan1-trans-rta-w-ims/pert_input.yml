@@ -5,15 +5,15 @@ test info:
 
    tags:
       - trans
-      - trans-ita-pp
-      - compute-eph
+      - trans-rta-w-ims
+      - load-imsigma
+      - HDF5-output
       - HDF5-load
-      - postproc
 
    desc:
       "The phonon-limited conductivity and carrier mobility.
-       Iterative approach.\n
-       With loading prefix.imsigma."
+       Relaxation-time approximation.\n
+       The prefix.imsigma is different from the one from epwan1-imsigma."
 
    test files:
 
@@ -24,4 +24,6 @@ test info:
             - trans
 
          abs tol:
-            default: 1e-5
+            default: 1e-6
+
+      gaas_tdf.h5:            

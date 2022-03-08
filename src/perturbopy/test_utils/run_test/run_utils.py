@@ -347,7 +347,7 @@ def key_in_dict(k, d, exact_match=False):
    else:
    
       for kk in d:
-         if k in kk or kk in k:
+         if str(k) in str(kk) or str(kk) in str(k):
             return kk, True
             break
 

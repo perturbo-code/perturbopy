@@ -13,7 +13,7 @@ test info:
    desc:
       "The phonon-limited conductivity and carrier mobility.
        Iterative approach.\n
-       With loading prefix.imsigma."
+       No imsigma load."
 
    test files:
 
@@ -27,6 +27,9 @@ test info:
             default: 1e-5
 
       gaas_tdf.h5:
-         rel tol:
-            default: 0.5
 
+         abs tol:
+            mfd: 1e-2
+
+         rel tol:
+            mfd: 0.1
