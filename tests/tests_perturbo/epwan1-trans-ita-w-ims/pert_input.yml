@@ -25,6 +25,11 @@ test info:
             - trans
 
          abs tol:
-            default: 5e-2
+            default: 1e-5
 
       gaas_tdf.h5:            
+         abs tol:
+            mfd: 1e-2
+         rel tol:
+            mfd: 0.1
+            

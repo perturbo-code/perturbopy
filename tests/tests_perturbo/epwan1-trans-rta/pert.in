@@ -1,6 +1,6 @@
 &perturbo
   prefix        = 'gaas'
-  calc_mode     = 'trans'
+  calc_mode     = 'trans-rta'
   
   boltz_kdim(1) = 10
   boltz_kdim(2) = 10
@@ -13,8 +13,6 @@
   ! 9,10 conduction bands
   band_min      = 9
   band_max      = 10
-
-  boltz_nstep = 0
 
   ftemper = 'gaas.temper'
  /

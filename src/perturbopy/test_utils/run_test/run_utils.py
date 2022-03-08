@@ -267,7 +267,7 @@ def setup_default_tol(igns_n_tols):
    return igns_n_tols_updated
 
 
-def get_tol(ig_n_tol, key):
+def get_tol(ig_n_tol, key, exact_match = False):
    """
    Extract the absolute and relative tolerances for ``key`` from ``ig_n_tol`` dict.
 
@@ -278,6 +278,13 @@ def get_tol(ig_n_tol, key):
    key : str
       A key for the tolerance. If this key is not specified in the tolerance dict,
       a default tolerance will be applied.
+
+   exact_match : bool, optional
+      if True, the non-default tolerance if applied to a key only if this key
+      matches exactly with the one from the ig_n_tol; 
+      if False, ``str1 in str2`` condition is enough. For example ``phys`` would
+      be considered as a key for ``physics`` if exact_match is False.
+      Default is False.
 
    .. note ::
       The ``rel tol`` from the dictionary is assumed to be in **percents**.
@@ -291,15 +298,57 @@ def get_tol(ig_n_tol, key):
    """
 
    atol_dict = ig_n_tol['abs tol']
-   if key in atol_dict:
-      atol = atol_dict[key]
+
+   kname, cond = key_in_dict(key, atol_dict, exact_match=exact_match)
+
+   if cond:
+      atol = atol_dict[kname]
    else:
       atol = atol_dict['default']
 
    rtol_dict = ig_n_tol['rel tol']
-   if key in rtol_dict:
-      rtol = rtol_dict[key]
+
+   kname, cond = key_in_dict(key, rtol_dict, exact_match=exact_match)
+
+   if cond:
+      rtol = rtol_dict[kname]
    else:
       rtol = rtol_dict['default']
 
    return float(atol), float(rtol) / 100
+
+
+def key_in_dict(k, d, exact_match = False):
+   """
+   Check is a key is in dictionary.
+
+   Parameters
+   ----------
+   k : str
+      A dictionary key.
+   d : dict
+      A dictionary.
+
+   exact_match : bool
+      Whether apply or not the exact match condition for the key
+
+   Returns
+   -------
+   key : str
+      A key from dictionary d that contains k
+
+   condition : bool
+      True is the key k is in dict d
+   """
+
+   if exact_match:
+      return k, k in d
+
+   else:
+   
+      for kk in d:
+         if k in kk or kk in k:
+            return kk, True
+            break
+
+      return k, False

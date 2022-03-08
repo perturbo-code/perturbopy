@@ -107,7 +107,8 @@ def equal_ndarray(ndarray1, ndarray2, key, ig_n_tol):
       v2 = ndarray2[idxmax]
 
       rdiff = np.abs((v2 - v1) / v1)
-      diff_str = f'{diff:.1e}, {rdiff*100:.1e}%, {v1 = }, {v2 = }'
+      diff_str = (f'{diff:.1e}, {rdiff*100:.1e}%, v1={v1:.1e}, v2={v2:.1e},'
+                  f'atol={atol:.1e}, rtol={rtol:.1e},')
    
    else:
       diff_str = f'{diff:.1e}'
