@@ -243,11 +243,10 @@ def setup_default_tol(igns_n_tols):
    for outfile in igns_n_tols:
 
       if not isinstance(outfile, dict):
-         outfile = {
-                   'abs tol':
-                       {'default': default_abs_tol},
-                   'rel tol':
-                       {'default': default_rel_tol}
+         outfile = {'abs tol':
+                    {'default': default_abs_tol},
+                    'rel tol':
+                    {'default': default_rel_tol}
                    }
 
       else:

@@ -1,12 +1,6 @@
 """
    This module contains functions to compare YAML files
 """
-from yaml import load
-try:
-    from yaml import CLoader as Loader
-except ImportError:
-    from yaml import Loader
-
 from numbers import Number
 import numpy as np
 import perturbopy.test_utils.compare_data.h5 as ch5

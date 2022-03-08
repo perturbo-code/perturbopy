@@ -6,6 +6,7 @@ from hdfdict.hdfdict import LazyHdfDict
 import numpy as np
 from perturbopy.test_utils.run_test.run_utils import get_tol
 
+
 def equal_scalar(scalar1, scalar2, key, ig_n_tol):
    """
    Determines if two scalars contain the same value
@@ -97,9 +98,9 @@ def equal_ndarray(ndarray1, ndarray2, key, ig_n_tol):
    if not equal_value:
 
       tmp_array = ndarray1
-      tmp_array[ np.abs(tmp_array) < 1e-10] = 1e-10
+      tmp_array[np.abs(tmp_array) < 1e-10] = 1e-10
 
-      idxmax_flat = np.argmax(np.abs( (ndarray2 - ndarray1) / tmp_array))
+      idxmax_flat = np.argmax(np.abs((ndarray2 - ndarray1) / tmp_array))
       idxmax = np.unravel_index(idxmax_flat, ndarray1.shape)
 
       v1 = ndarray1[idxmax]
