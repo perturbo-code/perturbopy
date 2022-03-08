@@ -4,7 +4,7 @@
 import hdfdict
 from hdfdict.hdfdict import LazyHdfDict
 import numpy as np
-
+from perturbopy.test_utils.run_test.run_utils import get_tol
 
 def equal_scalar(scalar1, scalar2, key, ig_n_tol):
    """
@@ -34,25 +34,19 @@ def equal_scalar(scalar1, scalar2, key, ig_n_tol):
           or (scalar1.dtype == 'float64' and scalar2.dtype == 'float64')
           ), errmsg
 
-   # dict of tolerances for comparisons
-   tol = ig_n_tol['tolerance']
-   # check if key for scalar has set tolerance
-   if key in tol:
-      delta = tol[key]
-   else:
-      delta = tol['default']
+   atol, rtol = get_tol(ig_n_tol, key)
 
    equal_value = np.allclose(np.array(scalar1),
                              np.array(scalar2),
-                             atol=float(delta),
-                             rtol=0.0,
+                             atol=atol,
+                             rtol=rtol,
                              equal_nan=True)
 
    diff = np.abs(scalar1 - scalar2)
 
    if np.abs(scalar1) > 1e-10:
       rdiff = np.abs((scalar2 - scalar1) / scalar1)
-      diff_str = f'{diff:.1e}, {rdiff*100:.2f}%, {scalar1 = }, {scalar2 = }'
+      diff_str = f'{diff:.1e}, {rdiff*100:.1e}%, {scalar1 = }, {scalar2 = }'
 
    else:
       diff_str = f'{diff:.1e}'
@@ -89,31 +83,30 @@ def equal_ndarray(ndarray1, ndarray2, key, ig_n_tol):
    errmsg = ('ndarray1/2 have different shapes')
    assert ndarray1.shape == ndarray2.shape, errmsg
 
-   # dict of tolerances for comparisons
-   tol = ig_n_tol['tolerance']
-   # check if key for scalar has set tolerance
-   if key in tol:
-      delta = tol[key]
-   else:
-      delta = tol['default']
+   atol, rtol = get_tol(ig_n_tol, key)
 
    equal_value = np.allclose(ndarray1,
                              ndarray2,
-                             atol=float(delta),
-                             rtol=0.0,
+                             atol=atol,
+                             rtol=rtol,
                              equal_nan=True)
 
    diff = np.max(np.abs(ndarray1 - ndarray2))
 
-   # find max diff only if comparison fails
+   # find max percentage diff only if comparison fails
    if not equal_value:
-      idxmax_flat = np.argmax(np.abs(ndarray1 - ndarray2))
-      idxmax = np.unravel_index(idxmax_flat, ndarray1.shape)
-      vmax1 = ndarray1[idxmax]
-      vmax2 = ndarray2[idxmax]
 
-      rdiff = np.abs((vmax2 - vmax1) / vmax1)
-      diff_str = f'{diff:.1e}, {rdiff*100:.2f}%, {vmax1 = }, {vmax2 = }'
+      tmp_array = ndarray1
+      tmp_array[ np.abs(tmp_array) < 1e-10] = 1e-10
+
+      idxmax_flat = np.argmax(np.abs( (ndarray2 - ndarray1) / tmp_array))
+      idxmax = np.unravel_index(idxmax_flat, ndarray1.shape)
+
+      v1 = ndarray1[idxmax]
+      v2 = ndarray2[idxmax]
+
+      rdiff = np.abs((v2 - v1) / v1)
+      diff_str = f'{diff:.1e}, {rdiff*100:.1e}%, {v1 = }, {v2 = }'
    
    else:
       diff_str = f'{diff:.1e}'
@@ -200,7 +193,6 @@ def equal_dict(dict1, dict2, ig_n_tol, path):
       if not equal_value:
          print(f'\n !!! discrepancy found at {key_path}')
          print(f' difference: {diff}')
-         print(f' tolerance not respected: {ig_n_tol["tolerance"]}')
 
    # equal dicts produce list of only bool=True
    nitems = len(equal_per_key)

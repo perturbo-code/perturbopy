@@ -18,5 +18,5 @@ test info:
          test keywords:
             - imsigma 
 
-         tolerance:
+         abs tol:
             default: 1e-2

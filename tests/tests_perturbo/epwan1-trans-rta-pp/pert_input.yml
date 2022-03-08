@@ -20,5 +20,5 @@ test info:
          test keywords:
             - trans
 
-         tolerance:
+         abs tol:
             default: 1e-6

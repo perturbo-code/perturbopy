@@ -5,7 +5,7 @@
 import os
 import sys
 import copy
-from perturbopy.test_utils.compare_data.yaml import open_yaml
+from perturbopy.io_utils.io import open_yaml
 
 
 def read_test_tags(test_name):
@@ -197,3 +197,110 @@ def filter_tests(all_test_list, tags, exclude_tags, test_names):
    sys.stdout.flush()
 
    return test_list
+
+
+def setup_default_tol(igns_n_tols):
+   """
+   Setup the default tolerances for each file to compare if the tolerances are
+   not specified in the pert_input.yml file.
+
+   This function ensures that every output file to compare has the following
+   dictionary structure:
+
+   .. code-block :: python
+
+      output_file.yml:
+         abs tol:
+            default:
+               1e-8
+
+         # in percents
+         rel tol:
+            default:
+               0.01
+
+   The elements are considerent different if the following equation does not apply:
+
+   >>> absolute(a - b) <= (abs_tol + rel_tol * absolute(b))
+
+   Parameters
+   ----------
+   igns_n_tols : dict
+      dictionary containing the ignore keywords and tolerances needed to performance comparison of ref_outs and new_outs
+
+   Returns
+   -------
+   igns_n_tols_updated : dict
+      **updated** dictionary containing the ignore keywords and tolerances
+
+   """
+
+   default_abs_tol = 1e-8
+   default_rel_tol = 0.01
+
+   igns_n_tols_updated = []
+
+   for outfile in igns_n_tols:
+
+      if not isinstance(outfile, dict):
+         outfile = {
+                   'abs tol':
+                       {'default': default_abs_tol},
+                   'rel tol':
+                       {'default': default_rel_tol}
+                   }
+
+      else:
+         if 'abs tol' not in outfile.keys():
+            outfile['abs tol'] = {'default': default_abs_tol}
+
+         elif 'default' not in outfile['abs tol'].keys():
+            outfile['abs tol']['default'] = default_abs_tol
+
+         if 'rel tol' not in outfile.keys():
+            outfile['rel tol'] = {'default': default_rel_tol}
+
+         elif 'default' not in outfile['rel tol'].keys():
+            outfile['rel tol']['default'] = default_rel_tol
+
+      igns_n_tols_updated.append(outfile)
+
+   return igns_n_tols_updated
+
+
+def get_tol(ig_n_tol, key):
+   """
+   Extract the absolute and relative tolerances for ``key`` from ``ig_n_tol`` dict.
+
+   Parameters
+   ----------
+   ig_n_tol : dict
+      dictionary of ignore keywords and tolerances needed to make comparison on values
+   key : str
+      A key for the tolerance. If this key is not specified in the tolerance dict,
+      a default tolerance will be applied.
+
+   .. note ::
+      The ``rel tol`` from the dictionary is assumed to be in **percents**.
+
+   Returns
+   -------
+   atol : float
+      absolute tolerance for key
+   rtol : float
+      relative tolerance for key
+   """
+
+   atol_dict = ig_n_tol['abs tol']
+   if key in atol_dict:
+      atol = atol_dict[key]
+   else:
+      atol = atol_dict['default']
+
+   rtol_dict = ig_n_tol['rel tol']
+   if key in rtol_dict:
+      rtol = rtol_dict[key]
+   else:
+      rtol = rtol_dict['default']
+
+   return float(atol), float(rtol) / 100

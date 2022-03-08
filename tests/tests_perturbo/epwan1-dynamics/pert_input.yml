@@ -19,7 +19,7 @@ test info:
          test keywords:
             - grid
 
-         tolerance:
+         abs tol:
             default: 1e-6
 
       gaas_cdyna.h5:

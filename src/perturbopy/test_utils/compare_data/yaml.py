@@ -10,26 +10,8 @@ except ImportError:
 from numbers import Number
 import numpy as np
 import perturbopy.test_utils.compare_data.h5 as ch5
-
-
-def open_yaml(file_name):
-   """
-   Load YAML file as dictionary
-
-   Parameters
-   ----------
-   file_name : str
-      name of YAML file to be loaded
-
-   Returns
-   -------
-   yaml_dict : dict
-      YAML file loaded as dict
-
-   """
-   with open(file_name, 'r') as file:
-      yaml_dict = load(file, Loader=Loader)
-   return yaml_dict
+from perturbopy.test_utils.run_test.run_utils import get_tol
+from perturbopy.io_utils.io import open_yaml
 
 
 def equal_scalar(scalar1, scalar2, key, ig_n_tol):
@@ -57,25 +39,19 @@ def equal_scalar(scalar1, scalar2, key, ig_n_tol):
    errmsg = ('scalar1/2 are not Numbers')
    assert isinstance(scalar1, Number) and isinstance(scalar2, Number), errmsg
 
-   # dict of tolerances for comparisons
-   tol = ig_n_tol['tolerance']
-   # check if key for scalar has set tolerance
-   if key in tol:
-      delta = tol[key]
-   else:
-      delta = tol['default']
+   atol, rtol = get_tol(ig_n_tol, key)
 
    equal_value = np.allclose(np.array(scalar1),
                              np.array(scalar2),
-                             atol=float(delta),
-                             rtol=0.0,
+                             atol=atol,
+                             rtol=rtol,
                              equal_nan=True)
 
    diff = np.abs(scalar1 - scalar2)
 
    if np.abs(scalar1) > 1e-10:
       rdiff = np.abs((scalar2 - scalar1) / scalar1)
-      diff_str = f'{diff:.1e}, {rdiff*100:.2f}%, {scalar1 = }, {scalar2 = }'
+      diff_str = f'{diff:.1e}, {rdiff*100:.1e}%, {scalar1 = }, {scalar2 = }'
 
    else:
       diff_str = f'{diff:.1e}'
@@ -160,7 +136,6 @@ def equal_list(list1, list2, key, ig_n_tol, path):
       if not equal_value:
          print(f'\n !!! discrepancy found at {item_path}')
          print(f' difference: {diff}')
-         print(f' tolerance not respected: {ig_n_tol["tolerance"]}')
 
    # equal dicts produce list of only bool=True
    nitems = len(equal_per_item)
@@ -252,7 +227,6 @@ def equal_dict(dict1, dict2, ig_n_tol, path):
       if not equal_value:
          print(f'\n !!! discrepancy found at {key_path}')
          print(f' difference: {diff}')
-         print(f' tolerance not respected: {ig_n_tol["tolerance"]}')
       
    # equal dicts produce list of only bool=True
    nitems = len(equal_per_key)

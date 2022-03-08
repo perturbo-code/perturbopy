@@ -19,5 +19,5 @@ test info:
          test keywords:
             - meanfp 
 
-         tolerance:
+         abs tol:
             default: 1e-4

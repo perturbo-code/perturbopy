@@ -23,7 +23,7 @@ test info:
             - grid
             - trans
 
-         tolerance:
+         abs tol:
             default: 1e-6
 
       gaas_tdf.h5:            

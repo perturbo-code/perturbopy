@@ -23,7 +23,7 @@ test info:
          test keywords:
             - ephmat 
 
-         tolerance:
+         abs tol:
             default: 1e-6
             deformation potential: 2e-5
             e-ph matrix elements: 5e-4

@@ -23,5 +23,5 @@ test info:
             - grid
             - trans
 
-         tolerance:
+         abs tol:
             default: 1e-2
