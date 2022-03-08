@@ -1,0 +1,19 @@
+&perturbo
+  prefix        = 'gaas'
+  calc_mode     = 'imsigma'
+  
+  boltz_kdim(1) = 80
+  boltz_kdim(2) = 80
+  boltz_kdim(3) = 80
+
+  fklist = 'gaas_tet.kpt'
+
+  tmp_dir = './tmp'
+
+  ! 7, 8 valence bands
+  ! 9,10 conduction bands
+  band_min      = 9
+  band_max      = 10
+
+  ftemper = 'gaas.temper'
+ /

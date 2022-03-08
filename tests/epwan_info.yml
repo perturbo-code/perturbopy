@@ -30,6 +30,8 @@ epwan1:
       - trans-ita
       - trans-rta-w-ims
       - trans-ita-w-ims
+      - trans-mag-rta
+      - trans-mag-ita
       - trans-rta-pp
       - trans-ita-pp
       - dynamics

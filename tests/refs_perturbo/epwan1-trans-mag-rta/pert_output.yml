@@ -1,0 +1,314 @@
+---
+program: perturbo
+
+start date and time:
+   date:  8 March 2022
+   time: "14:52:17"
+
+parallelization:
+   type: MPI+OpenMP
+   number of MPI tasks:   8
+   number of OpenMP threads:   8
+   number of nodes:   1
+
+input parameters:
+   after conversion:
+      band_max:                  10
+      band_min:                   9
+      boltz_de:           7.3498617648950546E-05
+      boltz_emax:           7.3498617648950548E-01
+      boltz_emin:           6.9823686766503024E-01
+      boltz_init_dist:          
+      boltz_init_e0:          -7.3491267787185654E+02
+      boltz_init_smear:           1.4699723529790110E-03
+      boltz_kdim:          [        80,          80,          80,  ]
+      boltz_nstep:                  50
+      boltz_qdim:          [        80,          80,          80,  ]
+      calc_mode:          trans-mag-rta
+      cauchy_scale:           5.0000000745058060E-02
+      debug:          False
+      delta_smear:           7.3498617648950549E-04
+      fklist:          
+      fqlist:          
+      ftemper:          gaas.temper
+      full_ite:          False
+      hole:          False
+      load_scatter_eph:          False
+      nsamples:              100000
+      output_nstep:                   1
+      output_yaml:          True 
+      phfreq_cutoff:           7.3498617648950546E-05
+      polar_split:          
+      prefix:          gaas
+      sampling:          uniform
+      solver:          rk4
+      time_step:           2.0670686467503085E+01
+      tmp_dir:          ./tmp/
+      trans_thr:           2.0000000000000000E-03
+      yaml_fname:          pert_output.yml
+
+grid:
+   number of  tetrahedra selected:       2184
+   number of reducible k-points:        531
+   number of irreducible k-points:         43
+
+
+trans:
+
+   temperature units: K
+
+   chemical potential units: eV
+
+   concentration units: cm-3
+
+   magnetic field units: T
+
+   conductivity units: 1/Ohm/m
+
+   mobility units: cm2/V/s
+
+   # Configuration means one line in the temper file:
+   # temperature efermi concentration
+   number of configurations:   2
+
+   configuration index:
+
+      1:
+
+         temperature: 100.00000
+
+         chemical potential:   9.8000000000
+
+         concentration:  0.1572653E+19
+
+         magnetic field: [   0.00100,     0.00000,     0.00000,  ]
+
+         conductivity:
+
+            components:
+               xx:   0.57089161E+07
+               xy:   0.71472866E+03
+               yy:   0.57078193E+07
+               xz:   0.70389664E+03
+               yz:  -0.70410465E+05
+               zz:   0.57078079E+07
+               yx:   0.70527687E+03
+               zx:   0.71243829E+03
+               zy:   0.71827540E+05
+
+
+            tensor:
+               - [    0.57089161E+07,    0.71472866E+03,    0.70389664E+03,  ]
+               - [    0.70527687E+03,    0.57078193E+07,   -0.70410465E+05,  ]
+               - [    0.71243829E+03,    0.71827540E+05,    0.57078079E+07,  ]
+
+         mobility:
+
+            components:
+               xx:   0.22657412E+06
+               xy:   0.28365983E+02
+               yy:   0.22653059E+06
+               xz:   0.27936084E+02
+               yz:  -0.27944339E+04
+               zz:   0.22653013E+06
+               yx:   0.27990862E+02
+               zx:   0.28275083E+02
+               zy:   0.28506745E+04
+
+
+            tensor:
+               - [    0.22657412E+06,    0.28365983E+02,    0.27936084E+02,  ]
+               - [    0.27990862E+02,    0.22653059E+06,   -0.27944339E+04,  ]
+               - [    0.28275083E+02,    0.28506745E+04,    0.22653013E+06,  ]
+
+         number of iterations:    3
+
+         iteration:
+
+            1:
+
+               conductivity:
+
+                  components:
+                     xx:   0.57090264E+07
+                     xy:   0.70899557E+03
+                     yy:   0.57090264E+07
+                     xz:   0.70901553E+03
+                     yz:   0.70898796E+03
+                     zz:   0.57090263E+07
+                     yx:   0.70899557E+03
+                     zx:   0.70901553E+03
+                     zy:   0.70898796E+03
+
+
+                  tensor:
+                     - [    0.57090264E+07,    0.70899557E+03,    0.70901553E+03,  ]
+                     - [    0.70899557E+03,    0.57090264E+07,    0.70898796E+03,  ]
+                     - [    0.70901553E+03,    0.70898796E+03,    0.57090263E+07,  ]
+
+            2:
+
+               conductivity:
+
+                  components:
+                     xx:   0.57089617E+07
+                     xy:   0.75945386E+03
+                     yy:   0.57084524E+07
+                     xz:   0.83738544E+03
+                     yz:  -0.70509415E+05
+                     zz:   0.57083154E+07
+                     yx:   0.72367853E+03
+                     zx:   0.76651161E+03
+                     zy:   0.71597100E+05
+
+
+                  tensor:
+                     - [    0.57089617E+07,    0.75945386E+03,    0.83738544E+03,  ]
+                     - [    0.72367853E+03,    0.57084524E+07,   -0.70509415E+05,  ]
+                     - [    0.76651161E+03,    0.71597100E+05,    0.57083154E+07,  ]
+
+            3:
+
+               conductivity:
+
+                  components:
+                     xx:   0.57089161E+07
+                     xy:   0.71472866E+03
+                     yy:   0.57078193E+07
+                     xz:   0.70389664E+03
+                     yz:  -0.70410465E+05
+                     zz:   0.57078079E+07
+                     yx:   0.70527687E+03
+                     zx:   0.71243829E+03
+                     zy:   0.71827540E+05
+
+
+                  tensor:
+                     - [    0.57089161E+07,    0.71472866E+03,    0.70389664E+03,  ]
+                     - [    0.70527687E+03,    0.57078193E+07,   -0.70410465E+05,  ]
+                     - [    0.71243829E+03,    0.71827540E+05,    0.57078079E+07,  ]
+
+      2:
+
+         temperature: 300.00000
+
+         chemical potential:   9.8000000000
+
+         concentration:  0.2005268E+19
+
+         magnetic field: [   0.00500,     0.00500,     0.00500,  ]
+
+         conductivity:
+
+            components:
+               xx:   0.15565999E+07
+               xy:  -0.29859935E+05
+               yy:   0.15566073E+07
+               xz:   0.31753691E+05
+               yz:  -0.29864184E+05
+               zz:   0.15566010E+07
+               yx:   0.31746623E+05
+               zx:  -0.29856775E+05
+               zy:   0.31745318E+05
+
+
+            tensor:
+               - [    0.15565999E+07,   -0.29859935E+05,    0.31753691E+05,  ]
+               - [    0.31746623E+05,    0.15566073E+07,   -0.29864184E+05,  ]
+               - [   -0.29856775E+05,    0.31745318E+05,    0.15566010E+07,  ]
+
+         mobility:
+
+            components:
+               xx:   0.48450022E+05
+               xy:  -0.92940678E+03
+               yy:   0.48450252E+05
+               xz:   0.98835098E+03
+               yz:  -0.92953903E+03
+               zz:   0.48450057E+05
+               yx:   0.98813095E+03
+               zx:  -0.92930841E+03
+               zy:   0.98809036E+03
+
+
+            tensor:
+               - [    0.48450022E+05,   -0.92940678E+03,    0.98835098E+03,  ]
+               - [    0.98813095E+03,    0.48450252E+05,   -0.92953903E+03,  ]
+               - [   -0.92930841E+03,    0.98809036E+03,    0.48450057E+05,  ]
+
+         number of iterations:    3
+
+         iteration:
+
+            1:
+
+               conductivity:
+
+                  components:
+                     xx:   0.15582911E+07
+                     xy:   0.25414009E+03
+                     yy:   0.15582911E+07
+                     xz:   0.25414696E+03
+                     yz:   0.25413778E+03
+                     zz:   0.15582911E+07
+                     yx:   0.25414009E+03
+                     zx:   0.25414696E+03
+                     zy:   0.25413778E+03
+
+
+                  tensor:
+                     - [    0.15582911E+07,    0.25414009E+03,    0.25414696E+03,  ]
+                     - [    0.25414009E+03,    0.15582911E+07,    0.25413778E+03,  ]
+                     - [    0.25414696E+03,    0.25413778E+03,    0.15582911E+07,  ]
+
+            2:
+
+               conductivity:
+
+                  components:
+                     xx:   0.15571473E+07
+                     xy:  -0.30166660E+05
+                     yy:   0.15579462E+07
+                     xz:   0.31602772E+05
+                     yz:  -0.30415499E+05
+                     zz:   0.15574567E+07
+                     yx:   0.31322137E+05
+                     zx:  -0.30123086E+05
+                     zy:   0.31349757E+05
+
+
+                  tensor:
+                     - [    0.15571473E+07,   -0.30166660E+05,    0.31602772E+05,  ]
+                     - [    0.31322137E+05,    0.15579462E+07,   -0.30415499E+05,  ]
+                     - [   -0.30123086E+05,    0.31349757E+05,    0.15574567E+07,  ]
+
+            3:
+
+               conductivity:
+
+                  components:
+                     xx:   0.15565999E+07
+                     xy:  -0.29859935E+05
+                     yy:   0.15566073E+07
+                     xz:   0.31753691E+05
+                     yz:  -0.29864184E+05
+                     zz:   0.15566010E+07
+                     yx:   0.31746623E+05
+                     zx:  -0.29856775E+05
+                     zy:   0.31745318E+05
+
+
+                  tensor:
+                     - [    0.15565999E+07,   -0.29859935E+05,    0.31753691E+05,  ]
+                     - [    0.31746623E+05,    0.15566073E+07,   -0.29864184E+05,  ]
+                     - [   -0.29856775E+05,    0.31745318E+05,    0.15566010E+07,  ]
+
+timings:
+
+   time units: s
+
+   PERTURBO:
+      cpu:         2.65785200
+      wall:        0.60177898
+      calls:         1
+...
