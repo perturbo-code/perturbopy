@@ -1,0 +1,24 @@
+test info:
+   executable: perturbo.x 
+
+   epwan: epwan1
+
+   tags:
+      - trans
+      - trans-mag-pp
+      - magnetic
+      - postproc
+      - HDF5-load
+
+   desc:
+      "Postprocessing of the transport calculation with the magnetic field."
+
+   test files:
+
+      pert_output.yml: 
+
+         test keywords:
+            - trans
+
+         abs tol:
+            default: 1e-6

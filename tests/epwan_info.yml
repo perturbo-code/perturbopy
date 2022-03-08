@@ -34,6 +34,7 @@ epwan1:
       - trans-mag-ita
       - trans-rta-pp
       - trans-ita-pp
+      - trans-mag-pp
       - dynamics
 
 epwan2:
