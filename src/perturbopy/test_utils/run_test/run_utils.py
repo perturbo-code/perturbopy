@@ -267,7 +267,7 @@ def setup_default_tol(igns_n_tols):
    return igns_n_tols_updated
 
 
-def get_tol(ig_n_tol, key, exact_match = False):
+def get_tol(ig_n_tol, key, exact_match=False):
    """
    Extract the absolute and relative tolerances for ``key`` from ``ig_n_tol`` dict.
 
@@ -281,7 +281,7 @@ def get_tol(ig_n_tol, key, exact_match = False):
 
    exact_match : bool, optional
       if True, the non-default tolerance if applied to a key only if this key
-      matches exactly with the one from the ig_n_tol; 
+      matches exactly with the one from the ig_n_tol;
       if False, ``str1 in str2`` condition is enough. For example ``phys`` would
       be considered as a key for ``physics`` if exact_match is False.
       Default is False.
@@ -318,7 +318,7 @@ def get_tol(ig_n_tol, key, exact_match = False):
    return float(atol), float(rtol) / 100
 
 
-def key_in_dict(k, d, exact_match = False):
+def key_in_dict(k, d, exact_match=False):
    """
    Check is a key is in dictionary.
 
