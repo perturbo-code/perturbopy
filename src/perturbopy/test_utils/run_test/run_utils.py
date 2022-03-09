@@ -183,7 +183,6 @@ def filter_tests(all_test_list, tags, exclude_tags, epwan, test_names):
             if epwan_name not in epwan and test_name in test_list:
                test_list.remove(test_name)
                
-            
    # test name from command line
    if test_names is not None:
 
