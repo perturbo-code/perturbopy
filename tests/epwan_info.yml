@@ -51,6 +51,10 @@ epwan2:
       - lda
       - fully-relativistic
       - 2D cutoff
+   tests:
+      - bands
+      - phdisp
+      - ephmat
 
 epwan3:
    prefix: graphene
@@ -64,3 +68,37 @@ epwan3:
       - LDA
       - scalar-relativistic
       - 2D cutoff
+
+epwan4:
+   prefix: graphite
+   filename: graphite_epwan.h5
+   SOC: False
+   polar: False
+   description: "Graphite, no SOC"
+   pseudopotential: C from Pseudo-Dojo
+   tags:
+      - norm-conserving
+      - LDA
+      - scalar-relativistic
+
+epwan5:
+   prefix: gaas_uspp
+   filename: gaas_uspp_epwan.h5
+   SOC: True
+   description: "GaAs with SOC + USPP"
+   pseudopotential: Ga and As from QE
+   tags:
+      - ultrasoft
+      - LDA
+      - fully-relativistic
+
+epwan6:
+   prefix: fe
+   filename: fe_epwan.h5
+   SOC: False
+   description: "GaAs with LSDA"
+   pseudopotential: Fe from wannier90 example 
+   tags:
+      - norm-conserving
+      - pbe
+      - lsda

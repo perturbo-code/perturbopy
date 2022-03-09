@@ -1,0 +1,5 @@
+&perturbo
+  prefix      = 'mos2'
+  calc_mode   = 'bands'
+  fklist      = 'band.kpt'
+/

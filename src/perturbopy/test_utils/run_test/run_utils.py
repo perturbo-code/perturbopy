@@ -15,13 +15,15 @@ def read_test_tags(test_name):
 
    Parameters
    ----------
-      test_name : str
-         name of the folder inside the tests/ folder
+   test_name : str
+      name of the folder inside the tests/ folder
 
    Returns
    -------
-      tag_list : list
-         list of tags for a given test
+   tag_list : list
+      list of tags for a given test
+   epwan_name : str
+      name of the epwan file associated with this test
    """
 
    cwd = os.getcwd()
@@ -50,7 +52,7 @@ def read_test_tags(test_name):
    tag_list = input_tags + epwan_tags
    tag_list = sorted(list(set(tag_list)))
 
-   return tag_list
+   return tag_list, epwan_name
 
 
 def get_all_tests():
@@ -103,7 +105,7 @@ def print_test_info(test_name, pert_input):
    sys.stdout.flush()
 
 
-def filter_tests(all_test_list, tags, exclude_tags, test_names):
+def filter_tests(all_test_list, tags, exclude_tags, epwan, test_names):
    """
    Return the list of test folders based on command line options
 
@@ -111,10 +113,16 @@ def filter_tests(all_test_list, tags, exclude_tags, test_names):
    ----------
    all_test_list : list
       list of all the test folders
+
    tags : list or None
       list of tags to include
+
    exclude_tags : list or None
       list of tags to exclude
+
+   epwan : list or None
+      list of the epwan files
+
    test_names : list or None
       list of test folders to include
 
@@ -137,11 +145,11 @@ def filter_tests(all_test_list, tags, exclude_tags, test_names):
    test_list = copy.deepcopy(all_test_list)
 
    # sort based on tags
-   if tags is not None or exclude_tags is not None:
+   if tags is not None or exclude_tags is not None or epwan is not None:
       for test_name in all_test_list:
 
          # tags for a given test
-         test_tag_list = read_test_tags(test_name)
+         test_tag_list, epwan_name = read_test_tags(test_name)
          
          # tags from command line
          if tags is not None:
@@ -168,6 +176,13 @@ def filter_tests(all_test_list, tags, exclude_tags, test_names):
 
             if not keep_test and test_name in test_list:
                test_list.remove(test_name)
+
+         # epwan file name
+         if epwan is not None:
+
+            if epwan_name not in epwan and test_name in test_list:
+               test_list.remove(test_name)
+               
             
    # test name from command line
    if test_names is not None:
