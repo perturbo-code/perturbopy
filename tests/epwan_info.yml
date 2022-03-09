@@ -68,6 +68,10 @@ epwan3:
       - LDA
       - scalar-relativistic
       - 2D cutoff
+   tests:
+      - bands
+      - phdisp
+      - ephmat
 
 epwan4:
    prefix: graphite

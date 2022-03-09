@@ -1,5 +1,5 @@
 &perturbo
   prefix      = 'mos2'
   calc_mode   = 'phdisp'
-  fqlist      = 'phdisp.qpt'
+  fqlist      = 'phdisp_2D.qpt'
 /
