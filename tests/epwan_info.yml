@@ -84,6 +84,10 @@ epwan4:
       - norm-conserving
       - LDA
       - scalar-relativistic
+   tests:
+      - bands
+      - phdisp
+      - ephmat
 
 epwan5:
    prefix: gaas_uspp
@@ -95,6 +99,10 @@ epwan5:
       - ultrasoft
       - LDA
       - fully-relativistic
+   tests:
+      - bands
+      - phdisp
+      - ephmat
 
 epwan6:
    prefix: fe
