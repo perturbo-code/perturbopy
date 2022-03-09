@@ -114,3 +114,7 @@ epwan6:
       - norm-conserving
       - pbe
       - lsda
+   tests:
+      - bands
+      - phdisp
+      - ephmat
