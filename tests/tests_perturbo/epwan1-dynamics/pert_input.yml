@@ -23,3 +23,6 @@ test info:
             default: 1e-6
 
       gaas_cdyna.h5:
+
+         abs tol:
+            default: 5e-6

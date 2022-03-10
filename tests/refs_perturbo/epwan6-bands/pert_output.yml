@@ -2,8 +2,8 @@
 program: perturbo
 
 start date and time:
-   date:  8 March 2022
-   time: "20: 4:45"
+   date:  9 March 2022
+   time: "19:46:39"
 
 parallelization:
    type: MPI+OpenMP
@@ -633,7 +633,7 @@ timings:
    time units: s
 
    PERTURBO:
-      cpu:         1.37073800
-      wall:        0.37328196
+      cpu:         1.15740300
+      wall:        0.35345197
       calls:         1
 ...

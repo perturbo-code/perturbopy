@@ -1,0 +1,15 @@
+&perturbo
+  prefix      = 'gaas'
+  calc_mode   = 'meanfp'
+
+  band_min    = 9
+  band_max    = 10
+
+  fklist      = 'imsigma.kpt'
+  fqlist      = 'imsigma.qpt'
+
+  ftemper     = 'gaas.temper'
+
+  phfreq_cutoff = 2
+  delta_smear   = 1
+/

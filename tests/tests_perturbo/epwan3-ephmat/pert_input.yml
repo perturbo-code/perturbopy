@@ -20,3 +20,10 @@ test info:
 
          test keywords:
             - ephmat 
+
+         abs tol:
+            default: 1e-5
+
+         rel tol:
+            default: 0.02
+

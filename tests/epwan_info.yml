@@ -25,9 +25,12 @@ epwan1:
       - ephmat
       - setup
       - imsigma
+      - imsigma-dense
       - meanfp
+      - meanfp-dense
       - trans-rta
       - trans-ita
+      - trans-ita-dense
       - trans-rta-w-ims
       - trans-ita-w-ims
       - trans-mag-rta
@@ -108,7 +111,7 @@ epwan6:
    prefix: fe
    filename: fe_epwan.h5
    SOC: False
-   description: "GaAs with LSDA"
+   description: "Iron with LSDA"
    pseudopotential: Fe from wannier90 example 
    tags:
       - norm-conserving
