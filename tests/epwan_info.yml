@@ -38,7 +38,10 @@ epwan1:
       - trans-rta-pp
       - trans-ita-pp
       - trans-mag-pp
-      - dynamics
+      - dynamics-euler
+      - dynamics-rk4
+      - dynamics-pp
+      - dynamics-restart
 
 epwan2:
    prefix: mos2

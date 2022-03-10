@@ -5,12 +5,14 @@ test info:
 
    tags:
       - dynamics
+      - dynamics-rk4
       - compute-eph
       - HDF5-output
       - HDF5-load
 
    desc:
-      "Ultrafast carrier dynamics."
+      "Ultrafast carrier dynamics.\n
+       Solver: Runge-Kutta 4th order."
 
    test files:
 
