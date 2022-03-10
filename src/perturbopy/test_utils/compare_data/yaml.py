@@ -1,35 +1,11 @@
 """
    This module contains functions to compare YAML files
 """
-from yaml import load
-try:
-    from yaml import CLoader as Loader
-except ImportError:
-    from yaml import Loader
-
 from numbers import Number
 import numpy as np
 import perturbopy.test_utils.compare_data.h5 as ch5
-
-
-def open_yaml(file_name):
-   """
-   Load YAML file as dictionary
-
-   Parameters
-   ----------
-   file_name : str
-      name of YAML file to be loaded
-
-   Returns
-   -------
-   yaml_dict : dict
-      YAML file loaded as dict
-
-   """
-   with open(file_name, 'r') as file:
-      yaml_dict = load(file, Loader=Loader)
-   return yaml_dict
+from perturbopy.test_utils.run_test.run_utils import get_tol
+from perturbopy.io_utils.io import open_yaml
 
 
 def equal_scalar(scalar1, scalar2, key, ig_n_tol):
@@ -57,20 +33,24 @@ def equal_scalar(scalar1, scalar2, key, ig_n_tol):
    errmsg = ('scalar1/2 are not Numbers')
    assert isinstance(scalar1, Number) and isinstance(scalar2, Number), errmsg
 
-   # dict of tolerances for comparisons
-   tol = ig_n_tol['tolerance']
-   # check if key for scalar has set tolerance
-   if key in tol:
-      delta = tol[key]
-   else:
-      delta = tol['default']
+   atol, rtol = get_tol(ig_n_tol, key)
 
    equal_value = np.allclose(np.array(scalar1),
                              np.array(scalar2),
-                             atol=float(delta),
-                             rtol=0.0,
+                             atol=atol,
+                             rtol=rtol,
                              equal_nan=True)
-   return equal_value
+
+   diff = np.abs(scalar1 - scalar2)
+
+   if np.abs(scalar1) > 1e-10:
+      rdiff = np.abs((scalar2 - scalar1) / scalar1)
+      diff_str = f'{diff:.1e}, {rdiff*100:.1e}%, {scalar1 = }, {scalar2 = }'
+
+   else:
+      diff_str = f'{diff:.1e}'
+
+   return equal_value, diff_str
 
 
 def equal_list(list1, list2, key, ig_n_tol, path):
@@ -125,19 +105,21 @@ def equal_list(list1, list2, key, ig_n_tol, path):
       # pseudo path to current item being compared
       item_path = (f'{path}.list[{index}]')
       if isinstance(item1, dict):
-         equal_value = equal_dict(item1, item2, ig_n_tol, item_path)
+         equal_value, diff = equal_dict(item1, item2, ig_n_tol, item_path)
 
       elif isinstance(item1, list):
-         equal_value = equal_list(item1, item2, key, ig_n_tol, item_path)
+         equal_value, diff = equal_list(item1, item2, key, ig_n_tol, item_path)
 
       elif isinstance(item1, Number):
-         equal_value = equal_scalar(item1, item2, key, ig_n_tol)
+         equal_value, diff = equal_scalar(item1, item2, key, ig_n_tol)
 
       elif isinstance(item1, str):
          equal_value = item1 == item2
+         diff = f'{item1} {item2}'
 
       elif isinstance(item1, type(None)):
          equal_value = item1 == item2
+         diff = None
 
       else:
          errmsg = ('list must only contain values of type dict, list, scalar, None, or str')
@@ -146,10 +128,21 @@ def equal_list(list1, list2, key, ig_n_tol, path):
 
       equal_per_item.append(equal_value)
       if not equal_value:
-         print(f'!!! discrepancy found at {item_path}')
+         print(f'\n !!! discrepancy found at {item_path}')
+         print(f' difference: {diff}')
+
    # equal dicts produce list of only bool=True
-   equal_values  = (len(equal_per_item) == sum(equal_per_item))
-   return equal_values
+   nitems = len(equal_per_item)
+   ncompared = sum(equal_per_item)
+
+   equal_values  = (nitems == ncompared)
+   
+   if equal_values:
+      diff = None
+   else:
+      diff = f'among {nitems} elements, {nitems - ncompared} failed comparison'
+
+   return equal_values, diff
 
 
 def equal_dict(dict1, dict2, ig_n_tol, path):
@@ -202,19 +195,21 @@ def equal_dict(dict1, dict2, ig_n_tol, path):
       # pseudo path to current item being compared
       key_path = (f'{path}.{key}')
       if isinstance(dict1[key], dict):
-         equal_value = equal_dict(dict1[key], dict2[key], ig_n_tol, key_path)
+         equal_value, diff = equal_dict(dict1[key], dict2[key], ig_n_tol, key_path)
 
       elif isinstance(dict1[key], list):
-         equal_value = equal_list(dict1[key], dict2[key], key, ig_n_tol, key_path)
+         equal_value, diff = equal_list(dict1[key], dict2[key], key, ig_n_tol, key_path)
 
       elif isinstance(dict1[key], Number):
-         equal_value = equal_scalar(dict1[key], dict2[key], key, ig_n_tol)
+         equal_value, diff = equal_scalar(dict1[key], dict2[key], key, ig_n_tol)
 
       elif isinstance(dict1[key], str):
          equal_value = dict1[key] == dict2[key]
-
+         diff = f'{dict1[key]} {dict2[key]}'
+   
       elif isinstance(dict1[key], type(None)):
          equal_value = dict1[key] == dict2[key]
+         diff = None
 
       else:
          errmsg = (f'dict must only contain values of type dict, list, scalar, None, or str '
@@ -224,10 +219,21 @@ def equal_dict(dict1, dict2, ig_n_tol, path):
 
       equal_per_key.append(equal_value)
       if not equal_value:
-         print(f'!!! discrepancy found at {key_path}')
+         print(f'\n !!! discrepancy found at {key_path}')
+         print(f' difference: {diff}')
+      
    # equal dicts produce list of only bool=True
-   equal_values  = (len(equal_per_key) == sum(equal_per_key))
-   return equal_values
+   nitems = len(equal_per_key)
+   ncompared = sum(equal_per_key)
+
+   equal_values  = (nitems == ncompared)
+
+   if equal_values:
+      diff = None
+   else:
+      diff = f'among {nitems} elements, {nitems - ncompared} failed comparison'
+
+   return equal_values, diff
 
 
 def equal_values(file1, file2, ig_n_tol):
@@ -266,4 +272,4 @@ def equal_values(file1, file2, ig_n_tol):
       assert len(yaml1_dict) > 0, errmsg
       assert len(yaml2_dict) > 0, errmsg
 
-   return equal_dict(yaml1_dict, yaml2_dict, ig_n_tol, 'top_of_yaml')
+   return equal_dict(yaml1_dict, yaml2_dict, ig_n_tol, 'top of yaml')

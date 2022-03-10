@@ -21,7 +21,24 @@ epwan1:
       - fully-relativistic
    tests:
       - bands
+      - phdisp
+      - ephmat
       - setup
+      - imsigma
+      - imsigma-dense
+      - meanfp
+      - meanfp-dense
+      - trans-rta
+      - trans-ita
+      - trans-ita-dense
+      - trans-rta-w-ims
+      - trans-ita-w-ims
+      - trans-mag-rta
+      - trans-mag-ita
+      - trans-rta-pp
+      - trans-ita-pp
+      - trans-mag-pp
+      - dynamics
 
 epwan2:
    prefix: mos2
@@ -37,6 +54,10 @@ epwan2:
       - lda
       - fully-relativistic
       - 2D cutoff
+   tests:
+      - bands
+      - phdisp
+      - ephmat
 
 epwan3:
    prefix: graphene
@@ -50,3 +71,53 @@ epwan3:
       - LDA
       - scalar-relativistic
       - 2D cutoff
+   tests:
+      - bands
+      - phdisp
+      - ephmat
+
+epwan4:
+   prefix: graphite
+   filename: graphite_epwan.h5
+   SOC: False
+   polar: False
+   description: "Graphite, no SOC"
+   pseudopotential: C from Pseudo-Dojo
+   tags:
+      - norm-conserving
+      - LDA
+      - scalar-relativistic
+   tests:
+      - bands
+      - phdisp
+      - ephmat
+
+epwan5:
+   prefix: gaas_uspp
+   filename: gaas_uspp_epwan.h5
+   SOC: True
+   description: "GaAs with SOC + USPP"
+   pseudopotential: Ga and As from QE
+   tags:
+      - ultrasoft
+      - LDA
+      - fully-relativistic
+   tests:
+      - bands
+      - phdisp
+      - ephmat
+
+epwan6:
+   prefix: fe
+   filename: fe_epwan.h5
+   SOC: False
+   description: "Iron with LSDA"
+   pseudopotential: Fe from wannier90 example 
+   tags:
+      - norm-conserving
+      - pbe
+      - lsda
+   tests:
+      - bands
+      - phdisp
+      - ephmat

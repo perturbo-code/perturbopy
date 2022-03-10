@@ -1,0 +1,124 @@
+---
+program: perturbo
+
+start date and time:
+   date:  6 March 2022
+   time: "17: 7: 0"
+
+parallelization:
+   type: MPI+OpenMP
+   number of MPI tasks:   8
+   number of OpenMP threads:   8
+   number of nodes:   1
+
+input parameters:
+   band_max:                  10
+   band_min:                   9
+   boltz_de:           7.3498617648950546E-05
+   boltz_emax:           7.4968590001929558E-01
+   boltz_emin:           6.9823686766503024E-01
+   boltz_init_dist:          gaussian
+   boltz_init_e0:           7.3498617648950548E-01
+   boltz_init_smear:           2.9399447059580220E-03
+   boltz_kdim:          [        80,          80,          80,  ]
+   boltz_nstep:                  50
+   boltz_qdim:          [        80,          80,          80,  ]
+   calc_mode:          dynamics-run
+   cauchy_scale:           5.0000000745058060E-02
+   debug:          False
+   delta_smear:           5.8798894119160437E-04
+   fklist:          
+   fqlist:          
+   ftemper:          gaas.temper
+   full_ite:          False
+   hole:          False
+   load_scatter_eph:          False
+   nsamples:              100000
+   output_nstep:                   2
+   output_yaml:          True 
+   phfreq_cutoff:           1.4699723529790109E-04
+   polar_split:          
+   prefix:          gaas
+   sampling:          uniform
+   solver:          euler
+   time_step:           2.0670686467503085E+01
+   tmp_dir:          ./tmp/
+   trans_thr:           2.0000000000000000E-03
+   yaml_fname:          pert_output.yml
+
+grid:
+   number of  tetrahedra selected:       2184
+   number of reducible k-points:        531
+   number of irreducible k-points:         43
+
+
+scatter parallelization:
+
+   MPI task index:
+
+      1:
+         number of q-points:            1521
+         number of (k,q) pairs:            6867
+
+      2:
+         number of q-points:            1554
+         number of (k,q) pairs:            6864
+
+      3:
+         number of q-points:            1584
+         number of (k,q) pairs:            6999
+
+      4:
+         number of q-points:            1561
+         number of (k,q) pairs:            7431
+
+      5:
+         number of q-points:            1628
+         number of (k,q) pairs:            7372
+
+      6:
+         number of q-points:            1608
+         number of (k,q) pairs:            8077
+
+      7:
+         number of q-points:            1634
+         number of (k,q) pairs:            8345
+
+      8:
+         number of q-points:            1615
+         number of (k,q) pairs:            7765
+
+timings:
+
+   time units: s
+
+   PERTURBO:
+      cpu:        10.47932800
+      wall:        2.05970192
+      calls:         1
+
+   scat_setup:
+      cpu:         4.93007500
+      wall:        0.93994904
+      calls:         1
+
+   set_kq_pair:
+      cpu:         0.07365600
+      wall:        0.02106905
+      calls:         1
+
+   init_eph_wan:
+      cpu:         1.43665700
+      wall:        0.44202805
+      calls:         1
+
+   compute_g2:
+      cpu:         2.63665300
+      wall:        0.35680199
+      calls:         1
+
+   load_eph_g2:
+      cpu:         0.71104000
+      wall:        0.10987186
+      calls:         1
+...

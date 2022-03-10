@@ -2,7 +2,9 @@
    This module contains functions to compare hdf5 files
 """
 import hdfdict
+from hdfdict.hdfdict import LazyHdfDict
 import numpy as np
+from perturbopy.test_utils.run_test.run_utils import get_tol
 
 
 def equal_scalar(scalar1, scalar2, key, ig_n_tol):
@@ -33,20 +35,24 @@ def equal_scalar(scalar1, scalar2, key, ig_n_tol):
           or (scalar1.dtype == 'float64' and scalar2.dtype == 'float64')
           ), errmsg
 
-   # dict of tolerances for comparisons
-   tol = ig_n_tol['tolerance']
-   # check if key for scalar has set tolerance
-   if key in tol:
-      delta = tol[key]
-   else:
-      delta = tol['default']
+   atol, rtol = get_tol(ig_n_tol, key)
 
    equal_value = np.allclose(np.array(scalar1),
                              np.array(scalar2),
-                             atol=float(delta),
-                             rtol=0.0,
+                             atol=atol,
+                             rtol=rtol,
                              equal_nan=True)
-   return equal_value
+
+   diff = np.abs(scalar1 - scalar2)
+
+   if np.abs(scalar1) > 1e-10:
+      rdiff = np.abs((scalar2 - scalar1) / scalar1)
+      diff_str = f'{diff:.1e}, {rdiff*100:.1e}%, {scalar1 = }, {scalar2 = }'
+
+   else:
+      diff_str = f'{diff:.1e}'
+
+   return equal_value, diff_str
 
 
 def equal_ndarray(ndarray1, ndarray2, key, ig_n_tol):
@@ -75,20 +81,39 @@ def equal_ndarray(ndarray1, ndarray2, key, ig_n_tol):
    assert isinstance(ndarray1, np.ndarray) and isinstance(ndarray2, np.ndarray), \
           errmsg
 
-   # dict of tolerances for comparisons
-   tol = ig_n_tol['tolerance']
-   # check if key for scalar has set tolerance
-   if key in tol:
-      delta = tol[key]
-   else:
-      delta = tol['default']
+   errmsg = ('ndarray1/2 have different shapes')
+   assert ndarray1.shape == ndarray2.shape, errmsg
+
+   atol, rtol = get_tol(ig_n_tol, key)
 
    equal_value = np.allclose(ndarray1,
                              ndarray2,
-                             atol=float(delta),
-                             rtol=0.0,
+                             atol=atol,
+                             rtol=rtol,
                              equal_nan=True)
-   return equal_value
+
+   diff = np.max(np.abs(ndarray1 - ndarray2))
+
+   # find max percentage diff only if comparison fails
+   if not equal_value:
+
+      tmp_array = ndarray1
+      tmp_array[np.abs(tmp_array) < 1e-10] = 1e-10
+
+      idxmax_flat = np.argmax(np.abs((ndarray2 - ndarray1) / tmp_array))
+      idxmax = np.unravel_index(idxmax_flat, ndarray1.shape)
+
+      v1 = ndarray1[idxmax]
+      v2 = ndarray2[idxmax]
+
+      rdiff = np.abs((v2 - v1) / v1)
+      diff_str = (f'{diff:.1e}, {rdiff*100:.1e}%, v1={v1:.1e}, v2={v2:.1e},'
+                  f'atol={atol:.1e}, rtol={rtol:.1e},')
+   
+   else:
+      diff_str = f'{diff:.1e}'
+
+   return equal_value, diff_str
 
 
 def equal_dict(dict1, dict2, ig_n_tol, path):
@@ -119,6 +144,10 @@ def equal_dict(dict1, dict2, ig_n_tol, path):
       boolean specifying if both dicts contain the same keys and values
 
    """
+   if isinstance(dict1, LazyHdfDict) or isinstance(dict2, LazyHdfDict):
+      dict1 = dict(dict1)
+      dict2 = dict(dict2)
+
    # check that dict1 and dict2 are dictionaries
    errmsg = ('dic1/2 are not dictionaries')
    assert isinstance(dict1, dict) and isinstance(dict2, dict), errmsg
@@ -146,14 +175,14 @@ def equal_dict(dict1, dict2, ig_n_tol, path):
 
       # pseudo path to current item being compared
       key_path = (f'{path}.{key}')
-      if isinstance(dict1[key], dict):
-         equal_value = equal_dict(dict1[key], dict2[key], ig_n_tol, key_path)
+      if isinstance(dict1[key], dict) or isinstance(dict1[key], LazyHdfDict):
+         equal_value, diff = equal_dict(dict1[key], dict2[key], ig_n_tol, key_path)
 
       elif isinstance(dict1[key], np.ndarray):
-         equal_value = equal_ndarray(dict1[key], dict2[key], key, ig_n_tol)
+         equal_value, diff = equal_ndarray(dict1[key], dict2[key], key, ig_n_tol)
 
       elif (dict1[key].dtype == 'int32' or dict1[key].dtype == 'float64'):
-         equal_value = equal_scalar(dict1[key], dict2[key], key, ig_n_tol)
+         equal_value, diff = equal_scalar(dict1[key], dict2[key], key, ig_n_tol)
 
       else:
          errmsg = (f'dict must only contain values of type dict, np.ndarray, np.int32,or np.float64 '
@@ -162,11 +191,23 @@ def equal_dict(dict1, dict2, ig_n_tol, path):
          assert known_types_present, errmsg
 
       equal_per_key.append(equal_value)
+
       if not equal_value:
-         print(f'!!! discrepancy found at {key_path}')
+         print(f'\n !!! discrepancy found at {key_path}')
+         print(f' difference: {diff}')
+
    # equal dicts produce list of only bool=True
-   equal_values  = (len(equal_per_key) == sum(equal_per_key))
-   return equal_values
+   nitems = len(equal_per_key)
+   ncompared = sum(equal_per_key)
+
+   equal_values  = (nitems == ncompared)
+
+   if equal_values:
+      diff = None
+   else:
+      diff = f'among {nitems} elements, {nitems - ncompared} failed comparison'
+
+   return equal_values, diff
 
 
 def equal_values(file1, file2, ig_n_tol):
@@ -189,8 +230,15 @@ def equal_values(file1, file2, ig_n_tol):
       boolean specifying if both h5 files contain the same information
 
    """
-   h51_dict = dict(hdfdict.load(file1))
-   h52_dict = dict(hdfdict.load(file2))
+
+   # h51_dict = dict(hdfdict.load(file1))
+   # h52_dict = dict(hdfdict.load(file2))
+
+   h51_dict = hdfdict.load(file1)
+   h52_dict = hdfdict.load(file2)
+
+   h51_dict.unlazy()
+   h52_dict.unlazy()
 
    if 'test keywords' in ig_n_tol:
       h51_del_keys = [key for key in h51_dict.keys() if key not in ig_n_tol['test keywords']]

@@ -79,6 +79,7 @@ def perturbo_scratch_dir_from_env(cwd, perturbo_inputs_dir_path, test_name, rm_p
    src = perturbo_inputs_dir_path
    dst = perturbo_scratch_dir
    if os.path.isdir(dst):
+      print(f'\n directory {dst} exists. Removing this directory ...\n')
       shutil.rmtree(dst)
       shutil.copytree(src, dst)
    else:

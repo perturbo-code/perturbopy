@@ -6,10 +6,11 @@ import sys
 import shlex
 import shutil
 import subprocess
-from perturbopy.test_utils.compare_data.yaml import open_yaml
+from perturbopy.io_utils.io import open_yaml
 from perturbopy.test_utils.run_test.env_utils import perturbo_run_from_env
 from perturbopy.test_utils.run_test.env_utils import perturbo_scratch_dir_from_env
 from perturbopy.test_utils.run_test.run_utils import print_test_info
+from perturbopy.test_utils.run_test.run_utils import setup_default_tol
 
 
 def run_perturbo(cwd, perturbo_driver_dir_path,
@@ -48,7 +49,7 @@ def run_perturbo(cwd, perturbo_driver_dir_path,
 
    print(f'\n ====== Path ======= :\n {os.getcwd()}\n')
 
-   print(f'Running Perturbo:\n{perturbo_run}')
+   print(f' === Running Perturbo === :\n {perturbo_run}')
    sys.stdout.flush()
 
    subprocess.run(shlex.split(perturbo_run))
@@ -101,6 +102,7 @@ def get_test_materials(test_name):
    new_outs    = [work_path + '/' + out_file for out_file in out_files]
 
    # remove outputs if they already exist
+   # WARNING: the output files can sometimes serve as inputs
    for out_file in new_outs:
       if os.path.exists(out_file):
          os.remove(out_file)
@@ -149,54 +151,7 @@ def clean_test_materials(test_name, new_outs):
    work_path                = perturbo_scratch_dir_from_env(cwd, perturbo_inputs_dir_path, test_name, rm_preexist_dir=False)
 
    if os.path.isdir(work_path):
-      print(f'\n === Test: {test_name} passed. ===\n\n Removing {work_path} ...')
+      print(f'\n === Test {test_name} passed ===\n\n Removing {work_path} ...')
       shutil.rmtree(work_path)
 
    return None
-
-
-def setup_default_tol(igns_n_tols):
-   """
-   Setup the default tolerances for each file to compare if the tolerances are
-   not specified in the pert_input.yml file.
-
-   This function ensures that every output file to compare has the following
-   dictionary structure:
-
-   .. code-block :: python
-
-      output_file.yml:
-         tolerance:
-            default:
-               1e-10
-
-   Parameters
-   ----------
-   igns_n_tols : dict
-      dictionary containing the ignore keywords and tolerances needed to performance comparison of ref_outs and new_outs
-   
-   Returns
-   -------
-   igns_n_tols_updated : dict
-      **updated** dictionary containing the ignore keywords and tolerances
-
-   """
-
-   default_tolerance = 1e-10
-
-   igns_n_tols_updated = []
-
-   for outfile in igns_n_tols:
-
-      if not isinstance(outfile, dict):
-         outfile = {'tolerance': {'default': default_tolerance}}
-      
-      elif 'tolerance' not in outfile.keys():
-         outfile['tolerance'] = {'default': default_tolerance}
-
-      elif 'default' not in outfile['tolerance'].keys():
-         outfile['tolerance']['default'] = default_tolerance
-
-      igns_n_tols_updated.append(outfile)
-
-   return igns_n_tols_updated

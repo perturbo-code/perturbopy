@@ -4,6 +4,7 @@ test info:
    epwan: epwan1
 
    tags:
+      - high-sym-k
       - bands
 
    desc:
@@ -12,20 +13,5 @@ test info:
 
    test files:
       pert_output.yml: 
-         
-         #only applies to top dict 
          test keywords:
             - bands 
-
-         #applies to dict at all levels
-         ignore keywords:
-            - input parameters
-            - start date and time
-            - timings
-
-         #applies to dict at all levels
-         tolerance:
-            default:
-               1e-10      
-            band index:
-               1e-11

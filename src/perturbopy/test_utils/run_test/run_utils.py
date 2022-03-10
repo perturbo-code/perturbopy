@@ -5,7 +5,7 @@
 import os
 import sys
 import copy
-from perturbopy.test_utils.compare_data.yaml import open_yaml
+from perturbopy.io_utils.io import open_yaml
 
 
 def read_test_tags(test_name):
@@ -15,13 +15,15 @@ def read_test_tags(test_name):
 
    Parameters
    ----------
-      test_name : str
-         name of the folder inside the tests/ folder
+   test_name : str
+      name of the folder inside the tests/ folder
 
    Returns
    -------
-      tag_list : list
-         list of tags for a given test
+   tag_list : list
+      list of tags for a given test
+   epwan_name : str
+      name of the epwan file associated with this test
    """
 
    cwd = os.getcwd()
@@ -50,7 +52,7 @@ def read_test_tags(test_name):
    tag_list = input_tags + epwan_tags
    tag_list = sorted(list(set(tag_list)))
 
-   return tag_list
+   return tag_list, epwan_name
 
 
 def get_all_tests():
@@ -103,7 +105,7 @@ def print_test_info(test_name, pert_input):
    sys.stdout.flush()
 
 
-def filter_tests(all_test_list, tags, exclude_tags, test_names):
+def filter_tests(all_test_list, tags, exclude_tags, epwan, test_names):
    """
    Return the list of test folders based on command line options
 
@@ -111,10 +113,16 @@ def filter_tests(all_test_list, tags, exclude_tags, test_names):
    ----------
    all_test_list : list
       list of all the test folders
+
    tags : list or None
       list of tags to include
+
    exclude_tags : list or None
       list of tags to exclude
+
+   epwan : list or None
+      list of the epwan files
+
    test_names : list or None
       list of test folders to include
 
@@ -137,11 +145,11 @@ def filter_tests(all_test_list, tags, exclude_tags, test_names):
    test_list = copy.deepcopy(all_test_list)
 
    # sort based on tags
-   if tags is not None or exclude_tags is not None:
+   if tags is not None or exclude_tags is not None or epwan is not None:
       for test_name in all_test_list:
 
          # tags for a given test
-         test_tag_list = read_test_tags(test_name)
+         test_tag_list, epwan_name = read_test_tags(test_name)
          
          # tags from command line
          if tags is not None:
@@ -168,7 +176,13 @@ def filter_tests(all_test_list, tags, exclude_tags, test_names):
 
             if not keep_test and test_name in test_list:
                test_list.remove(test_name)
-            
+
+         # epwan file name
+         if epwan is not None:
+
+            if epwan_name not in epwan and test_name in test_list:
+               test_list.remove(test_name)
+               
    # test name from command line
    if test_names is not None:
 
@@ -181,7 +195,7 @@ def filter_tests(all_test_list, tags, exclude_tags, test_names):
       
       for test_name_cmd in test_names:
          if test_name_cmd not in all_test_list:
-            errmsg = (f'Test {test_name_cmd} does not exist, \n'
+            errmsg = (f'Test {test_name_cmd} is not listed in epwan_info.yml, \n'
                       'but specified in --test-names option.'
                      )
             raise ValueError(errmsg)
@@ -197,3 +211,158 @@ def filter_tests(all_test_list, tags, exclude_tags, test_names):
    sys.stdout.flush()
 
    return test_list
+
+
+def setup_default_tol(igns_n_tols):
+   """
+   Setup the default tolerances for each file to compare if the tolerances are
+   not specified in the pert_input.yml file.
+
+   This function ensures that every output file to compare has the following
+   dictionary structure:
+
+   .. code-block :: python
+
+      output_file.yml:
+         abs tol:
+            default:
+               1e-8
+
+         # in percents
+         rel tol:
+            default:
+               0.01
+
+   The elements are considerent different if the following equation does not apply:
+
+   >>> absolute(a - b) <= (abs_tol + rel_tol * absolute(b))
+
+   Parameters
+   ----------
+   igns_n_tols : dict
+      dictionary containing the ignore keywords and tolerances needed to performance comparison of ref_outs and new_outs
+
+   Returns
+   -------
+   igns_n_tols_updated : dict
+      **updated** dictionary containing the ignore keywords and tolerances
+
+   """
+
+   default_abs_tol = 1e-8
+   default_rel_tol = 0.01
+
+   igns_n_tols_updated = []
+
+   for outfile in igns_n_tols:
+
+      if not isinstance(outfile, dict):
+         outfile = {'abs tol':
+                    {'default': default_abs_tol},
+                    'rel tol':
+                    {'default': default_rel_tol}
+                   }
+
+      else:
+         if 'abs tol' not in outfile.keys():
+            outfile['abs tol'] = {'default': default_abs_tol}
+
+         elif 'default' not in outfile['abs tol'].keys():
+            outfile['abs tol']['default'] = default_abs_tol
+
+         if 'rel tol' not in outfile.keys():
+            outfile['rel tol'] = {'default': default_rel_tol}
+
+         elif 'default' not in outfile['rel tol'].keys():
+            outfile['rel tol']['default'] = default_rel_tol
+
+      igns_n_tols_updated.append(outfile)
+
+   return igns_n_tols_updated
+
+
+def get_tol(ig_n_tol, key, exact_match=False):
+   """
+   Extract the absolute and relative tolerances for ``key`` from ``ig_n_tol`` dict.
+
+   Parameters
+   ----------
+   ig_n_tol : dict
+      dictionary of ignore keywords and tolerances needed to make comparison on values
+   key : str
+      A key for the tolerance. If this key is not specified in the tolerance dict,
+      a default tolerance will be applied.
+
+   exact_match : bool, optional
+      if True, the non-default tolerance if applied to a key only if this key
+      matches exactly with the one from the ig_n_tol;
+      if False, ``str1 in str2`` condition is enough. For example ``phys`` would
+      be considered as a key for ``physics`` if exact_match is False.
+      Default is False.
+
+   .. note ::
+      The ``rel tol`` from the dictionary is assumed to be in **percents**.
+
+   Returns
+   -------
+   atol : float
+      absolute tolerance for key
+   rtol : float
+      relative tolerance for key
+   """
+
+   atol_dict = ig_n_tol['abs tol']
+
+   kname, cond = key_in_dict(key, atol_dict, exact_match=exact_match)
+
+   if cond:
+      atol = atol_dict[kname]
+   else:
+      atol = atol_dict['default']
+
+   rtol_dict = ig_n_tol['rel tol']
+
+   kname, cond = key_in_dict(key, rtol_dict, exact_match=exact_match)
+
+   if cond:
+      rtol = rtol_dict[kname]
+   else:
+      rtol = rtol_dict['default']
+
+   return float(atol), float(rtol) / 100
+
+
+def key_in_dict(k, d, exact_match=False):
+   """
+   Check is a key is in dictionary.
+
+   Parameters
+   ----------
+   k : str
+      A dictionary key.
+   d : dict
+      A dictionary.
+
+   exact_match : bool
+      Whether apply or not the exact match condition for the key
+
+   Returns
+   -------
+   key : str
+      A key from dictionary d that contains k
+
+   condition : bool
+      True is the key k is in dict d
+   """
+
+   if exact_match:
+      return k, k in d
+
+   else:
+   
+      for kk in d:
+         if str(k) in str(kk) or str(kk) in str(k):
+            return kk, True
+            break
+
+      return k, False

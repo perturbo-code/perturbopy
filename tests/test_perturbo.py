@@ -8,7 +8,7 @@ import pytest
 import subprocess
 
 
-def test_epwan1_bands(test_name):
+def test_perturbo(test_name):
    """
    Driver to run the tests for the perturbo.x executable.
 
@@ -29,9 +29,13 @@ def test_epwan1_bands(test_name):
 
    # compare all files
    for ref_file, new_file, ign_n_tol in zip(ref_outs,new_outs,igns_n_tols):
+
       ref_file_short = '/'.join(os.path.normpath(ref_file).split(os.sep)[-3:])
       new_file_short = '/'.join(os.path.normpath(new_file).split(os.sep)[-3:])
-      print(f'\ncomparing files {ref_file_short} and {new_file_short}')
+
+      #print(f'\ncomparing files {ref_file_short} and {new_file_short}')
+      print(f'\n comparing files: \n {ref_file}  {new_file}')
+
       errmsg = (f'files {ref_file} and {new_file} do not match')
       assert equal_values(ref_file, new_file, ign_n_tol), errmsg
 

@@ -4,22 +4,19 @@ test info:
    epwan: epwan1
 
    tags:
+      - setup
       - HDF5-output
 
    desc:
-      "Set up transport property calculations"
+      "Set up the grids for transport property calculations"
 
    test files:
+
       pert_output.yml: 
-         
-         #only applies to top dict 
+
          test keywords:
             - DOS 
-
-         #applies to dict at all levels
-         ignore keywords:
-            - input parameters
-            - start date and time
-            - timings
+            - grid
+            - carrier density
 
       gaas_tet.h5:

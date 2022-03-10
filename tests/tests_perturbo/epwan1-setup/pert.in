@@ -1,13 +1,18 @@
 &perturbo
-  prefix      = 'gaas'
-  calc_mode   = 'setup'
+  prefix        = 'gaas'
+  calc_mode     = 'setup'
   
-  boltz_kdim(1) = 20
-  boltz_kdim(2) = 20
-  boltz_kdim(3) = 20
-  boltz_emin = 5.665  !CBM=6.065
-  boltz_emax = 6.265  !CBM+200meV
-  band_min = 5, band_max = 5
+  boltz_kdim(1) = 10
+  boltz_kdim(2) = 10
+  boltz_kdim(3) = 10
+
+  boltz_emin    =  9.5   ! VBM = 9.26 eV
+  boltz_emax    = 10.4   ! CBM = 9.71 
+
+  ! 7, 8 valence bands
+  ! 9,10 conduction bands
+  band_min      = 9
+  band_max      = 10
 
   ftemper = 'gaas.temper'
  /

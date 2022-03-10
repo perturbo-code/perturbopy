@@ -11,6 +11,10 @@ def pytest_addoption(parser):
                     help = 'List of tags to exclude from this testsuite run.',
                     nargs='*', default = None)
 
+   parser.addoption('--epwan',
+                    help = 'List of epwan files to test.',
+                    nargs='*', default = None)
+
    parser.addoption('--test-names',
                     help = 'List of test folder names to include in this testsuite run.',
                     nargs='*', default = None)
@@ -27,6 +31,7 @@ def pytest_generate_tests(metafunc):
                                all_test_list,
                                metafunc.config.getoption('tags'),
                                metafunc.config.getoption('exclude_tags'),
+                               metafunc.config.getoption('epwan'),
                                metafunc.config.getoption('test_names'),
                               )
 

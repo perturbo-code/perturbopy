@@ -1,0 +1,8 @@
+&perturbo
+  prefix      = 'mos2'
+  calc_mode   = 'ephmat'
+  fklist      = 'eph_2D.kpt'
+  fqlist      = 'eph_2D.qpt'
+
+  phfreq_cutoff = 1   ! meV
+/
