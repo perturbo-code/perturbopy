@@ -3,7 +3,7 @@ program: perturbo
 
 start date and time:
    date: 10 March 2022
-   time: "14: 2:53"
+   time: "16:19:35"
 
 parallelization:
    type: MPI+OpenMP
@@ -21,9 +21,9 @@ input parameters:
       boltz_init_dist:          gaussian
       boltz_init_e0:           7.3498617648950548E-01
       boltz_init_smear:           2.9399447059580220E-03
-      boltz_kdim:          [        80,          80,          80,  ]
+      boltz_kdim:          [        50,          50,          50,  ]
       boltz_nstep:                  50
-      boltz_qdim:          [        80,          80,          80,  ]
+      boltz_qdim:          [        50,          50,          50,  ]
       calc_mode:          dynamics-run
       cauchy_scale:           5.0000000745058060E-02
       debug:          False
@@ -48,9 +48,9 @@ input parameters:
       yaml_fname:          pert_output.yml
 
 grid:
-   number of  tetrahedra selected:       2184
-   number of reducible k-points:        531
-   number of irreducible k-points:         43
+   number of  tetrahedra selected:       3816
+   number of reducible k-points:       1055
+   number of irreducible k-points:         89
 
 
 scatter parallelization:
@@ -58,68 +58,78 @@ scatter parallelization:
    MPI task index:
 
       1:
-         number of q-points:            1521
-         number of (k,q) pairs:            6867
+         number of q-points:            7170
+         number of (k,q) pairs:           34220
 
       2:
-         number of q-points:            1554
-         number of (k,q) pairs:            6864
+         number of q-points:            7077
+         number of (k,q) pairs:           33518
 
       3:
-         number of q-points:            1584
-         number of (k,q) pairs:            6999
+         number of q-points:            7112
+         number of (k,q) pairs:           33858
 
       4:
-         number of q-points:            1561
-         number of (k,q) pairs:            7431
+         number of q-points:            7091
+         number of (k,q) pairs:           34195
 
       5:
-         number of q-points:            1628
-         number of (k,q) pairs:            7372
+         number of q-points:            6885
+         number of (k,q) pairs:           33658
 
       6:
-         number of q-points:            1608
-         number of (k,q) pairs:            8077
+         number of q-points:            6702
+         number of (k,q) pairs:           30396
 
       7:
-         number of q-points:            1634
-         number of (k,q) pairs:            8345
+         number of q-points:            6812
+         number of (k,q) pairs:           31819
 
       8:
-         number of q-points:            1615
-         number of (k,q) pairs:            7765
+         number of q-points:            7113
+         number of (k,q) pairs:           34795
 
 timings:
 
    time units: s
 
    PERTURBO:
-      cpu:        10.51529000
-      wall:        1.74429417
+      cpu:        34.35889100
+      wall:        4.78312302
       calls:         1
 
    scat_setup:
-      cpu:         5.72515000
-      wall:        0.89801693
+      cpu:        14.80457900
+      wall:        2.06853008
       calls:         1
 
    set_kq_pair:
-      cpu:         0.40433600
-      wall:        0.07570696
+      cpu:         1.92519200
+      wall:        0.26085401
       calls:         1
 
    init_eph_wan:
-      cpu:         1.43483500
-      wall:        0.28172207
+      cpu:         1.44814100
+      wall:        0.30270696
       calls:         1
 
    compute_g2:
-      cpu:         2.96736300
-      wall:        0.40122008
+      cpu:        10.28508400
+      wall:        1.32863784
       calls:         1
 
    load_eph_g2:
-      cpu:         0.88040700
-      wall:        0.13357806
+      cpu:         0.93987800
+      wall:        0.14597487
       calls:         1
+
+   dynamics_tot:
+      cpu:        18.38255000
+      wall:        2.30457783
+      calls:         1
+
+   dynamics_col:
+      cpu:        18.21884700
+      wall:        2.28312826
+      calls:       200
 ...
