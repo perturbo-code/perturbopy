@@ -42,6 +42,10 @@ epwan1:
       - dynamics-rk4
       - dynamics-pp
       - dynamics-restart
+      - dynamics-efield
+      - dynamics-efield-pp
+      - dynamics-efield-norm
+      - dynamics-efield-norm-pp
 
 epwan2:
    prefix: mos2
