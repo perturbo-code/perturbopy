@@ -9,5 +9,10 @@ call(['pip','install','.'])
 
 from perturbopy.postproc.utils.constants import *
 
-print(convert_energy_units(0.5,'ha','J'))
-print(convert_energy_units(0.5,'ha','electronvolt'))
+print(energy_conversion_factor('ha','J'))
+print(energy_conversion_factor('ha','eLectronvolt'))
+print(energy_conversion_factor('ha','mJ'))
+print(energy_conversion_factor('ha','miLliJoule'))
+print(energy_conversion_factor('ha','milli-Joule'))
+print(energy_conversion_factor('ha','MJ'))
+print(energy_conversion_factor('ha','millielectronvolt'))
