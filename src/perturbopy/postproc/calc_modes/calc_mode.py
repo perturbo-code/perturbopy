@@ -1,6 +1,5 @@
 import os
 from perturbopy.io_utils.io import open_yaml
-import numpy as np
 
 
 class CalcMode():
@@ -58,50 +57,3 @@ class CalcMode():
       yaml_dict = open_yaml(yaml_path)
 
       return cls(yaml_dict)
-
-   def cryst_to_cart(self, vectors, forward=True, real_space=True, col_oriented=True):
-      """
-      Method to convert atomic coordinates and k-point coordinates
-      between crystal and cartesian coordinates, given the lattice
-      used in this calculation.
-
-      Parameters
-      ----------
-      vectors : array
-         Array of vectors [v1, v2, v3 ...] to be converted
-      forward : bool
-         If true, vectors will be converted from crystal to cartesian
-         coordinates. If false, vectors will be converted from
-         cartesian to crystal coordinates
-
-      real_space : bool
-         If true, vectors are assumed to be in real space
-         (i.e. atomic positions). If false, vectors are assumed to
-         be in reciprocal space (i.e. k-points)
-
-      Returns
-      -------
-      converted_vectors : array
-         Array containing the converted vectors
-
-      """
-
-      if forward:
-         if real_space:
-            conversion_mat = self.lat
-         else:
-            conversion_mat = self.recip_lat
-      
-      else:
-         if real_space:
-            conversion_mat = np.transpose(self.recip_lat)
-         else:
-            conversion_mat = np.transpose(self.lat)
-
-      if not col_oriented:
-         conversion_mat = np.transpose(conversion_mat)
-         converted_vectors = np.tensordot(vectors, conversion_mat, axes=1)
-      else:
-         converted_vectors = np.tensordot(conversion_mat, vectors, axes=1)
-
-      return converted_vectors
