@@ -6,7 +6,7 @@ from perturbopy.postproc.calc_modes.calc_mode import CalcMode
 from perturbopy.postproc.utils.constants import energy_conversion_factor, length_conversion_factor
 from perturbopy.postproc.dbs.energies_db import EnergiesDB
 from perturbopy.postproc.dbs.kpts_db import KptsDB
-from perturbopy.postproc.utils.plotting_utils import plot_bands
+from perturbopy.postproc.utils.plot_tools import plot_bands
 
 
 class BandsCalcMode(CalcMode):
@@ -20,7 +20,7 @@ class BandsCalcMode(CalcMode):
 
    """
 
-   def __init__(self, pert_dict, kpt_labels={}):
+   def __init__(self, pert_dict):
       """
       Constructor method
 
@@ -39,7 +39,7 @@ class BandsCalcMode(CalcMode):
       nbands = self._pert_dict['bands'].pop('number of bands')
       energy_units = self._pert_dict['bands'].pop('band units')
 
-      self.kpt_db = KptsDB.from_lattice(kpts, kpt_units, self.lat, self.recip_lat, kpath, kpath_units, kpt_labels)
+      self.kpt_db = KptsDB.from_lattice(kpts, kpt_units, self.lat, self.recip_lat, kpath, kpath_units)
       self.bands = EnergiesDB(bands, energy_units, nbands)
 
    def compute_indirect_bandgap(self, n_initial, n_final):
@@ -103,6 +103,28 @@ class BandsCalcMode(CalcMode):
       return gap, kpt
 
    def compute_effective_mass(self, n, kpt, max_distance):
+      """
+      Method to compute the effective mass approximated by a fitting a parabola
+      around a k-point
+   
+      Parameters
+      ----------
+      n : int
+         Index of the band to perform the calculation on
+      
+      kpt : int
+         The k-point to center the calculation on
+
+      max_distance : float
+         Maximum distance between the center k-point and k-points
+         to include in the calculation
+
+      Returns
+      -------
+      effective_mass : float
+         The effective mass computed by the parabolic approximation
+
+      """
       kpt_coordinates = self.kpt_db.kpts_cart
       energies = self.bands.energies[n] * energy_conversion_factor(self.bands.units, 'hartree')
       alat = self.alat * length_conversion_factor(self.alat_units, 'bohr')
@@ -110,7 +132,7 @@ class BandsCalcMode(CalcMode):
       # assume kpt in cartesian coords
       E_0 = energies[self.kpt_db.find_kpt(kpt)]
 
-      kpt_distances_squared = np.sum(np.square(kpt_coordinates - np.reshape(np.array(kpt), (3,1))), axis=0)
+      kpt_distances_squared = np.sum(np.square(kpt_coordinates - np.reshape(np.array(kpt), (3, 1))), axis=0)
 
       kpt = np.array(kpt)
       kpt_indices = np.where(kpt_distances_squared < max_distance)
@@ -134,4 +156,3 @@ class BandsCalcMode(CalcMode):
 
    def plot_bands(self, ax, show_kpt_labels=True, **kwargs):
       return plot_bands(ax, self.kpt_db, self.bands, show_kpt_labels, **kwargs)
-      

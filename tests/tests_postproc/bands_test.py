@@ -10,50 +10,49 @@ conda_path = 'C:/Users/shael/Anaconda3/Scripts/conda.exe'
 os.chdir(repo_dir)
 call(['pip','install','.'])
 
-from perturbopy.postproc.calc_modes.bands_calc_mode import BandsCalcMode
-ge_bands_calc = BandsCalcMode.from_yaml(os.path.join('tests', 'refs_postproc', 'ge_bands.yml'))
+import perturbopy as ppy
+ge_bands_calc = ppy.BandsCalcMode.from_yaml(os.path.join('tests', 'refs_postproc', 'ge_bands.yml'))
 
 ###### TEST CONSTANTS #######
-from perturbopy.postproc.utils.constants import *
 
 # Test prefix_exp
-assert(prefix_exp('m') == -3)
-assert(prefix_exp('M') == 6)
-assert(prefix_exp('mu') == -6)
-assert(prefix_exp('Y') == 24)
-assert(prefix_exp('') == 0)
+assert(ppy.constants.prefix_exp('m') == -3)
+assert(ppy.constants.prefix_exp('M') == 6)
+assert(ppy.constants.prefix_exp('mu') == -6)
+assert(ppy.constants.prefix_exp('Y') == 24)
+assert(ppy.constants.prefix_exp('') == 0)
 
 # Test prefix_conversion_exp
-assert(prefix_conversion_exp('m') == 3)
-assert(prefix_conversion_exp('M') == -6)
-assert(prefix_conversion_exp('mu') == 6)
-assert(prefix_conversion_exp('Y') == -24)
-assert(prefix_conversion_exp('') == 0)
+assert(ppy.constants.prefix_conversion_exp('m') == 3)
+assert(ppy.constants.prefix_conversion_exp('M') == -6)
+assert(ppy.constants.prefix_conversion_exp('mu') == 6)
+assert(ppy.constants.prefix_conversion_exp('Y') == -24)
+assert(ppy.constants.prefix_conversion_exp('') == 0)
 
-# Test find_prefix_and_root_units
+# Test find_prefix_and_base_units
 
 test_dict = {'bohr':['bohr', 'a.u', 'atomic units', 'au'], 'angstrom':['angstrom, a'], 'm':['m', 'meter'] }
 
-assert(find_prefix_and_root_units('a.u', test_dict) == ('', 'bohr'))
-assert(find_prefix_and_root_units('A.U', test_dict) == ('', 'bohr'))
-assert(find_prefix_and_root_units('bohr', test_dict) == ('', 'bohr'))
-assert(find_prefix_and_root_units('Bohr', test_dict) == ('', 'bohr'))
-assert(find_prefix_and_root_units('nm', test_dict) == ('n', 'm'))
+assert(ppy.constants.find_prefix_and_base_units('a.u', test_dict) == ('', 'bohr'))
+assert(ppy.constants.find_prefix_and_base_units('A.U', test_dict) == ('', 'bohr'))
+assert(ppy.constants.find_prefix_and_base_units('bohr', test_dict) == ('', 'bohr'))
+assert(ppy.constants.find_prefix_and_base_units('Bohr', test_dict) == ('', 'bohr'))
+assert(ppy.constants.find_prefix_and_base_units('nm', test_dict) == ('n', 'm'))
 
 
 # Test standardize_units_name
-assert(standardize_units_name('a.u', test_dict) == 'bohr')
-assert(standardize_units_name('A.U', test_dict) == 'bohr')
-assert(standardize_units_name('bohr', test_dict) == 'bohr')
-assert(standardize_units_name('Bohr', test_dict) == 'bohr')
-assert(standardize_units_name('nm', test_dict) == 'nm')
+assert(ppy.constants.standardize_units_name('a.u', test_dict) == 'bohr')
+assert(ppy.constants.standardize_units_name('A.U', test_dict) == 'bohr')
+assert(ppy.constants.standardize_units_name('bohr', test_dict) == 'bohr')
+assert(ppy.constants.standardize_units_name('Bohr', test_dict) == 'bohr')
+assert(ppy.constants.standardize_units_name('nm', test_dict) == 'nm')
 
 # Test conversion_factor
 test_vals = {'bohr': (1, 0), 'angstrom': (0.529177249, 0), 'm': (5.29177249, -11)}
-assert(isclose(conversion_factor('a.u', 'bohr', test_dict, test_vals), 1))
-assert(isclose(conversion_factor('a.u', 'nm', test_dict, test_vals), 5.29177249e-2))
-assert(isclose(conversion_factor('cm', 'fm', test_dict, test_vals), 1e13))
-assert(isclose(conversion_factor('fm', 'cm', test_dict, test_vals), 1e-13))
+assert(isclose(ppy.constants.conversion_factor('a.u', 'bohr', test_dict, test_vals), 1))
+assert(isclose(ppy.constants.conversion_factor('a.u', 'nm', test_dict, test_vals), 5.29177249e-2))
+assert(isclose(ppy.constants.conversion_factor('cm', 'fm', test_dict, test_vals), 1e13))
+assert(isclose(ppy.constants.conversion_factor('fm', 'cm', test_dict, test_vals), 1e-13))
 
 # Test energy_conversion_factor
 
@@ -63,40 +62,37 @@ assert(isclose(conversion_factor('fm', 'cm', test_dict, test_vals), 1e-13))
 
 
 ####### TEST LATTICE UTILS #######
-from perturbopy.postproc.utils.lattice_utils import cryst_to_cart, reshape_kpts
 
 # Test reshape_kpts
 kpts = [[1,2,3],[0,0,0],[4,5,6]]
-assert(np.all(reshape_kpts(kpts)==np.array(kpts)))
+assert(np.all(ppy.lattice.reshape_kpts(kpts)==np.array(kpts)))
 
 kpts=np.array(kpts)
-assert(np.all(reshape_kpts(kpts)==kpts))
+assert(np.all(ppy.lattice.reshape_kpts(kpts)==kpts))
 
 kpts = ([[1,2,3],[0,0,0],[4,5,6],[1,1,1],[2,2,2]])
-assert(np.shape(reshape_kpts(kpts))==(3,5))
-assert(np.all(reshape_kpts(kpts)==np.transpose(np.array(kpts))))
+assert(np.shape(ppy.lattice.reshape_kpts(kpts))==(3,5))
+assert(np.all(ppy.lattice.reshape_kpts(kpts)==np.transpose(np.array(kpts))))
 
 kpts = ([[1,2,3,3,2,1,4],[0,0,0,0,0,0,0],[1,2,1,1,1,1,1]])
-np.shape(reshape_kpts(kpts))==(3,7)
-assert(np.all(reshape_kpts(kpts)==(np.array(kpts))))
+np.shape(ppy.lattice.reshape_kpts(kpts))==(3,7)
+assert(np.all(ppy.lattice.reshape_kpts(kpts)==(np.array(kpts))))
 
 # Test cryst_to_cart
 
 vectors_cryst = [[1,0.3],[1,0],[1,0.4]]
 vectors_cart = [[1,   0.15], [1,   0.2 ], [1,   0.35]]
-assert(np.all(cryst_to_cart(vectors_cryst, ge_bands_calc.lat, ge_bands_calc.recip_lat, forward=True, real_space=True) == vectors_cart))
+assert(np.all(ppy.lattice.cryst_to_cart(vectors_cryst, ge_bands_calc.lat, ge_bands_calc.recip_lat, forward=True, real_space=True) == vectors_cart))
 # assert(np.all(cryst_to_cart(vectors_cart, ge_bands_calc.lat, ge_bands_calc.recip_lat, forward=False, real_space=True) == vectors_cryst))
 
 lat = [[0.5, 0.5, 0.0], [0.0, 0.5, 0.5], [0.5, 0.0, 0.5]]
 recip_lat = [[1.0, 1.0, -1.0], [-1.0, 1.0, 1.0], [1.0, -1.0, 1.0]]
 vectors_cryst = [[0,0,0.5,0.25,0.25,0.375], [0,0.5,0.5,0.75,0.625,0.75], [0,0.5,0.5,0.5,0.625,0.375]]	
 vectors_cart = [[0, 0, 0.5, 0.5,  0.25, 0.75], [0, 1, 0.5, 1,   1,   0.75], [0,   0,   0.5, 0,   0.25,0.]]
-assert(np.all(cryst_to_cart(vectors_cryst, ge_bands_calc.lat, ge_bands_calc.recip_lat, forward=True, real_space=False) == vectors_cart))
-assert(np.all(cryst_to_cart(vectors_cart, ge_bands_calc.lat, ge_bands_calc.recip_lat, forward=False, real_space=False) == vectors_cryst))
+assert(np.all(ppy.lattice.cryst_to_cart(vectors_cryst, ge_bands_calc.lat, ge_bands_calc.recip_lat, forward=True, real_space=False) == vectors_cart))
+assert(np.all(ppy.lattice.cryst_to_cart(vectors_cart, ge_bands_calc.lat, ge_bands_calc.recip_lat, forward=False, real_space=False) == vectors_cryst))
 
 ####### TEST KPT LIST #######
-from perturbopy.postproc.dbs.kpts_db import KptsDB
-
 # Test constructor
 kpts_cart = vectors_cart
 kpts_cryst = vectors_cryst
@@ -105,14 +101,14 @@ units = 'cryst'
 lat = [[0.5, 0.5, 0.0], [0.0, 0.5, 0.5], [0.5, 0.0, 0.5]]
 recip_lat = [[1.0, 1.0, -1.0], [-1.0, 1.0, 1.0], [1.0, -1.0, 1.0]]
 
-kpts_db = KptsDB(kpts_cart, kpts_cryst, units='crystal', kpath=None, kpath_units='arbitrary', labels=None)
+kpts_db = ppy.KptsDB(kpts_cart, kpts_cryst, units='crystal', kpath=None, kpath_units='arbitrary', labels=None)
 assert(np.all(kpts_db.kpts_cart == vectors_cart))
 assert(np.all(kpts_db.kpts_cryst == vectors_cryst))
 assert(kpts_db.units == 'crystal')
 assert(len(kpts_db.kpath==7))
 
 # Test from_lattice
-kpts_db2 = KptsDB.from_lattice(kpts_cryst, 'cryst', lat, recip_lat)
+kpts_db2 = ppy.KptsDB.from_lattice(kpts_cryst, 'cryst', lat, recip_lat)
 assert(np.all(kpts_db2.kpts_cryst == vectors_cryst))
 assert(np.all(kpts_db2.kpts_cart == vectors_cart))
 assert(kpts_db2.units == 'crystal')   # def from_lattice(self, kpts, units, lat, recip_lat, kpath=None, kpath_units='arbitrary', labels=None):
@@ -129,14 +125,14 @@ kpts_db.units = 'frac'
 assert(kpts_db.units == 'crystal')
 assert(kpts_db._units == 'crystal')
 kpts_db.units = 'cart'
-assert(kpts_db.units == 'tpiba')
+assert(kpts_db.units == 'cartesian')
 
 # Test kpts property
 kpts_db.units = 'cryst'
 assert(kpts_db.units == 'crystal')
 assert(np.all(kpts_db.kpts == kpts_db.kpts_cryst))
 kpts_db.units = 'Cartesian'
-assert(kpts_db.units == 'tpiba')
+assert(kpts_db.units == 'cartesian')
 assert(np.all(kpts_db.kpts == kpts_db.kpts_cart))
 
 # Test scale_kpath(self, range_min, range_max):
@@ -162,10 +158,8 @@ assert(kpts_db.kpt_to_kpath([0.499,1,0]) == 0.3)
 assert(np.all(kpts_db.kpath_to_kpt(0.3) == [0.5,1,0]))
 
 ##### TEST ENERGIES ######
-from perturbopy.postproc.dbs.energies_db import EnergiesDB
-
 # Test constructor
-energies_db = EnergiesDB({1:[0.1,0.2,0.3], 2:[0.3,0.4,0.5]}, 'meV')
+energies_db = ppy.EnergiesDB({1:[0.1,0.2,0.3], 2:[0.3,0.4,0.5]}, 'meV')
 assert(energies_db.nbands == 2)
 
 # Test band_indices property
@@ -188,10 +182,9 @@ assert(energies_db.units == 'eV')
 ###### TEST PLOT UTILS ########
 
 ###### TEST BANDS CALC MODE ########
-from perturbopy.postproc.calc_modes.bands_calc_mode import BandsCalcMode
 
 # Test constructor
-ge_bands_calc = BandsCalcMode.from_yaml(os.path.join('tests', 'refs_postproc', 'ge_bands.yml'))
+ge_bands_calc = ppy.BandsCalcMode.from_yaml(os.path.join('tests', 'refs_postproc', 'ge_bands.yml'))
 
 # Test compute_indirect_bandgap and compute_direct_bandgap
 print(ge_bands_calc.compute_indirect_bandgap(8, 9))
@@ -201,38 +194,16 @@ print(ge_bands_calc.compute_direct_bandgap(8, 9))
 # print(ge_bands_calc.compute_effective_mass(9, [0,0,0], 0.01))
 
 # Test plot_bands(self, ax, show_kpt_labels=True, **kwargs):
+# ppy.plot_tools.plot_bands(ax)
+
+plt.rcParams.update(ppy.plot_tools.plotparams)
+print(plotparams)
 
 fig, ax = plt.subplots(1,1)
 ge_bands_calc.kpt_db.label_kpt([0,0,0],r'$\Gamma$')
 ge_bands_calc.kpt_db.label_kpt([.5,.5,.5],'L')
-
 ge_bands_calc.plot_bands(ax)
 
-plotparams = {'figure.figsize': (16, 9),
-              'axes.grid': False,
-              'lines.linewidth': 2.5,
-              'axes.linewidth': 1.1,
-              'lines.markersize': 10,
-              'xtick.bottom': True,
-              'xtick.top': True,
-              'xtick.direction': 'in',
-              'xtick.minor.visible': True,
-              'ytick.left': True,
-              'ytick.right': True,
-              'ytick.direction': 'in',
-              'ytick.minor.visible': True,
-              'figure.autolayout': False,
-              'mathtext.fontset': 'dejavusans', # 'cm' 'stix'
-              'mathtext.default' : 'it',
-              'xtick.major.size': 4.5,
-              'ytick.major.size': 4.5,
-              'xtick.minor.size': 2.5,
-              'ytick.minor.size': 2.5,
-              'legend.handlelength': 3.0,
-              'legend.shadow'    : False,
-              'legend.markerscale': 1.0 ,
-              'font.size': 20}
-plt.rcParams.update(plotparams)
 plt.show()
 
 # # print(ge_bands_calc.compute_effective_mass(9,[0.5,0.5,0.5], 0.05))
