@@ -29,7 +29,7 @@ plotparams = {'figure.figsize': (16, 9),
               'legend.markerscale': 1.0,
               'font.size': 20}
 
-def plot_recip_pts_labels(ax, recip_pts_db, line=True, **kwargs):
+def plot_recip_pt_labels(ax, recip_pt_db, line=True, **kwargs):
   """"
   Method to add reciprocal point labels to the plot
 
@@ -38,7 +38,7 @@ def plot_recip_pts_labels(ax, recip_pts_db, line=True, **kwargs):
   ax : matplotlib.axes.Axes
       Axis with plotted dispersion
 
-  recip_pts : RecipPtsDB
+  recip_pt : RecipPtDB
       The database of points in reciprocal space to plot
 
   line : bool
@@ -56,10 +56,10 @@ def plot_recip_pts_labels(ax, recip_pts_db, line=True, **kwargs):
   fontsize = kwargs.pop('fontsize', 20)
   color = kwargs.pop('color', 'lightgray')
 
-  labeled_recip_pts = recip_pts_db.labels
+  labeled_recip_pt = recip_pt_db.labels
 
-  for label in labeled_recip_pts.keys():
-    for x in recip_pts_db.point_to_path(labeled_recip_pts[label]):
+  for label in labeled_recip_pt.keys():
+    for x in recip_pt_db.point_to_path(labeled_recip_pt[label]):
        label_x = kwargs.pop('label_x', x)
        if line:
           ax.axvline(x, color=color, linestyle='--',**kwargs, zorder=1)
@@ -68,7 +68,7 @@ def plot_recip_pts_labels(ax, recip_pts_db, line=True, **kwargs):
   return ax
 
 
-def plot_dispersion(ax, recip_pts_db, energies_db, energy_window=None, show_recip_pts_labels=True, **kwargs):
+def plot_dispersion(ax, recip_pt_db, energies_db, energy_window=None, show_recip_pt_labels=True, **kwargs):
    """
    Method to plot the dispersion (phonon dispersion or band structure).
 
@@ -77,14 +77,14 @@ def plot_dispersion(ax, recip_pts_db, energies_db, energy_window=None, show_reci
    ax: matplotlib.axes.Axes
       Axis on which to plot the dispersion
 
-   recip_pts_db : RecipPtsDB
+   recip_pt_db : RecipPtDB
       The database of reciprocal points to be plotted
 
    energies_db : EnergiesDB
       The database of energies to be plotted
 
    show_reicp_pts_labels: bool
-      Whether or not to show the reciprocal point labels stored in recip_pts_db
+      Whether or not to show the reciprocal point labels stored in recip_pt_db
 
    Returns
    -------
@@ -113,7 +113,7 @@ def plot_dispersion(ax, recip_pts_db, energies_db, energy_window=None, show_reci
    ylabel = kwargs.pop('ylabel', default_ylabel)
 
    for dispersion_band_idx, n in enumerate(dispersion_band_indices):
-      x = np.array(recip_pts_db.path)
+      x = np.array(recip_pt_db.path)
       y = np.array(energies_db.energies_dict[n])
 
       if energy_window is not None:
@@ -135,8 +135,8 @@ def plot_dispersion(ax, recip_pts_db, energies_db, energy_window=None, show_reci
               linestyle=linestyles[n % len(linestyles)],
               label = band_labels[n % len(band_labels)], zorder=2)
     
-   if show_recip_pts_labels:
-      ax = plot_recip_pts_labels(ax, recip_pts_db)
+   if show_recip_pt_labels:
+      ax = plot_recip_pt_labels(ax, recip_pt_db)
 
    ax.set_xticks([])
    ax.set_ylabel(ylabel)
