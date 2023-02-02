@@ -4,36 +4,36 @@ from perturbopy.postproc.utils.constants import energy_conversion_factor, standa
 
 class EnergiesDB():
    """
-   This is a class representation of a set of energies organized in bands.
+   This is a class representation of a set of energies organized in a dictionary.
 
    """
-   def __init__(self, energies, units, nbands=None):
+   def __init__(self, energies_dict, units, num_indices=None):
       """
       Constructor method
 
       """
-      self.energies = energies
+      self.energies_dict = energies_dict
       self._units = units
 
-      for band_idx in self.energies.keys():
-         self.energies[band_idx] = np.array(self.energies[band_idx])
+      for idx in self.energies_dict.keys():
+         self.energies_dict[idx] = np.array(self.energies_dict[idx])
 
-      if nbands is not None and nbands != len(energies.keys()):
-         raise ValueError("nbands input is inconsistent with the number of energies")
-      self.nbands = len(energies.keys())
+      if num_indices is not None and num_indices != len(energies_dict.keys()):
+         raise ValueError("nindices input is inconsistent with the number of energies")
+      self.num_indices = len(energies_dict.keys())
 
    @property
-   def band_indices(self):
+   def indices(self):
       """
-      Property storing the band indices, i.e. the keys of the energies
+      Property storing the indices, i.e. the keys of the energies
 
       Returns
       -------
-      band_indices : list
-         The list of band indices
+      indices : list
+         The list of indices
 
       """
-      return list(self.energies.keys())
+      return list(self.energies_dict.keys())
    
    @property
    def units(self):
@@ -60,18 +60,18 @@ class EnergiesDB():
 
       Returns
       -------
-      converted_energies: dict
+      converted_energies_dict: dict
          The stored energies in the new units.
 
       """
 
       conversion_factor = energy_conversion_factor(self.units, new_units)
-      converted_energies = {}
+      converted_energies_dict = {}
 
-      for band_idx in self.energies.keys():
-         converted_energies[band_idx] = self.energies[band_idx] * conversion_factor
+      for idx in self.energies_dict.keys():
+         converted_energies_dict[idx] = self.energies_dict[idx] * conversion_factor
 
-      return converted_energies
+      return converted_energies_dict
 
    @units.setter
    def units(self, new_units):
@@ -84,5 +84,11 @@ class EnergiesDB():
       new_units : str
          Energy units to which the energies will be converted.
       """
-      self.energies = self.convert_units(new_units)
+      self.energies_dict = self.convert_units(new_units)
       self._units = standardize_units_name(new_units, energy_units_names)
+
+   def __getitem__(self, key):
+      return self.energies_dict[key]
+
+   def __str__(self):
+      return str(self.energies_dict)

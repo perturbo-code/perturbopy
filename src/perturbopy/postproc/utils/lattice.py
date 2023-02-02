@@ -7,43 +7,43 @@ crystal lattice
 """
 
 
-def reshape_kpts(kpts):
+def reshape_points(points):
    """
-   Method to reshape k-points into a 2d array of shape (3, N)
-   such that k-points are column-oriented
-      - a list of k-points will be transformed to an array
-      - an array of k-points with shape (N, 3) will be reshaped
+   Method to reshape reciprocal points into a 2d array of shape (3, N)
+   such that reciprocal points are column-oriented
+      - a list of reciprocal points will be transformed to an array
+      - an array of reciprocal points with shape (N, 3) will be reshaped
         to shape (N, 3) if N != 3
-      - Note that k-points with shape (3, 3) will be assumed to
+      - Note that reciprocal points with shape (3, 3) will be assumed to
         have the correct shape
 f
    Parameters
    ----------
-   kpts: array
-      An array or list of k-points with shape (3,N), (N,3), or (3,)
+   points: array
+      An array or list of reciprocal points with shape (3,N), (N,3), or (3,)
    
    Returns
    -------
-   kpts: array
-      An array of k-points with shape (3,N)
+   points: array
+      An array of reciprocal points with shape (3,N)
 
    """
-   kpts = np.array(kpts)
+   points = np.array(points)
 
-   if np.shape(kpts)[0] == 3:
-      if len(np.shape(kpts)) == 1:
-         return np.reshape(kpts, (3, 1))
+   if np.shape(points)[0] == 3:
+      if len(np.shape(points)) == 1:
+         return np.reshape(points, (3, 1))
       else:
-         return kpts
-   elif np.shape(kpts)[1] != 3:
-      raise ValueError('K-point vectors should be inputted as a 3xN matrix, where N is the number of vectors.')
+         return points
+   elif np.shape(points)[1] != 3:
+      raise ValueError('reciprocal point vectors should be inputted as a 3xN matrix, where N is the number of vectors.')
    else:
-      return np.transpose(kpts)
+      return np.transpose(points)
 
 
 def cryst_to_cart(vectors, lat, recip_lat, forward=True, real_space=True):
    """
-   Method to convert atomic coordinates and k-point coordinates
+   Method to convert atomic coordinates and reciprocal point coordinates
    between crystal and cartesian coordinates, given the crystal
    lattice. Real space points in cartesian units have units of alat.
    Reciprocal points in cartesian coordinates have units of 2pi/a.
@@ -68,7 +68,7 @@ def cryst_to_cart(vectors, lat, recip_lat, forward=True, real_space=True):
    real_space : bool
       If true, vectors are assumed to be in real space
       (i.e. atomic positions). If false, vectors are assumed to
-      be in reciprocal space (i.e. k-points)
+      be in reciprocal space (i.e. reciprocal points)
 
    Returns
    -------

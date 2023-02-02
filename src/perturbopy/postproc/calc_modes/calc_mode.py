@@ -1,4 +1,5 @@
 import os
+import numpy as np
 from perturbopy.io_utils.io import open_yaml
 
 
@@ -20,17 +21,33 @@ class CalcMode():
       """
 
       self.calc_mode = pert_dict['input parameters']['after conversion'].pop('calc_mode')
-
+      
       self.alat = pert_dict['basic data']['alat']
       self.alat_units = pert_dict['basic data']['alat units']
-      self.lat = pert_dict['basic data']['lattice vectors']
+      self.lat = np.transpose(np.array(pert_dict['basic data']['lattice vectors']))
       self.lat_units = pert_dict['basic data']['lattice vectors units']
-      self.recip_lat = pert_dict['basic data']['reciprocal lattice vectors']
+      self.recip_lat = np.transpose(np.array(pert_dict['basic data']['reciprocal lattice vectors']))
       self.recip_lat_units = pert_dict['basic data']['reciprocal lattice vectors units']
-      self.nat = pert_dict['basic data']['num atoms in unit cell']
+      self.nat = pert_dict['basic data']['number of atoms in unit cell']
+      self.atomic_pos = np.transpose(np.array(pert_dict['basic data']['atomic positions']))
       self.atomic_pos_units = pert_dict['basic data']['atomic positions units']
       self.volume = pert_dict['basic data']['volume']
       self.volume_units = pert_dict['basic data']['volume units']
+      self.nsym = pert_dict['basic data']['number of symmetry operations']
+      self.kc_dim = np.array(pert_dict['basic data']['kc dimensions'])
+      self.polar_alpha = pert_dict['basic data']['polar_alpha']
+      self.epsil = np.transpose(np.array(pert_dict['basic data']['epsil']))
+      self.qc_dim = np.array(pert_dict['basic data']['qc dimensions'])
+      self.mass = np.array(pert_dict['basic data']['mass'])
+      self.mass_units = pert_dict['basic data']['mass units']
+      self.symop = [pert_dict['basic data']['symop']]
+      self.zstar = [pert_dict['basic data']['zstar']]
+      self.system_2d = pert_dict['basic data']['system_2d']
+      self.num_wann = pert_dict['basic data']['number of Wannier functions']
+      self.wannier_center = np.transpose(np.array(pert_dict['basic data']['wannier_center']))
+      self.wannier_center_cryst = np.transpose(np.array(pert_dict['basic data']['wannier_center_cryst']))
+
+
       self._pert_dict = pert_dict
      
    @classmethod

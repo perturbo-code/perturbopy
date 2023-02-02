@@ -5,9 +5,9 @@ from scipy.optimize import curve_fit
 from perturbopy.postproc.calc_modes.calc_mode import CalcMode
 from perturbopy.postproc.utils.constants import energy_conversion_factor, length_conversion_factor
 from perturbopy.postproc.dbs.energies_db import EnergiesDB
-from perturbopy.postproc.dbs.kpts_db import KptsDB
-from perturbopy.postproc.utils.plot_tools import plot_bands
-
+from perturbopy.postproc.dbs.recip_pts_db import RecipPtDB
+from perturbopy.postproc.utils.plot_tools import plot_dispersion
+from perturbopy.postproc.utils.lattice import cryst_to_cart, reshape_points
 
 class BandsCalcMode(CalcMode):
    """
@@ -16,7 +16,7 @@ class BandsCalcMode(CalcMode):
    Parameters
    ----------
    pert_dict : dict
-      dictionary containing inputs and outputs from a bands calculation
+      dictionary containum_ing inputs and outputs from a bands calculation
 
    """
 
@@ -32,15 +32,29 @@ class BandsCalcMode(CalcMode):
       
       kpath_units = self._pert_dict['bands'].pop('k-path coordinate units')
       kpath = np.array(self._pert_dict['bands'].pop('k-path coordinates'))
-      kpt_units = self._pert_dict['bands'].pop('k-point coordinate units')
-      kpts = np.array(self._pert_dict['bands'].pop('k-point coordinates'))
+      kpoint_units = self._pert_dict['bands'].pop('k-point coordinate units')
+      kpoint = np.array(self._pert_dict['bands'].pop('k-point coordinates'))
 
-      bands = self._pert_dict['bands'].pop('band index')
-      nbands = self._pert_dict['bands'].pop('number of bands')
+      energies_dict = self._pert_dict['bands'].pop('band index')
+      num_bands = self._pert_dict['bands'].pop('number of bands')
       energy_units = self._pert_dict['bands'].pop('band units')
 
-      self.kpt_db = KptsDB.from_lattice(kpts, kpt_units, self.lat, self.recip_lat, kpath, kpath_units)
-      self.bands = EnergiesDB(bands, energy_units, nbands)
+      self.kpt = RecipPtDB.from_lattice(kpoint, kpoint_units, self.lat, self.recip_lat, kpath, kpath_units)
+      self.bands = EnergiesDB(energies_dict, energy_units, num_bands)
+
+   @property
+   def num_bands(self):
+      return self.bands.num_indices
+   @property
+   def energy_units(self):
+      return self.bands.units
+
+   @property
+   def band_indices(self):
+      return self.bands.indices
+
+   def convert_energy_units(self, new_units):
+      return self.bands.convert_units(new_units)
 
    def compute_indirect_bandgap(self, n_initial, n_final):
       """
@@ -64,13 +78,13 @@ class BandsCalcMode(CalcMode):
 
       """
 
-      if n_initial not in self.bands.band_indices or n_final not in self.bands.band_indices:
+      if n_initial not in self.band_indices or n_final not in self.band_indices:
          raise ValueError("n_initial and n_final must be valid band numbers")
 
-      gap = np.min(self.bands.energies[n_final]) - np.max(self.bands.energies[n_initial])
+      gap = np.min(self.bands[n_final]) - np.max(self.bands[n_initial])
 
-      initial_kpt = self.kpt_db.kpts[:, np.argmax(self.bands.energies[n_initial])]
-      final_kpt = self.kpt_db.kpts[:, np.argmin(self.bands.energies[n_final])]
+      initial_kpt = self.kpt.coords[:, np.argmax(self.bands[n_initial])]
+      final_kpt = self.kpt.coords[:, np.argmin(self.bands[n_final])]
 
       return gap, initial_kpt, final_kpt
 
@@ -93,12 +107,12 @@ class BandsCalcMode(CalcMode):
          k-point of the gap
 
       """
-      if n_initial not in self.bands.band_indices or n_final not in self.bands.band_indices:
+      if n_initial not in self.band_indices or n_final not in self.band_indices:
          raise ValueError("n_initial and n_final must be valid band numbers")
 
-      transitions = self.bands.energies[n_final] - self.bands.energies[n_initial]
+      transitions = self.bands[n_final] - self.bands[n_initial]
       gap = np.min(transitions)
-      kpt = self.kpt_db.kpts[:, np.argmin(transitions)]
+      kpt = self.kpt.coords[:, np.argmin(transitions)]
 
       return gap, kpt
 
@@ -125,34 +139,64 @@ class BandsCalcMode(CalcMode):
          The effective mass computed by the parabolic approximation
 
       """
-      kpt_coordinates = self.kpt_db.kpts_cart
-      energies = self.bands.energies[n] * energy_conversion_factor(self.bands.units, 'hartree')
+      epsilon = 1e-2
+
+      kpt = reshape_points(kpt)
+
+      self.kpt_units = 'cartesian'
+      print(self.kpt.coords)
+
+      energies = self.bands[n] * energy_conversion_factor(self.energy_units, 'hartree')
       alat = self.alat * length_conversion_factor(self.alat_units, 'bohr')
 
       # assume kpt in cartesian coords
-      E_0 = energies[self.kpt_db.find_kpt(kpt)]
+      E_0 = energies[self.find_kpt(kpt)]
 
-      kpt_distances_squared = np.sum(np.square(kpt_coordinates - np.reshape(np.array(kpt), (3, 1))), axis=0)
+      kpoint_distances = np.linalg.norm(self.kpt - np.array(kpt), axis=0)
+      kpoint_parallel = np.dot(np.reshape(kpt, (3,)), self.kpt) / (np.linalg.norm(kpt) * np.linalg.norm(self.kpt, axis=0)) -1 < epsilon
 
+      print(self.kpt.coords)
+      print(kpoint_distances[:2])
+      print(kpoint_parallel)
       kpt = np.array(kpt)
-      kpt_indices = np.where(kpt_distances_squared < max_distance)
+      kpoint_indices = np.where(np.logical_and(kpoint_distances < max_distance, kpoint_parallel))
 
-      energies = energies[kpt_indices]
-      kpt_distances_squared = kpt_distances_squared[kpt_indices] * (2 * math.pi / alat)**2
+      energies = energies[kpoint_indices]
 
-      def f(prefactor, kpt_dist_squared, energy):
-         return prefactor * kpt_dist_squared + E_0
+      kpoint_coordinates = self.kpt.coords[:,kpoint_indices][:,0,:]
+      kpoint_distances_squared = np.sum(np.square(kpoint_coordinates - kpt), axis=0)*(math.pi *2/self.alat)**2
 
-      fit_params, pcov = curve_fit(f, kpt_distances_squared, energies)
 
-      # make sure atomic units hbar=1 me=1 energy in hartrees kpts in cartesian
+      def f(prefactor, kpoint_dist_squared, energy):
+         return prefactor * kpoint_dist_squared + E_0
+
+      fit_params, pcov = curve_fit(f, kpoint_distances_squared, energies)
+
+      # make sure atomic units hbar=1 me=1 energy in hartrees kpoint in cartesian
 
       effective_mass = fit_params[0] / 2
-      plt.scatter(self.kpt_db.kpath[kpt_indices], energies)
-      plt.plot(self.kpt_db.kpath[kpt_indices], fit_params[0] * kpt_distances_squared + E_0, 'k')
+      plt.scatter(self.kpath[kpoint_indices], energies)
+      plt.plot(self.kpath[kpoint_indices], fit_params[0] * kpoint_distances_squared + E_0, 'k')
       plt.show()
 
       return effective_mass
 
-   def plot_bands(self, ax, show_kpt_labels=True, **kwargs):
-      return plot_bands(ax, self.kpt_db, self.bands, show_kpt_labels, **kwargs)
+   def plot_bands(self, ax, energy_window=None, show_kpoint_labels=True, **kwargs):
+      """
+      Method to plot the band structure.
+
+      Parameters
+      ----------
+      ax: matplotlib.axes.Axes
+         Axis on which to plot band structure
+
+      show_kpoint_labels: bool
+         Whether or not to show the k-point labels stored in the labels attribute
+
+      Returns
+      -------
+      ax: matplotlib.axes.Axes
+         Axis with the plotted band structure
+
+      """
+      return plot_dispersion(ax, self.kpt, self.bands, energy_window, show_kpoint_labels, **kwargs) # add options for energy window, bands

@@ -19,6 +19,11 @@ length_units_names = {'bohr': ['bohr', 'a.u', 'atomic units', 'au'], 'angstrom':
 
 length_units_vals = {'bohr': (1, 0), 'angstrom': (0.529177249, 0), 'm': (5.29177249, -11)}
 
+recip_points_units_names = {'cartesian': ['tpiba', 'cartesian', 'cart'], 'crystal': ['crystal', 'cryst', 'frac', 'fractional']}
+
+special_recip_points =  {'L':[0.5  , 0.5  , 0.5 ], 'X':[0.5  , 0.0  , 0.5 ], 
+                 'W':[0.5  , 0.25 , 0.75], 'K':[0.375, 0.375, 0.75], 
+                 r'$\Gamma$':[0,0,0]}
 
 def prefix_exp(prefix):
    """"
@@ -36,7 +41,7 @@ def prefix_exp(prefix):
    exponent : int
       The exponent corresponding to the prefix
       
-      """
+   """
 
    if prefix == '':
       return 0
