@@ -10,14 +10,16 @@ conda_path = 'C:/Users/shael/Anaconda3/Scripts/conda.exe'
 os.chdir(repo_dir)
 call(['pip','install','.'])
 
-import perturbopy as ppy
+from perturbopy import postproc as ppy
+
+# import perturbopy as ppy
 si_bands_calc = ppy.BandsCalcMode.from_yaml(os.path.join('tests', 'refs_postproc', 'si_bands.yml'))
 ge_bands_calc = ppy.BandsCalcMode.from_yaml(os.path.join('tests', 'refs_postproc', 'ge_bands.yml'))
 
 ###### TEST CONSTANTS #######
 
 # Test prefix_exp
-assert(ppy.constants.prefix_exp('m') == -3)
+assert(ppy.utils.constants.prefix_exp('m') == -3)
 assert(ppy.constants.prefix_exp('M') == 6)
 assert(ppy.constants.prefix_exp('mu') == -6)
 assert(ppy.constants.prefix_exp('Y') == 24)
