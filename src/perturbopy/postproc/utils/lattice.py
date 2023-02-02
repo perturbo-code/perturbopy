@@ -1,10 +1,6 @@
+
 import numpy as np
 
-"""
-This is a module for performing calculations related to a
-crystal lattice
-
-"""
 
 
 def reshape_points(points):
@@ -16,7 +12,7 @@ def reshape_points(points):
         to shape (N, 3) if N != 3
       - Note that reciprocal points with shape (3, 3) will be assumed to
         have the correct shape
-f
+
    Parameters
    ----------
    points: array
@@ -95,3 +91,5 @@ def cryst_to_cart(vectors, lat, recip_lat, forward=True, real_space=True):
    converted_vectors = np.tensordot(conversion_mat, vectors, axes=1)
 
    return converted_vectors
+
+   def where(self, points_array, point, nearest=True, **kwargs):

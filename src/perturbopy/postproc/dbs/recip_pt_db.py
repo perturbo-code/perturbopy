@@ -2,6 +2,7 @@ import numpy as np
 from perturbopy.postproc.utils.constants import standardize_units_name, recip_points_units_names, special_recip_points
 from perturbopy.postproc.utils.lattice import cryst_to_cart, reshape_points
 
+
 class RecipPtDB():
    """
    This is a class representation of a set of points in reciprocal space.
