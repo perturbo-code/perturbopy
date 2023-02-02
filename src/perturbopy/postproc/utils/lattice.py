@@ -92,4 +92,3 @@ def cryst_to_cart(vectors, lat, recip_lat, forward=True, real_space=True):
 
    return converted_vectors
 
-   def where(self, points_array, point, nearest=True, **kwargs):
