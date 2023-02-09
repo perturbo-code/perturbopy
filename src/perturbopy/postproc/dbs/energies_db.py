@@ -21,8 +21,7 @@ class EnergiesDB():
       The energy units.
    num_indices : 
       The number of bands in the energies dict.
-
-
+      
    """
    def __init__(self, energies_dict, units):
       """

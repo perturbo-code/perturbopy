@@ -21,9 +21,9 @@ length_units_vals = {'bohr': (1, 0), 'angstrom': (0.529177249, 0), 'm': (5.29177
 
 recip_points_units_names = {'cartesian': ['tpiba', 'cartesian', 'cart'], 'crystal': ['crystal', 'cryst', 'frac', 'fractional']}
 
-special_recip_points =  {'L':[0.5  , 0.5  , 0.5 ], 'X':[0.5  , 0.0  , 0.5 ], 
-                 'W':[0.5  , 0.25 , 0.75], 'K':[0.375, 0.375, 0.75], 
-                 r'$\Gamma$':[0,0,0]}
+special_recip_points = {'L': [0.5, 0.5, 0.5], 'X': [0.5, 0.0, 0.5],
+                        'W': [0.5, 0.25, 0.75], 'K': [0.375, 0.375, 0.75],
+                        r'$\Gamma$': [0, 0, 0]}
 
 def prefix_exp(prefix):
    """"
@@ -75,7 +75,7 @@ def prefix_negative_exp(prefix):
 
 def find_prefix_and_base_units(user_input_units, units_dict):
    """
-   Method to dissect units to a prefix and base units, both with standardized names as specified by units_dict. 
+   Method to dissect units to a prefix and base units, both with standardized names as specified by units_dict.
 
    Example:  If user_input_units = 'meV', the return values will be ('m', 'eV').
 
@@ -182,7 +182,7 @@ def conversion_factor(init_units, final_units, units_names, units_vals):
                {'Ha': ['ha', 'hartree', 'eh', 'e_h', 'hartrees'], 'J': ['j', 'joule', 'joules']}
 
    units_vals : dict
-      A dictionary specifying the conversion factors between different units, with units labeled by their standard name as 
+      A dictionary specifying the conversion factors between different units, with units labeled by their standard name as
       specified in units_names. Values are represented as tuples (base, exponent).
 
       Example: For energies, possible units include hartrees and electron-volts.' Setting one value (hartree = 1), the remaining values
@@ -204,7 +204,7 @@ def conversion_factor(init_units, final_units, units_names, units_vals):
    final_val = units_vals[final_units]
 
    conversion_factor = (final_val[0] / init_val[0],
-       (final_val[1] + prefix_negative_exp(final_prefix)) - (init_val[1] + prefix_negative_exp(init_prefix)))
+                        (final_val[1] + prefix_negative_exp(final_prefix)) - (init_val[1] + prefix_negative_exp(init_prefix)))
 
    return conversion_factor[0] * 10**(conversion_factor[1])
 

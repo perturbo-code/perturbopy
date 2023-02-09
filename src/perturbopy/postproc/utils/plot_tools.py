@@ -64,7 +64,7 @@ def plot_recip_pt_labels(ax, recip_pt_db, line=True, **kwargs):
     for x in recip_pt_db.point_to_path(labeled_recip_pt[label]):
        label_x = kwargs.pop('label_x', x)
        if line:
-          ax.axvline(x, color=color, linestyle='--',**kwargs, zorder=1)
+          ax.axvline(x, color=color, linestyle='--', zorder=1, **kwargs)
           ax.text(x=label_x, y=label_y, s=label, fontsize=fontsize, **kwargs)
 
   return ax
@@ -119,19 +119,19 @@ def plot_dispersion(ax, recip_pt_db, energies_db, energy_window=None, show_recip
       y = np.array(energies_db.energies_dict[n])
 
       if energy_window is not None:
-        above_min = np.where(y>energy_window[0])
+        above_min = np.where(y > energy_window[0])
         x = x[above_min]
         y = y[above_min]
         if len(x) == 0:
           continue
 
-        below_max = np.where(y<energy_window[1])
+        below_max = np.where(y < energy_window[1])
         x = x[below_max]
         y = y[below_max]
         if len(x) == 0:
           continue
 
-        ax.set_ylim((energy_window[0]*1.01, energy_window[1]*.99))
+        ax.set_ylim((energy_window[0] * 1.01, energy_window[1] * .99))
       ax.plot(x,y,
               color=colors[n % len(colors)],
               linestyle=linestyles[n % len(linestyles)],
@@ -184,7 +184,7 @@ def plot_vals_on_bands(ax, recip_pt_db, energies_db, values, energy_window=None,
       x = np.array(recip_pt_db.path)
       y = np.array(energies_db.energies_dict[n])
       points = np.array([x, y]).T.reshape(-1, 1, 2)
-      segments = np.concatenate([points[:-1], points[1:]], axis=1)
+      segments = np.concatenate([points[: -1], points[1:]], axis=1)
       lc = LineCollection(segments, cmap='RdBu', norm=norm)
 
       lc.set_array(values[n])

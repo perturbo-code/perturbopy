@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import math
 from scipy.optimize import curve_fit
 from perturbopy.postproc.calc_modes.calc_mode import CalcMode
 from perturbopy.postproc.utils.constants import energy_conversion_factor, length_conversion_factor

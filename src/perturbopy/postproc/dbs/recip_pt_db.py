@@ -1,6 +1,7 @@
 import numpy as np
 from perturbopy.postproc.utils.constants import standardize_units_name, recip_points_units_names, special_recip_points
 from perturbopy.postproc.utils.lattice import cryst_to_cart, reshape_points
+from perturbopy.postproc.utils import lattice
 
 
 class RecipPtDB():
@@ -191,7 +192,7 @@ class RecipPtDB():
          an array of distances between each reciprocal space point in the points property and point
 
       """
-      distances = compute_distances(self.points, point)
+      distances = lattice.compute_distances(self.points, point)
       
       return distances
 
@@ -203,20 +204,16 @@ class RecipPtDB():
       ----------
       point : array
          The reciprocal space point to be searched
-
-      nearest : bool
-         If true, the index of the closest reciprocal space point closest to the point input
-         will be returned if the inputted point is not found
+      **kwargs : dict
+         Extra arguments for point_to_path method. Refer to Lattice module documentation for a list of all possible arguments.
 
       Returns
       -------
       points_indices : list
          The indices of the matching reciprocal space point in the points array
-      **kwargs : dict
-         Extra arguments for point_to_path method. Refer to Lattice module documentation for a list of all possible arguments.
-
+      
       """
-      points_indices = where(point, self.points, **kwargs)
+      points_indices = lattice.where(point, self.points, **kwargs)
 
       return points_indices
 

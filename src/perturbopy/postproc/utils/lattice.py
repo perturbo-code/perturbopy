@@ -1,5 +1,5 @@
 import numpy as np
-import math
+
 
 def reshape_points(point_array):
    """
@@ -88,6 +88,7 @@ def cryst_to_cart(point_array, lat, recip_lat, forward=True, real_space=True):
 
    return converted_point_array
 
+
 def compute_distances(point_array1, point_array2):
    """
    Method to compute the distances between points
@@ -109,6 +110,7 @@ def compute_distances(point_array1, point_array2):
    distances = np.linalg.norm(reshape_points(point_array1) - reshape_points(point_array2), axis=0)
    
    return distances
+
 
 def where(point, point_array, **kwargs):
    """
@@ -143,6 +145,7 @@ def where(point, point_array, **kwargs):
       return point_indices
    else:
       return None
+
 
 def point_to_path(point, point_array, path_array, **kwargs):
    """
@@ -180,6 +183,7 @@ def point_to_path(point, point_array, path_array, **kwargs):
    else:
       path_coord = path_array[point_indices]
       return path_coord
+
 
 def path_to_point(path_coord, point_array, path_array, **kwargs):
    """

@@ -9,6 +9,7 @@ from perturbopy.postproc.dbs.recip_pt_db import RecipPtDB
 from perturbopy.postproc.utils.plot_tools import plot_dispersion
 from perturbopy.postproc.utils.lattice import cryst_to_cart, reshape_points
 
+
 class BandsCalcMode(CalcMode):
    """
    Class representation of a Perturbo bands calculation.
@@ -141,20 +142,20 @@ class BandsCalcMode(CalcMode):
       E_0 = energies[self.kpt.where(kpoint)]
 
       kpt_distances = np.linalg.norm(self.kpt.points - np.array(kpoint), axis=0)
-      kpt_parallel = np.dot(np.reshape(kpoint, (3,)), self.kpt.points) / (np.linalg.norm(kpoint) * np.linalg.norm(self.kpt.points, axis=0)) -1 < epsilon
+      kpt_parallel = np.dot(np.reshape(kpoint, (3,)), self.kpt.points) / (np.linalg.norm(kpoint) * np.linalg.norm(self.kpt.points, axis=0)) - 1 < epsilon
 
-      kpt_indices = np.where(np.logical_and(kpoint_distances < max_distance, kpoint_parallel))
+      kpt_indices = np.where(np.logical_and(kpt_distances < max_distance, kpt_parallel))
       energies = energies[kpoint_indices]
 
-      kpt_points = self.kpt.points[:,kpoint_indices][:,0,:]
-      kpoint_distances_squared = np.sum(np.square(kpt_points - kpoint), axis=0)*(math.pi *2/self.alat)**2
+      kpt_points = self.kpt.points[:, kpoint_indices][:, 0, :]
+      kpoint_distances_squared = np.sum(np.square(kpt_points - kpoint), axis=0) * (math.pi * 2/self.alat) ** 2
 
-      def f(prefactor, kpoint_dist_squared, energy):
+      def parabolic_approx(prefactor, kpoint_dist_squared, energy):
          return prefactor * kpoint_dist_squared + E_0
       
-      fit_params, pcov = curve_fit(f, kpoint_distances_squared, energies)
+      fit_params, pcov = curve_fit(parabolic_approx, kpoint_distances_squared, energies)
 
-      effective_mass = 1/(fit_params[0] * 2)
+      effective_mass = 1 / (fit_params[0] * 2)
 
       if show_plot():
          plt.scatter(self.kpt.path[kpoint_indices], energies)
