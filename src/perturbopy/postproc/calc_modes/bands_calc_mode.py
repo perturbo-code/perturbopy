@@ -11,12 +11,19 @@ from perturbopy.postproc.utils.lattice import cryst_to_cart, reshape_points
 
 class BandsCalcMode(CalcMode):
    """
-   This is a class representation of a bands calculation.
+   Class representation of a Perturbo bands calculation.
 
    Parameters
    ----------
    pert_dict : dict
-      dictionary containum_ing inputs and outputs from a bands calculation
+      Dictionary containing the inputs and outputs from the bands calculation.
+
+   Attributes
+   ----------
+   kpt : RecipPtDB
+      Database for the k-points used in the phdisp calculation.
+   bands : EnergiesDB
+      Database for the band energies computed by the bands calculation.
 
    """
 
@@ -42,142 +49,117 @@ class BandsCalcMode(CalcMode):
       self.kpt = RecipPtDB.from_lattice(kpoint, kpoint_units, self.lat, self.recip_lat, kpath, kpath_units)
       self.bands = EnergiesDB(energies_dict, energy_units, num_bands)
 
-   @property
-   def num_bands(self):
-      return self.bands.num_indices
-   @property
-   def energy_units(self):
-      return self.bands.units
-
-   @property
-   def band_indices(self):
-      return self.bands.indices
-
-   def convert_energy_units(self, new_units):
-      return self.bands.convert_units(new_units)
-
-   def compute_indirect_bandgap(self, n_initial, n_final):
+   def compute_indirect_bandgap(self, n_lower, n_upper):
       """
-      Method to compute the indirect bandgap between two bands
+      Method to compute the indirect bandgap between two bands.
    
       Parameters
       ----------
-      n_initial: int
-         Number of the lower band
-      n_final: int
-         Number of the upper band
-      
+      n_lower, n_upper : int
+         Number of the lower and upper bands.
+
       Returns
       -------
       gap: float
-         minimum energy gap between the two bands
-      initial_kpt: array
-         k-point of the lower band
-      final_kpt: array
-         k-point of the upper band
+         The indirect bandgap, computed as the energy difference between the maximum of
+         the upper band and the minimum of the lower band.
+      lower_kpt, upper_kpt : array_like
+         k-points corresponding to the maximum of the upper band and the minimum of the lower band.
+
+      Raises
+      ------
+      ValueError
+         If the upper and lower band numbers provided are not band indices as stored in the bands database.
 
       """
 
-      if n_initial not in self.band_indices or n_final not in self.band_indices:
-         raise ValueError("n_initial and n_final must be valid band numbers")
+      if n_lower not in self.bands.indices or n_upper not in self.bands.indices:
+         raise ValueError("n_lower and n_upper must be valid band numbers")
 
-      gap = np.min(self.bands[n_final]) - np.max(self.bands[n_initial])
+      gap = np.min(self.bands.energies[n_upper]) - np.max(self.bands.energies[n_lower])
 
-      initial_kpt = self.kpt.coords[:, np.argmax(self.bands[n_initial])]
-      final_kpt = self.kpt.coords[:, np.argmin(self.bands[n_final])]
+      initial_kpt = self.kpt.points[:, np.argmax(self.bands.energies[n_lower])]
+      final_kpt = self.kpt.points[:, np.argmin(self.bands.energies[n_upper])]
 
       return gap, initial_kpt, final_kpt
 
-   def compute_direct_bandgap(self, n_initial, n_final):
+   def compute_direct_bandgap(self, n_lower, n_upper):
       """
-      Method to compute the direct bandgap between two bands
+      Method to compute the direct bandgap between two bands.
    
       Parameters
       ----------
-      n_initial: int
+      n_lower: int
          Number of the lower band
-      n_final: int
+      n_upper: int
          Number of the upper band
       
       Returns
       -------
       gap: float
-         minimum energy gap between the two bands
-      kpt: array
-         k-point of the gap
+         The direct bandgap, computed as the minimum energy difference between two bands
+         at the same k-point.
+      kpoint: array_like
+         The k-point corresponding to the direct bandgap.
 
       """
-      if n_initial not in self.band_indices or n_final not in self.band_indices:
-         raise ValueError("n_initial and n_final must be valid band numbers")
+      if n_lower not in self.band_indices or n_upper not in self.band_indices:
+         raise ValueError("n_lower and n_upper must be valid band numbers")
 
-      transitions = self.bands[n_final] - self.bands[n_initial]
+      transitions = self.bands.indices[n_upper] - self.bands.indices[n_lower]
       gap = np.min(transitions)
-      kpt = self.kpt.coords[:, np.argmin(transitions)]
+      kpoint = self.kpt.points[:, np.argmin(transitions)]
 
-      return gap, kpt
+      return gap, kpoint
 
-   def compute_effective_mass(self, n, kpt, max_distance):
+   def compute_effective_mass(self, n, kpoint, max_distance, show_plot=True):
       """
-      Method to compute the effective mass approximated by a fitting a parabola
-      around a k-point
-   
+      Method to compute the longitudinal effective mass at a k-point, approximated with a parabolic fit.
       Parameters
       ----------
       n : int
-         Index of the band to perform the calculation on
+         Index of the band to calculate the effective mass on.
       
-      kpt : int
-         The k-point to center the calculation on
+      kpoint : int
+         The k-point to center the calculation on.
 
       max_distance : float
-         Maximum distance between the center k-point and k-points
-         to include in the calculation
+         Maximum distance between the center k-point and k-points to include in the parabolic approximation.
 
       Returns
       -------
       effective_mass : float
-         The effective mass computed by the parabolic approximation
+         The longitudinal effective mass at band n and the inputted kpoint, computed by a parabolic fit.
 
       """
       epsilon = 1e-2
 
-      kpt = reshape_points(kpt)
+      kpoint = reshape_points(kpoint)
 
-      self.kpt_units = 'cartesian'
-      print(self.kpt.coords)
-
-      energies = self.bands[n] * energy_conversion_factor(self.energy_units, 'hartree')
+      energies = self.bands.energies[n] * energy_conversion_factor(self.energy_units, 'hartree')
       alat = self.alat * length_conversion_factor(self.alat_units, 'bohr')
+      E_0 = energies[self.kpt.where(kpoint)]
 
-      # assume kpt in cartesian coords
-      E_0 = energies[self.find_kpt(kpt)]
+      kpt_distances = np.linalg.norm(self.kpt.points - np.array(kpoint), axis=0)
+      kpt_parallel = np.dot(np.reshape(kpoint, (3,)), self.kpt.points) / (np.linalg.norm(kpoint) * np.linalg.norm(self.kpt.points, axis=0)) -1 < epsilon
 
-      kpoint_distances = np.linalg.norm(self.kpt - np.array(kpt), axis=0)
-      kpoint_parallel = np.dot(np.reshape(kpt, (3,)), self.kpt) / (np.linalg.norm(kpt) * np.linalg.norm(self.kpt, axis=0)) -1 < epsilon
-
-      print(self.kpt.coords)
-      print(kpoint_distances[:2])
-      print(kpoint_parallel)
-      kpt = np.array(kpt)
-      kpoint_indices = np.where(np.logical_and(kpoint_distances < max_distance, kpoint_parallel))
-
+      kpt_indices = np.where(np.logical_and(kpoint_distances < max_distance, kpoint_parallel))
       energies = energies[kpoint_indices]
 
-      kpoint_coordinates = self.kpt.coords[:,kpoint_indices][:,0,:]
-      kpoint_distances_squared = np.sum(np.square(kpoint_coordinates - kpt), axis=0)*(math.pi *2/self.alat)**2
-
+      kpt_points = self.kpt.points[:,kpoint_indices][:,0,:]
+      kpoint_distances_squared = np.sum(np.square(kpt_points - kpoint), axis=0)*(math.pi *2/self.alat)**2
 
       def f(prefactor, kpoint_dist_squared, energy):
          return prefactor * kpoint_dist_squared + E_0
-
+      
       fit_params, pcov = curve_fit(f, kpoint_distances_squared, energies)
 
-      # make sure atomic units hbar=1 me=1 energy in hartrees kpoint in cartesian
+      effective_mass = 1/(fit_params[0] * 2)
 
-      effective_mass = fit_params[0] / 2
-      plt.scatter(self.kpath[kpoint_indices], energies)
-      plt.plot(self.kpath[kpoint_indices], fit_params[0] * kpoint_distances_squared + E_0, 'k')
-      plt.show()
+      if show_plot():
+         plt.scatter(self.kpt.path[kpoint_indices], energies)
+         plt.plot(self.kpt.path[kpoint_indices], fit_params[0] * kpoint_distances_squared + E_0, 'k')
+         plt.show()
 
       return effective_mass
 
@@ -187,16 +169,22 @@ class BandsCalcMode(CalcMode):
 
       Parameters
       ----------
-      ax: matplotlib.axes.Axes
-         Axis on which to plot band structure
+      ax : matplotlib.axes.Axes
+         Axis on which to plot the bands.
 
-      show_kpoint_labels: bool
-         Whether or not to show the k-point labels stored in the labels attribute
+      energy_window : tuple of int
+         The range of band energies to be shown on the y-axis.
+
+      show_kpoint_labels : bool
+         If true, the k-point labels stored in the labels attribute will be shown on the plot.
+
+      **kwargs, optional
+         Extra arguments to plot_dispersion. Refer to plot_dispersion documentation for a list of all possible arguments.
 
       Returns
       -------
       ax: matplotlib.axes.Axes
-         Axis with the plotted band structure
+         Axis with the plotted bands.
 
       """
-      return plot_dispersion(ax, self.kpt, self.bands, energy_window, show_kpoint_labels, **kwargs) # add options for energy window, bands
+      return plot_dispersion(ax, self.kpt, self.bands, energy_window, show_kpoint_labels, **kwargs)

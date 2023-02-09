@@ -34,12 +34,12 @@ def prefix_exp(prefix):
    Parameters
    ----------
    prefix : str
-      The 1-2 letter case-sensitive prefix
+      The 1-2 letter case-sensitive prefix.
 
    Returns
    -------
    exponent : int
-      The exponent corresponding to the prefix
+      The exponent corresponding to the prefix.
       
    """
 
@@ -52,7 +52,7 @@ def prefix_exp(prefix):
       return prefix_exps_dict[prefix]
 
 
-def prefix_conversion_exp(prefix):
+def prefix_negative_exp(prefix):
    """"
    Method to find the exponent for converting from units with a prefix to the base units
 
@@ -62,12 +62,12 @@ def prefix_conversion_exp(prefix):
    Parameters
    ----------
    prefix : str
-      The 1-2 letter case-sensitive prefix
+      The 1-2 letter case-sensitive prefix.
 
    Returns
    -------
    exponent : int
-      The exponent corresponding to the conversion factor between units with a prefix to base units
+      The exponent corresponding to the conversion factor between units with a prefix to base units.
    
    """
    return -1 * prefix_exp(prefix)
@@ -82,7 +82,7 @@ def find_prefix_and_base_units(user_input_units, units_dict):
    Parameters
    ----------
    user_input_units : str
-      The units to be analyzed for its prefix and base
+      The units to be analyzed for its prefix and base.
 
    units_dict : dict
       A dictionary specifying the standard unit name corresponding to a set of possible units names (case-insensitive).
@@ -97,10 +97,15 @@ def find_prefix_and_base_units(user_input_units, units_dict):
    Returns
    -------
    prefix : str
-      The standardized prefix
+      The standardized prefix.
 
    standard_units_name : str
-      The standardized base unit name
+      The standardized base unit name.
+
+   Raises
+   ------
+      ValueError
+         If the user_input_units is not in the keys or values of the units_dict.
 
    """
 
@@ -146,7 +151,7 @@ def standardize_units_name(user_input_units, units_dict):
    Returns
    -------
    standard_units : str
-      The standardized units name
+      The standardized units name.
 
    """
    prefix, units = find_prefix_and_base_units(user_input_units, units_dict)
@@ -161,10 +166,10 @@ def conversion_factor(init_units, final_units, units_names, units_vals):
    Parameters
    ----------
    init_units : str
-      The initial units in the conversion
+      The initial units in the conversion.
 
    final_units : str
-      The final units in the conversion
+      The final units in the conversion.
 
    units_names : dict
       A dictionary specifying the standard unit name corresponding to a set of possible units names (case-insensitive).
@@ -178,7 +183,7 @@ def conversion_factor(init_units, final_units, units_names, units_vals):
 
    units_vals : dict
       A dictionary specifying the conversion factors between different units, with units labeled by their standard name as 
-      specified in units_names. Values are represented as tuples (base, exponent)
+      specified in units_names. Values are represented as tuples (base, exponent).
 
       Example: For energies, possible units include hartrees and electron-volts.' Setting one value (hartree = 1), the remaining values
                are the conversion factors between different units and hartrees.
@@ -188,7 +193,7 @@ def conversion_factor(init_units, final_units, units_names, units_vals):
    Returns
    -------
    conversion_factor : float
-      The conversion factor to convert from init_units to final_units
+      The conversion factor to convert from init_units to final_units.
 
    """
 
@@ -199,7 +204,7 @@ def conversion_factor(init_units, final_units, units_names, units_vals):
    final_val = units_vals[final_units]
 
    conversion_factor = (final_val[0] / init_val[0],
-       (final_val[1] + prefix_conversion_exp(final_prefix)) - (init_val[1] + prefix_conversion_exp(init_prefix)))
+       (final_val[1] + prefix_negative_exp(final_prefix)) - (init_val[1] + prefix_negative_exp(init_prefix)))
 
    return conversion_factor[0] * 10**(conversion_factor[1])
 
@@ -211,15 +216,15 @@ def energy_conversion_factor(init_units, final_units):
    Parameters
    ----------
    init_units : str
-      The initial units in the conversion
+      The initial units in the conversion.
 
    final_units : str
-      The final units in the conversion
+      The final units in the conversion.
 
    Returns
    -------
    conversion_factor : float
-      The conversion factor to convert from init_units to final_units
+      The conversion factor to convert from init_units to final_units.
 
    """
 
@@ -233,15 +238,15 @@ def length_conversion_factor(init_units, final_units):
    Parameters
    ----------
    init_units : str
-      The initial units in the conversion
+      The initial units in the conversion.
 
    final_units : str
-      The final units in the conversion
+      The final units in the conversion.
 
    Returns
    -------
    conversion_factor : float
-      The conversion factor to convert from init_units to final_units
+      The conversion factor to convert from init_units to final_units.
 
    """
 
@@ -250,17 +255,17 @@ def length_conversion_factor(init_units, final_units):
 
 def hbar(units):
    """
-   Method to find the value of hbar for specific units
+   Method to find the value of hbar for specific units.
 
    Parameters
    ----------
    units : str
-      The units hbar should be returned in
+      The units hbar should be returned in.
 
    Returns
    -------
    hbar : float
-      The value of hbar in the specified units
+      The value of hbar in the specified units.
 
    """
    hbar_dict = {'ev*fs': (6.582119569, -1), 'ev*s': (6.582119569, -16), 'atomic': (1, 0), 'J*s': (1.054571817, -34)}
@@ -268,4 +273,4 @@ def hbar(units):
    if units not in hbar_dict.keys():
       raise ValueError(f"Please choose hbar units from the following list: {list(hbar_dict.keys())}")
 
-   return hbar_dict[energy_unit]
+   return hbar_dict[units][0] * (10 ** hbar_dict[units][1])

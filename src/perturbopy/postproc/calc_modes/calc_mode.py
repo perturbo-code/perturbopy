@@ -5,12 +5,13 @@ from perturbopy.io_utils.io import open_yaml
 
 class CalcMode():
    """
-   This is a class representation of a general Perturbo calculation mode.
+   This is a general class representation of a Perturbo calculation mode.
 
    Parameters
    ----------
    pert_dict : dict
-      dictionary containing inputs and outputs from a Perturbo calculation
+      dictionary containing inputs and outputs from a Perturbo calculation, as well as 
+      basic data of the material.
 
    """
 
@@ -63,7 +64,7 @@ class CalcMode():
 
       Returns
       -------
-      CalcMode
+      calc_mode : CalcMode
          The CalcMode object generated from the yaml file
 
       """

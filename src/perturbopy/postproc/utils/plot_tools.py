@@ -3,6 +3,8 @@ This is a module for creating plots based on Perturbo calculation results
 
 """
 import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.collections import LineCollection
 
 plotparams = {'figure.figsize': (16, 9),
               'axes.grid': False,
@@ -137,6 +139,65 @@ def plot_dispersion(ax, recip_pt_db, energies_db, energy_window=None, show_recip
     
    if show_recip_pt_labels:
       ax = plot_recip_pt_labels(ax, recip_pt_db)
+
+   ax.set_xticks([])
+   ax.set_ylabel(ylabel)
+
+   return ax
+
+def plot_vals_on_bands(ax, recip_pt_db, energies_db, values, energy_window=None, show_recip_pt_labels=True, **kwargs):
+   """
+   Method to plot the dispersion (phonon dispersion or band structure).
+
+   Parameters
+   ----------
+   ax: matplotlib.axes.Axes
+      Axis on which to plot the dispersion
+
+   recip_pt_db : RecipPtDB
+      The database of reciprocal points to be plotted
+
+   energies_db : EnergiesDB
+      The database of energies to be plotted
+
+   show_reicp_pts_labels: bool
+      Whether or not to show the reciprocal point labels stored in recip_pt_db
+
+   Returns
+   -------
+   ax: matplotlib.axes.Axes
+      Axis with the plotted dispesion
+
+   """
+
+   default_ylabel = f'Energy ({energies_db.units})'
+   dispersion_band_indices = energies_db.indices
+   ylabel = kwargs.pop('ylabel', default_ylabel)
+
+   # Create a continuous norm to map from data points to colors
+   vmin = min([min(values[key]) for key in values.keys()])
+   vmax = max([max(values[key]) for key in values.keys()])
+   norm = plt.Normalize(vmin, vmax)
+
+   for n in dispersion_band_indices:
+
+      x = np.array(recip_pt_db.path)
+      y = np.array(energies_db.energies_dict[n])
+      points = np.array([x, y]).T.reshape(-1, 1, 2)
+      segments = np.concatenate([points[:-1], points[1:]], axis=1)
+      lc = LineCollection(segments, cmap='RdBu', norm=norm)
+
+      lc.set_array(values[n])
+      lc.set_linewidth(2)
+      line = ax.add_collection(lc)
+
+   energies_dict = energies_db.energies_dict
+   ax.set_ylim(min([min(energies_dict[key]) for key in energies_dict.keys()]), max([max(energies_dict[key]) for key in energies_dict.keys()]))
+      
+   if show_recip_pt_labels:
+      ax = plot_recip_pt_labels(ax, recip_pt_db)
+      
+   plt.colorbar(line, ax=ax)
 
    ax.set_xticks([])
    ax.set_ylabel(ylabel)
