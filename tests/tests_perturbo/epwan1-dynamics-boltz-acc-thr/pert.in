@@ -1,0 +1,41 @@
+&perturbo
+  prefix        = 'gaas'
+  calc_mode     = 'dynamics-run'
+  
+  boltz_kdim(1) = 50
+  boltz_kdim(2) = 50
+  boltz_kdim(3) = 50
+
+  boltz_efield(1) = 10.0
+  boltz_efield(2) = 0.0
+  boltz_efield(3) = 0.0
+
+  boltz_emin    =  9.5   ! VBM = 9.26 eV
+  boltz_emax    = 10.2   ! CBM = 9.71 
+
+  ! 7, 8 valence bands
+  ! 9,10 conduction bands
+  band_min      = 9
+  band_max      = 10
+
+  tmp_dir       = './tmp'
+
+  boltz_norm_dist = .true.
+
+  boltz_nstep   = 1500
+  time_step     = 30
+  output_nstep  = 2
+  solver        = 'euler'
+
+  ! test parameter:
+  boltz_acc_thr = 1.0
+
+  boltz_init_dist  = 'fermi'
+  boltz_init_e0    = 9.8    ! eV
+  boltz_init_smear = 25.8652 ! meV
+
+  delta_smear   = 8
+  phfreq_cutoff = 2
+
+  ftemper = 'gaas.temper'
+ /

@@ -46,6 +46,7 @@ epwan1:
       - dynamics-efield-pp
       - dynamics-efield-norm
       - dynamics-efield-norm-pp
+      - dynamics-boltz-acc-thr
 
 epwan2:
    prefix: mos2
