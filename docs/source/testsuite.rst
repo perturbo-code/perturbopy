@@ -70,6 +70,13 @@ To specify the folder where the tests should be run, set the following environme
 
    (pertpy) $ export PERTURBO_SCRATCH='dir/to/run/tests'
 
+Run tests in the development stage:
+
+.. code-block:: console
+
+   (pertpy) $ pytest --devel
+
+
 Running testsuite on NERSC
 --------------------------
 
