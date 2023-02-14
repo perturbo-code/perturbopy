@@ -70,6 +70,7 @@ def get_all_tests():
    epwan_info = open_yaml(epwan_dict_path)
 
    test_folder_list = []
+   dev_test_folder_list = []
 
    for epwan in epwan_info:
       if 'tests' in epwan_info[epwan].keys():
@@ -77,7 +78,12 @@ def get_all_tests():
 
          test_folder_list += [f'{epwan}-{t}' for t in test_list]
 
-   return test_folder_list
+      if 'devel tests' in epwan_info[epwan].keys():
+         dev_test_list = epwan_info[epwan]['devel tests']
+
+         dev_test_folder_list += [f'{epwan}-{t}' for t in dev_test_list]
+
+   return test_folder_list, dev_test_folder_list
 
 
 def print_test_info(test_name, pert_input):
