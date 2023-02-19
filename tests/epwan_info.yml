@@ -49,6 +49,7 @@ epwan1:
 
    devel tests:
       - dynamics-boltz-acc-thr
+      - dynamics-ph-mode-exclude
 
 epwan2:
    prefix: mos2
