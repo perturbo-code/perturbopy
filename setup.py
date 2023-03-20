@@ -12,6 +12,7 @@ setup(
       'PyYAML',
       'pytest-profiling',
       'matplotlib',
+      'scipy',
    ],
    extras_require={
       'interactive': ['matplotlib>=2.2.0', 'jupyter'],
