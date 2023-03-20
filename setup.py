@@ -10,7 +10,8 @@ setup(
       'h5py',
       'hdfdict',
       'PyYAML',
-      'pytest-profiling'
+      'pytest-profiling',
+      'matplotlib',
    ],
    extras_require={
       'interactive': ['matplotlib>=2.2.0', 'jupyter'],
