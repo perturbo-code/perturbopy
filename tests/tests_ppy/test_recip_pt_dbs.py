@@ -10,7 +10,6 @@ points_cart = [[0, 0, 0.5, 0.5,  0.25, 0.75], [0, 1, 0.5, 1,   1,   0.75], [0,  
 
 @pytest.fixture()
 def recip_dbs():
-    
     return ppy.RecipPtDB(points_cart, points_cryst, units='cryst')
 
 
@@ -73,22 +72,41 @@ def test_where(recip_dbs, test_point, atol, expected):
 	else:
 		assert(np.all(recip_dbs.where(test_point, atol=atol) == expected))
 
-# # Test point to path
-# @pytest.mark.parametrize("test_point, atol, expected", [
-# 	([0,0,0], None, 0), ([0.25, 0.625, 0.625], None, 4),
-# 	([0.25, 0.625, 0.56], None, None), ([0.25, 0.625, 0.56], 0.1, 4),
-# 	])
-# def test_point_to_path(recip_dbs, test_point, atol, expected):
+# Test point to path
+@pytest.mark.parametrize("test_point, atol, expected", [
+	([0,0,0], None, 0), ([0.25, 0.625, 0.625], None, 4),
+	([0.25, 0.625, 0.56], None, None), ([0.25, 0.625, 0.56], 0.1, 4),
+	])
+def test_point_to_path(recip_dbs, test_point, atol, expected):
 	
-# 	if atol is None:
-# 		assert(np.all(recip_dbs.point_to_path(test_point) == expected))
-# 	else:
-# 		print(recip_dbs.where(test_point, atol=atol))
-# 		assert(np.all(recip_dbs.point_to_path(test_point, atol=atol) == expected))
+	if atol is None:
+		assert(np.all(recip_dbs.point_to_path(test_point) == expected))
+	else:
+		assert(np.all(recip_dbs.point_to_path(test_point, atol=atol) == expected))
 
-# # Test path to point
-# @pytest.mark.parametrize("test_path, test_points_array, test_path_array, atol, expected", [
-# 	(),
-# 	])
-# def test_path_to_point(test_path, test_points_array, test_path_array, atol, expected):
-#     assert(ppy.lattice.path_to_point(test_path, test_points_array, test_path_array))
+# Test path to point
+@pytest.mark.parametrize("test_path, atol, expected", [
+	(0, None, [0,0,0]), (4, None, [0.25, 0.625, 0.625]), (4.1, None, None),
+	(4.1, 0.1, [0.25, 0.625, 0.625])
+	])
+def test_path_to_point(recip_dbs, test_path, atol, expected):
+	if atol is None:
+	    assert(np.all(recip_dbs.path_to_point(test_path) == expected))
+	else:
+		assert(np.all(recip_dbs.path_to_point(test_path, atol=atol) == expected))
+
+# Test path to point in cartesian units
+@pytest.mark.parametrize("test_path, atol, expected", [
+	(0, None, [0,0,0]), (4, None, [0.25, 1, 0.25]), (4.1, None, None),
+	(4.1, 0.1, [0.25, 1, 0.25])
+	])
+def test_path_to_point_cart(recip_dbs, test_path, atol, expected):
+	recip_dbs.units = "cart"
+	if atol is None:
+	    assert(np.all(recip_dbs.path_to_point(test_path) == expected))
+	else:
+		assert(np.all(recip_dbs.path_to_point(test_path, atol=atol) == expected))
+
+# Test add labels
+
+# Test remove labels

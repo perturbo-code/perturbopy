@@ -238,15 +238,12 @@ class RecipPtDB():
          The path coordinates of the corresponding reciprocal space point(s)
 
       """
-      path_idx = self.where(point)
-      if path_idx is None:
-         return None
-      else:
-         path_coord = self.path[path_idx]
+      
+      path_coord = lattice.point_to_path(point, self.points, self.path, **kwargs)
 
       return path_coord
 
-   def path_to_point(self, path, nearest=True, **kwargs):
+   def path_to_point(self, path_coord, **kwargs):
       """
       Method to find the reciprocal space point corresponding to a path coordinate
 
@@ -265,20 +262,10 @@ class RecipPtDB():
          The reciprocal space point(s) of the corresponding path coordinate
 
       """
-      atol = kwargs.pop('atol', 1e-16)
-      rtol = kwargs.pop('atol', 1e-10)
+      
+      point = lattice.path_to_point(path_coord, self.points, self.path, **kwargs)
 
-      if path in self.path:
-         path_idx = np.isclose(self.path, path)
-      else:
-         if nearest:
-            distances = np.abs(self.path - path)
-            min_distance = np.amin(distances)
-            path_idx = np.where(np.isclose(distances, min_distance, atol=atol, rtol=rtol))[0]
-         else:
-            raise ValueError("path coordinate is not in the path list")
-
-      return np.reshape(self.points[:, path_idx], (3,))
+      return point
 
    def add_labels(self, labels_dict_input, **kwargs):
       """

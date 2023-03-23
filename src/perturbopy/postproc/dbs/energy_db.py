@@ -2,7 +2,7 @@ import numpy as np
 from perturbopy.postproc.utils.constants import energy_conversion_factor, standardize_units_name, energy_units_names
 
 
-class EnergiesDB():
+class EnergyDB():
    """
    This is a class representation of a set of energies organized in bands.
 

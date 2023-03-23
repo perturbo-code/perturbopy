@@ -102,4 +102,5 @@ def test_point_to_path(test_point, test_points_array, test_path_array, atol, exp
 	(3,[[1,1,1],[1,5,6],[1,2,0], [3,3,3]], [1,2,3,4], None, [1,2,0]),
 	])
 def test_path_to_point(test_path, test_points_array, test_path_array, atol, expected):
-    assert(ppy.lattice.path_to_point(test_path, test_points_array, test_path_array))
+    print(ppy.lattice.path_to_point(test_path, test_points_array, test_path_array))
+    assert(np.all(np.isclose(ppy.lattice.path_to_point(test_path, test_points_array, test_path_array), expected)))

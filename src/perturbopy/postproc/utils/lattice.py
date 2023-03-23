@@ -215,6 +215,6 @@ def path_to_point(path_coord, point_array, path_array, **kwargs):
 
    if min_distance <= atol + rtol * min_distance:
       path_indices = np.where(np.isclose(distances, min_distance))[0]
-      return path_array[path_indices]
+      return np.reshape(point_array[:, path_indices], (3,))
    else:
       return None
