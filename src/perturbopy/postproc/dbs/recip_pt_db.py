@@ -238,8 +238,11 @@ class RecipPtDB():
          The path coordinates of the corresponding reciprocal space point(s)
 
       """
-
-      path_coord = self.path[self.where(point, nearest)]
+      path_idx = self.where(point)
+      if path_idx is None:
+         return None
+      else:
+         path_coord = self.path[path_idx]
 
       return path_coord
 

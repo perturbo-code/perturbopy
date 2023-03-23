@@ -48,7 +48,7 @@ class BandsCalcMode(CalcMode):
       energy_units = self._pert_dict['bands'].pop('band units')
 
       self.kpt = RecipPtDB.from_lattice(kpoint, kpoint_units, self.lat, self.recip_lat, kpath, kpath_units)
-      self.bands = EnergiesDB(energies_dict, energy_units, num_bands)
+      self.bands = EnergiesDB(energies_dict, energy_units)
 
    def compute_indirect_bandgap(self, n_lower, n_upper):
       """

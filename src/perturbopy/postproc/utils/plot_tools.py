@@ -5,6 +5,7 @@ This is a module for creating plots based on Perturbo calculation results
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.collections import LineCollection
+import matplotlib
 
 plotparams = {'figure.figsize': (16, 9),
               'axes.grid': False,
@@ -61,6 +62,8 @@ def plot_recip_pt_labels(ax, recip_pt_db, line=True, **kwargs):
   labeled_recip_pt = recip_pt_db.labels
 
   for label in labeled_recip_pt.keys():
+    if recip_pt_db.point_to_path(labeled_recip_pt[label]) is None:
+      continue
     for x in recip_pt_db.point_to_path(labeled_recip_pt[label]):
        label_x = kwargs.pop('label_x', x)
        if line:
@@ -95,8 +98,8 @@ def plot_dispersion(ax, recip_pt_db, energies_db, energy_window=None, show_recip
 
    """
 
-   default_colors = ['b', 'k', 'g', 'r', 'c', 'm', 'y']
-   default_linestyles = ['-']
+   default_colors = ['k']#['b', 'k', 'r', 'c', 'g', 'g', 'g']
+   default_linestyles =[None]# ['dashed','dotted', 'dashdot']
    default_ylabel = f'Energy ({energies_db.units})'
    default_dispersion_band_indices = energies_db.indices
 
@@ -104,6 +107,7 @@ def plot_dispersion(ax, recip_pt_db, energies_db, energy_window=None, show_recip
    colors = kwargs.pop('c', kwargs.pop('color', default_colors))
    linestyles = kwargs.pop('ls', kwargs.pop('linestyle', default_linestyles))
    band_labels = kwargs.pop('label', kwargs.pop('labels', None))
+   markers = [None]# ['o','s','^']
 
    if not isinstance(colors, list):
       colors = [colors]
@@ -116,7 +120,7 @@ def plot_dispersion(ax, recip_pt_db, energies_db, energy_window=None, show_recip
 
    for dispersion_band_idx, n in enumerate(dispersion_band_indices):
       x = np.array(recip_pt_db.path)
-      y = np.array(energies_db.energies_dict[n])
+      y = np.array(energies_db.energies[n])
 
       if energy_window is not None:
         above_min = np.where(y > energy_window[0])
@@ -135,7 +139,8 @@ def plot_dispersion(ax, recip_pt_db, energies_db, energy_window=None, show_recip
       ax.plot(x,y,
               color=colors[n % len(colors)],
               linestyle=linestyles[n % len(linestyles)],
-              label = band_labels[n % len(band_labels)], zorder=2)
+              label = band_labels[n % len(band_labels)], zorder=2,
+              marker = markers[n % len(markers)])
     
    if show_recip_pt_labels:
       ax = plot_recip_pt_labels(ax, recip_pt_db)
@@ -175,14 +180,15 @@ def plot_vals_on_bands(ax, recip_pt_db, energies_db, values, energy_window=None,
    ylabel = kwargs.pop('ylabel', default_ylabel)
 
    # Create a continuous norm to map from data points to colors
+   print(values)
    vmin = min([min(values[key]) for key in values.keys()])
    vmax = max([max(values[key]) for key in values.keys()])
-   norm = plt.Normalize(vmin, vmax)
-
+   #norm = matplotlib.colors.LogNorm(0.01, -10)
+   norm = plt.Normalize(vmin,vmax)
    for n in dispersion_band_indices:
 
       x = np.array(recip_pt_db.path)
-      y = np.array(energies_db.energies_dict[n])
+      y = np.array(energies_db.energies[n])
       points = np.array([x, y]).T.reshape(-1, 1, 2)
       segments = np.concatenate([points[: -1], points[1:]], axis=1)
       lc = LineCollection(segments, cmap='RdBu', norm=norm)
@@ -191,8 +197,8 @@ def plot_vals_on_bands(ax, recip_pt_db, energies_db, values, energy_window=None,
       lc.set_linewidth(2)
       line = ax.add_collection(lc)
 
-   energies_dict = energies_db.energies_dict
-   ax.set_ylim(min([min(energies_dict[key]) for key in energies_dict.keys()]), max([max(energies_dict[key]) for key in energies_dict.keys()]))
+   energies = energies_db.energies
+   ax.set_ylim(min([min(energies[key]) for key in energies.keys()]), max([max(energies[key]) for key in energies.keys()]))
       
    if show_recip_pt_labels:
       ax = plot_recip_pt_labels(ax, recip_pt_db)

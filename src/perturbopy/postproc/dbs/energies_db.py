@@ -29,12 +29,12 @@ class EnergiesDB():
 
       """
       self.energies = energies_dict
-      self._units = units
+      self.units = units
 
       for idx in self.energies.keys():
          self.energies[idx] = np.array(self.energies[idx])
 
-      self.num_indices = len(energies.keys())
+      self.num_indices = len(self.energies.keys())
 
    @property
    def indices(self):
@@ -75,7 +75,7 @@ class EnergiesDB():
       for idx in self.energies.keys():
          converted_energies[idx] = self.energies[idx] * conversion_factor
 
-      if conversion_factor is not 1 and in_place:
+      if conversion_factor != 1 and in_place:
          self.units = new_units
          self.energies = converted_energies
          print(f"Energies have been converted to {new_units}.")
