@@ -2,7 +2,7 @@ import numpy as np
 from perturbopy.postproc.calc_modes.calc_mode import CalcMode
 from perturbopy.postproc.dbs.energy_db import EnergyDB
 from perturbopy.postproc.dbs.recip_pt_db import RecipPtDB
-from perturbopy.postproc.utils.plot_tools import plot_dispersion
+from perturbopy.postproc.utils.plot_tools import plot_dispersion, plot_recip_pt_labels
 
 
 class PhdispCalcMode(CalcMode):

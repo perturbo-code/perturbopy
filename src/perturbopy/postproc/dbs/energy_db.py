@@ -80,3 +80,4 @@ class EnergyDB():
          print(f"Energies have been converted to {new_units}.")
 
       return converted_energies
+      

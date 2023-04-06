@@ -35,7 +35,7 @@ Here are the examples to set the PERTURBO_RUN environmental variable:
    (pertpy) $ # for MPI (+OpenMP)
    (pertpy) $ export PERTURBO_RUN='mpirun -np 4 <path>/perturbo.x -npools 4'
 
-Once, the PERTURBO_RUN variable is set up, navigate to the `perturbopy/tests` folder and run:
+Once, the PERTURBO_RUN variable is set up, navigate to the `perturbopy/tests_f90` folder and run:
 
 .. code-block:: console
 
@@ -43,7 +43,7 @@ Once, the PERTURBO_RUN variable is set up, navigate to the `perturbopy/tests` fo
 
 In the case of successful run of all tests, one will see **<n> passed** as the final line of the output, where <n> is the number of tests.
 
-By default, the tests wil be run in the *perturbopy/tests/PERTURBO_SCRATCH* directory. If all tests are passed, this directory will be empty after the pytest run. In the case of a failure of one or more tests, the corresponding test folder(s) will be not removed from the *tests/PERTURBO_SCRATCH* directory.
+By default, the tests wil be run in the *perturbopy/tests_f90/PERTURBO_SCRATCH* directory. If all tests are passed, this directory will be empty after the pytest run. In the case of a failure of one or more tests, the corresponding test folder(s) will be not removed from the *tests/PERTURBO_SCRATCH* directory.
 
 On clusters and supercomputers, the testsuite can be launched both in the interactive mode and as a job. 
 
@@ -101,7 +101,7 @@ Job submission
 
    .. code-block:: console
 
-      $ cd perturbopy/tests
+      $ cd perturbopy/tests_f90
 
 #. Modify the submission and environment setup :ref:`scripts <Job scripts>`.
 
@@ -128,7 +128,7 @@ Here are the commands to run the Perturbo testsuite on Cori in the `interactive 
 
    .. code-block:: console
 
-      $ cd perturbopy/tests
+      $ cd perturbopy/tests_f90
 
 #. Load the ``python`` module:
 
