@@ -1,5 +1,6 @@
 """
-   Open/close binary and ASCII files (HDF5, YAML, text inputs/outputs)
+Open/close binary and ASCII files (HDF5, YAML, text inputs/outputs)
+
 """
 from yaml import load
 try:

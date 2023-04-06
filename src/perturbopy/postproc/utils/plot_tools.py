@@ -5,7 +5,7 @@ This is a module for creating plots based on Perturbo calculation results
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.collections import LineCollection
-import matplotlib
+from perturbopy.postproc.utils import lattice
 
 plotparams = {'figure.figsize': (16, 9),
                      'axes.grid': False,
@@ -32,7 +32,8 @@ plotparams = {'figure.figsize': (16, 9),
                      'legend.markerscale': 1.0,
                      'font.size': 20}
 
-def plot_recip_pt_labels(ax, rcp_db, label_height="upper", show_line=True):
+
+def plot_recip_pt_labels(ax, rcp_db, point_array, path_array, label_height="upper", show_line=True):
    """"
    Method to add reciprocal point labels to the plot
 
@@ -61,18 +62,22 @@ def plot_recip_pt_labels(ax, rcp_db, label_height="upper", show_line=True):
       label_height = ax.get_ylim()[0] - (ax.get_ylim()[1] - ax.get_ylim()[0]) * 0.1
    
    for label in rcp_db.labels.keys():
-      if rcp_db.point_to_path(rcp_db.labels[label]) is None:
+      path_to_label = lattice.point_to_path(rcp_db.labels[label], point_array, path_array)
+      
+      if path_to_label is None:
          continue
-      for x in rcp_db.point_to_path(rcp_db.labels[label]):
+      for x in path_to_label:
          if show_line:
             ax.axvline(x)
             ax.text(x=x, y=label_height, s=label)
 
    return ax
 
+
 def set_energy_window(ax, energy_window):
    ax.set_ylim((energy_window[0] * 1.01, energy_window[1] * .99))
    return ax
+
 
 def plot_dispersion(ax, path, energies, energy_units, c='k', ls='-', energy_window=None):
    """
@@ -107,7 +112,7 @@ def plot_dispersion(ax, path, energies, energy_units, c='k', ls='-', energy_wind
    for n in energies.keys():
       x = path
       y = energies[n]
-      ax.plot(x,y,
+      ax.plot(x, y,
                   color=c[n % len(c)],
                   linestyle=ls[n % len(ls)])
 
@@ -118,6 +123,7 @@ def plot_dispersion(ax, path, energies, energy_units, c='k', ls='-', energy_wind
    ax.set_ylabel(f'Energy ({energy_units})')
 
    return ax
+
 
 def plot_vals_on_bands(ax, path, energies, energy_units, values, cmap='RdBu', energy_window=None):
    """
@@ -147,7 +153,7 @@ def plot_vals_on_bands(ax, path, energies, energy_units, values, cmap='RdBu', en
    # Create a continuous norm to map from data points to colors
    vmin = min([min(values[key]) for key in values.keys()])
    vmax = max([max(values[key]) for key in values.keys()])
-   norm = plt.Normalize(vmin,vmax)
+   norm = plt.Normalize(vmin, vmax)
 
    for n in energies.keys():
 

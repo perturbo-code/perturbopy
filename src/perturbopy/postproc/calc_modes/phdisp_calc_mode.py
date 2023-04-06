@@ -1,11 +1,9 @@
 import numpy as np
-import matplotlib.pyplot as plt
-from scipy.optimize import curve_fit
 from perturbopy.postproc.calc_modes.calc_mode import CalcMode
-from perturbopy.postproc.utils.constants import energy_conversion_factor, length_conversion_factor
 from perturbopy.postproc.dbs.energy_db import EnergyDB
 from perturbopy.postproc.dbs.recip_pt_db import RecipPtDB
 from perturbopy.postproc.utils.plot_tools import plot_dispersion
+
 
 class PhdispCalcMode(CalcMode):
    """
@@ -45,8 +43,7 @@ class PhdispCalcMode(CalcMode):
       energy_units = self._pert_dict['bands'].pop('band units')
 
       self.qpt = RecipPtDB.from_lattice(qpoint, qpoint_units, self.lat, self.recip_lat, qpath, qpath_units)
-      self.phdisp = EnergiesDB(energies_dict, energy_units, num_modes)
-
+      self.phdisp = EnergyDB(energies_dict, energy_units, num_modes)
 
    def plot_phdisp(self, ax, energy_window=None, show_qpoint_labels=True, **kwargs):
       """
@@ -55,21 +52,27 @@ class PhdispCalcMode(CalcMode):
       Parameters
       ----------
       ax : matplotlib.axes.Axes
-         Axis on which to plot the phonon dispersion.
+         Axis on which to plot the phonons.
 
-      energy_window : tuple of int, default : None
-         The range of phonon energies to be shown on the y-axis. If none, all phonon energies will be shown.
+      energy_window : tuple of int, optional
+         The range of phonon energies to be shown on the y-axis.
 
-      show_qpoint_labels : bool, default : True
-         If true, the q-point labels stored in the labels attribute will be shown on the plot.
+      show_qpoint_labels : bool, optional
+         If true, the k-point labels stored in the labels attribute will be shown on the plot.
 
-      **kwargs : dict, optional
-         Extra arguments to plot_dispersion. Refer to plot_dispersion documentation for a list of all possible arguments.
+      **kwargs, optional
+         Extra arguments to plot_dispersion and plot_recip_pt_labels. Refer to the plot_dispersion and plot_recip_pt_labels
+         documentation for a list of all possible arguments.
 
       Returns
       -------
-      ax : matplotlib.axes.Axes
-         Axis with the plotted phonon dispersion.
+      ax: matplotlib.axes.Axes
+         Axis with the plotted phonons.
 
       """
-      return plot_dispersion(ax, self.qpt, self.phdisp, energy_window, show_qpoint_labels, **kwargs)
+      ax = plot_dispersion(ax, self.qpt.path, self.phdisp.energies, self.phdisp.units, energy_window, **kwargs)
+
+      if show_qpoint_labels:
+         ax = plot_recip_pt_labels(ax, self.qpt.labels, self.qpt.points, self.qpt.path, **kwargs)
+      
+      return ax

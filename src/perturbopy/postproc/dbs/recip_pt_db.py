@@ -1,6 +1,5 @@
 import numpy as np
 from perturbopy.postproc.utils.constants import standardize_units_name, recip_points_units_names, special_recip_points
-from perturbopy.postproc.utils.lattice import cryst_to_cart, reshape_points
 from perturbopy.postproc.utils import lattice
 
 
@@ -39,9 +38,15 @@ class RecipPtDB():
       Constructor method
 
       """
-      self.points_cart = reshape_points(points_cart)
-      self.points_cryst = reshape_points(points_cryst)
-      self._units = standardize_units_name(units, recip_points_units_names)
+      self.points_cart = lattice.reshape_points(points_cart)
+      self.points_cryst = lattice.reshape_points(points_cryst)
+      self.units = standardize_units_name(units, recip_points_units_names)
+
+      if self.units == 'cartesian':
+         self.points = self.points_cart
+
+      elif self.units == 'crystal':
+         self.points = self.points_cryst
 
       if path is None:
          self.path = np.arange(0, np.shape(self.points_cart)[1])
@@ -93,65 +98,27 @@ class RecipPtDB():
       units = standardize_units_name(units, recip_points_units_names)
       
       if units == 'cartesian':
-         points_cart = reshape_points(points)
-         points_cryst = cryst_to_cart(points_cart, lat, recip_lat, forward=False, real_space=False)
+         points_cart = lattice.reshape_points(points)
+         points_cryst = lattice.cryst2cart(points_cart, lat, recip_lat, forward=False, real_space=False)
 
       elif units == 'crystal':
 
-         points_cryst = reshape_points(points)
-         points_cart = cryst_to_cart(points_cryst, lat, recip_lat, forward=True, real_space=False)
+         points_cryst = lattice.reshape_points(points)
+         points_cart = lattice.cryst2cart(points_cryst, lat, recip_lat, forward=True, real_space=False)
       else:
          return None
 
       return RecipPtDB(points_cart, points_cryst, units, path, path_units, labels)
 
-   @property
-   def units(self):
-      """
-      Property storing the units that calculations will be performed in, i.e.
-      cartesian or crystal.
+   def convert_units(self, new_units, in_place=True):
 
-      Returns
-      -------
-      self._units : str
-
-      """
-      return self._units
-
-   @units.setter
-   def units(self, new_units):
-      """
-      Setter for the units property.
-
-      Parameters
-      ----------
-      new_units : str
-         The new reciprocal point units, which will be assumed in future calculations
-         on the RecipPtDB object
-
-      """
-      print(f"Converting units to {new_units}")
-      self._units = standardize_units_name(new_units, recip_points_units_names)
-
-   
-   @property
-   def points(self):
-      """
-      Property storing the reciprocal space points corresponding to the units property.
-      i.e. if self.units = "crystal", then points_cryst will be returned.
-      If self.units = "cartesian", then points_cart will be returned.
-
-      Returns
-      -------
-      points : array
-         the reciprocal space points corresponding the units property
-
-      """
+      self.units = standardize_units_name(new_units, recip_points_units_names)
 
       if self.units == 'cartesian':
-         return self.points_cart
+         self.points = self.points_cart
+
       elif self.units == 'crystal':
-         return self.points_cryst
+         self.points = self.points_cryst
 
    def scale_path(self, range_min, range_max):
       """
@@ -196,7 +163,7 @@ class RecipPtDB():
       
       return distances
 
-   def where(self, point,**kwargs):
+   def find(self, point, max_dist=0.025, nearest=True):
       """
       Method to find the index or indices of a particular point
 
@@ -205,7 +172,7 @@ class RecipPtDB():
       point : array
          The reciprocal space point to be searched
       **kwargs : dict
-         Extra arguments for point_to_path method. Refer to Lattice module documentation for a list of all possible arguments.
+         Extra arguments for point2path method. Refer to Lattice module documentation for a list of all possible arguments.
 
       Returns
       -------
@@ -213,11 +180,11 @@ class RecipPtDB():
          The indices of the matching reciprocal space point in the points array
       
       """
-      points_indices = lattice.where(point, self.points, **kwargs)
+      points_indices = lattice.find_point(point, self.points, max_dist, nearest)
 
       return points_indices
 
-   def point_to_path(self, point, **kwargs):
+   def point2path(self, point, max_dist=0.025, nearest=True):
       """
       Method to find the path coordinate corresponding to a reciprocal space point coordinate
 
@@ -230,7 +197,7 @@ class RecipPtDB():
          If true, the path coordinate of the reciprocal space point closest to the point input will
          be returned if the inputted point is not found
       **kwargs : dict
-         Extra arguments for point_to_path method. Refer to Lattice module documentation for a list of all possible arguments.
+         Extra arguments for point2path method. Refer to Lattice module documentation for a list of all possible arguments.
 
       Returns
       -------
@@ -239,11 +206,11 @@ class RecipPtDB():
 
       """
       
-      path_coord = lattice.point_to_path(point, self.points, self.path, **kwargs)
+      path_coord = lattice.convert_point2path(point, self.points, self.path, max_dist, nearest)
 
       return path_coord
 
-   def path_to_point(self, path_coord, **kwargs):
+   def path2point(self, path_coord, atol=1e-8, rtol=1e-5, nearest=True):
       """
       Method to find the reciprocal space point corresponding to a path coordinate
 
@@ -263,11 +230,11 @@ class RecipPtDB():
 
       """
       
-      point = lattice.path_to_point(path_coord, self.points, self.path, **kwargs)
+      point = lattice.convert_path2point(path_coord, self.points, self.path, atol, rtol, nearest)
 
       return point
 
-   def add_labels(self, labels_dict_input, **kwargs):
+   def add_labels(self, labels_dict_input):
       """
       Method to add a label associated with a reciprocal space point. For example, point = [0,0,0] and label = 'gamma'
 
@@ -286,9 +253,9 @@ class RecipPtDB():
       """
 
       for i, label in enumerate(labels_dict_input.keys()):
-         self.labels[label] = labels_dict_input[label] 
+         self.labels[label] = labels_dict_input[label]
 
-   def remove_labels(self, labels_list, **kwargs):
+   def remove_labels(self, labels_list):
 
       for i, label in labels_list:
          self.labels = self.labels.pop(label)

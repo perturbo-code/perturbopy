@@ -1,26 +1,24 @@
 import numpy as np
-from perturbopy.postproc.utils.constants import energy_conversion_factor, standardize_units_name, energy_units_names
+from perturbopy.postproc.utils.constants import energy_conversion_factor, standardize_units_name
 
 
 class EnergyDB():
    """
-   This is a class representation of a set of energies organized in bands.
+   This is a class representation of a set of energies organized in a dictionary.
 
    Parameters
    ----------
    energies : dict
-      Dictionary of arrays of energies, with keys corresponding to the band number.
+      Dictionary of arrays of energies, with keys labelling the band number or phonon mode.
    units : str {}
       The energy units.
 
    Attributes
    ----------
    energies : dict
-      Dictionary of arrays of energies, with keys corresponding to the band number.
+      Dictionary of arrays of energies, with keys labelling the band number or phonon mode.
    _units : dict
       The energy units.
-   num_indices : 
-      The number of bands in the energies dict.
       
    """
    def __init__(self, energies_dict, units):
@@ -39,7 +37,8 @@ class EnergyDB():
    @property
    def indices(self):
       """
-      Property storing the indices, i.e. the keys of the energies dict.
+      Property storing the indices, i.e. the keys of the energies dict. These are
+      typically the band indices or phonon mode indices.
 
       Returns
       -------
@@ -52,13 +51,13 @@ class EnergyDB():
    def convert_units(self, new_units, in_place=True):
       """
       Method to convert the energy units of the stored energies.
-      Does not store the changes.
+      The converted units may or may not be stored.
 
       Parameters
       ----------
       new_units : str
          Energy units to which the energies will be converted.
-      in_place : bool, default : True
+      in_place : bool, optional
          Whetherh or not to store the converted units.
 
       Returns
@@ -81,9 +80,3 @@ class EnergyDB():
          print(f"Energies have been converted to {new_units}.")
 
       return converted_energies
-
-   def __getitem__(self, key):
-      return self.energies[key]
-
-   def __str__(self):
-      return str(self.energies)

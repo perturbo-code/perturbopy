@@ -3,6 +3,12 @@ This is a module for working with constants, including storing values for differ
 
 """
 
+prefix_exps_dict = {'y': -24, 'z': -21, 'a': -18, 'f': -15,
+                    'p': -12, 'n': -9, 'mu': -6, 'm': -3,
+                    'c': -2, 'd': -1, 'da': 1, 'h': 2,
+                    'k': 3, 'M': 6, 'G': 9, 'T': 12,
+                    'P': 15, 'E': 18, 'Z': 21, 'Y': 24}
+
 energy_units_names = {'eV': ['ev', 'electron-volt', 'electronvolt', 'electronvolts', 'electron-volts'],
                       'Ha': ['ha', 'hartree', 'eh', 'e_h', 'hartrees'],
                       'J': ['j', 'joule', 'joules'],
@@ -10,11 +16,6 @@ energy_units_names = {'eV': ['ev', 'electron-volt', 'electronvolt', 'electronvol
 
 energy_units_vals = {'eV': (2.7211396132, 1), 'Ha': (1, 0), 'J': (4.359748199, -18), 'Ry': (0.5, 0)}
 
-prefix_exps_dict = {'y': -24, 'z': -21, 'a': -18, 'f': -15,
-                    'p': -12, 'n': -9, 'mu': -6, 'm': -3,
-                    'c': -2, 'd': -1, 'da': 1, 'h': 2,
-                    'k': 3, 'M': 6, 'G': 9, 'T': 12,
-                    'P': 15, 'E': 18, 'Z': 21, 'Y': 24}
 length_units_names = {'bohr': ['bohr', 'a.u', 'atomic units', 'au'], 'angstrom': ['angstrom, a'], 'm': ['m', 'meter']}
 
 length_units_vals = {'bohr': (1, 0), 'angstrom': (0.529177249, 0), 'm': (5.29177249, -11)}
@@ -24,6 +25,7 @@ recip_points_units_names = {'cartesian': ['tpiba', 'cartesian', 'cart'], 'crysta
 special_recip_points = {'L': [0.5, 0.5, 0.5], 'X': [0.5, 0.0, 0.5],
                         'W': [0.5, 0.25, 0.75], 'K': [0.375, 0.375, 0.75],
                         r'$\Gamma$': [0, 0, 0]}
+
 
 def prefix_exp(prefix):
    """"
@@ -50,28 +52,7 @@ def prefix_exp(prefix):
          raise ValueError(f"Please choose prefixes from the following list: {list(prefix_exps_dict.keys())}")
 
       return prefix_exps_dict[prefix]
-
-
-def prefix_negative_exp(prefix):
-   """"
-   Method to find the exponent for converting from units with a prefix to the base units
-
-   Example: the prefix 'c' (centi) corresponds to 1e-2. To convert from centimeter to meter would
-   require multiplying by 1e2, so the exponent returned would be 2.
-   
-   Parameters
-   ----------
-   prefix : str
-      The 1-2 letter case-sensitive prefix.
-
-   Returns
-   -------
-   exponent : int
-      The exponent corresponding to the conversion factor between units with a prefix to base units.
-   
-   """
-   return -1 * prefix_exp(prefix)
-
+      
 
 def find_prefix_and_base_units(user_input_units, units_dict):
    """
@@ -204,7 +185,7 @@ def conversion_factor(init_units, final_units, units_names, units_vals):
    final_val = units_vals[final_units]
 
    conversion_factor = (final_val[0] / init_val[0],
-                        (final_val[1] + prefix_negative_exp(final_prefix)) - (init_val[1] + prefix_negative_exp(init_prefix)))
+                        (final_val[1] - prefix_exp(final_prefix)) - (init_val[1] - prefix_exp(init_prefix)))
 
    return conversion_factor[0] * 10**(conversion_factor[1])
 
