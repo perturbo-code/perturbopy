@@ -1,5 +1,5 @@
 import numpy as np
-from perturbopy.postproc.utils.constants import standardize_units_name, recip_points_units_names, special_recip_points
+from perturbopy.postproc.utils.constants import standardize_units_name, recip_points_units_names, special_recip_points_fcc
 from perturbopy.postproc.utils import lattice
 
 
@@ -56,7 +56,7 @@ class RecipPtDB():
       self.path_units = path_units
 
       if labels == {}:
-         labels = special_recip_points
+         labels = special_recip_points_fcc
 
       self.labels = labels
 

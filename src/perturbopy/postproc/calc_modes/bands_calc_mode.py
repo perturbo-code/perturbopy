@@ -152,9 +152,9 @@ class BandsCalcMode(CalcMode):
 
       kpoint = reshape_points(kpoint)
 
-      energies = self.bands.energies[n] * energy_conversion_factor(self.energy_units, 'hartree')
+      energies = self.bands.energies[n] * energy_conversion_factor(self.bands.units, 'hartree')
       alat = self.alat * length_conversion_factor(self.alat_units, 'bohr')
-      E_0 = energies[self.kpt.where(kpoint)]
+      E_0 = energies[self.kpt.find(kpoint)]
 
       kpoint_distances = np.linalg.norm(self.kpt.points - np.array(kpoint), axis=0)
       kpoint_parallel = np.dot(np.reshape(kpoint, (3,)), self.kpt.points) / (np.linalg.norm(kpoint) * np.linalg.norm(self.kpt.points, axis=0)) - 1 < epsilon
@@ -168,11 +168,13 @@ class BandsCalcMode(CalcMode):
       def parabolic_approx(prefactor, kpoint_dist_squared, energy):
          return prefactor * kpoint_dist_squared + E_0
       
+      print(kpoint_distances_squared)
+
       fit_params, pcov = curve_fit(parabolic_approx, kpoint_distances_squared, energies)
 
       effective_mass = 1 / (fit_params[0] * 2)
 
-      if show_plot():
+      if show_plot:
          plt.scatter(self.kpt.path[kpoint_indices], energies)
          plt.plot(self.kpt.path[kpoint_indices], fit_params[0] * kpoint_distances_squared + E_0, 'k')
          plt.show()

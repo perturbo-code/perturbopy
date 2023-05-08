@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.collections import LineCollection
 from perturbopy.postproc.utils import lattice
-
+from matplotlib import colors
 plotparams = {'figure.figsize': (16, 9),
                      'axes.grid': False,
                      'lines.linewidth': 2.5,
@@ -33,7 +33,7 @@ plotparams = {'figure.figsize': (16, 9),
                      'font.size': 20}
 
 
-def plot_recip_pt_labels(ax, rcp_db, point_array, path_array, label_height="upper", show_line=True):
+def plot_recip_pt_labels(ax, labels, point_array, path_array, label_height="lower", show_line=True):
    """"
    Method to add reciprocal point labels to the plot
 
@@ -61,8 +61,8 @@ def plot_recip_pt_labels(ax, rcp_db, point_array, path_array, label_height="uppe
    elif label_height == "lower":
       label_height = ax.get_ylim()[0] - (ax.get_ylim()[1] - ax.get_ylim()[0]) * 0.1
    
-   for label in rcp_db.labels.keys():
-      path_to_label = lattice.point_to_path(rcp_db.labels[label], point_array, path_array)
+   for label in labels.keys():
+      path_to_label = lattice.convert_point2path(labels[label], point_array, path_array)
       
       if path_to_label is None:
          continue
@@ -75,7 +75,7 @@ def plot_recip_pt_labels(ax, rcp_db, point_array, path_array, label_height="uppe
 
 
 def set_energy_window(ax, energy_window):
-   ax.set_ylim((energy_window[0] * 1.01, energy_window[1] * .99))
+   ax.set_ylim((float(energy_window[0]) * 1.01, float(energy_window[1]) * .99))
    return ax
 
 
@@ -88,15 +88,14 @@ def plot_dispersion(ax, path, energies, energy_units, c='k', ls='-', energy_wind
    ax: matplotlib.axes.Axes
          Axis on which to plot the dispersion
 
-   rcp_db : RecipPtDB
+   : RecipPtDB
          The database of reciprocal points to be plotted
 
    energy_db : EnergiesDB
          The database of energies to be plotted
 
    show_reicp_pts_labels: bool
-         Whether or not to show the reciprocal point labels stored in rcp_db
-
+         Whether or not to show the reciprocal point labels stored in 
    Returns
    -------
    ax: matplotlib.axes.Axes
@@ -134,15 +133,14 @@ def plot_vals_on_bands(ax, path, energies, energy_units, values, cmap='RdBu', en
    ax: matplotlib.axes.Axes
          Axis on which to plot the dispersion
 
-   rcp_db : RecipPtDB
+   : RecipPtDB
          The database of reciprocal points to be plotted
 
    energy_db : EnergiesDB
          The database of energies to be plotted
 
    show_reicp_pts_labels: bool
-         Whether or not to show the reciprocal point labels stored in rcp_db
-
+         Whether or not to show the reciprocal point labels stored in 
    Returns
    -------
    ax: matplotlib.axes.Axes
@@ -153,20 +151,36 @@ def plot_vals_on_bands(ax, path, energies, energy_units, values, cmap='RdBu', en
    # Create a continuous norm to map from data points to colors
    vmin = min([min(values[key]) for key in values.keys()])
    vmax = max([max(values[key]) for key in values.keys()])
-   norm = plt.Normalize(vmin, vmax)
 
+   print(vmin)
+   print(vmax)
+   
+   norm = plt.Normalize(vmin, vmax)
+   #norm = colors.LogNorm(vmin,vmax)
    for n in energies.keys():
 
       x = np.array(path)
       y = np.array(energies[n])
+
       points = np.array([x, y]).T.reshape(-1, 1, 2)
       segments = np.concatenate([points[: -1], points[1:]], axis=1)
+   
       lc = LineCollection(segments, cmap=cmap, norm=norm)
       
       lc.set_array(values[n])
       lc.set_linewidth(2)
       line = ax.add_collection(lc)
-         
+
+      if ax.get_xlim()[0] > x.min():
+         ax.set_xlim(ax.min(), ax.get_xlim()[1])
+      if ax.get_xlim()[1] < x.max():
+         ax.set_xlim(ax.get_xlim()[0], x.max())
+   
+      if ax.get_ylim()[0] > y.min():
+         ax.set_ylim(y.min(), ax.get_ylim()[1])
+      if ax.get_ylim()[1] < y.max():
+         ax.set_ylim(ax.get_ylim()[0], y.max())
+
    plt.colorbar(line, ax=ax)
 
    if energy_window is not None:
