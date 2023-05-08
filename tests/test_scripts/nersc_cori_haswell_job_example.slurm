@@ -1,0 +1,18 @@
+#!/bin/bash
+#SBATCH -N 2
+#SBATCH -C haswell
+#SBATCH -q debug
+#SBATCH --output=pytest_output
+#SBATCH -J pytest_pert
+#SBATCH -t 00:30:00
+
+echo `date`
+
+module load python
+
+# Here we assume that py310pert conda environment is created
+conda activate pertpy
+
+source test_scripts/env_setup_example.sh HSW
+
+pytest -s

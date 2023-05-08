@@ -1,0 +1,5 @@
+&perturbo
+  prefix      = 'fe'
+  calc_mode   = 'phdisp'
+  fqlist      = 'phdisp.qpt'
+/

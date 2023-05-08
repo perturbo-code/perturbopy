@@ -1,0 +1,5 @@
+&perturbo
+  prefix      = 'graphene'
+  calc_mode   = 'bands'
+  fklist      = 'band_2D.kpt'
+/

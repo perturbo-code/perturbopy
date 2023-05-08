@@ -1,0 +1,8 @@
+&perturbo
+  prefix      = 'gaas_uspp'
+  calc_mode   = 'ephmat'
+  fklist      = 'eph.kpt'
+  fqlist      = 'eph.qpt'
+
+  phfreq_cutoff = 1   ! meV
+/
