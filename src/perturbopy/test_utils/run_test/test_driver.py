@@ -80,7 +80,7 @@ def get_test_materials(test_name):
 
    """
    # suffixes of paths needed to find driver/utils/references
-   inputs_path_suffix = 'tests_perturbo/' + test_name
+   inputs_path_suffix = 'tests/' + test_name
    ref_data_path_suffix = 'refs_perturbo/' + test_name
 
    cwd = os.getcwd()
@@ -88,6 +88,7 @@ def get_test_materials(test_name):
    # determine needed paths
    perturbo_inputs_dir_path = [x[0] for x in os.walk(cwd) if x[0].endswith(inputs_path_suffix)][0]
    work_path                = perturbo_scratch_dir_from_env(cwd, perturbo_inputs_dir_path, test_name)
+   print([x[0] for x in os.walk(cwd) if x[0].endswith(ref_data_path_suffix)])
    ref_path                 = [x[0] for x in os.walk(cwd) if x[0].endswith(ref_data_path_suffix)][0]
 
    # input yaml for perturbo job
@@ -142,7 +143,7 @@ def clean_test_materials(test_name, new_outs):
 
    """
    # suffixes of paths needed to find driver/utils/references
-   inputs_path_suffix = 'tests_perturbo/' + test_name
+   inputs_path_suffix = 'tests/' + test_name
 
    cwd = os.getcwd()
 

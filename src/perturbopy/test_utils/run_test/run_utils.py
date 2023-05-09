@@ -28,7 +28,7 @@ def read_test_tags(test_name):
 
    cwd = os.getcwd()
 
-   driver_path_suffix = 'tests_perturbo/' + test_name
+   driver_path_suffix = 'tests/' + test_name
    perturbo_driver_dir_path = [x[0] for x in os.walk(cwd) if x[0].endswith(driver_path_suffix)][0]
 
    pert_input = open_yaml(f'{perturbo_driver_dir_path}/pert_input.yml')
@@ -70,7 +70,6 @@ def get_all_tests():
    epwan_info = open_yaml(epwan_dict_path)
 
    test_folder_list = []
-   dev_test_folder_list = []
 
    for epwan in epwan_info:
       if 'tests' in epwan_info[epwan].keys():

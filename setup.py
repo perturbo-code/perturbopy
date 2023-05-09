@@ -10,10 +10,12 @@ setup(
       'h5py',
       'hdfdict',
       'PyYAML',
-      'pytest-profiling'
+      'pytest-profiling',
+      'matplotlib>=2.2.0',
+      'scipy'
    ],
    extras_require={
-      'interactive': ['matplotlib>=2.2.0', 'jupyter'],
+      'interactive': ['jupyter', 'pytest-plots'],
    },
    packages=find_packages(
       where='./src'
