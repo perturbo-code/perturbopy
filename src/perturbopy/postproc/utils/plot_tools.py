@@ -108,12 +108,14 @@ def plot_dispersion(ax, path, energies, energy_units, c='k', ls='-', energy_wind
    if isinstance(ls, str):
       ls = [ls]
 
+   print(c)
+
    for n in energies.keys():
       x = path
       y = energies[n]
-      ax.plot(x, y,
-                  color=c[n % len(c)],
-                  linestyle=ls[n % len(ls)])
+      ax.plot(x, y, c='k')#,
+                  # color=c[n % len(c)],
+                  # linestyle=ls[n % len(ls)])
 
    if energy_window is not None:
       ax = set_energy_window(ax, energy_window)

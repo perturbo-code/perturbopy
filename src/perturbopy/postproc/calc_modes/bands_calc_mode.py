@@ -124,7 +124,7 @@ class BandsCalcMode(CalcMode):
 
       return gap, kpoint
 
-   def compute_effective_mass(self, n, kpoint, max_distance, show_plot=True):
+   def compute_effective_mass(self, n, kpoint, max_distance, direction=None, ax=None):
       """
       Method to compute the longitudinal effective mass at a k-point, approximated with a parabolic fit.\
 
@@ -148,36 +148,44 @@ class BandsCalcMode(CalcMode):
          The longitudinal effective mass at band n and the inputted kpoint, computed by a parabolic fit.
 
       """
-      epsilon = 1e-2
+      if direction is None:
+         # if np.isclose(kpoint, [0, 0, 0]):
+            # error
+         direction = kpoint
+      else:
+         direction = reshape_points(direction)
+         # warning
+
+      epsilon = 1e-6
 
       kpoint = reshape_points(kpoint)
 
       energies = self.bands.energies[n] * energy_conversion_factor(self.bands.units, 'hartree')
       alat = self.alat * length_conversion_factor(self.alat_units, 'bohr')
-      E_0 = energies[self.kpt.find(kpoint)]
+      E_0 = energies[self.kpt.find(kpoint)][0]
 
       kpoint_distances = np.linalg.norm(self.kpt.points - np.array(kpoint), axis=0)
-      kpoint_parallel = np.dot(np.reshape(kpoint, (3,)), self.kpt.points) / (np.linalg.norm(kpoint) * np.linalg.norm(self.kpt.points, axis=0)) - 1 < epsilon
+      kpoint_parallel = abs(np.dot(np.reshape(direction, (3,)), self.kpt.points) / (np.linalg.norm(direction) * np.linalg.norm(self.kpt.points, axis=0)) - 1) < epsilon
 
       kpoint_indices = np.where(np.logical_and(kpoint_distances < max_distance, kpoint_parallel))
       energies = energies[kpoint_indices]
 
       kpt_points = self.kpt.points[:, kpoint_indices][:, 0, :]
+      
       kpoint_distances_squared = np.sum(np.square(kpt_points - kpoint), axis=0) * (math.pi * 2 / self.alat) ** 2
 
-      def parabolic_approx(prefactor, kpoint_dist_squared, energy):
+      def parabolic_approx(kpoint_dist_squared, prefactor):
          return prefactor * kpoint_dist_squared + E_0
       
-      print(kpoint_distances_squared)
-
       fit_params, pcov = curve_fit(parabolic_approx, kpoint_distances_squared, energies)
 
       effective_mass = 1 / (fit_params[0] * 2)
 
-      if show_plot:
-         plt.scatter(self.kpt.path[kpoint_indices], energies)
-         plt.plot(self.kpt.path[kpoint_indices], fit_params[0] * kpoint_distances_squared + E_0, 'k')
-         plt.show()
+      if ax is not None:
+         ax = self.plot_bands(ax)
+
+         energies_fitted = (fit_params[0] * kpoint_distances_squared + E_0) * energy_conversion_factor('hartree', self.bands.units)
+         ax.plot(self.kpt.path[kpoint_indices], energies_fitted, 'r', marker='o')#, ls=None, marker='o')
 
       return effective_mass
 
@@ -206,7 +214,7 @@ class BandsCalcMode(CalcMode):
          Axis with the plotted bands.
 
       """
-      ax = plot_dispersion(ax, self.kpt.path, self.bands.energies, self.bands.units, energy_window, **kwargs)
+      ax = plot_dispersion(ax, self.kpt.path, self.bands.energies, self.bands.units, energy_window)
 
       if show_kpoint_labels:
          ax = plot_recip_pt_labels(ax, self.kpt.labels, self.kpt.points, self.kpt.path, **kwargs)
