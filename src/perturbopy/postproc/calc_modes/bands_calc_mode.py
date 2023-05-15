@@ -64,7 +64,7 @@ class BandsCalcMode(CalcMode):
       gap: float
          The indirect bandgap, computed as the energy difference between the minimum of
          the upper band and the maximum of the lower band.
-      lower_kpt, upper_kpt : array_like
+      lower_kpoint, upper_kpoint : array_like
          k-points corresponding to the minimum of the upper band and the maximum of the lower band.
 
       Raises
@@ -83,10 +83,10 @@ class BandsCalcMode(CalcMode):
 
       gap = np.min(self.bands.energies[n_upper]) - np.max(self.bands.energies[n_lower])
 
-      lower_kpt = self.kpt.points[:, np.argmax(self.bands.energies[n_lower])]
-      upper_kpt = self.kpt.points[:, np.argmin(self.bands.energies[n_upper])]
+      lower_kpoint = self.kpt.points[:, np.argmax(self.bands.energies[n_lower])]
+      upper_kpoint = self.kpt.points[:, np.argmin(self.bands.energies[n_upper])]
 
-      return gap, lower_kpt, upper_kpt
+      return gap, lower_kpoint, upper_kpoint
 
    def compute_direct_bandgap(self, n_lower, n_upper):
       """
@@ -112,13 +112,13 @@ class BandsCalcMode(CalcMode):
          if n_lower is greater than n_upper.
 
       """
-      if n_lower not in self.band_indices or n_upper not in self.band_indices:
+      if n_lower not in self.bands.indices or n_upper not in self.bands.indices:
          raise ValueError("n_lower and n_upper must be valid band numbers")
 
       if n_lower > n_upper:
          raise ValueError("n_lower must be less than or equal to n_upper.")
 
-      transitions = self.bands.indices[n_upper] - self.bands.indices[n_lower]
+      transitions = self.bands.energies[n_upper] - self.bands.energies[n_lower]
       gap = np.min(transitions)
       kpoint = self.kpt.points[:, np.argmin(transitions)]
 
@@ -165,9 +165,11 @@ class BandsCalcMode(CalcMode):
       E_0 = energies[self.kpt.find(kpoint)][0]
 
       kpoint_distances = np.linalg.norm(self.kpt.points - np.array(kpoint), axis=0)
-      kpoint_parallel = abs(np.dot(np.reshape(direction, (3,)), self.kpt.points) / (np.linalg.norm(direction) * np.linalg.norm(self.kpt.points, axis=0)) - 1) < epsilon
+      kpoint_mag_squared = np.linalg.norm(self.kpt.points, axis=0)
+      kpoint_parallel = abs(np.divide(np.dot(np.reshape(direction, (3,)), self.kpt.points), (np.linalg.norm(direction) * kpoint_mag_squared), where=kpoint_mag_squared!=0) - 1) < epsilon
 
       kpoint_indices = np.where(np.logical_and(kpoint_distances < max_distance, kpoint_parallel))
+
       energies = energies[kpoint_indices]
 
       kpt_points = self.kpt.points[:, kpoint_indices][:, 0, :]

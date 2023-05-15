@@ -108,8 +108,6 @@ def plot_dispersion(ax, path, energies, energy_units, c='k', ls='-', energy_wind
    if isinstance(ls, str):
       ls = [ls]
 
-   print(c)
-
    for n in energies.keys():
       x = path
       y = energies[n]
@@ -154,9 +152,6 @@ def plot_vals_on_bands(ax, path, energies, energy_units, values, cmap='RdBu', en
    vmin = min([min(values[key]) for key in values.keys()])
    vmax = max([max(values[key]) for key in values.keys()])
 
-   print(vmin)
-   print(vmax)
-   
    norm = plt.Normalize(vmin, vmax)
    #norm = colors.LogNorm(vmin,vmax)
    for n in energies.keys():
