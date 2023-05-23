@@ -124,7 +124,7 @@ class BandsCalcMode(CalcMode):
 
       return gap, kpoint
 
-   def compute_effective_mass(self, n, kpoint, max_distance, direction=None, ax=None):
+   def compute_effective_mass(self, n, kpoint, max_distance, direction=None, ax=None, c='r'):
       """
       Method to compute the longitudinal effective mass at a k-point, approximated with a parabolic fit.\
 
@@ -169,6 +169,11 @@ class BandsCalcMode(CalcMode):
       kpoint_parallel = abs(np.divide(np.dot(np.reshape(direction, (3,)), self.kpt.points), (np.linalg.norm(direction) * kpoint_mag_squared), where=kpoint_mag_squared!=0) - 1) < epsilon
 
       kpoint_indices = np.where(np.logical_and(kpoint_distances < max_distance, kpoint_parallel))
+      kpoint_idx = self.kpt.find(kpoint)[0]
+
+      # if kpoint_idx not in kpoint_indices.flatten():
+      #    print(kpoint_idx)
+      #    kpoint_indices.append()
 
       energies = energies[kpoint_indices]
 
@@ -184,10 +189,10 @@ class BandsCalcMode(CalcMode):
       effective_mass = 1 / (fit_params[0] * 2)
 
       if ax is not None:
-         ax = self.plot_bands(ax)
+         ax = self.plot_bands(ax, 'k')
 
          energies_fitted = (fit_params[0] * kpoint_distances_squared + E_0) * energy_conversion_factor('hartree', self.bands.units)
-         ax.plot(self.kpt.path[kpoint_indices], energies_fitted, 'r', marker='o')#, ls=None, marker='o')
+         ax.plot(self.kpt.path[kpoint_indices], energies_fitted, c, marker='o')#, ls=None, marker='o')
 
       return effective_mass
 

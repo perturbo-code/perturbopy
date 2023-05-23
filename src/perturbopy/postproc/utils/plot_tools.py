@@ -79,7 +79,7 @@ def set_energy_window(ax, energy_window):
    return ax
 
 
-def plot_dispersion(ax, path, energies, energy_units, c='k', ls='-', energy_window=None):
+def plot_dispersion(ax, path, energies, energy_units, c="k", ls='-', energy_window=None):
    """
    Method to plot the dispersion (phonon dispersion or band structure).
 
@@ -102,16 +102,16 @@ def plot_dispersion(ax, path, energies, energy_units, c='k', ls='-', energy_wind
          Axis with the plotted dispesion
 
    """
-
    if isinstance(c, str):
       c = [c]
+
    if isinstance(ls, str):
       ls = [ls]
 
    for n in energies.keys():
       x = path
       y = energies[n]
-      ax.plot(x, y, c='k')#,
+      ax.plot(x, y, c=c[n % len(c)])#,
                   # color=c[n % len(c)],
                   # linestyle=ls[n % len(ls)])
 
