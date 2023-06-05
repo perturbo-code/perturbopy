@@ -23,11 +23,11 @@ length_units_vals = {'bohr': (1, 0), 'angstrom': (0.529177249, 0), 'm': (5.29177
 recip_points_units_names = {'cartesian': ['tpiba', 'cartesian', 'cart'], 'crystal': ['crystal', 'cryst', 'frac', 'fractional']}
 
 special_recip_points_fcc = {'L': [0.5, 0.5, 0.5], 'X': [0.5, 0.0, 0.5],
-                        'W': [0.5, 0.25, 0.75], 'K': [0.375, 0.375, 0.75],
-                        r'$\Gamma$': [0, 0, 0]}
+                            'W': [0.5, 0.25, 0.75], 'K': [0.375, 0.375, 0.75],
+                            r'$\Gamma$': [0, 0, 0]}
 
-special_recip_points_bct = {'L': [-0.25,  0.25,  0.25], 'X': [-0.5, -0.5,  0.5],
-                            'W': [-0.75, -0.25,  0.25], 'K': [-0.75,  0.  ,  0.  ],
+special_recip_points_bct = {'L': [-0.25, 0.25, 0.25], 'X': [-0.5, -0.5, 0.5],
+                            'W': [-0.75, -0.25, 0.25], 'K': [-0.75, 0., 0.],
                             '$\\Gamma$': [0., 0., 0.]}
 
 
@@ -89,8 +89,8 @@ def find_prefix_and_base_units(user_input_units, units_dict):
 
    Raises
    ------
-      ValueError
-         If the user_input_units is not in the keys or values of the units_dict.
+   ValueError
+      If the user_input_units is not in the keys or values of the units_dict.
 
    """
 

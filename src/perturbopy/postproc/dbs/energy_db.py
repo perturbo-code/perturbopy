@@ -17,8 +17,10 @@ class EnergyDB():
    ----------
    energies : dict
       Dictionary of arrays of energies, with keys labelling the band number or phonon mode.
-   _units : dict
-      The energy units.
+   units : str
+      Units for the stored energies
+   num_indices : int
+      The number of keys in the energies dict
       
    """
    def __init__(self, energies_dict, units):
@@ -80,4 +82,3 @@ class EnergyDB():
          print(f"Energies have been converted to {new_units}.")
 
       return converted_energies
-      

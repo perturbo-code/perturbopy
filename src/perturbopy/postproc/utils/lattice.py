@@ -3,7 +3,7 @@ import numpy as np
 
 def reshape_points(point_array):
    """
-   Method to reshape_points reciprocal points into a 2d array of shape (3, N)
+   Method to reshape reciprocal points into a 2d array of shape (3, N)
    such that reciprocal points are column-oriented
       - a list of reciprocal points will be transformed to an array
       - an array of reciprocal points with shape (N, 3) will be reshaped
@@ -18,7 +18,7 @@ def reshape_points(point_array):
    
    Returns
    -------
-   point_array: array_like
+   point_array: array
       An array of reciprocal points with shape (3,N)
 
    """
@@ -63,7 +63,7 @@ def cryst2cart(point_array, lat, recip_lat, forward=True, real_space=True):
    real_space : bool, optional
       If true, vectors are assumed to be in real space
       (i.e. atomic positions). If false, vectors are assumed to
-      be in reciprocal space (i.e. reciprocal points)
+      be in reciprocal space (i.e. reciprocal points).
 
    Returns
    -------
@@ -95,13 +95,16 @@ def compute_distances(point_array1, point_array2):
 
    Parameters
    ----------
-   point_array1, point_array2 : array
-      The points that distances will be computed between
+   point_array1, point_array2 : array_like
+      The points between which distances will be computed. They should have the same
+      shape. Both will be reshaped to assume column-oriented points if needed. For
+      example, arrays of shape (N, 3) will be reshaped to (3, N) if N != 3.
 
    Returns
    -------
    distances : array
-      an array of distances between each reciprocal space point in the points property and point
+      An array of distances between points in point_array1 and point_array2, computed
+      across the columns.
 
    """
    point_array1 = reshape_points(point_array1)
@@ -125,10 +128,10 @@ def find_point(point, point_array, max_dist=0.025, nearest=True):
       The set of points that will be searched through
 
    max_dist : float, optional
-      The maximum distance between the point to locate and the matching points
+      The maximum distance between the point to locate and the points identified as matches
 
    narest : bool, optional
-      If True, only the nearest point, or points in the case of repeated points, are returned (even if
+      If True, only the nearest point, or points in the case of duplicate points, are returned (even if
       other points are within the max_dist)
 
 
@@ -155,6 +158,7 @@ def find_point(point, point_array, max_dist=0.025, nearest=True):
    else:
       return np.arange(len(distances))[distances <= max_dist]
 
+
 def convert_point2path(point, point_array, path_array, max_dist=0.025, nearest=True):
    """
    Method to find the path coordinate corresponding to a particular point
@@ -173,7 +177,7 @@ def convert_point2path(point, point_array, path_array, max_dist=0.025, nearest=T
    max_dist : float, optional
       The maximum distance between the point to locate and the matching points
 
-   narest : bool, optional
+   nearest : bool, optional
       If True, only the nearest point, or points in the case of repeated points, are returned (even if
       other points are within the max_dist)
 
@@ -196,7 +200,7 @@ def convert_point2path(point, point_array, path_array, max_dist=0.025, nearest=T
       return path_coord
 
 
-def convert_path2point(path_coord, point_array, path_array, atol= 1e-8, rtol=1e-5, nearest=True):
+def convert_path2point(path_coord, point_array, path_array, atol=1e-8, rtol=1e-5, nearest=True):
    """
    Method to find the point corresponding to a path coordinate
 
@@ -214,7 +218,7 @@ def convert_path2point(path_coord, point_array, path_array, atol= 1e-8, rtol=1e-
    atol : float, optional
       The absolute tolerance between the path coordinate to locate and the matching path coordinates
 
-   atol : float, optional
+   rtol : float, optional
       The relative tolerance between the path coordinate to locate and the matching path coordinates
 
    nearest : bool, optional

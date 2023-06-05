@@ -15,13 +15,13 @@ class RecipPtDB():
    points_cryst : array_like
       Array of reciprocal space points in crystal coordinates.
 
-   _units : str
+   units : str
       The units that calculations will be performed in (crystal or cartesian).
-      If _units = 'crystal', then points_cryst will be used instead of points_cart when
+      If units = 'crystal', then points_cryst will be used instead of points_cart when
       a method such as "distances" is called on the RecipPtDB object.
 
    path : array_like
-      Array of numbers corresponding to each reciprocal space point, for plotting purposes.
+      Array of floats corresponding to each reciprocal space point, for plotting purposes.
 
    path_units : str
       Units of path, typically arbitrary
@@ -67,8 +67,9 @@ class RecipPtDB():
 
       Parameters
       ----------
-      points : array
-         Array of reciprocal space points in cartesian or crystal coordinates
+      points : array_like
+         Array of column-oriented reciprocal space points in cartesian or crystal coordinates. If clearly not
+         column-oriented (i.e. the number of columns, but not rows, is 3), points will be reshaped.
 
       units : str
          The units points are given in
@@ -94,6 +95,7 @@ class RecipPtDB():
       -------
       points_db : RecipPtDB
          The RecipPtDB created from the lattice information and reciprocal space points
+      
       """
       units = standardize_units_name(units, recip_points_units_names)
       
@@ -111,6 +113,21 @@ class RecipPtDB():
       return RecipPtDB(points_cart, points_cryst, units, path, path_units, labels)
 
    def convert_units(self, new_units, in_place=True):
+      """
+      Method to convert the assumed units between crystal and cartesian coordinates.
+      
+      new_units : str
+         The new units to use, either crystal or cartesian (or some valid variation of those names)
+
+      in_place : bool, optional
+         If true, the new units will be assumed in all future calls to the RecipPtDB.
+
+      Returns
+      -------
+      points : array
+         The stored points in the new units
+
+      """
 
       self.units = standardize_units_name(new_units, recip_points_units_names)
 
@@ -119,6 +136,8 @@ class RecipPtDB():
 
       elif self.units == 'crystal':
          self.points = self.points_cryst
+
+      return self.points
 
    def scale_path(self, range_min, range_max):
       """
@@ -156,7 +175,7 @@ class RecipPtDB():
       Returns
       -------
       distances : array
-         an array of distances between each reciprocal space point in the points property and point
+         an array of distances between each reciprocal space point in the database and the inputted point
 
       """
       distances = lattice.compute_distances(self.points, point)
@@ -171,8 +190,13 @@ class RecipPtDB():
       ----------
       point : array
          The reciprocal space point to be searched
-      **kwargs : dict
-         Extra arguments for point2path method. Refer to Lattice module documentation for a list of all possible arguments.
+      
+      max_dist : float, optional
+         The maximum distance between the point to locate and the points identified as matches
+
+      nearest : bool, optional
+         If True, only the nearest match, or matches in the case of duplicate points, are returned (even if
+         other points are within the max_dist)
 
       Returns
       -------
@@ -190,15 +214,16 @@ class RecipPtDB():
 
       Parameters
       ----------
-      point : list
+      point : array_like
          The reciprocal space point to be searched
 
-      nearest : bool
-         If true, the path coordinate of the reciprocal space point closest to the point input will
-         be returned if the inputted point is not found
-      **kwargs : dict
-         Extra arguments for point2path method. Refer to Lattice module documentation for a list of all possible arguments.
+      max_dist : float, optional
+         The maximum distance between the point to locate and the points identified as matches
 
+      nearest : bool, optional
+         If True, only the nearest match, or matches in the case of duplicate points, are returned (even if
+         other points are within the max_dist)
+      
       Returns
       -------
       path_coord : array
@@ -216,16 +241,22 @@ class RecipPtDB():
 
       Parameters
       ----------
-      point : list
-         The reciprocal point to be searched
+      path_coord : float
+         The path coordinate to be converted to a point
 
-      nearest : bool
-         If true, the point of the closest path coordinate will be returned if the inputted path
-         coordinate is not found
+      atol : float, optional
+      The absolute tolerance between the path coordinate to locate and the matching path coordinates
+
+      rtol : float, optional
+         The relative tolerance between the path coordinate to locate and the matching path coordinates
+
+      nearest : bool, optional
+         If True, only the nearest path coordinate, or coordinates in the case of repeats, are returned (even if
+         other points are within the absolute and relative tolerance)
 
       Returns
       -------
-      coord_path : list
+      point : array
          The reciprocal space point(s) of the corresponding path coordinate
 
       """
@@ -236,19 +267,16 @@ class RecipPtDB():
 
    def add_labels(self, labels_dict_input):
       """
-      Method to add a label associated with a reciprocal space point. For example, point = [0,0,0] and label = 'gamma'
+      Method to add labels associated with a reciprocal space point. For example, point = [0,0,0] and label = 'gamma'
 
       Parameters
       ----------
       points : list
          A list of reciprocal space points
 
-      labels : str
-         The labels associated with the inputted reciprocal space points, in order
-
-      nearest : bool
-         If true, the reciprocal space point closest to the inputted point will be labeled if the inputted point is
-         not found
+      labels_dict_input : dict
+         A dictionary with the keys corresponding to reciprocal space point names, and values corresponding tolerance
+         reciprocal space points
 
       """
 
@@ -256,6 +284,15 @@ class RecipPtDB():
          self.labels[label] = labels_dict_input[label]
 
    def remove_labels(self, labels_list):
+      """
+      Method to remove a label associated with a reciprocal space point. For example, point = [0,0,0] and label = 'gamma'
+
+      Parameters
+      ----------
+      labels_list : array_like
+         The set of labels (keys in self.labels) to remove
+
+      """
 
       for i, label in labels_list:
          self.labels = self.labels.pop(label)

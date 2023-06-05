@@ -1,5 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
 import math
 from scipy.optimize import curve_fit
 from perturbopy.postproc.calc_modes.calc_mode import CalcMode
@@ -7,7 +6,7 @@ from perturbopy.postproc.utils.constants import energy_conversion_factor, length
 from perturbopy.postproc.dbs.energy_db import EnergyDB
 from perturbopy.postproc.dbs.recip_pt_db import RecipPtDB
 from perturbopy.postproc.utils.plot_tools import plot_dispersion, plot_recip_pt_labels
-from perturbopy.postproc.utils.lattice import reshape_points
+from perturbopy.postproc.utils.lattice import reshape_points, cryst2cart
 
 
 class BandsCalcMode(CalcMode):
@@ -17,12 +16,12 @@ class BandsCalcMode(CalcMode):
    Parameters
    ----------
    pert_dict : dict
-      Dictionary containing the inputs and outputs from the bands calculation.
+   Dictionary containing the inputs and outputs from the bands calculation.
 
    Attributes
    ----------
    kpt : RecipPtDB
-      Database for the k-points used in the phdisp calculation.
+      Database for the k-points used in the bands calculation.
    bands : EnergyDB
       Database for the band energies computed by the bands calculation.
 
@@ -53,24 +52,24 @@ class BandsCalcMode(CalcMode):
    def compute_indirect_bandgap(self, n_lower, n_upper):
       """
       Method to compute the indirect bandgap between two bands.
-   
+    
       Parameters
       ----------
       n_lower, n_upper : int
-         Number of the lower and upper bands.
+         Band number of the lower and upper bands.
 
       Returns
       -------
       gap: float
          The indirect bandgap, computed as the energy difference between the minimum of
          the upper band and the maximum of the lower band.
-      lower_kpoint, upper_kpoint : array_like
+      lower_kpoint, upper_kpoint : array
          k-points corresponding to the minimum of the upper band and the maximum of the lower band.
 
       Raises
       ------
       ValueError
-         If the upper and lower band numbers provided are not band indices as stored in the bands database, or
+         If the upper and lower band numbers provided are not valid band indices from the bands database, or
          if n_lower is greater than n_upper.
 
       """
@@ -91,24 +90,24 @@ class BandsCalcMode(CalcMode):
    def compute_direct_bandgap(self, n_lower, n_upper):
       """
       Method to compute the direct bandgap between two bands.
-   
+    
       Parameters
       ----------
       n_lower, n_upper : int
-         Number of the lower and upper bands.
+         Band number of the lower and upper bands.
       
       Returns
       -------
       gap: float
          The direct bandgap, computed as the minimum energy difference between two bands
          at the same k-point.
-      kpoint: array_like
+      kpoint: array
          The k-point corresponding to the direct bandgap.
 
       Raises
       ------
       ValueError
-         If the upper and lower band numbers provided are not band indices as stored in the bands database, or
+         If the upper and lower band numbers provided are not valid band indices from the bands database, or
          if n_lower is greater than n_upper.
 
       """
@@ -126,21 +125,28 @@ class BandsCalcMode(CalcMode):
 
    def compute_effective_mass(self, n, kpoint, max_distance, direction=None, ax=None, c='r'):
       """
-      Method to compute the longitudinal effective mass at a k-point, approximated with a parabolic fit.\
+      Method to compute the effective mass at a k-point, approximated with a parabolic fit.
 
       Parameters
       ----------
       n : int
          Index of the band for which to calculate the effective mass.
       
-      kpoint : int
+      kpoint : list
          The k-point on which to center the calculation.
 
       max_distance : float
          Maximum distance between the center k-point and k-points to include in the parabolic approximation.
 
-      show_plot : bool, optional
-         Whether or not to plot and show the parabolic fit of the effective mass.
+      direction : array_like, optional
+         The k-point specifying the direction of the effective mass. Defaults to the same value as kpoint,
+         i.e. the longitudinal effective mass.
+
+      ax : matplotlib.axes.Axes
+         Axis on which to plot the bands and approximated parabolic curve
+
+      c : str
+         Color for plotting the approximated parabolic curve
 
       Returns
       -------
@@ -148,14 +154,12 @@ class BandsCalcMode(CalcMode):
          The longitudinal effective mass at band n and the inputted kpoint, computed by a parabolic fit.
 
       """
+
       if direction is None:
-         # if np.isclose(kpoint, [0, 0, 0]):
-            # error
          direction = kpoint
       else:
          direction = reshape_points(direction)
-         # warning
-
+      
       epsilon = 1e-6
 
       kpoint = reshape_points(kpoint)
@@ -166,24 +170,30 @@ class BandsCalcMode(CalcMode):
 
       kpoint_distances = np.linalg.norm(self.kpt.points - np.array(kpoint), axis=0)
       kpoint_mag_squared = np.linalg.norm(self.kpt.points, axis=0)
-      kpoint_parallel = abs(np.divide(np.dot(np.reshape(direction, (3,)), self.kpt.points), (np.linalg.norm(direction) * kpoint_mag_squared), where=kpoint_mag_squared!=0) - 1) < epsilon
+      kpoint_parallel = abs(np.divide(np.dot(np.reshape(direction, (3,)), self.kpt.points), (np.linalg.norm(direction) * kpoint_mag_squared),
+                                      where=kpoint_mag_squared != 0) - 1) < epsilon
 
-      kpoint_indices = np.where(np.logical_and(kpoint_distances < max_distance, kpoint_parallel))
+      kpoint_indices = np.where(np.logical_and(kpoint_distances < max_distance, kpoint_parallel))[0]
+
       kpoint_idx = self.kpt.find(kpoint)[0]
 
-      # if kpoint_idx not in kpoint_indices.flatten():
-      #    print(kpoint_idx)
-      #    kpoint_indices.append()
+      if kpoint_idx not in kpoint_indices.flatten():
+         kpoint_indices = np.append(kpoint_indices, kpoint_idx)
+
+      kpoint_indices = np.sort(kpoint_indices)
 
       energies = energies[kpoint_indices]
 
-      kpt_points = self.kpt.points[:, kpoint_indices][:, 0, :]
+      kpt_points = self.kpt.points[:, kpoint_indices]
+
+      kpt_points = cryst2cart(kpt_points, self.lat, self.recip_lat, forward=True, real_space=False)
+      kpoint = cryst2cart(kpoint, self.lat, self.recip_lat, forward=True, real_space=False)
       
       kpoint_distances_squared = np.sum(np.square(kpt_points - kpoint), axis=0) * (math.pi * 2 / self.alat) ** 2
 
       def parabolic_approx(kpoint_dist_squared, prefactor):
          return prefactor * kpoint_dist_squared + E_0
-      
+
       fit_params, pcov = curve_fit(parabolic_approx, kpoint_distances_squared, energies)
 
       effective_mass = 1 / (fit_params[0] * 2)
@@ -192,11 +202,13 @@ class BandsCalcMode(CalcMode):
          ax = self.plot_bands(ax, 'k')
 
          energies_fitted = (fit_params[0] * kpoint_distances_squared + E_0) * energy_conversion_factor('hartree', self.bands.units)
-         ax.plot(self.kpt.path[kpoint_indices], energies_fitted, c, marker='o')#, ls=None, marker='o')
 
-      return effective_mass
+         ax.plot(self.kpt.path[kpoint_indices], energies_fitted, c, marker=None, ls='--')
+         ax.plot(self.kpt.path[kpoint_indices], energies * energy_conversion_factor('hartree', self.bands.units), c, marker='o')
 
-   def plot_bands(self, ax, energy_window=None, show_kpoint_labels=True, **kwargs):
+      return effective_mass, ax
+
+   def plot_bands(self, ax, energy_window=None, show_kpoint_labels=True):
       """
       Method to plot the band structure.
 
@@ -209,11 +221,7 @@ class BandsCalcMode(CalcMode):
          The range of band energies to be shown on the y-axis.
 
       show_kpoint_labels : bool, optional
-         If true, the k-point labels stored in the labels attribute will be shown on the plot.
-
-      **kwargs, optional
-         Extra arguments to plot_dispersion and plot_recip_pt_labels. Refer to the plot_dispersion and plot_recip_pt_labels
-         documentation for a list of all possible arguments.
+         If true, the k-point labels stored in the labels attribute will be shown on the plot. Default true.
 
       Returns
       -------
@@ -224,7 +232,6 @@ class BandsCalcMode(CalcMode):
       ax = plot_dispersion(ax, self.kpt.path, self.bands.energies, self.bands.units, energy_window)
 
       if show_kpoint_labels:
-         ax = plot_recip_pt_labels(ax, self.kpt.labels, self.kpt.points, self.kpt.path, **kwargs)
+         ax = plot_recip_pt_labels(ax, self.kpt.labels, self.kpt.points, self.kpt.path)
       
       return ax
-      

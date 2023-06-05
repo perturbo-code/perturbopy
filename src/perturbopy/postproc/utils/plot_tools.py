@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.collections import LineCollection
 from perturbopy.postproc.utils import lattice
-from matplotlib import colors
+
 plotparams = {'figure.figsize': (16, 9),
                      'axes.grid': False,
                      'lines.linewidth': 2.5,
@@ -40,18 +40,28 @@ def plot_recip_pt_labels(ax, labels, point_array, path_array, label_height="lowe
    Parameters
    ----------
    ax : matplotlib.axes.Axes
-         Axis with plotted dispersion
+      Axis with plotted dispersion
 
-   recip_pt : RecipPtDB
-         The database of points in reciprocal space to plot
+   labels : dict
+      Dictionary with keys corresponding to reciprocal point labels as strings, and values
+      corresponding to array_like reciprocal points
 
-   line : bool
-         If true, a line will be plotted to mark labeled reciprocal points
+   point_array : array_like
+      Array of points corresponding to the x-axis of the plot
+
+   path_array : array_like
+      The path coordinates corresponding to the point_array
+
+   label_height : str
+      Can either be "upper" or "lower" to specify if labels should be above or below the plot
+
+   show_line : bool
+      If true, a line will be plotted to mark labeled reciprocal points
 
    Returns
    -------
    ax: matplotlib.axes.Axes
-       Axis with the plotted dispersion and labeled reciprocal points
+      Axis with the plotted dispersion and labeled reciprocal points
 
    """
 
@@ -75,6 +85,23 @@ def plot_recip_pt_labels(ax, labels, point_array, path_array, label_height="lowe
 
 
 def set_energy_window(ax, energy_window):
+   """"
+   Method to add reciprocal point labels to the plot
+
+   Parameters
+   ----------
+   ax : matplotlib.axes.Axes
+      Axis with plotted dispersion
+
+   energy_window : tuple
+      Tuple with the lower and upper bound of the chosen energy window
+
+   Returns
+   -------
+   ax: matplotlib.axes.Axes
+      Axis with the plotted dispersion and adjusted energy window
+   
+   """
    ax.set_ylim((float(energy_window[0]) * 1.01, float(energy_window[1]) * .99))
    return ax
 
@@ -86,20 +113,29 @@ def plot_dispersion(ax, path, energies, energy_units, c="k", ls='-', energy_wind
    Parameters
    ----------
    ax: matplotlib.axes.Axes
-         Axis on which to plot the dispersion
+      Axis on which to plot the dispersion
 
-   : RecipPtDB
-         The database of reciprocal points to be plotted
+   path : array_like
+      The array or list of path coordinates to be plotted on the x-axis
 
-   energy_db : EnergiesDB
-         The database of energies to be plotted
+   energies : dict
+      Dictionary of arrays of energies to plot, with keys labelling the band number or phonon mode.
+   
+   energy_units : str
 
-   show_reicp_pts_labels: bool
-         Whether or not to show the reciprocal point labels stored in 
+   c : str, list
+      Matplotlib color for plotting. If a list, different colors will be iterated through as each band is plotted.
+
+   ls : str, list
+      Matplotlib linestyle for plotting. If a list, different linestyles will be iterated through as each band is plotted.
+      
+   energy_window : tuple, optional
+      Tuple with the lower and upper bound of the chosen energy window
+
    Returns
    -------
    ax: matplotlib.axes.Axes
-         Axis with the plotted dispesion
+      Axis with the plotted dispesion
 
    """
    if isinstance(c, str):
@@ -111,9 +147,7 @@ def plot_dispersion(ax, path, energies, energy_units, c="k", ls='-', energy_wind
    for n in energies.keys():
       x = path
       y = energies[n]
-      ax.plot(x, y, c=c[n % len(c)])#,
-                  # color=c[n % len(c)],
-                  # linestyle=ls[n % len(ls)])
+      ax.plot(x, y, c=c[n % len(c)], linestyle=ls[n % len(ls)])
 
    if energy_window is not None:
       ax = set_energy_window(ax, energy_window)
@@ -131,20 +165,29 @@ def plot_vals_on_bands(ax, path, energies, energy_units, values, cmap='RdBu', en
    Parameters
    ----------
    ax: matplotlib.axes.Axes
-         Axis on which to plot the dispersion
+      Axis on which to plot the dispersion
 
-   : RecipPtDB
-         The database of reciprocal points to be plotted
+   path : array_like
+      The array or list of path coordinates to be plotted on the x-axis
 
-   energy_db : EnergiesDB
-         The database of energies to be plotted
+   energies : dict
+      Dictionary of arrays of energies to plot, with keys labelling the band number or phonon mode.
+   
+   energy_units : str
+   
+   values : dict
+      Dictionary of arrays of values to plot on the bands by color
 
-   show_reicp_pts_labels: bool
-         Whether or not to show the reciprocal point labels stored in 
+   cmap : str
+      Matplotlib cmap for plotting values.
+      
+   energy_window : tuple, optional
+      Tuple with the lower and upper bound of the chosen energy window
+      
    Returns
    -------
    ax: matplotlib.axes.Axes
-         Axis with the plotted dispesion
+      Axis with the plotted dispesion
 
    """
 
@@ -153,7 +196,7 @@ def plot_vals_on_bands(ax, path, energies, energy_units, values, cmap='RdBu', en
    vmax = max([max(values[key]) for key in values.keys()])
 
    norm = plt.Normalize(vmin, vmax)
-   #norm = colors.LogNorm(vmin,vmax)
+   
    for n in energies.keys():
 
       x = np.array(path)

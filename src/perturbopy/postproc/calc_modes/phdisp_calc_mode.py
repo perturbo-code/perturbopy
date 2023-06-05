@@ -60,10 +60,6 @@ class PhdispCalcMode(CalcMode):
       show_qpoint_labels : bool, optional
          If true, the k-point labels stored in the labels attribute will be shown on the plot.
 
-      **kwargs, optional
-         Extra arguments to plot_dispersion and plot_recip_pt_labels. Refer to the plot_dispersion and plot_recip_pt_labels
-         documentation for a list of all possible arguments.
-
       Returns
       -------
       ax: matplotlib.axes.Axes
