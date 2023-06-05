@@ -15,7 +15,7 @@ def gaas_bands():
    bands : ppy.BandsCalcMode
 
    """
-   yml_path = os.path.join(os.path.dirname(os.getcwd()), "tests_f90", "refs_perturbo", "epwan1-bands", "pert_output.yml")
+   yml_path = os.path.join(os.path.dirname(os.getcwd()), "refs", "gaas_bands.yml")
    return ppy.BandsCalcMode.from_yaml(yml_path)
 
 
