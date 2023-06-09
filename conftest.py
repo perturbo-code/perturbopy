@@ -1,3 +1,14 @@
+"""
+How this works.
+
+In the tests fodler, the test_perturbo.py script runs Perturbo for
+a given 'test_name'. The idea is to use the same function (test_perturbo())
+to run all of the calc. modes, epwan files, etc. All of this should be
+happening under the pytest environment (ran by `pytest`).
+
+In this file (conftest.py), we parametrize pytest to make this work.
+"""
+
 from perturbopy.test_utils.run_test.run_utils import get_all_tests
 from perturbopy.test_utils.run_test.run_utils import filter_tests
 
@@ -25,6 +36,21 @@ def pytest_addoption(parser):
 
 
 def pytest_generate_tests(metafunc):
+   """
+   The purpose of this function is to feed multiple test names to the
+   tests/test_perturbo.py test_perturbo(test_name) function. 
+   Here, this function is referred as 'metafunc'.
+
+   First, we get the list of all of the test folders using the tests/epwan_info.yml file.
+   We retrieve the test folder as <epwan name>-<test name>. This is done by the get_all_tests()
+   function.
+
+   Next, we remove some of the tests based on the command line options and obtain the target
+   test_list using the filer_tests() function.
+
+   Finally, we feed the elements of the test_list to the test_perturbo() (metafunction)
+   as the test_name input argument of the function.
+   """
    if 'test_name' in metafunc.fixturenames:
 
       # Get the list of all test folders
