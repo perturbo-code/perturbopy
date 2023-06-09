@@ -1,0 +1,8 @@
+# Launch a job in the interactive mode
+qsub -I /home/timescale/testsuite/tempo.pbs
+
+# Run Perturbo
+/home/timescale/testsuite/run_interactive.sh
+
+# Python executable
+PYTHON3=/home/timescale/comsoftware/anaconda3-common/bin/python3

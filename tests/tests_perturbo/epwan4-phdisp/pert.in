@@ -1,5 +1,0 @@
-&perturbo
-  prefix      = 'graphite'
-  calc_mode   = 'phdisp'
-  fqlist      = 'phdisp.qpt'
-/

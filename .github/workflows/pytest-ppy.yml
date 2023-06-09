@@ -1,0 +1,22 @@
+name: pytest-ppy
+
+on: [push, pull_request]
+
+jobs:
+  pytest-ppy:
+    runs-on: ubuntu-latest
+    name: pytest-ppy
+    steps:
+      - name: Check out source repository
+        uses: actions/checkout@v2
+      - name: Set up Python environment
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+      - name: Install pytest
+        run: |
+          pip install .
+          pip install pytest-plt
+      - name: run pytest
+        run: |
+          pytest tests --plots

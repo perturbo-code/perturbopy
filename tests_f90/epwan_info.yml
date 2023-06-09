@@ -1,0 +1,134 @@
+#
+# The Perturbo tests are organized by corresponding epwan HDF5 files: 
+# epwan1, epwan2, etc.
+# Each epwan file has a set of tests associated with it. 
+# Each test has a correspoding folder, the foldername is made in the following way:
+# epwan<n>-<testname>, where n is the index of the epwan file 
+# and <testname> is a name of a given test.
+#
+epwan1:
+   prefix: gaas
+   filename: gaas_epwan.h5
+   SOC: True
+   polar: True
+   description: "GaAs with SOC"
+   pseudopotential: Ga and As from Pseudo-Dojo
+   tags:
+      - SOC
+      - polar
+      - norm-conserving
+      - lda
+      - fully-relativistic
+   tests:
+      - bands
+      - phdisp
+      - ephmat
+      - setup
+      - imsigma
+      - imsigma-dense
+      - meanfp
+      - meanfp-dense
+      - trans-rta
+      - trans-ita
+      - trans-ita-dense
+      - trans-rta-w-ims
+      - trans-ita-w-ims
+      - trans-mag-rta
+      - trans-mag-ita
+      - trans-rta-pp
+      - trans-ita-pp
+      - trans-mag-pp
+      - dynamics-euler
+      - dynamics-rk4
+      - dynamics-pp
+      - dynamics-restart
+      - dynamics-efield
+      - dynamics-efield-pp
+      - dynamics-efield-norm
+      - dynamics-efield-norm-pp
+
+   devel tests:
+      - dynamics-boltz-acc-thr
+      - dynamics-ph-mode-exclude
+
+epwan2:
+   prefix: mos2
+   filename: mos2_epwan.h5
+   SOC: True
+   polar: True
+   description: "MoS2 with SOC and 2D Coulomb cutoff"
+   pseudopotential: Mo and S from Pseudo-Dojo
+   tags:
+      - SOC
+      - polar
+      - norm-conserving
+      - lda
+      - fully-relativistic
+      - 2D cutoff
+   tests:
+      - bands
+      - phdisp
+      - ephmat
+
+epwan3:
+   prefix: graphene
+   filename: graphene_epwan.h5
+   SOC: False
+   polar: False
+   description: "Graphene, with 2D Coulomb cutoff and no SOC"
+   pseudopotential: C from Pseudo-Dojo
+   tags:
+      - norm-conserving
+      - LDA
+      - scalar-relativistic
+      - 2D cutoff
+   tests:
+      - bands
+      - phdisp
+      - ephmat
+
+epwan4:
+   prefix: graphite
+   filename: graphite_epwan.h5
+   SOC: False
+   polar: False
+   description: "Graphite, no SOC"
+   pseudopotential: C from Pseudo-Dojo
+   tags:
+      - norm-conserving
+      - LDA
+      - scalar-relativistic
+   tests:
+      - bands
+      - phdisp
+      - ephmat
+
+epwan5:
+   prefix: gaas_uspp
+   filename: gaas_uspp_epwan.h5
+   SOC: True
+   description: "GaAs with SOC + USPP"
+   pseudopotential: Ga and As from QE
+   tags:
+      - ultrasoft
+      - LDA
+      - fully-relativistic
+   tests:
+      - bands
+      - phdisp
+      - ephmat
+
+epwan6:
+   prefix: fe
+   filename: fe_epwan.h5
+   SOC: False
+   description: "Iron with LSDA"
+   pseudopotential: Fe from wannier90 example 
+   tags:
+      - norm-conserving
+      - pbe
+      - lsda
+   tests:
+      - bands
+      - phdisp
+      - ephmat

@@ -1,0 +1,5 @@
+&perturbo
+  prefix      = 'graphene'
+  calc_mode   = 'phdisp'
+  fqlist      = 'phdisp_2D.qpt'
+/
