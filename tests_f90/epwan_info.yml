@@ -47,6 +47,10 @@ epwan1:
       - dynamics-efield-norm
       - dynamics-efield-norm-pp
 
+   devel tests:
+      - dynamics-boltz-acc-thr
+      - dynamics-ph-mode-exclude
+
 epwan2:
    prefix: mos2
    filename: mos2_epwan.h5
