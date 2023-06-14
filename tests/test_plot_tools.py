@@ -14,30 +14,30 @@ points_cart = [[0, 0, 0.5, 0.5, 0.25, 0.75], [0, 1, 0.5, 1, 1, 0.75], [0, 0, 0.5
                             'eV', ['b', 'g'], ['--', ':'], None)
 ])
 def test_plot_dispersion(plt, path, energies, energy_units, c, ls, energy_window):
-   """"
-   Method to test plot_tools.plot_dispersion function
+    """"
+    Method to test plot_tools.plot_dispersion function
 
-   Method to plot the dispersion (phonon dispersion or band structure).
+    Method to plot the dispersion (phonon dispersion or band structure).
 
-   Parameters
-   ----------
-   path : array_like
-      The array or list of path coordinates to be plotted on the x-axis
+    Parameters
+    ----------
+    path : array_like
+       The array or list of path coordinates to be plotted on the x-axis
 
-   energies : dict
-      Dictionary of arrays of energies to plot, with keys labelling the band number or phonon mode.
+    energies : dict
+       Dictionary of arrays of energies to plot, with keys labelling the band number or phonon mode.
 
-   energy_units : str
+    energy_units : str
 
-   c : str, list
-      Matplotlib color for plotting. If a list, different colors will be iterated through as each band is plotted.
+    c : str, list
+       Matplotlib color for plotting. If a list, different colors will be iterated through as each band is plotted.
 
-   ls : str, list
-      Matplotlib linestyle for plotting. If a list, different linestyles will be iterated through as each band is plotted.
-      
-   energy_window : tuple, optional
-      Tuple with the lower and upper bound of the chosen energy window
+    ls : str, list
+       Matplotlib linestyle for plotting. If a list, different linestyles will be iterated through as each band is plotted.
 
-   """
-   fig, ax = plt.subplots()
-   ppy.plot_tools.plot_dispersion(ax, path, energies, energy_units, c, ls, energy_window)
+    energy_window : tuple, optional
+       Tuple with the lower and upper bound of the chosen energy window
+
+    """
+    fig, ax = plt.subplots()
+    ppy.plot_tools.plot_dispersion(ax, path, energies, energy_units, c, ls, energy_window)
