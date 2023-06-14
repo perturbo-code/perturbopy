@@ -7,7 +7,8 @@ import sys
 import pytest
 import subprocess
 
-
+@pytest.mark.order(before="test_qe2pert")
+@pytest.mark.order(after="test_qe2pert")
 def test_perturbo(test_name):
     """
     Driver to run the tests for the perturbo.x executable.
@@ -42,3 +43,7 @@ def test_perturbo(test_name):
     #clean up test materials
     clean_test_materials(test_name, new_outs)
     print('')
+    
+    
+def test_qe2pert():
+    assert True

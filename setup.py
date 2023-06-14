@@ -7,6 +7,7 @@ setup(
    install_requires=[
       'numpy>=1.21.4',
       'pytest',
+      'pytest-order',
       'h5py',
       'hdfdict',
       'PyYAML',

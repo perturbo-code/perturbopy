@@ -11,6 +11,7 @@ In this file (conftest.py), we parametrize pytest to make this work.
 
 from perturbopy.test_utils.run_test.run_utils import get_all_tests
 from perturbopy.test_utils.run_test.run_utils import filter_tests
+import pytest
 
 def pytest_addoption(parser):
 
@@ -70,3 +71,7 @@ def pytest_generate_tests(metafunc):
                                 )
 
         metafunc.parametrize('test_name', test_list)
+        
+@pytest.fixture
+def test_name(request):
+    return request.param
