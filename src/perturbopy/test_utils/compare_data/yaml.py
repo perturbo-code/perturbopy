@@ -9,267 +9,267 @@ from perturbopy.io_utils.io import open_yaml
 
 
 def equal_scalar(scalar1, scalar2, key, ig_n_tol):
-   """
-   Determines if two scalars contain the same value
+    """
+    Determines if two scalars contain the same value
 
-   Parameters
-   ----------
-   scalar1 : numpy.dtype
-      first  scalar
-   scalar2 : numpy.dtype
-      second scalar
-   key : str
-      key associated with this scalar
-   ig_n_tol : dict
-      dictionary of ignore keywords and tolerances needed to make comparison on values
+    Parameters
+    ----------
+    scalar1 : numpy.dtype
+       first  scalar
+    scalar2 : numpy.dtype
+       second scalar
+    key : str
+       key associated with this scalar
+    ig_n_tol : dict
+       dictionary of ignore keywords and tolerances needed to make comparison on values
 
-   Returns
-   -------
-   equal_value : bool
-      boolean specifying if both scalars contain the same values
+    Returns
+    -------
+    equal_value : bool
+       boolean specifying if both scalars contain the same values
 
-   """
-   # check that scalar1 and scalar2 are Numbers
-   errmsg = ('scalar1/2 are not Numbers')
-   assert isinstance(scalar1, Number) and isinstance(scalar2, Number), errmsg
+    """
+    # check that scalar1 and scalar2 are Numbers
+    errmsg = ('scalar1/2 are not Numbers')
+    assert isinstance(scalar1, Number) and isinstance(scalar2, Number), errmsg
 
-   atol, rtol = get_tol(ig_n_tol, key)
+    atol, rtol = get_tol(ig_n_tol, key)
 
-   equal_value = np.allclose(np.array(scalar1),
-                             np.array(scalar2),
-                             atol=atol,
-                             rtol=rtol,
-                             equal_nan=True)
+    equal_value = np.allclose(np.array(scalar1),
+                              np.array(scalar2),
+                              atol=atol,
+                              rtol=rtol,
+                              equal_nan=True)
 
-   diff = np.abs(scalar1 - scalar2)
+    diff = np.abs(scalar1 - scalar2)
 
-   if np.abs(scalar1) > 1e-10:
-      rdiff = np.abs((scalar2 - scalar1) / scalar1)
-      diff_str = f'{diff:.1e}, {rdiff*100:.1e}%, {scalar1 = }, {scalar2 = }'
+    if np.abs(scalar1) > 1e-10:
+        rdiff = np.abs((scalar2 - scalar1) / scalar1)
+        diff_str = f'{diff:.1e}, {rdiff*100:.1e}%, {scalar1 = }, {scalar2 = }'
 
-   else:
-      diff_str = f'{diff:.1e}'
+    else:
+        diff_str = f'{diff:.1e}'
 
-   return equal_value, diff_str
+    return equal_value, diff_str
 
 
 def equal_list(list1, list2, key, ig_n_tol, path):
-   """
-   Determines if two lists contain the same values
+    """
+    Determines if two lists contain the same values
 
-   Parameters
-   ----------
-   list1 : list
-      first  list
-   list2 : list
-      second list
-   key: str
-      A key for the tolerance. If this key is not specified in the tolerance dict,
-      a default tolerance will be applied
-   ig_n_tol : dict
-      dictionary of ignore keywords and tolerances needed to make comparison on values
-   path : str
-      pseudo path to this item being compared
+    Parameters
+    ----------
+    list1 : list
+       first  list
+    list2 : list
+       second list
+    key: str
+       A key for the tolerance. If this key is not specified in the tolerance dict,
+       a default tolerance will be applied
+    ig_n_tol : dict
+       dictionary of ignore keywords and tolerances needed to make comparison on values
+    path : str
+       pseudo path to this item being compared
 
-   Returns
-   -------
-   equal_vlaues : bool
-      boolean specifying if both lists are equivalent
+    Returns
+    -------
+    equal_vlaues : bool
+       boolean specifying if both lists are equivalent
 
-   """
-   # check that list1 and list2 are lists
-   errmsg = ('list1/2 are not lists')
-   assert isinstance(list1, list) and isinstance(list2, list), errmsg
+    """
+    # check that list1 and list2 are lists
+    errmsg = ('list1/2 are not lists')
+    assert isinstance(list1, list) and isinstance(list2, list), errmsg
 
-   errmsg = ('list1/2 are not the same length')
-   assert len(list1) == len(list2), errmsg
-   indices = range(len(list1))
+    errmsg = ('list1/2 are not the same length')
+    assert len(list1) == len(list2), errmsg
+    indices = range(len(list1))
 
-   # check if lists can be converted to ndarray
-   if (all(isinstance(x, Number) for x in list1) and all(isinstance(x, Number) for x in list2)):
+    # check if lists can be converted to ndarray
+    if (all(isinstance(x, Number) for x in list1) and all(isinstance(x, Number) for x in list2)):
 
-      # compare lists as nparrays for speed up
-      return ch5.equal_ndarray(np.array(list1),
-                               np.array(list2),
-                               key,
-                               ig_n_tol)
+        # compare lists as nparrays for speed up
+        return ch5.equal_ndarray(np.array(list1),
+                                 np.array(list2),
+                                 key,
+                                 ig_n_tol)
 
-   # a list of bool values
-   equal_per_item = []
+    # a list of bool values
+    equal_per_item = []
 
-   for item1, item2, index in zip(list1, list2, indices):
-      errmsg = ('list1/2 values'
-                'are not of the same type')
-      assert type(item1) == type(item2), errmsg
+    for item1, item2, index in zip(list1, list2, indices):
+        errmsg = ('list1/2 values'
+                  'are not of the same type')
+        assert type(item1) == type(item2), errmsg
 
-      # pseudo path to current item being compared
-      item_path = (f'{path}.list[{index}]')
-      if isinstance(item1, dict):
-         equal_value, diff = equal_dict(item1, item2, ig_n_tol, item_path)
+        # pseudo path to current item being compared
+        item_path = (f'{path}.list[{index}]')
+        if isinstance(item1, dict):
+            equal_value, diff = equal_dict(item1, item2, ig_n_tol, item_path)
 
-      elif isinstance(item1, list):
-         equal_value, diff = equal_list(item1, item2, key, ig_n_tol, item_path)
+        elif isinstance(item1, list):
+            equal_value, diff = equal_list(item1, item2, key, ig_n_tol, item_path)
 
-      elif isinstance(item1, Number):
-         equal_value, diff = equal_scalar(item1, item2, key, ig_n_tol)
+        elif isinstance(item1, Number):
+            equal_value, diff = equal_scalar(item1, item2, key, ig_n_tol)
 
-      elif isinstance(item1, str):
-         equal_value = item1 == item2
-         diff = f'{item1} {item2}'
+        elif isinstance(item1, str):
+            equal_value = item1 == item2
+            diff = f'{item1} {item2}'
 
-      elif isinstance(item1, type(None)):
-         equal_value = item1 == item2
-         diff = None
+        elif isinstance(item1, type(None)):
+            equal_value = item1 == item2
+            diff = None
 
-      else:
-         errmsg = ('list must only contain values of type dict, list, scalar, None, or str')
-         known_types_present = False
-         assert known_types_present, errmsg
+        else:
+            errmsg = ('list must only contain values of type dict, list, scalar, None, or str')
+            known_types_present = False
+            assert known_types_present, errmsg
 
-      equal_per_item.append(equal_value)
-      if not equal_value:
-         print(f'\n !!! discrepancy found at {item_path}')
-         print(f' difference: {diff}')
+        equal_per_item.append(equal_value)
+        if not equal_value:
+            print(f'\n !!! discrepancy found at {item_path}')
+            print(f' difference: {diff}')
 
-   # equal dicts produce list of only bool=True
-   nitems = len(equal_per_item)
-   ncompared = sum(equal_per_item)
+    # equal dicts produce list of only bool=True
+    nitems = len(equal_per_item)
+    ncompared = sum(equal_per_item)
 
-   equal_values  = (nitems == ncompared)
-   
-   if equal_values:
-      diff = None
-   else:
-      diff = f'among {nitems} elements, {nitems - ncompared} failed comparison'
+    equal_values  = (nitems == ncompared)
 
-   return equal_values, diff
+    if equal_values:
+        diff = None
+    else:
+        diff = f'among {nitems} elements, {nitems - ncompared} failed comparison'
+
+    return equal_values, diff
 
 
 def equal_dict(dict1, dict2, ig_n_tol, path):
-   """
-   Determines if two dicts contain the same value
-   for the same key
+    """
+    Determines if two dicts contain the same value
+    for the same key
 
-   Parameters
-   ----------
-   dict1 : dict
-      first  dictionary
-   dict2 : dict
-      second dictionary
-   ig_n_tol : dict
-      dictionary of ignore keywords and tolerances needed to make comparison on values
-   path : str
-      pseudo path to this item being compared
+    Parameters
+    ----------
+    dict1 : dict
+       first  dictionary
+    dict2 : dict
+       second dictionary
+    ig_n_tol : dict
+       dictionary of ignore keywords and tolerances needed to make comparison on values
+    path : str
+       pseudo path to this item being compared
 
-   Returns
-   -------
-   equal_vlaues : bool
-      boolean specifying if both dicts contain the same keys and values
+    Returns
+    -------
+    equal_vlaues : bool
+       boolean specifying if both dicts contain the same keys and values
 
-   """
-   # check that dict1 and dict2 are dictionaries
-   errmsg = (f'dict1/2 at {path} are not dictionaries')
-   assert isinstance(dict1, dict) and isinstance(dict2, dict), errmsg
+    """
+    # check that dict1 and dict2 are dictionaries
+    errmsg = (f'dict1/2 at {path} are not dictionaries')
+    assert isinstance(dict1, dict) and isinstance(dict2, dict), errmsg
 
-   # check that dictionaries have the same keys
-   errmsg = (f'dict1/2 found at {path} do not have the same keys')
-   assert dict1.keys() == dict2.keys(), errmsg
+    # check that dictionaries have the same keys
+    errmsg = (f'dict1/2 found at {path} do not have the same keys')
+    assert dict1.keys() == dict2.keys(), errmsg
 
-   # total set of keys
-   keys = set(dict1.keys())
+    # total set of keys
+    keys = set(dict1.keys())
 
-   for key in dict1.keys():
-      # remove 'ignore keys'
-      if 'ignore keywords' in ig_n_tol:
-         if key in ig_n_tol['ignore keywords']:
-            keys.remove(key)
+    for key in dict1.keys():
+        # remove 'ignore keys'
+        if 'ignore keywords' in ig_n_tol:
+            if key in ig_n_tol['ignore keywords']:
+                keys.remove(key)
 
-   # a list of bool values
-   equal_per_key = []
+    # a list of bool values
+    equal_per_key = []
 
-   for key in keys:
-      errmsg = (f'dict1/2 values associated with key:{key} '
-                f'are not of the same type')
-      assert type(dict1[key]) == type(dict2[key]), errmsg
+    for key in keys:
+        errmsg = (f'dict1/2 values associated with key:{key} '
+                  f'are not of the same type')
+        assert type(dict1[key]) == type(dict2[key]), errmsg
 
-      # pseudo path to current item being compared
-      key_path = (f'{path}.{key}')
-      if isinstance(dict1[key], dict):
-         equal_value, diff = equal_dict(dict1[key], dict2[key], ig_n_tol, key_path)
+        # pseudo path to current item being compared
+        key_path = (f'{path}.{key}')
+        if isinstance(dict1[key], dict):
+            equal_value, diff = equal_dict(dict1[key], dict2[key], ig_n_tol, key_path)
 
-      elif isinstance(dict1[key], list):
-         equal_value, diff = equal_list(dict1[key], dict2[key], key, ig_n_tol, key_path)
+        elif isinstance(dict1[key], list):
+            equal_value, diff = equal_list(dict1[key], dict2[key], key, ig_n_tol, key_path)
 
-      elif isinstance(dict1[key], Number):
-         equal_value, diff = equal_scalar(dict1[key], dict2[key], key, ig_n_tol)
+        elif isinstance(dict1[key], Number):
+            equal_value, diff = equal_scalar(dict1[key], dict2[key], key, ig_n_tol)
 
-      elif isinstance(dict1[key], str):
-         equal_value = dict1[key] == dict2[key]
-         diff = f'{dict1[key]} {dict2[key]}'
-   
-      elif isinstance(dict1[key], type(None)):
-         equal_value = dict1[key] == dict2[key]
-         diff = None
+        elif isinstance(dict1[key], str):
+            equal_value = dict1[key] == dict2[key]
+            diff = f'{dict1[key]} {dict2[key]}'
 
-      else:
-         errmsg = (f'dict must only contain values of type dict, list, scalar, None, or str '
-                   f'but found type {type(dict1[key])}')
-         known_types_present = False
-         assert known_types_present, errmsg
+        elif isinstance(dict1[key], type(None)):
+            equal_value = dict1[key] == dict2[key]
+            diff = None
 
-      equal_per_key.append(equal_value)
-      if not equal_value:
-         print(f'\n !!! discrepancy found at {key_path}')
-         print(f' difference: {diff}')
-      
-   # equal dicts produce list of only bool=True
-   nitems = len(equal_per_key)
-   ncompared = sum(equal_per_key)
+        else:
+            errmsg = (f'dict must only contain values of type dict, list, scalar, None, or str '
+                      f'but found type {type(dict1[key])}')
+            known_types_present = False
+            assert known_types_present, errmsg
 
-   equal_values  = (nitems == ncompared)
+        equal_per_key.append(equal_value)
+        if not equal_value:
+            print(f'\n !!! discrepancy found at {key_path}')
+            print(f' difference: {diff}')
 
-   if equal_values:
-      diff = None
-   else:
-      diff = f'among {nitems} elements, {nitems - ncompared} failed comparison'
+    # equal dicts produce list of only bool=True
+    nitems = len(equal_per_key)
+    ncompared = sum(equal_per_key)
 
-   return equal_values, diff
+    equal_values  = (nitems == ncompared)
+
+    if equal_values:
+        diff = None
+    else:
+        diff = f'among {nitems} elements, {nitems - ncompared} failed comparison'
+
+    return equal_values, diff
 
 
 def equal_values(file1, file2, ig_n_tol):
-   """
-   Determines if two YAML files contain the same value
-   for the same keys. keys must be in 'test keywords'
+    """
+    Determines if two YAML files contain the same value
+    for the same keys. keys must be in 'test keywords'
 
-   Parameters
-   ----------
-   file1 : str
-      first  YAML file name
-   file2 : str
-      second YAML file name
-   ig_n_tol : dict
-      dictionary of keywords and tolerances needed to make comparison on files
+    Parameters
+    ----------
+    file1 : str
+       first  YAML file name
+    file2 : str
+       second YAML file name
+    ig_n_tol : dict
+       dictionary of keywords and tolerances needed to make comparison on files
 
-   Returns
-   -------
-   equal_vlaues : bool
-      boolean specifying if both YAML files contain the same keys and values
+    Returns
+    -------
+    equal_vlaues : bool
+       boolean specifying if both YAML files contain the same keys and values
 
-   """
-   yaml1_dict = open_yaml(file1)
-   yaml2_dict = open_yaml(file2)
+    """
+    yaml1_dict = open_yaml(file1)
+    yaml2_dict = open_yaml(file2)
 
-   if 'test keywords' in ig_n_tol:
-      yaml1_del_keys = [key for key in yaml1_dict.keys() if key not in ig_n_tol['test keywords']]
-      yaml2_del_keys = [key for key in yaml2_dict.keys() if key not in ig_n_tol['test keywords']]
+    if 'test keywords' in ig_n_tol:
+        yaml1_del_keys = [key for key in yaml1_dict.keys() if key not in ig_n_tol['test keywords']]
+        yaml2_del_keys = [key for key in yaml2_dict.keys() if key not in ig_n_tol['test keywords']]
 
-      for key in yaml1_del_keys:
-         del yaml1_dict[key]
-      for key in yaml2_del_keys:
-         del yaml2_dict[key]
+        for key in yaml1_del_keys:
+            del yaml1_dict[key]
+        for key in yaml2_del_keys:
+            del yaml2_dict[key]
 
-      errmsg = ('no entries left in dict after applying \'test keywords\'')
-      assert len(yaml1_dict) > 0, errmsg
-      assert len(yaml2_dict) > 0, errmsg
+        errmsg = ('no entries left in dict after applying \'test keywords\'')
+        assert len(yaml1_dict) > 0, errmsg
+        assert len(yaml2_dict) > 0, errmsg
 
-   return equal_dict(yaml1_dict, yaml2_dict, ig_n_tol, 'top of yaml')
+    return equal_dict(yaml1_dict, yaml2_dict, ig_n_tol, 'top of yaml')

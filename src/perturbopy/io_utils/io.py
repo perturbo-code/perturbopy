@@ -10,20 +10,20 @@ except ImportError:
 
 
 def open_yaml(file_name):
-   """
-   Load YAML file as dictionary
+    """
+    Load YAML file as dictionary
 
-   Parameters
-   ----------
-   file_name : str
-      name of YAML file to be loaded
+    Parameters
+    ----------
+    file_name : str
+       name of YAML file to be loaded
 
-   Returns
-   -------
-   yaml_dict : dict
-      YAML file loaded as dict
+    Returns
+    -------
+    yaml_dict : dict
+       YAML file loaded as dict
 
-   """
-   with open(file_name, 'r') as file:
-      yaml_dict = load(file, Loader=Loader)
-   return yaml_dict
+    """
+    with open(file_name, 'r') as file:
+        yaml_dict = load(file, Loader=Loader)
+    return yaml_dict
