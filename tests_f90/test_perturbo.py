@@ -23,8 +23,8 @@ def test_perturbo(test_name):
     """
     
     # DELETE !!!!!!!!!!!!!!
-    if "RUN_QE2PERT_2" not in os.environ or os.environ["RUN_QE2PERT_2"]!='1':
-        pytest.skip("Skipping by default, set the 'RUN_QE2PERT=1' environment variable to run this test")
+    # if "RUN_QE2PERT_2" not in os.environ or os.environ["RUN_QE2PERT_2"]!='1':
+    #     pytest.skip("Skipping by default, set the 'RUN_QE2PERT=1' environment variable to run this test")
 
     # run test, get files paths, get comparisons settings
     (ref_outs,
@@ -48,7 +48,7 @@ def test_perturbo(test_name):
     print('')
     
     
-def test_qe2pert(test_name):
+def test_qe2pert(test_name, run):
     """
     Driver to run the the qe2pert.x executable in the test format.
 
@@ -61,15 +61,16 @@ def test_qe2pert(test_name):
     -----
        None
     """
-    if "RUN_QE2PERT" not in os.environ or os.environ["RUN_QE2PERT"]!='1':
-        pytest.skip("Skipping by default, set the 'RUN_QE2PERT=1' environment variable to run this test")
-    # run ephr calculation
+    if not run:
+        pytest.skip("Skipping by default, pass the --run_qe2pert arg in the command line for this test")
     run_ephr_calculation(test_name)
     
 @pytest.mark.order(after="test_qe2pert")
-def test_perturbo_for_qe2pert(test_name):
+def test_perturbo_for_qe2pert(test_name, run):
     # CHANGE ON RUN_QE2PERT !!!!!!!!!!!!!!
-    if "RUN_QE2PERT_2" not in os.environ or os.environ["RUN_QE2PERT_2"]!='1':
-        pytest.skip("Skipping by default, set the 'RUN_QE2PERT=1' environment variable to run this test")
+    # if "RUN_QE2PERT_2" not in os.environ or os.environ["RUN_QE2PERT_2"]!='1':
+    #     pytest.skip("Skipping by default, set the 'RUN_QE2PERT=1' environment variable to run this test")
+    if not run:
+        pytest.skip("Skipping by default, pass the --run_qe2pert arg in the command line for this test")
     test_perturbo(test_name)
     

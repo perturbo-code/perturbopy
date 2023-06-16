@@ -42,6 +42,9 @@ def pytest_addoption(parser):
     parser.addoption('--devel',
                      help = 'Include the development-stage tests.',
                      action='store_true', default = False)
+    parser.addoption('--run_qe2pert',
+                     help = 'Define do you want to run qe2pert test or not',
+                     action='store_true')
 
 
 def pytest_generate_tests(metafunc):
@@ -88,9 +91,17 @@ def pytest_generate_tests(metafunc):
                                      None,
                                      metafunc.function.__name__
                                     )
-
-        metafunc.parametrize('test_name', test_list)
+        
+        if 'test_name' in metafunc.fixturenames and 'run' in metafunc.fixturenames:
+            metafunc.parametrize('test_name', test_list, indirect=True)
+            metafunc.parametrize('run', [metafunc.config.getoption('run_qe2pert')], indirect=True)
+        elif 'test_name' in metafunc.fixturenames:
+            metafunc.parametrize('test_name', test_list)
         
 @pytest.fixture
 def test_name(request):
+    return request.param
+    
+@pytest.fixture
+def run(request):
     return request.param

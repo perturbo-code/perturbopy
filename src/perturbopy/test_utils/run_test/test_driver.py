@@ -123,13 +123,11 @@ def run_phonon(cwd, work_path, input_yaml, input_name='ph.in', output_name='ph.o
     run = f'{command} -i {input_name} | tee {output_name}'
 
     os.chdir(f'{work_path}/pw-ph-wann/phonon/')
-    #softlink = 'ln -sf ../scf/tmp'
     softlink = '../scf/tmp'
     print(f'\n ====== Path ======= :\n {os.getcwd()}\n')
     print(f'\n =Link tmp from scf= :\n {softlink}')
     sys.stdout.flush()
     os.symlink(softlink, 'tmp')
-    #subprocess.run(shlex.split(softlink))
 
     print(f' == Running Phonon = :\n {run}')
     sys.stdout.flush()
@@ -175,13 +173,11 @@ def run_nscf(cwd, work_path, input_yaml, input_name='nscf.in', output_name='nscf
     run = f'{command} -i {input_name} | tee {output_name}'
 
     os.chdir(f'{work_path}/pw-ph-wann/nscf/')
-    #softlink = 'ln -sf ../scf/tmp'
     softlink = '../scf/tmp'
     print(f'\n ====== Path ======= :\n {os.getcwd()}\n')
     print(f'\n =Link tmp from scf= :\n {softlink}')
     sys.stdout.flush()
     os.symlink(softlink, 'tmp')
-    #subprocess.run(shlex.split(softlink))
 
     print(f' === Running nscf === :\n {run}')
     sys.stdout.flush()
@@ -224,16 +220,12 @@ def run_wannier(cwd, work_path, input_yaml, ephr_name, input_name='pw2wan.in', o
     # link the save-file from scf calculation
     os.chdir(f'{work_path}/pw-ph-wann/wann/')
     os.mkdir('tmp')
-    #os.chdir('tmp/')
-    #softlink = f'ln -sf ../../scf/tmp/{prefix}.save'
     softlink = f'../../scf/tmp/{prefix}.save'
     print(f'\n ====== Path ======= :\n {os.getcwd()}\n')
     print(f'\n =Link tmp from scf= :\n {softlink}')
     sys.stdout.flush()
     os.symlink(softlink, f'tmp/{prefix}.save')
-    #subprocess.run(shlex.split(softlink))
 
-    #os.chdir('..')
     # first run of wannier90
     print(f' === Running pp === :\n {run}')
     sys.stdout.flush()
@@ -291,35 +283,25 @@ def run_qe2pert(cwd, work_path, input_yaml, ephr_name, input_name='qe2pert.in', 
     # link the save-file from scf calculation
     os.chdir(f'{work_path}/qe2pert/')
     os.mkdir('tmp')
-    #os.chdir('tmp/')
-    #softlink = f'ln -sf ../../pw-ph-wann/nscf/tmp/{prefix}.save'
     softlink = f'../../pw-ph-wann/nscf/tmp/{prefix}.save'
     print(f'\n ====== Path ======= :\n {os.getcwd()}\n')
     print(f'\n =Link tmp from nscf :\n {softlink}')
     sys.stdout.flush()
-    #subprocess.run(shlex.split(softlink))
-    #os.chdir('..')
     os.symlink(softlink, f'tmp/{prefix}.save')
     
     # link rest files
-    #softlink = f'ln -sf ../pw-ph-wann/wann/{prefix}_u.mat'
     softlink = f'../pw-ph-wann/wann/{prefix}_u.mat'
     print(f'\n = Link rest files = :\n {softlink};')
     sys.stdout.flush()
-    #subprocess.run(shlex.split(softlink))
     os.symlink(softlink, f'{prefix}_u.mat')
-    #softlink = f'ln -sf ../pw-ph-wann/wann/{prefix}_u_dis.mat'
     softlink = f'../pw-ph-wann/wann/{prefix}_u_dis.mat'
     print(f'\n {softlink};')
     sys.stdout.flush()
-    #subprocess.run(shlex.split(softlink))
     os.symlink(softlink, f'{prefix}_u_dis.mat')
-    #softlink = f'ln -sf ../pw-ph-wann/wann/{prefix}_centres.xyz'
     softlink = f'../pw-ph-wann/wann/{prefix}_centres.xyz'
     print(f'\n {softlink};')
     sys.stdout.flush()
     os.symlink(softlink, f'{prefix}_centres.xyz')
-    #subprocess.run(shlex.split(softlink))
 
 
     # run qe2pert
