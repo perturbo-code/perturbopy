@@ -1,0 +1,11 @@
+qe2pert
+&qe2pert
+  prefix='Fe'
+  outdir='./tmp'
+  phdir='../pw-ph-wann/phonon/save'
+  nk1=2, nk2=2, nk3=2
+  dft_band_min = 1
+  dft_band_max = 14
+  num_wann = 9
+  spin_component = 'up'
+/

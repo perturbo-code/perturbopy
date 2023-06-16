@@ -1,0 +1,8 @@
+&inputpp 
+   outdir = './tmp'
+   prefix = 'Fe'
+   seedname = 'Fe'
+   spin_component = 'up'
+   write_mmn = .true.
+   write_amn = .true.
+/

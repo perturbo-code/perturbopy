@@ -8,7 +8,7 @@ import copy
 from perturbopy.io_utils.io import open_yaml
 
 
-def read_test_tags(test_name):
+def read_test_tags(test_name, func_name):
     """
     Get a list of tags for a given test. List of tags is combined from the tags from
     pert_input.yml and epwan_info.yml for a given epwan file.
@@ -16,77 +16,97 @@ def read_test_tags(test_name):
     Parameters
     ----------
     test_name : str
-       name of the folder inside the tests/ folder
+        name of the folder inside the tests/ folder
+
+    func_name : str
+        name of the test programm, which we run
+        (do we test perturbo or qe2pert)
 
     Returns
     -------
     tag_list : list
-       list of tags for a given test
+        list of tags for a given test
     epwan_name : str
-       name of the epwan file associated with this test
+        name of the epwan file associated with this test
     """
 
     cwd = os.getcwd()
 
-    driver_path_suffix = 'tests_perturbo/' + test_name
-    perturbo_driver_dir_path = [x[0] for x in os.walk(cwd) if x[0].endswith(driver_path_suffix)][0]
+    if (func_name =='test_perturbo') or (func_name =='test_perturbo_for_qe2pert'):
+        driver_path_suffix = 'tests_perturbo/' + test_name
+        perturbo_driver_dir_path = [x[0] for x in os.walk(cwd) if x[0].endswith(driver_path_suffix)][0]
+        pert_input = open_yaml(f'{perturbo_driver_dir_path}/pert_input.yml')
 
-    pert_input = open_yaml(f'{perturbo_driver_dir_path}/pert_input.yml')
+        # Read the tags from pert_input.yml
+        input_tags = []
+        if 'tags' in pert_input['test info'].keys():
+            input_tags = pert_input['test info']['tags']
 
-    # Read the tags from pert_input.yml
-    input_tags = []
-    if 'tags' in pert_input['test info'].keys():
-        input_tags = pert_input['test info']['tags']
+        # Read the tags from epwan_info.yml
+        epwan_name = pert_input['test info']['epwan']
 
-    # Read the tags from epwan_info.yml
-    epwan_name = pert_input['test info']['epwan']
+        epwan_dict_path = 'epwan_info.yml'
 
-    epwan_dict_path = 'epwan_info.yml'
+        epwan_info = open_yaml(epwan_dict_path)
 
-    epwan_info = open_yaml(epwan_dict_path)
+        epwan_tags = []
+        if 'tags' in epwan_info[epwan_name].keys():
+            epwan_tags = epwan_info[epwan_name]['tags']
 
-    epwan_tags = []
-    if 'tags' in epwan_info[epwan_name].keys():
-        epwan_tags = epwan_info[epwan_name]['tags']
-
-    tag_list = input_tags + epwan_tags
-    tag_list = sorted(list(set(tag_list)))
+        tag_list = input_tags + epwan_tags
+        tag_list = sorted(list(set(tag_list)))
+    
+    elif func_name=='test_qe2pert':
+        ephr_dict_path = 'ephr_comp_info.yml'
+        ephr_info = open_yaml(ephr_dict_path)
+        if 'tags' in ephr_info[test_name]:
+            tag_list = ephr_info[test_name]['tags']
+        epwan_name = test_name
 
     return tag_list, epwan_name
 
 
-def get_all_tests():
+def get_all_tests(func_name):
     """
     Get the names of all test folders based on the epwan_info.yml file.
+
+    Parameters
+    ----------
+    func_name : str
+       name of the metafunction, which we parametrize
 
     Returns
     -------
     test_folder_list : list
        list of all test names
     """
-
-    epwan_dict_path = 'epwan_info.yml'
-
-    epwan_info = open_yaml(epwan_dict_path)
-
     test_folder_list = []
     dev_test_folder_list = []
 
-    for epwan in epwan_info:
-        if 'tests' in epwan_info[epwan].keys():
-            test_list = epwan_info[epwan]['tests']
+    if (func_name =='test_perturbo') or (func_name =='test_perturbo_for_qe2pert'):
+        epwan_dict_path = 'epwan_info.yml'
+        epwan_info = open_yaml(epwan_dict_path)
+    
+        for epwan in epwan_info:
+            if 'tests' in epwan_info[epwan].keys():
+                test_list = epwan_info[epwan]['tests']
 
-            test_folder_list += [f'{epwan}-{t}' for t in test_list]
+                test_folder_list += [f'{epwan}-{t}' for t in test_list]
 
-        if 'devel tests' in epwan_info[epwan].keys():
-            dev_test_list = epwan_info[epwan]['devel tests']
+            if 'devel tests' in epwan_info[epwan].keys():
+                dev_test_list = epwan_info[epwan]['devel tests']
 
-            dev_test_folder_list += [f'{epwan}-{t}' for t in dev_test_list]
+                dev_test_folder_list += [f'{epwan}-{t}' for t in dev_test_list]
+
+    elif func_name=='test_qe2pert':
+        ephr_dict_path = 'ephr_comp_info.yml'
+        ephr_info = open_yaml(ephr_dict_path)
+        test_folder_list = [ephr for ephr in ephr_info]
 
     return test_folder_list, dev_test_folder_list
 
 
-def print_test_info(test_name, pert_input):
+def print_test_info(test_name, input_dict):
     """
     Print information about a test.
 
@@ -94,14 +114,21 @@ def print_test_info(test_name, pert_input):
     ----------
     test_name : str
        name of the test folder
-    pert_input : dict
+    input_dict : dict
        dictionary contatining the test info
     """
 
-    if 'desc' in pert_input['test info']:
-        desc = pert_input['test info']['desc']
-    else:
-        desc = None
+    if 'test info' in input_dict:
+        if 'desc' in input_dict['test info']:
+            desc = input_dict['test info']['desc']
+        else:
+            desc = None
+    elif 'desc' in input_dict:
+        if test_name in input_dict['desc']:
+            desc = input_dict['desc'][test_name]
+        else:
+            desc = None
+        
 
     print(f'\n === Test folder === :\n {test_name}')
 
@@ -111,7 +138,7 @@ def print_test_info(test_name, pert_input):
     sys.stdout.flush()
 
 
-def filter_tests(all_test_list, tags, exclude_tags, epwan, test_names):
+def filter_tests(all_test_list, tags, exclude_tags, epwan, test_names, func_name):
     """
     Return the list of test folders based on command line options
 
@@ -131,6 +158,10 @@ def filter_tests(all_test_list, tags, exclude_tags, epwan, test_names):
 
     test_names : list or None
        list of test folders to include
+    
+    func_name : str
+        name of the test programm, which we run
+        (do we test perturbo or qe2pert)
 
     Returns
     -------
@@ -155,7 +186,7 @@ def filter_tests(all_test_list, tags, exclude_tags, epwan, test_names):
         for test_name in all_test_list:
 
             # tags for a given test
-            test_tag_list, epwan_name = read_test_tags(test_name)
+            test_tag_list, epwan_name = read_test_tags(test_name, func_name)
 
             # tags from command line
             if tags is not None:

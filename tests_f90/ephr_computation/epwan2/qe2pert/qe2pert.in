@@ -1,0 +1,12 @@
+qe2pert
+&qe2pert
+  prefix='mos2'
+  outdir='./tmp'
+  phdir='../pw-ph-wann/phonon/save'
+  nk1=2, nk2=2, nk3=1
+  dft_band_min = 13
+  dft_band_max = 34
+  num_wann = 22
+  lwannier=.true.
+  system_2d=.true.
+/

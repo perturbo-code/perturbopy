@@ -1,0 +1,11 @@
+Phonon input
+&inputph
+  tr2_ph=1.0d-15
+  prefix='Fe'
+  ldisp=.true.
+  lqdir = .true.
+  outdir='./tmp'
+  fildyn  = 'Fe.dyn.xml'
+  fildvscf = 'dvscf'
+  nq1=2, nq2=2, nq3=2,
+/
