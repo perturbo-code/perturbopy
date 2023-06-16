@@ -21,5 +21,5 @@ setup(
    packages=find_packages(
       where='./src'
    ),
-   package_dir={"": "src"} 
+   package_dir={"": "src"}
 )

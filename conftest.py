@@ -13,6 +13,7 @@ from perturbopy.test_utils.run_test.run_utils import get_all_tests
 from perturbopy.test_utils.run_test.run_utils import filter_tests
 import pytest
 
+
 def pytest_addoption(parser):
 
     parser.addoption('--tags',
@@ -72,7 +73,7 @@ def pytest_generate_tests(metafunc):
         if  metafunc.config.getoption('devel'):
             all_test_list += all_dev_test_list
 
-        if (metafunc.function.__name__=='test_perturbo')or (metafunc.function.__name__=='test_perturbo_for_qe2pert'):
+        if (metafunc.function.__name__ == 'test_perturbo') or (metafunc.function.__name__ == 'test_perturbo_for_qe2pert'):
         # sort out folders based on command-line options (if present)
             test_list = filter_tests(
                                      all_test_list,
@@ -82,7 +83,7 @@ def pytest_generate_tests(metafunc):
                                      metafunc.config.getoption('test_names'),
                                      metafunc.function.__name__
                                     )
-        elif (metafunc.function.__name__=='test_qe2pert'):
+        elif (metafunc.function.__name__ == 'test_qe2pert'):
             test_list = filter_tests(
                                      all_test_list,
                                      metafunc.config.getoption('ephr_tags'),
@@ -98,10 +99,12 @@ def pytest_generate_tests(metafunc):
         elif 'test_name' in metafunc.fixturenames:
             metafunc.parametrize('test_name', test_list)
         
+
 @pytest.fixture
 def test_name(request):
     return request.param
     
+
 @pytest.fixture
 def run(request):
     return request.param

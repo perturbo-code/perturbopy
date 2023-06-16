@@ -56,6 +56,7 @@ def run_perturbo(cwd, perturbo_driver_dir_path,
 
     os.chdir(cwd)
     
+
 def run_scf(cwd, work_path, input_yaml, input_name='scf.in', output_name='scf.out'):
     """
     Function for scf calculation
@@ -90,11 +91,12 @@ def run_scf(cwd, work_path, input_yaml, input_name='scf.in', output_name='scf.ou
     print(f' === Running scf === :\n {run}')
     sys.stdout.flush()
 
-    full_run = 'module load qe\n' + run 
+    full_run = 'module load qe\n' + run
     subprocess.run(full_run, shell=True)
 
     os.chdir(cwd)
     
+
 def run_phonon(cwd, work_path, input_yaml, input_name='ph.in', output_name='ph.out'):
     """
     Function for nscf calculation
@@ -132,7 +134,7 @@ def run_phonon(cwd, work_path, input_yaml, input_name='ph.in', output_name='ph.o
     print(f' == Running Phonon = :\n {run}')
     sys.stdout.flush()
 
-    full_run = 'module load qe\n' + run 
+    full_run = 'module load qe\n' + run
     subprocess.run(full_run, shell=True)
     
     collect = 'bash ./ph-collect.sh'
@@ -141,7 +143,6 @@ def run_phonon(cwd, work_path, input_yaml, input_name='ph.in', output_name='ph.o
     
     subprocess.run(shlex.split(collect))
     
-
     os.chdir(cwd)
 
     
@@ -182,11 +183,12 @@ def run_nscf(cwd, work_path, input_yaml, input_name='nscf.in', output_name='nscf
     print(f' === Running nscf === :\n {run}')
     sys.stdout.flush()
 
-    full_run = 'module load qe\n' + run 
+    full_run = 'module load qe\n' + run
     subprocess.run(full_run, shell=True)
 
     os.chdir(cwd)
     
+
 def run_wannier(cwd, work_path, input_yaml, ephr_name, input_name='pw2wan.in', output_name='pw2wan.out'):
     """
     Function for wannier90 calculation
@@ -229,7 +231,7 @@ def run_wannier(cwd, work_path, input_yaml, ephr_name, input_name='pw2wan.in', o
     # first run of wannier90
     print(f' === Running pp === :\n {run}')
     sys.stdout.flush()
-    full_run = 'module load qe\n' + run 
+    full_run = 'module load qe\n' + run
     subprocess.run(full_run, shell=True)
     
     # run of pw2wan
@@ -237,7 +239,7 @@ def run_wannier(cwd, work_path, input_yaml, ephr_name, input_name='pw2wan.in', o
     run = f'{command} -i {input_name} | tee {output_name}'
     print(f' = Running pw2wan = :\n {run}')
     sys.stdout.flush()
-    full_run = 'module load qe\n' + run 
+    full_run = 'module load qe\n' + run
     subprocess.run(full_run, shell=True)
     
     # second run of wannier90
@@ -245,11 +247,12 @@ def run_wannier(cwd, work_path, input_yaml, ephr_name, input_name='pw2wan.in', o
     run = f'{command} {prefix}'
     print(f' = Running Wannier= :\n {run}')
     sys.stdout.flush()
-    full_run = 'module load qe\n' + run 
+    full_run = 'module load qe\n' + run
     subprocess.run(full_run, shell=True)
     
     os.chdir(cwd)
     
+
 def run_qe2pert(cwd, work_path, input_yaml, ephr_name, input_name='qe2pert.in', output_name='qe2pert.out'):
     """
     Function for qe2pert calculation
@@ -303,14 +306,14 @@ def run_qe2pert(cwd, work_path, input_yaml, ephr_name, input_name='qe2pert.in', 
     sys.stdout.flush()
     os.symlink(softlink, f'{prefix}_centres.xyz')
 
-
     # run qe2pert
     print(f' = Running qe2pert = :\n {run}')
     sys.stdout.flush()
-    full_run = 'module load perturbo\n' + run 
+    full_run = 'module load perturbo\n' + run
     subprocess.run(full_run, shell=True)
 
     os.chdir(cwd)
+
 
 def get_test_materials(test_name):
     """
@@ -429,6 +432,7 @@ def run_ephr_calculation(ephr_name):
     run_qe2pert(cwd, work_path, input_yaml, ephr_name)
 
     return
+
 
 def clean_test_materials(test_name, new_outs):
     """

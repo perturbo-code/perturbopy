@@ -7,6 +7,7 @@ import sys
 import pytest
 import subprocess
 
+
 @pytest.mark.order(before="test_qe2pert")
 def test_perturbo(test_name):
     """
@@ -37,13 +38,13 @@ def test_perturbo(test_name):
         ref_file_short = '/'.join(os.path.normpath(ref_file).split(os.sep)[-3:])
         new_file_short = '/'.join(os.path.normpath(new_file).split(os.sep)[-3:])
 
-        #print(f'\ncomparing files {ref_file_short} and {new_file_short}')
+        # print(f'\ncomparing files {ref_file_short} and {new_file_short}')
         print(f'\n comparing files: \n {ref_file}  {new_file}')
 
         errmsg = (f'files {ref_file} and {new_file} do not match')
         assert equal_values(ref_file, new_file, ign_n_tol), errmsg
 
-    #clean up test materials
+    # clean up test materials
     clean_test_materials(test_name, new_outs)
     print('')
     
@@ -65,6 +66,7 @@ def test_qe2pert(test_name, run):
         pytest.skip("Skipping by default, pass the --run_qe2pert arg in the command line for this test")
     run_ephr_calculation(test_name)
     
+
 @pytest.mark.order(after="test_qe2pert")
 def test_perturbo_for_qe2pert(test_name, run):
     # CHANGE ON RUN_QE2PERT !!!!!!!!!!!!!!

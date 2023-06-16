@@ -32,7 +32,7 @@ def read_test_tags(test_name, func_name):
 
     cwd = os.getcwd()
 
-    if (func_name =='test_perturbo') or (func_name =='test_perturbo_for_qe2pert'):
+    if (func_name == 'test_perturbo') or (func_name == 'test_perturbo_for_qe2pert'):
         driver_path_suffix = 'tests_perturbo/' + test_name
         perturbo_driver_dir_path = [x[0] for x in os.walk(cwd) if x[0].endswith(driver_path_suffix)][0]
         pert_input = open_yaml(f'{perturbo_driver_dir_path}/pert_input.yml')
@@ -56,7 +56,7 @@ def read_test_tags(test_name, func_name):
         tag_list = input_tags + epwan_tags
         tag_list = sorted(list(set(tag_list)))
     
-    elif func_name=='test_qe2pert':
+    elif func_name == 'test_qe2pert':
         ephr_dict_path = 'ephr_comp_info.yml'
         ephr_info = open_yaml(ephr_dict_path)
         if 'tags' in ephr_info[test_name]:
@@ -83,7 +83,7 @@ def get_all_tests(func_name):
     test_folder_list = []
     dev_test_folder_list = []
 
-    if (func_name =='test_perturbo') or (func_name =='test_perturbo_for_qe2pert'):
+    if (func_name == 'test_perturbo') or (func_name == 'test_perturbo_for_qe2pert'):
         epwan_dict_path = 'epwan_info.yml'
         epwan_info = open_yaml(epwan_dict_path)
     
@@ -98,7 +98,7 @@ def get_all_tests(func_name):
 
                 dev_test_folder_list += [f'{epwan}-{t}' for t in dev_test_list]
 
-    elif func_name=='test_qe2pert':
+    elif func_name == 'test_qe2pert':
         ephr_dict_path = 'ephr_comp_info.yml'
         ephr_info = open_yaml(ephr_dict_path)
         test_folder_list = [ephr for ephr in ephr_info]
@@ -129,7 +129,6 @@ def print_test_info(test_name, input_dict):
         else:
             desc = None
         
-
     print(f'\n === Test folder === :\n {test_name}')
 
     if desc is not None:
