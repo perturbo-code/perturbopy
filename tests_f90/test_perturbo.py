@@ -65,6 +65,7 @@ def test_qe2pert(test_name, run):
     if not run:
         pytest.skip("Skipping by default, pass the --run_qe2pert arg in the command line for this test")
     run_ephr_calculation(test_name)
+    assert True
     
 
 @pytest.mark.order(after="test_qe2pert")

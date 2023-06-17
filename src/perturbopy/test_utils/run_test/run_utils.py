@@ -57,7 +57,7 @@ def read_test_tags(test_name, func_name):
         tag_list = sorted(list(set(tag_list)))
     
     elif func_name == 'test_qe2pert':
-        ephr_dict_path = 'ephr_comp_info.yml'
+        ephr_dict_path = 'epwan_info.yml'
         ephr_info = open_yaml(ephr_dict_path)
         if 'tags' in ephr_info[test_name]:
             tag_list = ephr_info[test_name]['tags']
@@ -99,7 +99,7 @@ def get_all_tests(func_name):
                 dev_test_folder_list += [f'{epwan}-{t}' for t in dev_test_list]
 
     elif func_name == 'test_qe2pert':
-        ephr_dict_path = 'ephr_comp_info.yml'
+        ephr_dict_path = 'epwan_info.yml'
         ephr_info = open_yaml(ephr_dict_path)
         test_folder_list = [ephr for ephr in ephr_info]
 
