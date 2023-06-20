@@ -67,7 +67,7 @@ def preliminary_commands(comp_yaml):
         dictionary, which include the list of running commands
     """
 
-    print(f' == Prel commands == :')
+    print(' == Prel commands == :')
     list_of_coms = ''
     for com in comp_yaml['prel_coms']:
         print(f' ======= Run ======= :\n {com}')
@@ -109,7 +109,7 @@ def run_scf(cwd, work_path, comp_yaml, input_name='scf.in', output_name='scf.out
     print(f' === Running scf === :\n {run}')
     sys.stdout.flush()
 
-    subprocess.run(preliminary_commands(comp_yaml) +run, shell=True)
+    subprocess.run(preliminary_commands(comp_yaml) + run, shell=True)
 
     os.chdir(cwd)
     
@@ -150,7 +150,7 @@ def run_phonon(cwd, work_path, comp_yaml, input_name='ph.in', output_name='ph.ou
     print(f' == Running Phonon = :\n {run}')
     sys.stdout.flush()
 
-    subprocess.run(preliminary_commands(comp_yaml) +run, shell=True)
+    subprocess.run(preliminary_commands(comp_yaml) + run, shell=True)
     
     collect = 'bash ./ph-collect.sh'
     print(f' == Collect files == :\n {collect}')
@@ -197,7 +197,7 @@ def run_nscf(cwd, work_path, comp_yaml, input_name='nscf.in', output_name='nscf.
     print(f' === Running nscf === :\n {run}')
     sys.stdout.flush()
 
-    subprocess.run(preliminary_commands(comp_yaml) +run, shell=True)
+    subprocess.run(preliminary_commands(comp_yaml) + run, shell=True)
 
     os.chdir(cwd)
     
@@ -242,21 +242,21 @@ def run_wannier(cwd, work_path, comp_yaml, prefix, input_name='pw2wan.in', outpu
     # first run of wannier90
     print(f' === Running pp === :\n {run}')
     sys.stdout.flush()
-    subprocess.run(preliminary_commands(comp_yaml) +run, shell=True)
+    subprocess.run(preliminary_commands(comp_yaml) + run, shell=True)
     
     # run of pw2wan
     command = comp_yaml['comp_info']['wannier']['pw2wannier90']
     run = f'{command} -i {input_name} | tee {output_name}'
     print(f' = Running pw2wan = :\n {run}')
     sys.stdout.flush()
-    subprocess.run(preliminary_commands(comp_yaml) +run, shell=True)
+    subprocess.run(preliminary_commands(comp_yaml) + run, shell=True)
     
     # second run of wannier90
     command = comp_yaml['comp_info']['wannier']['wannier90']
     run = f'{command} {prefix}'
     print(f' = Running Wannier= :\n {run}')
     sys.stdout.flush()
-    subprocess.run(preliminary_commands(comp_yaml) +run, shell=True)
+    subprocess.run(preliminary_commands(comp_yaml) + run, shell=True)
     
     os.chdir(cwd)
     
@@ -316,7 +316,7 @@ def run_qe2pert(cwd, work_path, comp_yaml, prefix, input_name='qe2pert.in', outp
     print(f' = Running qe2pert = :\n {run}')
     sys.stdout.flush()
     
-    subprocess.run(preliminary_commands(comp_yaml) +run, shell=True)
+    subprocess.run(preliminary_commands(comp_yaml) + run, shell=True)
 
     os.chdir(cwd)
 
