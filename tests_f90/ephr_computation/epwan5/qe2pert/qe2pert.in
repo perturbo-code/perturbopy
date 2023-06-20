@@ -1,6 +1,6 @@
 qe2pert
 &qe2pert
-  prefix='gaas'
+  prefix='gaas_uspp'
   outdir='./tmp'
   phdir='../pw-ph-wann/phonon/save'
   nk1=2, nk2=2, nk3=2

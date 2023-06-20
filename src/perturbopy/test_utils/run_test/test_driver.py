@@ -57,23 +57,41 @@ def run_perturbo(cwd, perturbo_driver_dir_path,
     os.chdir(cwd)
     
 
-def run_scf(cwd, work_path, input_yaml, input_name='scf.in', output_name='scf.out'):
+def preliminary_commands(comp_yaml):
+    """
+    Function which define all comands which you want to run before the qe2pert computations
+    
+    Parameters
+    ----------
+    comp_yaml : str
+        dictionary, which include the list of running commands
+    """
+
+    print(f' == Prel commands == :')
+    list_of_coms = ''
+    for com in comp_yaml['prel_coms']:
+        print(f' ======= Run ======= :\n {com}')
+        sys.stdout.flush()
+        list_of_coms += f'{com}\n'
+    return list_of_coms
+    
+
+def run_scf(cwd, work_path, comp_yaml, input_name='scf.in', output_name='scf.out'):
     """
     Function for scf calculation
 
     Parameters
     ----------
     cwd : str
-       path of current working directory
+        path of current working directory
     work_path : str
         path to dir with input file, where we'll run the calculations
-    input_yaml : dict
-        dictionary, which include the
-    commands for scf calculation
+    comp_yaml : dict
+        dictionary, which include the commands for scf calculation
     input_name : str, optional
-       name of the input file, default: 'scf.in'
+        name of the input file, default: 'scf.in'
     output_name : str, optional
-       name of the output file, default: 'scf.out'
+        name of the output file, default: 'scf.out'
 
     Returns
     -------
@@ -81,7 +99,7 @@ def run_scf(cwd, work_path, input_yaml, input_name='scf.in', output_name='scf.ou
 
     """
 
-    command = input_yaml['comp_info']['scf']
+    command = comp_yaml['comp_info']['scf']
     run = f'{command} -i {input_name} | tee {output_name}'
 
     os.chdir(f'{work_path}/pw-ph-wann/scf/')
@@ -91,29 +109,27 @@ def run_scf(cwd, work_path, input_yaml, input_name='scf.in', output_name='scf.ou
     print(f' === Running scf === :\n {run}')
     sys.stdout.flush()
 
-    full_run = 'module load qe\n' + run
-    subprocess.run(full_run, shell=True)
+    subprocess.run(preliminary_commands(comp_yaml)+run, shell=True)
 
     os.chdir(cwd)
     
 
-def run_phonon(cwd, work_path, input_yaml, input_name='ph.in', output_name='ph.out'):
+def run_phonon(cwd, work_path, comp_yaml, input_name='ph.in', output_name='ph.out'):
     """
     Function for nscf calculation
 
     Parameters
     ----------
     cwd : str
-       path of current working directory
+        path of current working directory
     work_path : str
         path to dir with input file, where we'll run the calculations
-    input_yaml : dict
-        dictionary, which include the
-    commands for phonon calculation
+    comp_yaml : dict
+        dictionary, which include the commands for phonon calculation
     input_name : str, optional
-       name of the input file, default: 'ph.in'
+        name of the input file, default: 'ph.in'
     output_name : str, optional
-       name of the output file, default: 'ph.out'
+        name of the output file, default: 'ph.out'
 
     Returns
     -------
@@ -121,7 +137,7 @@ def run_phonon(cwd, work_path, input_yaml, input_name='ph.in', output_name='ph.o
 
     """
 
-    command = input_yaml['comp_info']['phonon']
+    command = comp_yaml['comp_info']['phonon']
     run = f'{command} -i {input_name} | tee {output_name}'
 
     os.chdir(f'{work_path}/pw-ph-wann/phonon/')
@@ -134,8 +150,7 @@ def run_phonon(cwd, work_path, input_yaml, input_name='ph.in', output_name='ph.o
     print(f' == Running Phonon = :\n {run}')
     sys.stdout.flush()
 
-    full_run = 'module load qe\n' + run
-    subprocess.run(full_run, shell=True)
+    subprocess.run(preliminary_commands(comp_yaml)+run, shell=True)
     
     collect = 'bash ./ph-collect.sh'
     print(f' == Collect files == :\n {collect}')
@@ -146,23 +161,22 @@ def run_phonon(cwd, work_path, input_yaml, input_name='ph.in', output_name='ph.o
     os.chdir(cwd)
 
     
-def run_nscf(cwd, work_path, input_yaml, input_name='nscf.in', output_name='nscf.out'):
+def run_nscf(cwd, work_path, comp_yaml, input_name='nscf.in', output_name='nscf.out'):
     """
     Function for nscf calculation
 
     Parameters
     ----------
     cwd : str
-       path of current working directory
+        path of current working directory
     work_path : str
         path to dir with input file, where we'll run the calculations
-    input_yaml : dict
-        dictionary, which include the
-    commands for nscf calculation
+    comp_yaml : dict
+        dictionary, which include the commands for nscf calculation
     input_name : str, optional
-       name of the input file, default: 'nscf.in'
+        name of the input file, default: 'nscf.in'
     output_name : str, optional
-       name of the output file, default: 'nscf.out'
+        name of the output file, default: 'nscf.out'
 
     Returns
     -------
@@ -170,7 +184,7 @@ def run_nscf(cwd, work_path, input_yaml, input_name='nscf.in', output_name='nscf
 
     """
 
-    command = input_yaml['comp_info']['nscf']
+    command = comp_yaml['comp_info']['nscf']
     run = f'{command} -i {input_name} | tee {output_name}'
 
     os.chdir(f'{work_path}/pw-ph-wann/nscf/')
@@ -183,31 +197,29 @@ def run_nscf(cwd, work_path, input_yaml, input_name='nscf.in', output_name='nscf
     print(f' === Running nscf === :\n {run}')
     sys.stdout.flush()
 
-    full_run = 'module load qe\n' + run
-    subprocess.run(full_run, shell=True)
+    subprocess.run(preliminary_commands(comp_yaml)+run, shell=True)
 
     os.chdir(cwd)
     
 
-def run_wannier(cwd, work_path, input_yaml, ephr_name, input_name='pw2wan.in', output_name='pw2wan.out'):
+def run_wannier(cwd, work_path, comp_yaml, prefix, input_name='pw2wan.in', output_name='pw2wan.out'):
     """
     Function for wannier90 calculation
 
     Parameters
     ----------
     cwd : str
-       path of current working directory
+        path of current working directory
     work_path : str
         path to dir with input file, where we'll run the calculations
-    input_yaml : dict
-        dictionary, which include the
-    commands for wannier calculation
-    ephr_name : str
-        name of the running calculation
+    comp_yaml : dict
+        dictionary, which include the commands for wannier calculation
+    prefix : str
+        prefix which we use for the filenames
     input_name : str, optional
-       name of the input file, default: 'pw2wan.in'
+        name of the input file, default: 'pw2wan.in'
     output_name : str, optional
-       name of the output file, default: 'pw2wan.out'
+        name of the output file, default: 'pw2wan.out'
 
     Returns
     -------
@@ -215,8 +227,7 @@ def run_wannier(cwd, work_path, input_yaml, ephr_name, input_name='pw2wan.in', o
 
     """
 
-    command = input_yaml['comp_info']['wannier']['wannier90']
-    prefix = input_yaml['prefix'][ephr_name]
+    command = comp_yaml['comp_info']['wannier']['wannier90']
     run = f'{command} -pp {prefix}'
     
     # link the save-file from scf calculation
@@ -231,29 +242,26 @@ def run_wannier(cwd, work_path, input_yaml, ephr_name, input_name='pw2wan.in', o
     # first run of wannier90
     print(f' === Running pp === :\n {run}')
     sys.stdout.flush()
-    full_run = 'module load qe\n' + run
-    subprocess.run(full_run, shell=True)
+    subprocess.run(preliminary_commands(comp_yaml)+run, shell=True)
     
     # run of pw2wan
-    command = input_yaml['comp_info']['wannier']['pw2wannier90']
+    command = comp_yaml['comp_info']['wannier']['pw2wannier90']
     run = f'{command} -i {input_name} | tee {output_name}'
     print(f' = Running pw2wan = :\n {run}')
     sys.stdout.flush()
-    full_run = 'module load qe\n' + run
-    subprocess.run(full_run, shell=True)
+    subprocess.run(preliminary_commands(comp_yaml)+run, shell=True)
     
     # second run of wannier90
-    command = input_yaml['comp_info']['wannier']['wannier90']
+    command = comp_yaml['comp_info']['wannier']['wannier90']
     run = f'{command} {prefix}'
     print(f' = Running Wannier= :\n {run}')
     sys.stdout.flush()
-    full_run = 'module load qe\n' + run
-    subprocess.run(full_run, shell=True)
+    subprocess.run(preliminary_commands(comp_yaml)+run, shell=True)
     
     os.chdir(cwd)
     
 
-def run_qe2pert(cwd, work_path, input_yaml, ephr_name, input_name='qe2pert.in', output_name='qe2pert.out'):
+def run_qe2pert(cwd, work_path, comp_yaml, prefix, input_name='qe2pert.in', output_name='qe2pert.out'):
     """
     Function for qe2pert calculation
 
@@ -263,11 +271,10 @@ def run_qe2pert(cwd, work_path, input_yaml, ephr_name, input_name='qe2pert.in', 
        path of current working directory
     work_path : str
         path to dir with input file, where we'll run the calculations
-    input_yaml : dict
-        dictionary, which include the
-    commands for qe2pert calculation
-    ephr_name : str
-        name of the running calculation
+    comp_yaml : dict
+        dictionary, which include the commands for qe2pert calculation
+    prefix : str
+        prefix which we use for the filenames
     input_name : str, optional
        name of the input file, default: 'qe2pert.in'
     output_name : str, optional
@@ -279,8 +286,7 @@ def run_qe2pert(cwd, work_path, input_yaml, ephr_name, input_name='qe2pert.in', 
 
     """
 
-    command = input_yaml['comp_info']['qe2pert']
-    prefix = input_yaml['prefix'][ephr_name]
+    command = comp_yaml['comp_info']['qe2pert']
     run = f'{command} -i {input_name} | tee {output_name}'
 
     # link the save-file from scf calculation
@@ -309,13 +315,13 @@ def run_qe2pert(cwd, work_path, input_yaml, ephr_name, input_name='qe2pert.in', 
     # run qe2pert
     print(f' = Running qe2pert = :\n {run}')
     sys.stdout.flush()
-    full_run = 'module load perturbo\n' + run
-    subprocess.run(full_run, shell=True)
+    
+    subprocess.run(preliminary_commands(comp_yaml)+run, shell=True)
 
     os.chdir(cwd)
 
 
-def get_test_materials(test_name):
+def get_test_materials(test_name, test_case):
     """
     Run one test:
        #. run perturbo.x to produce output files
@@ -325,7 +331,10 @@ def get_test_materials(test_name):
     Parameters
     ----------
     test_name : str
-       name of test
+        name of test
+    test_case : str
+        define what type of the test we run - for perturbo testing or for the
+        qe2pert testing.
 
     Returns
     -----
@@ -345,7 +354,7 @@ def get_test_materials(test_name):
 
     # determine needed paths
     perturbo_inputs_dir_path = [x[0] for x in os.walk(cwd) if x[0].endswith(inputs_path_suffix)][0]
-    work_path                = perturbo_scratch_dir_from_env(cwd, perturbo_inputs_dir_path, test_name)
+    work_path                = perturbo_scratch_dir_from_env(cwd, perturbo_inputs_dir_path, test_name, test_case)
     ref_path                 = [x[0] for x in os.walk(cwd) if x[0].endswith(ref_data_path_suffix)][0]
 
     # input yaml for perturbo job
@@ -366,7 +375,7 @@ def get_test_materials(test_name):
     #       os.remove(out_file)
 
     # print the test information before the run
-    print_test_info(test_name, pert_input)
+    print_test_info(test_name, pert_input, test_type='perturbo')
 
     # run Perturbo to produce outputs
     run_perturbo(cwd, work_path)
@@ -382,7 +391,7 @@ def get_test_materials(test_name):
             igns_n_tols)
 
 
-def run_ephr_calculation(ephr_name):
+def run_ephr_calculation(ephr_name, comp_yaml):
     """
     Run one test:
         #. Run scf calculation
@@ -395,6 +404,9 @@ def run_ephr_calculation(ephr_name):
     ----------
     ephr_name : str
         name of computed ephr_name file
+    comp_yaml : str
+        name of file with computational information, which we'll use in this set of computations.
+        Should be in folder tests_f90/comp_qe2pert.
 
     Returns
     -----
@@ -409,27 +421,32 @@ def run_ephr_calculation(ephr_name):
     inputs_dir_path = f'{cwd}/{inputs_path_suffix}/'
     work_path = perturbo_scratch_dir_from_env(cwd, inputs_dir_path, ephr_name)
     
-    # input yaml for the whole qe2pert calculation
+    # open input yaml-files with supplementary info
+    # and computational commands
     yaml_prefix = cwd
-    input_yaml = open_yaml(f'{yaml_prefix}/ephr_computation/qe2pert_input.yml')
+    input_yaml = open_yaml(f'{yaml_prefix}/epwan_info.yml')
+    comp_yaml = open_yaml(f'{yaml_prefix}/comp_qe2pert/{comp_yaml}')
 
     # print the test information before the run
-    print_test_info(ephr_name, input_yaml)
+    print_test_info(ephr_name, input_yaml, test_type='qe2pert')
+    
+    # define the prefix - we'll need to have it in the later computations
+    prefix = input_yaml[ephr_name]['prefix']
 
     # run scf
-    run_scf(cwd, work_path, input_yaml)
+    run_scf(cwd, work_path, comp_yaml)
     
     # run phonon
-    run_phonon(cwd, work_path, input_yaml)
+    run_phonon(cwd, work_path, comp_yaml)
 
     # run nscf
-    run_nscf(cwd, work_path, input_yaml)
+    run_nscf(cwd, work_path, comp_yaml)
     
     # run wannier90
-    run_wannier(cwd, work_path, input_yaml, ephr_name)
+    run_wannier(cwd, work_path, comp_yaml, prefix)
     
     # run qe2pert
-    run_qe2pert(cwd, work_path, input_yaml, ephr_name)
+    run_qe2pert(cwd, work_path, comp_yaml, prefix)
 
     return
 

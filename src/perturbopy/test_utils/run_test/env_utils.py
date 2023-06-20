@@ -39,7 +39,7 @@ def perturbo_run_from_env():
     return perturbo_run
 
 
-def perturbo_scratch_dir_from_env(cwd, perturbo_inputs_dir_path, test_name, rm_preexist_dir=True):
+def perturbo_scratch_dir_from_env(cwd, perturbo_inputs_dir_path, test_name, test_case='perturbo', rm_preexist_dir=True):
     """
     Check if the PERTURBO_SCRATCH variable is present among the environment variables
     and read its value. If not present use default path setup in present in package
@@ -51,17 +51,22 @@ def perturbo_scratch_dir_from_env(cwd, perturbo_inputs_dir_path, test_name, rm_p
     Parameters
     ----------
     cwd : str
-       path to cwd which should be .../perturbopy/tests
+        path to cwd which should be .../perturbopy/tests
+    perturbo_inputs_dir_path : str
+        folder with all input files for the test
     test_name : str
-       name of test
+        name of test
+    test_case : str
+        define what type of the test we run - for perturbo testing or for the
+        qe2pert testing.
     rm_preexist_dir : bool
-       whether to remove dir if it preexists
+        whether to remove dir if it preexists
 
     Returns
     -------
     perturbo_scratch_dir : str
-       string containing the path to generate dir named tmp_test_name in which
-       outputs for test_name will be generated
+        string containing the path to generate dir named tmp_test_name in which
+        outputs for test_name will be generated
 
     """
     # Read the perturbo_run variable from the environment
@@ -84,5 +89,16 @@ def perturbo_scratch_dir_from_env(cwd, perturbo_inputs_dir_path, test_name, rm_p
         shutil.copytree(src, dst)
     else:
         shutil.copytree(src, dst)
+    if test_case == 'qe2pert':
+        eph5_name = test_name[:test_name.find('-')]
+        yaml_address = f"{perturbo_scratch_dir_prefix}/{eph5_name}"
+        file_list = os.listdir(yaml_address)
+        for file_name in file_list:
+            # Check if the file has the desired format (.h5)
+            if file_name.endswith('.h5'):
+                # copy from our previous computation to the current computation folder
+                source = os.path.join(yaml_address, file_name)
+                destination = os.path.join(dst, file_name)
+                shutil.copy2(source, destination)
 
     return perturbo_scratch_dir

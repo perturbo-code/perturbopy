@@ -1,6 +1,6 @@
 qe2pert
 &qe2pert
-  prefix='Fe'
+  prefix='fe'
   outdir='./tmp'
   phdir='../pw-ph-wann/phonon/save'
   nk1=2, nk2=2, nk3=2

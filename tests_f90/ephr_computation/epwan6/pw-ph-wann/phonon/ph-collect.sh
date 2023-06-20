@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PREFIX='Fe'
+PREFIX='fe'
 
 #should be in the work directory of PHonon calculation
 echo `pwd`

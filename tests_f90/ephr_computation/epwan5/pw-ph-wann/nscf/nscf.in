@@ -1,5 +1,5 @@
 &CONTROL
-  prefix = 'gaas'
+  prefix = 'gaas_uspp'
   calculation = 'nscf'
   wf_collect = .true.
   outdir='./tmp'

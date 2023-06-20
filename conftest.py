@@ -43,9 +43,14 @@ def pytest_addoption(parser):
     parser.addoption('--devel',
                      help = 'Include the development-stage tests.',
                      action='store_true', default = False)
+
     parser.addoption('--run_qe2pert',
                      help = 'Define do you want to run qe2pert test or not',
                      action='store_true')
+                     
+    parser.addoption('--comp_yaml',
+                     help = 'Define the name of file with computational information for qe2pert computation. Should be in the folder tests_f90/comp_qe2pert',
+                     nargs="?", default='comp_qe2pert.yml')
 
 
 def pytest_generate_tests(metafunc):
@@ -93,9 +98,13 @@ def pytest_generate_tests(metafunc):
                                      metafunc.function.__name__
                                     )
         
-        if 'test_name' in metafunc.fixturenames and 'run' in metafunc.fixturenames:
+        if 'run' in metafunc.fixturenames and 'comp_yaml' not in metafunc.fixturenames:
             metafunc.parametrize('test_name', test_list, indirect=True)
             metafunc.parametrize('run', [metafunc.config.getoption('run_qe2pert')], indirect=True)
+        elif 'comp_yaml' in metafunc.fixturenames:
+            metafunc.parametrize('test_name', test_list, indirect=True)
+            metafunc.parametrize('run', [metafunc.config.getoption('run_qe2pert')], indirect=True)
+            metafunc.parametrize('comp_yaml', [metafunc.config.getoption('comp_yaml')], indirect=True)
         elif 'test_name' in metafunc.fixturenames:
             metafunc.parametrize('test_name', test_list)
         
@@ -107,4 +116,9 @@ def test_name(request):
 
 @pytest.fixture
 def run(request):
+    return request.param
+
+
+@pytest.fixture
+def comp_yaml(request):
     return request.param

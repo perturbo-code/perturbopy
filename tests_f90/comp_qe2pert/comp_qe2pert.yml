@@ -1,0 +1,11 @@
+prel_coms:
+    - module load perturbo
+    - module load qe
+comp_info:
+    scf: srun -n 64 pw.x -npools 8
+    phonon: srun -n 64 ph.x -npools 8
+    nscf: srun -n 64 pw.x -npools 8
+    wannier:
+        wannier90: srun -n 2 wannier90.x
+        pw2wannier90: srun -n 1 pw2wannier90.x
+    qe2pert: srun -n 8 /home/skliavin/qe-7.0/perturbo-dev-master/bin/qe2pert.x -npools 8

@@ -1,12 +1,12 @@
 Phonons on a uniform grid
 &inputph
   tr2_ph=1.0d-16
-  prefix='gaas'
+  prefix='gaas_uspp'
   ldisp=.true.
   epsil=.true.
   lqdir = .true.
   outdir='./tmp'
-  fildyn  = 'gaas.dyn.xml'
+  fildyn  = 'gaas_uspp.dyn.xml'
   fildvscf = 'dvscf'
   nq1=2, nq2=2, nq3=2,
   nk1=6, nk2=6, nk3=6

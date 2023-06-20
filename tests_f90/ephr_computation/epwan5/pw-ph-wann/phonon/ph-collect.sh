@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PREFIX='gaas'
+PREFIX='gaas_uspp'
 
 #should be in the work directory of PHonon calculation
 echo `pwd`
