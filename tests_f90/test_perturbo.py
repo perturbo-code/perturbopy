@@ -25,10 +25,6 @@ def test_perturbo(test_name, test_case='perturbo'):
     -----
     None
     """
-    
-    # DELETE !!!!!!!!!!!!!!
-    # if "RUN_QE2PERT_2" not in os.environ or os.environ["RUN_QE2PERT_2"]!='1':
-    #     pytest.skip("Skipping by default, set the 'RUN_QE2PERT=1' environment variable to run this test")
 
     # run test, get files paths, get comparisons settings
     (ref_outs,
