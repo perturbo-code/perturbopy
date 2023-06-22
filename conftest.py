@@ -128,10 +128,12 @@ def run(request):
 def comp_yaml(request):
     return request.param
     
+
 @pytest.fixture
 def clean_tests(request):
     return request.param
     
+
 def pytest_unconfigure(config):
     # Run your auxiliary function here
     if config.getoption('clean_tests'):

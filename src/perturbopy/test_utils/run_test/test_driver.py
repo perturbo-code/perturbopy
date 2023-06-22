@@ -483,6 +483,7 @@ def clean_test_materials(test_name, new_outs):
 
     return None
     
+
 def clean_test_folder():
     work_path = os.environ['PERTURBO_SCRATCH']
     if os.path.isdir(work_path):
