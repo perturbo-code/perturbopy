@@ -11,6 +11,7 @@ In this file (conftest.py), we parametrize pytest to make this work.
 
 from perturbopy.test_utils.run_test.run_utils import get_all_tests
 from perturbopy.test_utils.run_test.run_utils import filter_tests
+from perturbopy.test_utils.run_test.test_driver import clean_test_folder
 import pytest
 
 
@@ -45,12 +46,16 @@ def pytest_addoption(parser):
                      action='store_true', default = False)
 
     parser.addoption('--run_qe2pert',
-                     help = 'Define do you want to run qe2pert test or not',
+                     help = 'Include the qe2pert tests',
                      action='store_true')
                      
     parser.addoption('--comp_yaml',
-                     help = 'Define the name of file with computational information for qe2pert computation. Should be in the folder tests_f90/comp_qe2pert',
+                     help = 'Name of file with computational information for qe2pert computation. Should be in the folder tests_f90/comp_qe2pert',
                      nargs="?", default='comp_qe2pert.yml')
+                     
+    parser.addoption('--clean_tests',
+                     help = 'Delete all materials in the testing folder',
+                     action='store_true')
 
 
 def pytest_generate_tests(metafunc):
@@ -122,3 +127,12 @@ def run(request):
 @pytest.fixture
 def comp_yaml(request):
     return request.param
+    
+@pytest.fixture
+def clean_tests(request):
+    return request.param
+    
+def pytest_unconfigure(config):
+    # Run your auxiliary function here
+    if config.getoption('clean_tests'):
+        clean_test_folder()

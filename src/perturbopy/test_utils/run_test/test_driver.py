@@ -482,3 +482,9 @@ def clean_test_materials(test_name, new_outs):
         shutil.rmtree(work_path)
 
     return None
+    
+def clean_test_folder():
+    work_path = os.environ['PERTURBO_SCRATCH']
+    if os.path.isdir(work_path):
+        print(f'\n == Tests finished ==\n\n Removing {work_path} ...')
+        shutil.rmtree(work_path)
