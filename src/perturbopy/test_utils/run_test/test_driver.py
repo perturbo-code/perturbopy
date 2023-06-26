@@ -492,7 +492,7 @@ def clean_ephr_folders(ephr_failed):
     Parameters
     ----------
     ephr_failed : list
-        names of ephr calculations, for which we obtained errors. The 
+        names of ephr calculations, for which we obtained errors. The
         corresponding folders will be saved
 
     Returns
