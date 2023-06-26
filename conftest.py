@@ -3,7 +3,7 @@ How this works.
 
 In the tests fodler, the test_perturbo.py script runs Perturbo for
 a given 'test_name'. The idea is to use the same function (test_perturbo())
-to run all of the calc. modes, epwan files, etc. All of this should be
+to run all of the calc. modes, ephr files, etc. All of this should be
 happening under the pytest environment (ran by `pytest`).
 
 In this file (conftest.py), we parametrize pytest to make this work.
@@ -11,10 +11,10 @@ In this file (conftest.py), we parametrize pytest to make this work.
 
 from perturbopy.test_utils.run_test.run_utils import get_all_tests
 from perturbopy.test_utils.run_test.run_utils import filter_tests
-from perturbopy.test_utils.run_test.test_driver import clean_test_folder
+from perturbopy.test_utils.run_test.test_driver import clean_ephr_folders
 import pytest
 
-
+# define all supplementary arguments for the test running. This function declared in the PyTest itself
 def pytest_addoption(parser):
 
     parser.addoption('--tags',
@@ -57,7 +57,8 @@ def pytest_addoption(parser):
                      help = 'Delete all materials in the testing folder',
                      action='store_true')
 
-
+# generation of test for each type of test function. This function automatically called,
+# when we run tests from the subfolders of folder, where this function is saved.
 def pytest_generate_tests(metafunc):
     """
     The purpose of this function is to feed multiple test names to the
@@ -84,7 +85,7 @@ def pytest_generate_tests(metafunc):
             all_test_list += all_dev_test_list
 
         if (metafunc.function.__name__ == 'test_perturbo') or (metafunc.function.__name__ == 'test_perturbo_for_qe2pert'):
-        # sort out folders based on command-line options (if present)
+        # sort out test folders based on command-line options (if present)
             test_list = filter_tests(
                                      all_test_list,
                                      metafunc.config.getoption('tags'),
@@ -103,24 +104,25 @@ def pytest_generate_tests(metafunc):
                                      metafunc.function.__name__
                                     )
         
-        if 'run' in metafunc.fixturenames and 'comp_yaml' not in metafunc.fixturenames:
+        if metafunc.function.__name__ == 'test_perturbo_for_qe2pert':
             metafunc.parametrize('test_name', test_list, indirect=True)
-            metafunc.parametrize('run', [metafunc.config.getoption('run_qe2pert')], indirect=True)
-        elif 'comp_yaml' in metafunc.fixturenames:
+            metafunc.parametrize('run_qe2pert', [metafunc.config.getoption('run_qe2pert')], indirect=True)
+        elif metafunc.function.__name__ == 'test_qe2pert':
             metafunc.parametrize('test_name', test_list, indirect=True)
-            metafunc.parametrize('run', [metafunc.config.getoption('run_qe2pert')], indirect=True)
+            metafunc.parametrize('run_qe2pert', [metafunc.config.getoption('run_qe2pert')], indirect=True)
             metafunc.parametrize('comp_yaml', [metafunc.config.getoption('comp_yaml')], indirect=True)
-        elif 'test_name' in metafunc.fixturenames:
+        elif metafunc.function.__name__ == 'test_perturbo':
             metafunc.parametrize('test_name', test_list)
         
-
+# in order to properly run pytest functions, we need to declare fixtures, 
+# which allow us to use parametrization of test functions 
 @pytest.fixture
 def test_name(request):
     return request.param
     
 
 @pytest.fixture
-def run(request):
+def run_qe2pert(request):
     return request.param
 
 
@@ -133,8 +135,26 @@ def comp_yaml(request):
 def clean_tests(request):
     return request.param
     
+# # this is predefined function of PyTest, which is runned after the end of all tests
+# def pytest_unconfigure(config):
+#     # Run your auxiliary function here
+#     if config.getoption('clean_tests'):
+#         clean_test_folder()
+        
 
-def pytest_unconfigure(config):
-    # Run your auxiliary function here
-    if config.getoption('clean_tests'):
-        clean_test_folder()
+# this is predefined function of PyTest, which is runned after the end of all tests.
+# here we delete all ephr-folders, for which all tests were passed     
+def pytest_terminal_summary(terminalreporter, exitstatus, config):
+    if config.getoption('run_qe2pert') and config.getoption('clean_tests'):
+        if exitstatus == 0:
+            # delete all ephr files
+            clean_ephr_folders([])
+        else:
+            failed_reports = terminalreporter.getreports('failed')
+            # Process the list of failed test reports as needed
+            ephr_failed = set()
+            for report in failed_reports:
+                # obtain ephr-name of failed test
+                ephr_failed.add(report.nodeid.split("[")[1].rstrip("]").split('-')[0])
+    
+            clean_ephr_folders([list(ephr_failed)])

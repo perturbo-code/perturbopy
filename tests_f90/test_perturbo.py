@@ -48,7 +48,7 @@ def test_perturbo(test_name, test_case='perturbo'):
     print('')
     
     
-def test_qe2pert(test_name, run, comp_yaml):
+def test_qe2pert(test_name, run_qe2pert, comp_yaml):
     """
     Driver to run the the qe2pert set of computations.
 
@@ -56,7 +56,7 @@ def test_qe2pert(test_name, run, comp_yaml):
     -----
         test_name : str
             name of the computing ephr-file
-        run : str
+        run_qe2pert : str
             do we run qe2pert testing or not
         comp_yaml : str
             name of file with computational information, which we'll use in this set of computations.
@@ -66,14 +66,14 @@ def test_qe2pert(test_name, run, comp_yaml):
     -----
     None
     """
-    if not run:
+    if not run_qe2pert:
         pytest.skip("Skipping by default, pass the --run_qe2pert arg in the command line for this test")
     run_ephr_calculation(test_name, comp_yaml)
     assert True
     
 
 @pytest.mark.order(after="test_qe2pert")
-def test_perturbo_for_qe2pert(test_name, run):
+def test_perturbo_for_qe2pert(test_name, run_qe2pert):
     """
     Second driver to run the tests for the perturbo.x executable.
     We call it only in the case if we call test_qe2pert as well
@@ -82,13 +82,13 @@ def test_perturbo_for_qe2pert(test_name, run):
     -----
         test_name : str
             name of the folder inside the tests/ folder
-        run : str
+        run_qe2pert : str
             do we run qe2pert testing or not
     Returns
     -----
     None
     """
-    if not run:
+    if not run_qe2pert:
         pytest.skip("Skipping by default, pass the --run_qe2pert arg in the command line for this test")
     test_perturbo(test_name,test_case='qe2pert')
     

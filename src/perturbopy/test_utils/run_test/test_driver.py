@@ -1,6 +1,7 @@
 """
    Run an executable for the testsuite.
 """
+import numpy as np
 import os
 import sys
 import shlex
@@ -484,8 +485,27 @@ def clean_test_materials(test_name, new_outs):
     return None
     
 
-def clean_test_folder():
+def clean_ephr_folders(ephr_failed):
+    """
+    Delete all temporary ephr folders for the tests which were passed
+
+    Parameters
+    ----------
+    ephr_failed : list
+        names of ephr calculations, for which we obtained errors. The 
+        corresponding folders will be saved
+
+    Returns
+    -----
+    None
+
+    """
     work_path = os.environ['PERTURBO_SCRATCH']
-    if os.path.isdir(work_path):
-        print(f'\n == Tests finished ==\n\n Removing {work_path} ...')
-        shutil.rmtree(work_path)
+    ephr_dict_path = 'epwan_info.yml'
+    ephr_full_list = [ephr for ephr in open_yaml(ephr_dict_path)]
+    deleting_ephr = np.setdiff1d(ephr_full_list, ephr_failed)
+    for ephr in deleting_ephr:
+        del_dir = os.path.join(work_path, ephr)
+        if os.path.isdir(del_dir):
+            print(f'\n == Tests finished ==\n\n Removing {del_dir} ...')
+            shutil.rmtree(del_dir)
