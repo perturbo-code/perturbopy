@@ -114,8 +114,8 @@ def pytest_generate_tests(metafunc):
         elif metafunc.function.__name__ == 'test_perturbo':
             metafunc.parametrize('test_name', test_list)
         
-# in order to properly run pytest functions, we need to declare fixtures, 
-# which allow us to use parametrization of test functions 
+# in order to properly run pytest functions, we need to declare fixtures,
+# which allow us to use parametrization of test functions
 @pytest.fixture
 def test_name(request):
     return request.param
@@ -143,7 +143,7 @@ def clean_tests(request):
         
 
 # this is predefined function of PyTest, which is runned after the end of all tests.
-# here we delete all ephr-folders, for which all tests were passed     
+# here we delete all ephr-folders, for which all tests were passed
 def pytest_terminal_summary(terminalreporter, exitstatus, config):
     if config.getoption('run_qe2pert') and config.getoption('clean_tests'):
         if exitstatus == 0:
