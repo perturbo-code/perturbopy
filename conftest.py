@@ -15,6 +15,8 @@ from perturbopy.test_utils.run_test.test_driver import clean_ephr_folders
 import pytest
 
 # define all supplementary arguments for the test running. This function declared in the PyTest itself
+
+
 def pytest_addoption(parser):
 
     parser.addoption('--tags',
@@ -59,6 +61,8 @@ def pytest_addoption(parser):
 
 # generation of test for each type of test function. This function automatically called,
 # when we run tests from the subfolders of folder, where this function is saved.
+
+
 def pytest_generate_tests(metafunc):
     """
     The purpose of this function is to feed multiple test names to the
@@ -116,6 +120,8 @@ def pytest_generate_tests(metafunc):
         
 # in order to properly run pytest functions, we need to declare fixtures,
 # which allow us to use parametrization of test functions
+
+
 @pytest.fixture
 def test_name(request):
     return request.param

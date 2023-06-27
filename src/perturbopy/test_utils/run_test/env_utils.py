@@ -38,6 +38,7 @@ def perturbo_run_from_env():
 
     return perturbo_run
     
+
 def create_soft_links(src, dst):
     """
     Create a new folder dst with the same structure as src and files-softlinks
@@ -112,10 +113,8 @@ def perturbo_scratch_dir_from_env(cwd, perturbo_inputs_dir_path, test_name, test
     if os.path.isdir(dst):
         print(f'\n directory {dst} exists. Removing this directory ...\n')
         shutil.rmtree(dst)
-        #shutil.copytree(src, dst)
         create_soft_links(src, dst)
     else:
-        #shutil.copytree(src, dst)
         create_soft_links(src, dst)
     if test_case == 'qe2pert':
         ephr_name = test_name[:test_name.find('-')]
@@ -139,5 +138,4 @@ def perturbo_scratch_dir_from_env(cwd, perturbo_inputs_dir_path, test_name, test
         if not succesfull_copy:
             raise ValueError(f"Ephr-file for {test_name} wasn't calculated")
                 
-
     return perturbo_scratch_dir
