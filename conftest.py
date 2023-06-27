@@ -157,4 +157,4 @@ def pytest_terminal_summary(terminalreporter, exitstatus, config):
                 # obtain ephr-name of failed test
                 ephr_failed.add(report.nodeid.split("[")[1].rstrip("]").split('-')[0])
     
-            clean_ephr_folders([list(ephr_failed)])
+            clean_ephr_folders(list(ephr_failed))

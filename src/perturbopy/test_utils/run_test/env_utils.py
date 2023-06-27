@@ -37,6 +37,32 @@ def perturbo_run_from_env():
         raise EnvironmentError(errmsg)
 
     return perturbo_run
+    
+def create_soft_links(src, dst):
+    """
+    Create a new folder dst with the same structure as src and files-softlinks
+    from src
+
+    Parameters
+    ----------
+    src : str
+        source folder, which will be copied and softlinked
+    dst : str
+        destination folder, which will be created and where the softlinks wiil be placed
+    Returns
+    -------
+    perturbo_run : str
+       string containing a command to run Perturbo
+
+    """
+    os.makedirs(dst, exist_ok=True)
+
+    for root, dirs, files in os.walk(src):
+        for file in files:
+            src_file = os.path.abspath(os.path.join(root, file))
+            dst_file = os.path.abspath(os.path.join(dst, os.path.relpath(src_file, src)))
+            os.makedirs(os.path.dirname(dst_file), exist_ok=True)
+            os.symlink(src_file, dst_file)
 
 
 def perturbo_scratch_dir_from_env(cwd, perturbo_inputs_dir_path, test_name, test_case='perturbo', rm_preexist_dir=True):
@@ -86,19 +112,32 @@ def perturbo_scratch_dir_from_env(cwd, perturbo_inputs_dir_path, test_name, test
     if os.path.isdir(dst):
         print(f'\n directory {dst} exists. Removing this directory ...\n')
         shutil.rmtree(dst)
-        shutil.copytree(src, dst)
+        #shutil.copytree(src, dst)
+        create_soft_links(src, dst)
     else:
-        shutil.copytree(src, dst)
+        #shutil.copytree(src, dst)
+        create_soft_links(src, dst)
     if test_case == 'qe2pert':
-        eph5_name = test_name[:test_name.find('-')]
-        yaml_address = f"{perturbo_scratch_dir_prefix}/{eph5_name}"
-        file_list = os.listdir(yaml_address)
+        ephr_name = test_name[:test_name.find('-')]
+        ephr_address = os.path.join(perturbo_scratch_dir_prefix, ephr_name, 'qe2pert')
+        file_list = os.listdir(dst)
+        for file_name in file_list:
+            # Delete previously copied ephr-file
+            if file_name.endswith('epwan.h5'):
+                os.remove(os.path.join(dst, file_name))
+        
+        file_list = os.listdir(ephr_address)
+        succesfull_copy = False
         for file_name in file_list:
             # Check if the file has the desired format (.h5)
-            if file_name.endswith('.h5'):
+            if file_name.endswith('epwan.h5'):
                 # copy from our previous computation to the current computation folder
-                source = os.path.join(yaml_address, file_name)
-                destination = os.path.join(dst, file_name)
-                shutil.copy2(source, destination)
+                source = os.path.abspath(os.path.join(ephr_address, file_name))
+                destination = os.path.abspath(os.path.join(dst, file_name))
+                os.symlink(source, destination)
+                succesfull_copy = True
+        if not succesfull_copy:
+            raise ValueError(f"Ephr-file for {test_name} wasn't calculated")
+                
 
     return perturbo_scratch_dir

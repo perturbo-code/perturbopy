@@ -503,9 +503,10 @@ def clean_ephr_folders(ephr_failed):
     work_path = os.environ['PERTURBO_SCRATCH']
     ephr_dict_path = 'epwan_info.yml'
     ephr_full_list = [ephr for ephr in open_yaml(ephr_dict_path)]
-    deleting_ephr = np.setdiff1d(ephr_full_list, ephr_failed)
+    deleting_ephr = list(set(ephr_full_list) - set(ephr_failed))
+    print(f'\n == Tests finished ==\n\n')
     for ephr in deleting_ephr:
         del_dir = os.path.join(work_path, ephr)
         if os.path.isdir(del_dir):
-            print(f'\n == Tests finished ==\n\n Removing {del_dir} ...')
+            print(f'Removing {del_dir} ... \n')
             shutil.rmtree(del_dir)
