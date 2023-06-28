@@ -519,7 +519,7 @@ def clean_ephr_folders(ephr_failed, config_machine):
     try:
         work_path    = config_machine['PSCRATCH']
     except KeyError:
-        print(f'PSCRATCH not set in the config_machine. using default location of {perturbo_scratch_dir_prefix}') 
+        print(f'PSCRATCH not set in the config_machine. using default location of {work_path}')
     ephr_dict_path = 'epwan_info.yml'
     ephr_full_list = [ephr for ephr in open_yaml(ephr_dict_path)]
     deleting_ephr = list(set(ephr_full_list) - set(ephr_failed))
