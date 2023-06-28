@@ -48,7 +48,7 @@ def test_perturbo(test_name, test_case='perturbo'):
     print('')
     
     
-def test_qe2pert(test_name, run_qe2pert, comp_yaml):
+def test_qe2pert(test_name, run_qe2pert, config_machine):
     """
     Driver to run the the qe2pert set of computations.
 
@@ -58,7 +58,7 @@ def test_qe2pert(test_name, run_qe2pert, comp_yaml):
             name of the computing ephr-file
         run_qe2pert : str
             do we run qe2pert testing or not
-        comp_yaml : str
+        config_machine : str
             name of file with computational information, which we'll use in this set of computations.
             Should be in folder tests_f90/comp_qe2pert
 
@@ -68,7 +68,7 @@ def test_qe2pert(test_name, run_qe2pert, comp_yaml):
     """
     if not run_qe2pert:
         pytest.skip("Skipping by default, pass the --run_qe2pert arg in the command line for this test")
-    run_ephr_calculation(test_name, comp_yaml)
+    run_ephr_calculation(test_name, config_machine)
     assert True
     
 

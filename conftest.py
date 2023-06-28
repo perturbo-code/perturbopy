@@ -51,9 +51,9 @@ def pytest_addoption(parser):
                      help = 'Include the qe2pert tests',
                      action='store_true')
                      
-    parser.addoption('--comp_yaml',
+    parser.addoption('--config_machine',
                      help = 'Name of file with computational information for qe2pert computation. Should be in the folder tests_f90/comp_qe2pert',
-                     nargs="?", default='comp_qe2pert.yml')
+                     nargs="?", default='config_machine.yml')
                      
     parser.addoption('--clean_tests',
                      help = 'Delete all materials in the testing folder',
@@ -114,7 +114,7 @@ def pytest_generate_tests(metafunc):
         elif metafunc.function.__name__ == 'test_qe2pert':
             metafunc.parametrize('test_name', test_list, indirect=True)
             metafunc.parametrize('run_qe2pert', [metafunc.config.getoption('run_qe2pert')], indirect=True)
-            metafunc.parametrize('comp_yaml', [metafunc.config.getoption('comp_yaml')], indirect=True)
+            metafunc.parametrize('config_machine', [metafunc.config.getoption('config_machine')], indirect=True)
         elif metafunc.function.__name__ == 'test_perturbo':
             metafunc.parametrize('test_name', test_list)
         
@@ -133,7 +133,7 @@ def run_qe2pert(request):
 
 
 @pytest.fixture
-def comp_yaml(request):
+def config_machine(request):
     return request.param
     
 
