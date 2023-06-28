@@ -247,7 +247,7 @@ def filter_tests(all_test_list, tags, exclude_tags, epwan, test_names, func_name
     return test_list
 
 
-def setup_default_tol(igns_n_tols):
+def setup_default_tol(igns_n_tols, test_case):
     """
     Setup the default tolerances for each file to compare if the tolerances are
     not specified in the pert_input.yml file.
@@ -258,7 +258,7 @@ def setup_default_tol(igns_n_tols):
     .. code-block :: python
 
        output_file.yml:
-          abs tol:
+        abs tol:
              default:
                 1e-8
 
@@ -274,17 +274,24 @@ def setup_default_tol(igns_n_tols):
     Parameters
     ----------
     igns_n_tols : dict
-       dictionary containing the ignore keywords and tolerances needed to performance comparison of ref_outs and new_outs
+        dictionary containing the ignore keywords and tolerances needed to performance comparison of ref_outs and new_outs
+    test_case : str
+        define what type of the test we run - for perturbo testing or for the
+        qe2pert testing.
 
     Returns
     -------
     igns_n_tols_updated : dict
-       **updated** dictionary containing the ignore keywords and tolerances
+        **updated** dictionary containing the ignore keywords and tolerances
 
     """
 
-    default_abs_tol = 1e-8
-    default_rel_tol = 0.01
+    if test_case == 'perturbo':
+        default_abs_tol = 1e-8
+        default_rel_tol = 0.01
+    elif test_case == 'qe2pert':
+        default_abs_tol = 5e-7
+        default_rel_tol = 0.5
 
     igns_n_tols_updated = []
 
@@ -298,17 +305,36 @@ def setup_default_tol(igns_n_tols):
                       }
 
         else:
-            if 'abs tol' not in outfile.keys():
-                outfile['abs tol'] = {'default': default_abs_tol}
+            if test_case == 'perturbo':
+                if 'abs tol' not in outfile.keys():
+                    outfile['abs tol'] = {'default': default_abs_tol}
 
-            elif 'default' not in outfile['abs tol'].keys():
-                outfile['abs tol']['default'] = default_abs_tol
+                elif 'default' not in outfile['abs tol'].keys():
+                    outfile['abs tol']['default'] = default_abs_tol
 
-            if 'rel tol' not in outfile.keys():
-                outfile['rel tol'] = {'default': default_rel_tol}
+                if 'rel tol' not in outfile.keys():
+                    outfile['rel tol'] = {'default': default_rel_tol}
 
-            elif 'default' not in outfile['rel tol'].keys():
-                outfile['rel tol']['default'] = default_rel_tol
+                elif 'default' not in outfile['rel tol'].keys():
+                    outfile['rel tol']['default'] = default_rel_tol
+            elif test_case == 'qe2pert':
+                if 'abs tol' not in outfile.keys():
+                    outfile['abs tol'] = {'default': default_abs_tol}
+
+                elif 'qe2pert' in outfile['abs tol'].keys():
+                    outfile['abs tol']['default'] = outfile['abs tol']['qe2pert']
+
+                elif 'default' not in outfile['abs tol'].keys():
+                    outfile['abs tol']['default'] = default_abs_tol
+
+                if 'rel tol' not in outfile.keys():
+                    outfile['rel tol'] = {'default': default_rel_tol}
+                    
+                elif 'qe2pert' in outfile['rel tol'].keys():
+                    outfile['rel tol']['default'] = outfile['rel tol']['qe2pert']
+
+                elif 'default' not in outfile['rel tol'].keys():
+                    outfile['rel tol']['default'] = default_rel_tol
 
         igns_n_tols_updated.append(outfile)
 

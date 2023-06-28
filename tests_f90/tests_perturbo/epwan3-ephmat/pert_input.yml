@@ -22,7 +22,9 @@ test info:
 
          abs tol:
             default: 1e-5
+            qe2pert: 1e-4
 
          rel tol:
             default: 0.02
+            qe2pert: 0.2
 

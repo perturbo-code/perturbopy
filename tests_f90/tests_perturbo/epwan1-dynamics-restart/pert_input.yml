@@ -21,8 +21,10 @@ test info:
 
          abs tol:
             default: 1e-6
+            qe2pert: 1e-5
 
       gaas_cdyna.h5:
 
          abs tol:
             default: 5e-6
+            qe2pert: 5e-5

@@ -393,7 +393,7 @@ def get_test_materials(test_name, test_case, config_machine):
     # tolerances (information about how to compare outputs)
     igns_n_tols = [test_files[out_file] for out_file in out_files]
 
-    igns_n_tols = setup_default_tol(igns_n_tols)
+    igns_n_tols = setup_default_tol(igns_n_tols, test_case)
 
     return (ref_outs,
             new_outs,
