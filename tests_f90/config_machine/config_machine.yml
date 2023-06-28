@@ -1,3 +1,4 @@
+PSCRATCH: tmp
 prel_coms:
     - module load perturbo
     - module load qe
@@ -17,3 +18,5 @@ comp_info:
             - export OMP_NUM_THREADS=8
             - qe2pert=/home/skliavin/qe-7.0/perturbo-dev-master/bin/qe2pert.x
         exec: srun -n 8 $qe2pert -npools 8
+    perturbo:
+        exec: srun -n 8 perturbo.x -npools 8

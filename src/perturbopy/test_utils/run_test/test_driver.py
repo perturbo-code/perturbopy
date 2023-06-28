@@ -8,13 +8,13 @@ import shlex
 import shutil
 import subprocess
 from perturbopy.io_utils.io import open_yaml
-from perturbopy.test_utils.run_test.env_utils import perturbo_run_from_env
-from perturbopy.test_utils.run_test.env_utils import perturbo_scratch_dir_from_env
+from perturbopy.test_utils.run_test.env_utils import run_from_config_machine
+from perturbopy.test_utils.run_test.env_utils import perturbo_scratch_dir_config
 from perturbopy.test_utils.run_test.run_utils import print_test_info
 from perturbopy.test_utils.run_test.run_utils import setup_default_tol
 
 
-def run_perturbo(cwd, perturbo_driver_dir_path,
+def run_perturbo(cwd, perturbo_driver_dir_path, config_machine,
                  input_name='pert.in', output_name='pert.out'):
     """
     Function to run Perturbo and produce output files
@@ -28,13 +28,15 @@ def run_perturbo(cwd, perturbo_driver_dir_path,
     Parameters
     ----------
     cwd : str
-       path of current working directory
+        path of current working directory
     perturbo_driver_dir_path : str
-       path to dir with pert.in file
+        path to dir with pert.in file
+    config_machine : dict
+        dictionary with computational information, which we'll use in this set of computations.
     input_name : str, optional
-       name of the input file, default: 'pert.in'
+        name of the input file, default: 'pert.in'
     output_name : str, optional
-       name of the output file, default: 'pert.out'
+        name of the output file, default: 'pert.out'
 
     Returns
     -------
@@ -42,18 +44,18 @@ def run_perturbo(cwd, perturbo_driver_dir_path,
 
     """
 
-    perturbo_run = perturbo_run_from_env()
+    command = run_from_config_machine(config_machine, 'perturbo')
 
-    perturbo_run = f'{perturbo_run} -i {input_name} | tee {output_name}'
+    run = f'{command} -i {input_name} | tee {output_name}'
 
     os.chdir(perturbo_driver_dir_path)
 
     print(f'\n ====== Path ======= :\n {os.getcwd()}\n')
 
-    print(f' === Running Perturbo === :\n {perturbo_run}')
+    print(f' === Running Perturbo === :\n {run}')
     sys.stdout.flush()
 
-    subprocess.run(shlex.split(perturbo_run))
+    subprocess.run(preliminary_commands(config_machine, 'scf') + run, shell=True)
 
     os.chdir(cwd)
     
@@ -108,7 +110,7 @@ def run_scf(cwd, work_path, config_machine, input_name='scf.in', output_name='sc
 
     """
 
-    command = config_machine['comp_info']['scf']['exec']
+    command = run_from_config_machine(config_machine, 'scf')
     run = f'{command} -i {input_name} | tee {output_name}'
 
     os.chdir(f'{work_path}/pw-ph-wann/scf/')
@@ -146,7 +148,7 @@ def run_phonon(cwd, work_path, config_machine, input_name='ph.in', output_name='
 
     """
 
-    command = config_machine['comp_info']['phonon']['exec']
+    command = run_from_config_machine(config_machine, 'phonon')
     run = f'{command} -i {input_name} | tee {output_name}'
 
     os.chdir(f'{work_path}/pw-ph-wann/phonon/')
@@ -193,7 +195,7 @@ def run_nscf(cwd, work_path, config_machine, input_name='nscf.in', output_name='
 
     """
 
-    command = config_machine['comp_info']['nscf']['exec']
+    command = run_from_config_machine(config_machine, 'nscf')
     run = f'{command} -i {input_name} | tee {output_name}'
 
     os.chdir(f'{work_path}/pw-ph-wann/nscf/')
@@ -236,7 +238,7 @@ def run_wannier(cwd, work_path, config_machine, prefix, input_name='pw2wan.in', 
 
     """
 
-    command = config_machine['comp_info']['wannier90']['exec']
+    command = run_from_config_machine(config_machine, 'wannier90')
     run = f'{command} -pp {prefix}'
     
     # link the save-file from scf calculation
@@ -254,14 +256,14 @@ def run_wannier(cwd, work_path, config_machine, prefix, input_name='pw2wan.in', 
     subprocess.run(preliminary_commands(config_machine, 'wannier90') + run, shell=True)
     
     # run of pw2wan
-    command = config_machine['comp_info']['pw2wannier90']['exec']
+    command = run_from_config_machine(config_machine, 'pw2wannier90')
     run = f'{command} -i {input_name} | tee {output_name}'
     print(f' = Running pw2wan = :\n {run}')
     sys.stdout.flush()
     subprocess.run(preliminary_commands(config_machine, 'pw2wannier90') + run, shell=True)
     
     # second run of wannier90
-    command = config_machine['comp_info']['wannier90']['exec']
+    command = run_from_config_machine(config_machine, 'wannier90')
     run = f'{command} {prefix}'
     print(f' = Running Wannier= :\n {run}')
     sys.stdout.flush()
@@ -295,7 +297,7 @@ def run_qe2pert(cwd, work_path, config_machine, prefix, input_name='qe2pert.in',
 
     """
 
-    command = config_machine['comp_info']['qe2pert']['exec']
+    command = run_from_config_machine(config_machine, 'qe2pert')
     run = f'{command} -i {input_name} | tee {output_name}'
 
     # link the save-file from scf calculation
@@ -330,7 +332,7 @@ def run_qe2pert(cwd, work_path, config_machine, prefix, input_name='qe2pert.in',
     os.chdir(cwd)
 
 
-def get_test_materials(test_name, test_case):
+def get_test_materials(test_name, test_case, config_machine):
     """
     Run one test:
        #. run perturbo.x to produce output files
@@ -344,6 +346,9 @@ def get_test_materials(test_name, test_case):
     test_case : str
         define what type of the test we run - for perturbo testing or for the
         qe2pert testing.
+    config_machine : str
+        name of file with computational information, which we'll use in this set of computations.
+        Should be in folder tests_f90/config_machine
 
     Returns
     -----
@@ -360,10 +365,11 @@ def get_test_materials(test_name, test_case):
     ref_data_path_suffix = 'refs_perturbo/' + test_name
 
     cwd = os.getcwd()
+    config_machine = open_yaml(f'{cwd}/config_machine/{config_machine}')
 
     # determine needed paths
     perturbo_inputs_dir_path = [x[0] for x in os.walk(cwd) if x[0].endswith(inputs_path_suffix)][0]
-    work_path                = perturbo_scratch_dir_from_env(cwd, perturbo_inputs_dir_path, test_name, test_case)
+    work_path                = perturbo_scratch_dir_config(cwd, perturbo_inputs_dir_path, test_name, config_machine, test_case)
     ref_path                 = [x[0] for x in os.walk(cwd) if x[0].endswith(ref_data_path_suffix)][0]
 
     # input yaml for perturbo job
@@ -377,17 +383,11 @@ def get_test_materials(test_name, test_case):
     # list of full paths to new outputs
     new_outs    = [work_path + '/' + out_file for out_file in out_files]
 
-    # remove outputs if they already exist
-    # WARNING: the output files can sometimes serve as inputs
-    # for out_file in new_outs:
-    #    if os.path.exists(out_file):
-    #       os.remove(out_file)
-
     # print the test information before the run
     print_test_info(test_name, pert_input, test_type='perturbo')
 
     # run Perturbo to produce outputs
-    run_perturbo(cwd, work_path)
+    run_perturbo(cwd, work_path, config_machine)
 
     # list of dict. Each dict contains ignore keywords and
     # tolerances (information about how to compare outputs)
@@ -422,19 +422,17 @@ def run_ephr_calculation(ephr_name, config_machine):
     None
     """
     # suffixes of paths needed to find driver/utils/references
-    inputs_path_suffix = f'ephr_computation/{ephr_name}'
-
     cwd = os.getcwd()
+    inputs_path_suffix = f'ephr_computation/{ephr_name}'
+    config_machine = open_yaml(f'{cwd}/config_machine/{config_machine}')
 
     # determine needed paths
     inputs_dir_path = f'{cwd}/{inputs_path_suffix}/'
-    work_path = perturbo_scratch_dir_from_env(cwd, inputs_dir_path, ephr_name)
+    work_path = perturbo_scratch_dir_config(cwd, inputs_dir_path, ephr_name, config_machine)
     
     # open input yaml-files with supplementary info
     # and computational commands
-    yaml_prefix = cwd
-    input_yaml = open_yaml(f'{yaml_prefix}/epwan_info.yml')
-    config_machine = open_yaml(f'{yaml_prefix}/config_machine/{config_machine}')
+    input_yaml = open_yaml(f'{cwd}/epwan_info.yml')
 
     # print the test information before the run
     print_test_info(ephr_name, input_yaml, test_type='qe2pert')
@@ -460,7 +458,7 @@ def run_ephr_calculation(ephr_name, config_machine):
     return
 
 
-def clean_test_materials(test_name, new_outs):
+def clean_test_materials(test_name, new_outs, config_machine):
     """
     clean one test:
        #. removes new files and dirs produced by test
@@ -471,6 +469,8 @@ def clean_test_materials(test_name, new_outs):
        name of test
     new_outs : list
        list of paths to produced outputs
+    config_machine : dict
+        dictionary with computational information, which we'll use in this set of computations.
 
     Returns
     -----
@@ -481,10 +481,11 @@ def clean_test_materials(test_name, new_outs):
     inputs_path_suffix = 'tests_perturbo/' + test_name
 
     cwd = os.getcwd()
+    config_machine = open_yaml(f'{cwd}/config_machine/{config_machine}')
 
     # determine paths
     perturbo_inputs_dir_path = [x[0] for x in os.walk(cwd) if x[0].endswith(inputs_path_suffix)][0]
-    work_path                = perturbo_scratch_dir_from_env(cwd, perturbo_inputs_dir_path, test_name, rm_preexist_dir=False)
+    work_path                = perturbo_scratch_dir_config(cwd, perturbo_inputs_dir_path, test_name, config_machine, rm_preexist_dir=False)
 
     if os.path.isdir(work_path):
         print(f'\n === Test {test_name} passed ===\n\n Removing {work_path} ...')
@@ -493,7 +494,7 @@ def clean_test_materials(test_name, new_outs):
     return None
     
 
-def clean_ephr_folders(ephr_failed):
+def clean_ephr_folders(ephr_failed, config_machine):
     """
     Delete all temporary ephr folders for the tests which were passed
 
@@ -502,13 +503,23 @@ def clean_ephr_folders(ephr_failed):
     ephr_failed : list
         names of ephr calculations, for which we obtained errors. The
         corresponding folders will be saved
+    
+    config_machine : dict
+        dictionary with computational information, which we'll use in this set of computations.
 
     Returns
     -----
     None
 
     """
-    work_path = os.environ['PERTURBO_SCRATCH']
+    cwd = os.getcwd()
+    config_machine = open_yaml(f'{cwd}/config_machine/{config_machine}')
+
+    work_path   = cwd + "/PSCRATCH"
+    try:
+        work_path    = config_machine['PSCRATCH']
+    except KeyError:
+        print(f'PSCRATCH not set in the config_machine. using default location of {perturbo_scratch_dir_prefix}') 
     ephr_dict_path = 'epwan_info.yml'
     ephr_full_list = [ephr for ephr in open_yaml(ephr_dict_path)]
     deleting_ephr = list(set(ephr_full_list) - set(ephr_failed))

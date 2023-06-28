@@ -108,15 +108,13 @@ def pytest_generate_tests(metafunc):
                                      metafunc.function.__name__
                                     )
         
-        if metafunc.function.__name__ == 'test_perturbo_for_qe2pert':
-            metafunc.parametrize('test_name', test_list, indirect=True)
-            metafunc.parametrize('run_qe2pert', [metafunc.config.getoption('run_qe2pert')], indirect=True)
-        elif metafunc.function.__name__ == 'test_qe2pert':
+        if metafunc.function.__name__ == 'test_perturbo_for_qe2pert' or metafunc.function.__name__ == 'test_qe2pert':
             metafunc.parametrize('test_name', test_list, indirect=True)
             metafunc.parametrize('run_qe2pert', [metafunc.config.getoption('run_qe2pert')], indirect=True)
             metafunc.parametrize('config_machine', [metafunc.config.getoption('config_machine')], indirect=True)
         elif metafunc.function.__name__ == 'test_perturbo':
-            metafunc.parametrize('test_name', test_list)
+            metafunc.parametrize('test_name', test_list, indirect=True)
+            metafunc.parametrize('config_machine', [metafunc.config.getoption('config_machine')], indirect=True)
         
 # in order to properly run pytest functions, we need to declare fixtures,
 # which allow us to use parametrization of test functions
@@ -154,7 +152,7 @@ def pytest_terminal_summary(terminalreporter, exitstatus, config):
     if config.getoption('run_qe2pert') and config.getoption('clean_tests'):
         if exitstatus == 0:
             # delete all ephr files
-            clean_ephr_folders([])
+            clean_ephr_folders([], config.getoption('config_machine'))
         else:
             failed_reports = terminalreporter.getreports('failed')
             # Process the list of failed test reports as needed
@@ -163,4 +161,4 @@ def pytest_terminal_summary(terminalreporter, exitstatus, config):
                 # obtain ephr-name of failed test
                 ephr_failed.add(report.nodeid.split("[")[1].rstrip("]").split('-')[0])
     
-            clean_ephr_folders(list(ephr_failed))
+            clean_ephr_folders(list(ephr_failed), config.getoption('config_machine'))

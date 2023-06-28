@@ -5,38 +5,29 @@ import os
 import shutil
 
 
-def perturbo_run_from_env():
+def run_from_config_machine(config_machine, step):
     """
-    Check if the PERTURBO_RUN variable is present among the environment variables
-    and read its value.
-
-    Examples to set the PERTURBO_RUN variable:
-
-    >>> export PERTURBO_RUN='mpirun -np 4 <path>/perturbo.x -npools 4'
-
-    or
-
-    >>> export PERTURBO_RUN='srun -n 4 <path>/perturbo.x -npools 4'
+    Check if the executional command defined for the step of computation
 
     Returns
     -------
-    perturbo_run : str
-       string containing a command to run Perturbo
+    run : str
+       string containing a command to run this step
 
     """
 
     # Read the perturbo_run variable from the environment
     try:
-        perturbo_run = os.environ['PERTURBO_RUN']
+        run = config_machine['comp_info'][step]['exec']
     except KeyError:
-        errmsg = ('To run Perturbo in the testsuite,\n'
-                  'the PERTURBO_RUN environmental variable must be set.\n'
+        errmsg = (f'To run {step} as a part of the testsuite,\n'
+                  'the exec element must be set in the configurational file.\n'
                   'Example:\n'
-                  'export PERTURBO_RUN="mpirun -np 4 <path>/perturbo.x -npools 4"'
+                  'exec: srun -n 64 pw.x -npools 8"'
                  )
-        raise EnvironmentError(errmsg)
+        raise AttributeError(errmsg)
 
-    return perturbo_run
+    return run
     
 
 def create_soft_links(src, dst):
@@ -66,23 +57,21 @@ def create_soft_links(src, dst):
             os.symlink(src_file, dst_file)
 
 
-def perturbo_scratch_dir_from_env(cwd, perturbo_inputs_dir_path, test_name, test_case='perturbo', rm_preexist_dir=True):
+def perturbo_scratch_dir_config(cwd, perturbo_inputs_dir_path, test_name, config_machine, test_case='perturbo', rm_preexist_dir=True):
     """
-    Check if the PERTURBO_SCRATCH variable is present among the environment variables
-    and read its value. If not present use default path setup in present in package
-
-    Example to set the PERTURBO_SCRATCH variable:
-
-    >>> export PERTURBO_SCRATCH='m/global/cscratch'
+    Check if the PERTURBO_SCRATCH variable is written in the config_machine file.
+    If not - use default location "/PSCRATCH"
 
     Parameters
     ----------
     cwd : str
-        path to cwd which should be .../perturbopy/tests
+        path to cwd which should be .../perturbopy/tests_f90
     perturbo_inputs_dir_path : str
         folder with all input files for the test
     test_name : str
         name of test
+    config_machine : dict
+        dictionary with computational information, which we'll use in this set of computations.
     test_case : str
         define what type of the test we run - for perturbo testing or for the
         qe2pert testing.
@@ -97,11 +86,11 @@ def perturbo_scratch_dir_from_env(cwd, perturbo_inputs_dir_path, test_name, test
 
     """
     # Read the perturbo_run variable from the environment
-    perturbo_scratch_dir_prefix   = cwd + "/PERTURBO_SCRATCH"
+    perturbo_scratch_dir_prefix   = cwd + "/PSCRATCH"
     try:
-        perturbo_scratch_dir_prefix    = os.environ['PERTURBO_SCRATCH']
+        perturbo_scratch_dir_prefix    = config_machine['PSCRATCH']
     except KeyError:
-        print(f'env var PERTURBO_SCRATCH not set. using default location of {perturbo_scratch_dir_prefix}')
+        print(f'PSCRATCH not set in the config_machine. using default location of {perturbo_scratch_dir_prefix}')
 
     perturbo_scratch_dir = perturbo_scratch_dir_prefix + f'/{test_name}'
     if not rm_preexist_dir:

@@ -9,7 +9,7 @@ import subprocess
 
 
 @pytest.mark.order(before="test_qe2pert")
-def test_perturbo(test_name, test_case='perturbo'):
+def test_perturbo(test_name, config_machine, test_case='perturbo'):
     """
     Driver to run the tests for the perturbo.x executable.
 
@@ -20,6 +20,9 @@ def test_perturbo(test_name, test_case='perturbo'):
         test_case : str
             define what type of the test we run - for perturbo testing or for the
             qe2pert testing.
+        config_machine : str
+            name of file with computational information, which we'll use in this set of computations.
+            Should be in folder tests_f90/config_machine
 
     Returns
     -----
@@ -29,7 +32,7 @@ def test_perturbo(test_name, test_case='perturbo'):
     # run test, get files paths, get comparisons settings
     (ref_outs,
      new_outs,
-     igns_n_tols) = get_test_materials(test_name, test_case)
+     igns_n_tols) = get_test_materials(test_name, test_case, config_machine)
 
     # compare all files
     for ref_file, new_file, ign_n_tol in zip(ref_outs,new_outs,igns_n_tols):
@@ -44,7 +47,7 @@ def test_perturbo(test_name, test_case='perturbo'):
         assert equal_values(ref_file, new_file, ign_n_tol), errmsg
 
     # clean up test materials
-    clean_test_materials(test_name, new_outs)
+    clean_test_materials(test_name, new_outs, config_machine)
     print('')
     
     
@@ -60,7 +63,7 @@ def test_qe2pert(test_name, run_qe2pert, config_machine):
             do we run qe2pert testing or not
         config_machine : str
             name of file with computational information, which we'll use in this set of computations.
-            Should be in folder tests_f90/comp_qe2pert
+            Should be in folder tests_f90/config_machine
 
     Returns
     -----
@@ -73,7 +76,7 @@ def test_qe2pert(test_name, run_qe2pert, config_machine):
     
 
 @pytest.mark.order(after="test_qe2pert")
-def test_perturbo_for_qe2pert(test_name, run_qe2pert):
+def test_perturbo_for_qe2pert(test_name, run_qe2pert, config_machine):
     """
     Second driver to run the tests for the perturbo.x executable.
     We call it only in the case if we call test_qe2pert as well
@@ -90,5 +93,5 @@ def test_perturbo_for_qe2pert(test_name, run_qe2pert):
     """
     if not run_qe2pert:
         pytest.skip("Skipping by default, pass the --run_qe2pert arg in the command line for this test")
-    test_perturbo(test_name,test_case='qe2pert')
+    test_perturbo(test_name,config_machine, test_case='qe2pert')
     
