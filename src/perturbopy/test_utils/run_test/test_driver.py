@@ -60,7 +60,7 @@ def run_perturbo(cwd, perturbo_driver_dir_path,
 
 def preliminary_commands(config_machine, step):
     """
-    Function which define all comands which you want to run before the qe2pert computations and 
+    Function which define all comands which you want to run before the qe2pert computations and
     each separate computation
     
     Parameters
