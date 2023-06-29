@@ -542,10 +542,10 @@ def clean_ephr_folders(ephr_failed, config_machine, keep_ephr, keep_preliminary)
                     file_list = os.listdir(src)
                     for file_name in file_list:
                         if file_name.endswith('epwan.h5'):
-                            full_src = os.path.join(src,file_name)
-                            full_dst = os.path.join(dst,file_name)
+                            full_src = os.path.join(src, file_name)
+                            full_dst = os.path.join(dst, file_name)
                             shutil.copy2(full_src, dst)
-        # last steps in both cases - delete all computational folders      
+        # last steps in both cases - delete all computational folders
         for ephr in deleting_ephr:
             del_dir = os.path.join(work_path, ephr)
             if os.path.isdir(del_dir):

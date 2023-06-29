@@ -35,7 +35,7 @@ def test_perturbo(test_name, config_machine, test_case='perturbo'):
      igns_n_tols) = get_test_materials(test_name, test_case, config_machine)
 
     # compare all files
-    for ref_file, new_file, ign_n_tol in zip(ref_outs,new_outs,igns_n_tols):
+    for ref_file, new_file, ign_n_tol in zip(ref_outs, new_outs, igns_n_tols):
 
         ref_file_short = '/'.join(os.path.normpath(ref_file).split(os.sep)[-3:])
         new_file_short = '/'.join(os.path.normpath(new_file).split(os.sep)[-3:])
@@ -93,5 +93,5 @@ def test_perturbo_for_qe2pert(test_name, run_qe2pert, config_machine):
     """
     if not run_qe2pert:
         pytest.skip("Skipping by default, pass the --run_qe2pert arg in the command line for this test")
-    test_perturbo(test_name,config_machine, test_case='qe2pert')
+    test_perturbo(test_name, config_machine, test_case='qe2pert')
     
