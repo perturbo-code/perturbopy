@@ -148,6 +148,7 @@ def run_qe2pert(request):
 def config_machine(request):
     return request.param
     
+
 @pytest.fixture
 def keep_perturbo(request):
     return request.param

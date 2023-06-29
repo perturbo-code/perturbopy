@@ -92,7 +92,7 @@ def perturbo_scratch_dir_config(cwd, perturbo_inputs_dir_path, test_name, config
     except KeyError:
         print(f'PSCRATCH not set in the config_machine. using default location of {perturbo_scratch_dir_prefix}')
 
-    perturbo_scratch_dir = os.path.join(perturbo_scratch_dir_prefix,test_case, test_name)
+    perturbo_scratch_dir = os.path.join(perturbo_scratch_dir_prefix, test_case, test_name)
     if not rm_preexist_dir:
         return perturbo_scratch_dir
 
