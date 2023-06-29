@@ -494,7 +494,7 @@ def clean_test_materials(test_name, new_outs, config_machine):
     return None
     
 
-def clean_ephr_folders(ephr_failed, config_machine):
+def clean_ephr_folders(ephr_failed, config_machine, keep_ephr, keep_preliminary):
     """
     Delete all temporary ephr folders for the tests which were passed
 
@@ -506,6 +506,12 @@ def clean_ephr_folders(ephr_failed, config_machine):
     
     config_machine : dict
         dictionary with computational information, which we'll use in this set of computations.
+    
+    keep_ephr : bool
+        save all ephr-files from the qe2pert testing
+    
+    keep_preliminary : bool
+        save all preliminary files for ephr calculation
 
     Returns
     -----
@@ -524,8 +530,24 @@ def clean_ephr_folders(ephr_failed, config_machine):
     ephr_full_list = [ephr for ephr in open_yaml(ephr_dict_path)]
     deleting_ephr = list(set(ephr_full_list) - set(ephr_failed))
     print('\n == Tests finished ==\n\n')
-    for ephr in deleting_ephr:
-        del_dir = os.path.join(work_path, ephr)
-        if os.path.isdir(del_dir):
-            print(f'Removing {del_dir} ... \n')
-            shutil.rmtree(del_dir)
+    if not keep_preliminary:
+        # if keep_preliminary, simply pass this function
+        if keep_ephr:
+            # if keep only ephr, collect them in a separate new folder:
+            dst = os.path.join(work_path, 'collected_ephr')
+            os.mkdir(dst)
+            for ephr in ephr_full_list:
+                src = os.path.join(work_path, ephr, 'qe2pert')
+                if os.path.isdir(src):
+                    file_list = os.listdir(src)
+                    for file_name in file_list:
+                        if file_name.endswith('epwan.h5'):
+                            full_src = os.path.join(src,file_name)
+                            full_dst = os.path.join(dst,file_name)
+                            shutil.copy2(full_src, dst)
+        # last steps in both cases - delete all computational folders      
+        for ephr in deleting_ephr:
+            del_dir = os.path.join(work_path, ephr)
+            if os.path.isdir(del_dir):
+                print(f'Removing {del_dir} ... \n')
+                shutil.rmtree(del_dir)

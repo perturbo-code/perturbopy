@@ -55,8 +55,16 @@ def pytest_addoption(parser):
                      help = 'Name of file with computational information for qe2pert computation. Should be in the folder tests_f90/comp_qe2pert',
                      nargs="?", default='config_machine.yml')
                      
-    parser.addoption('--clean_tests',
-                     help = 'Delete all materials in the testing folder',
+    parser.addoption('--keep_perturbo',
+                     help = 'Save all the materials related to perturbo tests',
+                     action='store_true')
+                     
+    parser.addoption('--keep_ephr',
+                     help = 'Save all ephr-files from the qe2pert testing',
+                     action='store_true')
+                     
+    parser.addoption('--keep_preliminary',
+                     help = 'Save all preliminary files for ephr calculation',
                      action='store_true')
 
 # generation of test for each type of test function. This function automatically called,
@@ -149,10 +157,10 @@ def clean_tests(request):
 # this is predefined function of PyTest, which is runned after the end of all tests.
 # here we delete all ephr-folders, for which all tests were passed
 def pytest_terminal_summary(terminalreporter, exitstatus, config):
-    if config.getoption('run_qe2pert') and config.getoption('clean_tests'):
+    if config.getoption('run_qe2pert'):
         if exitstatus == 0:
             # delete all ephr files
-            clean_ephr_folders([], config.getoption('config_machine'))
+            ephr_failed=[]
         else:
             failed_reports = terminalreporter.getreports('failed')
             # Process the list of failed test reports as needed
@@ -160,5 +168,6 @@ def pytest_terminal_summary(terminalreporter, exitstatus, config):
             for report in failed_reports:
                 # obtain ephr-name of failed test
                 ephr_failed.add(report.nodeid.split("[")[1].rstrip("]").split('-')[0])
+                ephr_failed = list(ephr_failed)
     
-            clean_ephr_folders(list(ephr_failed), config.getoption('config_machine'))
+        clean_ephr_folders(ephr_failed, config.getoption('config_machine'), config.getoption('keep_ephr'), config.getoption('keep_preliminary'))
