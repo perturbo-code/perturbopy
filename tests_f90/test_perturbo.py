@@ -9,7 +9,7 @@ import subprocess
 
 
 @pytest.mark.order(before="test_qe2pert")
-def test_perturbo(test_name, config_machine, test_case='perturbo'):
+def test_perturbo(test_name, config_machine, keep_perturbo, test_case='perturbo'):
     """
     Driver to run the tests for the perturbo.x executable.
 
@@ -47,7 +47,8 @@ def test_perturbo(test_name, config_machine, test_case='perturbo'):
         assert equal_values(ref_file, new_file, ign_n_tol), errmsg
 
     # clean up test materials
-    clean_test_materials(test_name, new_outs, config_machine)
+    if not keep_perturbo:
+        clean_test_materials(test_name, new_outs, config_machine)
     print('')
     
     
@@ -76,7 +77,7 @@ def test_qe2pert(test_name, run_qe2pert, config_machine):
     
 
 @pytest.mark.order(after="test_qe2pert")
-def test_perturbo_for_qe2pert(test_name, run_qe2pert, config_machine):
+def test_perturbo_for_qe2pert(test_name, run_qe2pert, config_machine, keep_perturbo):
     """
     Second driver to run the tests for the perturbo.x executable.
     We call it only in the case if we call test_qe2pert as well
@@ -93,5 +94,5 @@ def test_perturbo_for_qe2pert(test_name, run_qe2pert, config_machine):
     """
     if not run_qe2pert:
         pytest.skip("Skipping by default, pass the --run_qe2pert arg in the command line for this test")
-    test_perturbo(test_name, config_machine, test_case='qe2pert')
+    test_perturbo(test_name, config_machine, keep_perturbo, test_case='qe2pert')
     

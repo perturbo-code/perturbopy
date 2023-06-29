@@ -54,7 +54,7 @@ def create_soft_links(src, dst):
             src_file = os.path.abspath(os.path.join(root, file))
             dst_file = os.path.abspath(os.path.join(dst, os.path.relpath(src_file, src)))
             os.makedirs(os.path.dirname(dst_file), exist_ok=True)
-            os.symlink(src_file, dst_file)
+            os.link(src_file, dst_file)
 
 
 def perturbo_scratch_dir_config(cwd, perturbo_inputs_dir_path, test_name, config_machine, test_case='perturbo', rm_preexist_dir=True):
@@ -88,11 +88,11 @@ def perturbo_scratch_dir_config(cwd, perturbo_inputs_dir_path, test_name, config
     # Read the perturbo_run variable from the environment
     perturbo_scratch_dir_prefix   = cwd + "/PSCRATCH"
     try:
-        perturbo_scratch_dir_prefix    = config_machine['PSCRATCH']
+        perturbo_scratch_dir_prefix = config_machine['PSCRATCH']
     except KeyError:
         print(f'PSCRATCH not set in the config_machine. using default location of {perturbo_scratch_dir_prefix}')
 
-    perturbo_scratch_dir = perturbo_scratch_dir_prefix + f'/{test_name}'
+    perturbo_scratch_dir = os.path.join(perturbo_scratch_dir_prefix,test_case, test_name)
     if not rm_preexist_dir:
         return perturbo_scratch_dir
 
@@ -102,12 +102,14 @@ def perturbo_scratch_dir_config(cwd, perturbo_inputs_dir_path, test_name, config
     if os.path.isdir(dst):
         print(f'\n directory {dst} exists. Removing this directory ...\n')
         shutil.rmtree(dst)
-        create_soft_links(src, dst)
+        # create_soft_links(src, dst) - can't use due to restarts, which rewrite the sourse file
+        shutil.copytree(src, dst)
     else:
-        create_soft_links(src, dst)
+        # create_soft_links(src, dst)
+        shutil.copytree(src, dst)
     if test_case == 'qe2pert':
         ephr_name = test_name[:test_name.find('-')]
-        ephr_address = os.path.join(perturbo_scratch_dir_prefix, ephr_name, 'qe2pert')
+        ephr_address = os.path.join(perturbo_scratch_dir_prefix, 'ephr_calculation', ephr_name, 'qe2pert')
         file_list = os.listdir(dst)
         for file_name in file_list:
             # Delete previously copied ephr-file

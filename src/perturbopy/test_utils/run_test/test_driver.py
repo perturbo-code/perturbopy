@@ -428,7 +428,7 @@ def run_ephr_calculation(ephr_name, config_machine):
 
     # determine needed paths
     inputs_dir_path = f'{cwd}/{inputs_path_suffix}/'
-    work_path = perturbo_scratch_dir_config(cwd, inputs_dir_path, ephr_name, config_machine)
+    work_path = perturbo_scratch_dir_config(cwd, inputs_dir_path, ephr_name, config_machine, test_case='ephr_calculation')
     
     # open input yaml-files with supplementary info
     # and computational commands
@@ -537,7 +537,7 @@ def clean_ephr_folders(ephr_failed, config_machine, keep_ephr, keep_preliminary)
             dst = os.path.join(work_path, 'collected_ephr')
             os.mkdir(dst)
             for ephr in ephr_full_list:
-                src = os.path.join(work_path, ephr, 'qe2pert')
+                src = os.path.join(work_path, 'ephr_calculation', ephr, 'qe2pert')
                 if os.path.isdir(src):
                     file_list = os.listdir(src)
                     for file_name in file_list:
@@ -547,7 +547,7 @@ def clean_ephr_folders(ephr_failed, config_machine, keep_ephr, keep_preliminary)
                             shutil.copy2(full_src, dst)
         # last steps in both cases - delete all computational folders
         for ephr in deleting_ephr:
-            del_dir = os.path.join(work_path, ephr)
+            del_dir = os.path.join(work_path, 'ephr_calculation', ephr)
             if os.path.isdir(del_dir):
                 print(f'Removing {del_dir} ... \n')
                 shutil.rmtree(del_dir)

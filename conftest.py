@@ -116,13 +116,19 @@ def pytest_generate_tests(metafunc):
                                      metafunc.function.__name__
                                     )
         
-        if metafunc.function.__name__ == 'test_perturbo_for_qe2pert' or metafunc.function.__name__ == 'test_qe2pert':
+        if metafunc.function.__name__ == 'test_perturbo_for_qe2pert':
+            metafunc.parametrize('test_name', test_list, indirect=True)
+            metafunc.parametrize('config_machine', [metafunc.config.getoption('config_machine')], indirect=True)
+            metafunc.parametrize('keep_perturbo', [metafunc.config.getoption('keep_perturbo')], indirect=True)
+            metafunc.parametrize('run_qe2pert', [metafunc.config.getoption('run_qe2pert')], indirect=True)
+        elif metafunc.function.__name__ == 'test_qe2pert':
             metafunc.parametrize('test_name', test_list, indirect=True)
             metafunc.parametrize('run_qe2pert', [metafunc.config.getoption('run_qe2pert')], indirect=True)
             metafunc.parametrize('config_machine', [metafunc.config.getoption('config_machine')], indirect=True)
         elif metafunc.function.__name__ == 'test_perturbo':
             metafunc.parametrize('test_name', test_list, indirect=True)
             metafunc.parametrize('config_machine', [metafunc.config.getoption('config_machine')], indirect=True)
+            metafunc.parametrize('keep_perturbo', [metafunc.config.getoption('keep_perturbo')], indirect=True)
         
 # in order to properly run pytest functions, we need to declare fixtures,
 # which allow us to use parametrization of test functions
@@ -142,11 +148,10 @@ def run_qe2pert(request):
 def config_machine(request):
     return request.param
     
-
 @pytest.fixture
-def clean_tests(request):
+def keep_perturbo(request):
     return request.param
-    
+
 # # this is predefined function of PyTest, which is runned after the end of all tests
 # def pytest_unconfigure(config):
 #     # Run your auxiliary function here
@@ -168,6 +173,6 @@ def pytest_terminal_summary(terminalreporter, exitstatus, config):
             for report in failed_reports:
                 # obtain ephr-name of failed test
                 ephr_failed.add(report.nodeid.split("[")[1].rstrip("]").split('-')[0])
-                ephr_failed = list(ephr_failed)
+            ephr_failed = list(ephr_failed)
     
         clean_ephr_folders(ephr_failed, config.getoption('config_machine'), config.getoption('keep_ephr'), config.getoption('keep_preliminary'))
