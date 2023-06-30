@@ -1,0 +1,6 @@
+PERT_SCRATCH: tmp
+comp_info:
+    perturbo:
+        prel_coms:
+            - module load perturbo
+        exec: srun -n 8 perturbo.x -npools 8

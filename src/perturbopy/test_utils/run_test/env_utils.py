@@ -59,8 +59,8 @@ def create_soft_links(src, dst):
 
 def perturbo_scratch_dir_config(cwd, perturbo_inputs_dir_path, test_name, config_machine, test_case='perturbo', rm_preexist_dir=True):
     """
-    Check if the PERTURBO_SCRATCH variable is written in the config_machine file.
-    If not - use default location "/PSCRATCH"
+    Check if the PERT_SCRATCH variable is written in the config_machine file.
+    If not - use default location "/PERT_SCRATCH"
 
     Parameters
     ----------
@@ -86,11 +86,11 @@ def perturbo_scratch_dir_config(cwd, perturbo_inputs_dir_path, test_name, config
 
     """
     # Read the perturbo_run variable from the environment
-    perturbo_scratch_dir_prefix   = cwd + "/PSCRATCH"
+    perturbo_scratch_dir_prefix   = cwd + "/PERT_SCRATCH"
     try:
-        perturbo_scratch_dir_prefix = config_machine['PSCRATCH']
+        perturbo_scratch_dir_prefix = config_machine['PERT_SCRATCH']
     except KeyError:
-        print(f'PSCRATCH not set in the config_machine. using default location of {perturbo_scratch_dir_prefix}')
+        print(f'PSCRATCH not set in the config_machine. using default location -  {perturbo_scratch_dir_prefix}')
 
     perturbo_scratch_dir = os.path.join(perturbo_scratch_dir_prefix, test_case, test_name)
     if not rm_preexist_dir:

@@ -55,7 +55,7 @@ def run_perturbo(cwd, perturbo_driver_dir_path, config_machine,
     print(f' === Running Perturbo === :\n {run}')
     sys.stdout.flush()
 
-    subprocess.run(preliminary_commands(config_machine, 'scf') + run, shell=True)
+    subprocess.run(preliminary_commands(config_machine, 'perturbo') + run, shell=True)
 
     os.chdir(cwd)
     
@@ -75,10 +75,11 @@ def preliminary_commands(config_machine, step):
 
     print(' == Prel commands == :')
     list_of_coms = ''
-    for com in config_machine['prel_coms']:
-        print(f' ======= Run ======= :\n {com}')
-        sys.stdout.flush()
-        list_of_coms += f'{com}\n'
+    if 'prel_coms' in config_machine:
+        for com in config_machine['prel_coms']:
+            print(f' ======= Run ======= :\n {com}')
+            sys.stdout.flush()
+            list_of_coms += f'{com}\n'
     if 'prel_coms' in config_machine['comp_info'][step]:
         for com in config_machine['comp_info'][step]['prel_coms']:
             print(f' ======= Run ======= :\n {com}')
@@ -521,11 +522,11 @@ def clean_ephr_folders(ephr_failed, config_machine, keep_ephr, keep_preliminary)
     cwd = os.getcwd()
     config_machine = open_yaml(f'{cwd}/config_machine/{config_machine}')
 
-    work_path   = cwd + "/PSCRATCH"
+    work_path   = cwd + "PERT_SCRATCH"
     try:
-        work_path    = config_machine['PSCRATCH']
+        work_path    = config_machine['PERT_SCRATCH']
     except KeyError:
-        print(f'PSCRATCH not set in the config_machine. using default location of {work_path}')
+        print(f'PERT_SCRATCH not set in the config_machine. using default location -  {work_path}')
     ephr_dict_path = 'epwan_info.yml'
     ephr_full_list = [ephr for ephr in open_yaml(ephr_dict_path)]
     deleting_ephr = list(set(ephr_full_list) - set(ephr_failed))

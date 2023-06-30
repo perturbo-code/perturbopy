@@ -1,4 +1,4 @@
-PSCRATCH: tmp
+PERT_SCRATCH: tmp
 prel_coms:
     - module load perturbo
     - module load qe
