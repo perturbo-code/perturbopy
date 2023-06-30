@@ -19,4 +19,5 @@ jobs:
           pip install pytest-plt
       - name: run pytest
         run: |
-          pytest tests --plots
+          cd tests
+          pytest --plots
