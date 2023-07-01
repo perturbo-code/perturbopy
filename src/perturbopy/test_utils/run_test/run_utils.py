@@ -289,7 +289,7 @@ def setup_default_tol(igns_n_tols, test_case):
     if test_case == 'perturbo':
         default_abs_tol = 1e-8
         default_rel_tol = 0.01
-    elif test_case == 'qe2pert':
+    elif test_case == 'perturbo_for_qe2pert':
         default_abs_tol = 5e-7
         default_rel_tol = 0.5
 
@@ -317,7 +317,7 @@ def setup_default_tol(igns_n_tols, test_case):
 
                 elif 'default' not in outfile['rel tol'].keys():
                     outfile['rel tol']['default'] = default_rel_tol
-            elif test_case == 'qe2pert':
+            elif test_case == 'perturbo_for_qe2pert':
                 if 'abs tol' not in outfile.keys():
                     outfile['abs tol'] = {'default': default_abs_tol}
 
