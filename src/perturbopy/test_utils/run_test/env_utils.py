@@ -92,7 +92,6 @@ def copy_folder_with_softlinks(src, dst, perturbo_scratch_dir_prefix=None, test_
                 shutil.copy2(src_file_path, dst_file_path)
                 
 
-
 def perturbo_scratch_dir_config(cwd, perturbo_inputs_dir_path, test_name, config_machine, test_case='perturbo', rm_preexist_dir=True):
     """
     Check if the PERT_SCRATCH variable is written in the config_machine file.
@@ -150,18 +149,16 @@ def perturbo_scratch_dir_config(cwd, perturbo_inputs_dir_path, test_name, config
             copy_folder_with_softlinks(src, dst)
         elif test_case == 'perturbo_for_qe2pert':
             copy_folder_with_softlinks(src, dst, perturbo_scratch_dir_prefix, test_name, second_run=True)
-        # shutil.copytree(src, dst)
     else:
         if test_case == 'perturbo' or test_case == 'ephr_calculation':
             copy_folder_with_softlinks(src, dst)
         elif test_case == 'perturbo_for_qe2pert':
             copy_folder_with_softlinks(src, dst, perturbo_scratch_dir_prefix, test_name, second_run=True)
-        # shutil.copytree(src, dst) 
 
     return perturbo_scratch_dir
         
    
-def softlink_ephr_files(perturbo_scratch_dir_prefix, test_name, dst, file_name): 
+def softlink_ephr_files(perturbo_scratch_dir_prefix, test_name, dst, file_name):
     """
     Make a softlink from scratch folder to the computed ephr file
 
@@ -182,7 +179,7 @@ def softlink_ephr_files(perturbo_scratch_dir_prefix, test_name, dst, file_name):
     Raises
     ------
     ValueError
-       if corresponding ephr-file wasn't found or calculated. 
+       if corresponding ephr-file wasn't found or calculated.
 
     Returns
     -------
@@ -195,5 +192,5 @@ def softlink_ephr_files(perturbo_scratch_dir_prefix, test_name, dst, file_name):
     try:
         src = os.path.abspath(os.path.join(ephr_address, file_name))
         os.symlink(src, dst)
-    except:
-        raise ValueError(f"Ephr-file for {test_name} wasn't found or calculated")
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Ephr-file for {test_name} wasn't found or calculated")
