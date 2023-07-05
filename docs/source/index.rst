@@ -30,4 +30,5 @@ Contents
 
    Usage <usage>
    Testsuite <testsuite>
+   Postprocessing <postprocessing>
    API reference <_autosummary/perturbopy>

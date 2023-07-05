@@ -9,9 +9,33 @@ class CalcMode():
 
     Parameters
     ----------
-    pert_dict : dict
+    _pert_dict : dict
        dictionary containing inputs and outputs from a Perturbo calculation, as well as
        basic data of the material. Typically obtained from the YAML file outputted by Perturbo.
+    alat : float
+    alat_units : str
+    lat : array
+    lat_units : str
+    recip_lat : array
+    recip_lat_units : str
+    nat : int
+    atomic_pos : array
+    atomic_pos_units : str
+    volume : float
+    volume_units : str
+    nsym : int
+    kc_dim : array
+    polar_alpha : float
+    epsil : array
+    qc_dim : array
+    mass : array
+    mass_units : str
+    symop : array
+    zstart : array
+    system_2d : bool
+    num_wann : int
+    wannier_center : array
+    wannier_center_cryst : array
 
     """
 
