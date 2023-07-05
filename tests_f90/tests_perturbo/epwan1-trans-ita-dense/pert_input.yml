@@ -24,7 +24,9 @@ test info:
 
          abs tol:
             default: 1e-5
-            qe2pert: 1e-4
+
+         qe2pert:
+            default: 1e-4
 
       gaas_tdf.h5:
 

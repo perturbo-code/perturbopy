@@ -19,8 +19,12 @@ test info:
 
          abs tol:
             default: 1e-6
-            qe2pert: 1e-5
+
+         qe2pert abs tol:
+            default: 1e-5
 
          rel tol:
             default: 1e-2
-            qe2pert: 1e-1
+
+         qe2pert rel tol:
+            default: 1e-1

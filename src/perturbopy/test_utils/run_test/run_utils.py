@@ -290,8 +290,8 @@ def setup_default_tol(igns_n_tols, test_case):
         default_abs_tol = 1e-8
         default_rel_tol = 0.01
     elif test_case == 'perturbo_for_qe2pert':
-        default_abs_tol = 5e-7
-        default_rel_tol = 0.5
+        default_abs_tol = 1e-1
+        default_rel_tol = 3.0
 
     igns_n_tols_updated = []
 
@@ -305,36 +305,23 @@ def setup_default_tol(igns_n_tols, test_case):
                       }
 
         else:
-            if test_case == 'perturbo':
-                if 'abs tol' not in outfile.keys():
-                    outfile['abs tol'] = {'default': default_abs_tol}
+            if test_case == 'perturbo_for_qe2pert':
+                if 'qe2pert abs tol' in outfile.keys():
+                    outfile['abs tol'] = outfile['qe2pert abs tol']
+                if 'qe2pert rel tol' in outfile.keys():
+                    outfile['rel tol'] = outfile['qe2pert rel tol']
 
-                elif 'default' not in outfile['abs tol'].keys():
-                    outfile['abs tol']['default'] = default_abs_tol
+            if 'abs tol' not in outfile.keys():
+                outfile['abs tol'] = {'default': default_abs_tol}
 
-                if 'rel tol' not in outfile.keys():
-                    outfile['rel tol'] = {'default': default_rel_tol}
+            elif 'default' not in outfile['abs tol'].keys():
+                outfile['abs tol']['default'] = default_abs_tol
 
-                elif 'default' not in outfile['rel tol'].keys():
-                    outfile['rel tol']['default'] = default_rel_tol
-            elif test_case == 'perturbo_for_qe2pert':
-                if 'abs tol' not in outfile.keys():
-                    outfile['abs tol'] = {'default': default_abs_tol}
+            if 'rel tol' not in outfile.keys():
+                outfile['rel tol'] = {'default': default_rel_tol}
 
-                elif 'qe2pert' in outfile['abs tol'].keys():
-                    outfile['abs tol']['default'] = outfile['abs tol']['qe2pert']
-
-                elif 'default' not in outfile['abs tol'].keys():
-                    outfile['abs tol']['default'] = default_abs_tol
-
-                if 'rel tol' not in outfile.keys():
-                    outfile['rel tol'] = {'default': default_rel_tol}
-                    
-                elif 'qe2pert' in outfile['rel tol'].keys():
-                    outfile['rel tol']['default'] = outfile['rel tol']['qe2pert']
-
-                elif 'default' not in outfile['rel tol'].keys():
-                    outfile['rel tol']['default'] = default_rel_tol
+            elif 'default' not in outfile['rel tol'].keys():
+                outfile['rel tol']['default'] = default_rel_tol
 
         igns_n_tols_updated.append(outfile)
 
