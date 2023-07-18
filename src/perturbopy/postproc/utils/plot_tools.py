@@ -32,6 +32,8 @@ plotparams = {'figure.figsize': (16, 9),
                      'legend.markerscale': 1.0,
                      'font.size': 20}
 
+points_fcc = {'L': [0.5, 0.5, 0.5], 'X': [0.5, 0.0, 0.5], 'W': [0.5, 0.25, 0.75],
+              'K': [0.375, 0.375, 0.75], r'$\Gamma$': [0, 0, 0]}
 
 def plot_recip_pt_labels(ax, labels, point_array, path_array, label_height="lower", show_line=True):
     """"
@@ -78,7 +80,7 @@ def plot_recip_pt_labels(ax, labels, point_array, path_array, label_height="lowe
             continue
         for x in path_to_label:
             if show_line:
-                ax.axvline(x)
+                ax.axvline(x, c="lightgray")
                 ax.text(x=x, y=label_height, s=label)
 
     return ax
@@ -158,7 +160,7 @@ def plot_dispersion(ax, path, energies, energy_units, c="k", ls='-', energy_wind
     return ax
 
 
-def plot_vals_on_bands(ax, path, energies, energy_units, values, cmap='RdBu', energy_window=None):
+def plot_vals_on_bands(ax, path, energies, energy_units, values, cmap='RdBu', energy_window=None, max_val=None):
     """
     Method to plot the dispersion (phonon dispersion or band structure).
 
@@ -194,6 +196,9 @@ def plot_vals_on_bands(ax, path, energies, energy_units, values, cmap='RdBu', en
     # Create a continuous norm to map from data points to colors
     vmin = min([min(values[key]) for key in values.keys()])
     vmax = max([max(values[key]) for key in values.keys()])
+
+    if max_val is not None:
+        vmax = max_val
 
     norm = plt.Normalize(vmin, vmax)
 

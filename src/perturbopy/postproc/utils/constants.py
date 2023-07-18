@@ -22,7 +22,7 @@ length_units_vals = {'bohr': (1, 0), 'angstrom': (0.529177249, 0), 'm': (5.29177
 
 recip_points_units_names = {'cartesian': ['tpiba', 'cartesian', 'cart'], 'crystal': ['crystal', 'cryst', 'frac', 'fractional']}
 
-special_recip_points_fcc = {'L': [0.5, 0.5, 0.5], 'X': [0.5, 0.0, 0.5],
+fcc_points = {'L': [0.5, 0.5, 0.5], 'X': [0.5, 0.0, 0.5],
                             'W': [0.5, 0.25, 0.75], 'K': [0.375, 0.375, 0.75],
                             r'$\Gamma$': [0, 0, 0]}
 

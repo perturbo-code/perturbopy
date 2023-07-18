@@ -6,7 +6,7 @@
 Welcome to perturbopy's documentation!
 ======================================
 
-**Pyturbopy** is a suite of Python scripts for Perturbo testing and postprocessing.
+**Perturbopy** is a suite of Python scripts for Perturbo testing and postprocessing.
 For more information about the main code Perturbo, please visit `this page <https://perturbo-code.github.io>`_.
 
 For installation, check the :doc:`usage` section.
@@ -30,5 +30,5 @@ Contents
 
    Usage <usage>
    Testsuite <testsuite>
-   Postprocessing <postprocessing>
-   API reference <_autosummary/perturbopy>
+   Postprocessing <postproc/postprocessing>
+   API reference <../_autosummary/perturbopy>

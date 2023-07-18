@@ -1,5 +1,6 @@
 import numpy as np
-from perturbopy.postproc.utils.constants import standardize_units_name, recip_points_units_names, special_recip_points_fcc
+from perturbopy.postproc.utils.constants import standardize_units_name, recip_points_units_names
+from perturbopy.postproc.utils.plot_tools import points_fcc
 from perturbopy.postproc.utils import lattice
 
 
@@ -55,10 +56,7 @@ class RecipPtDB():
 
         self.path_units = path_units
 
-        if labels == {}:
-            labels = special_recip_points_fcc
-
-        self.labels = labels
+        self.labels = labels.copy()
 
     @classmethod
     def from_lattice(self, points, units, lat, recip_lat, path=None, path_units='arbitrary', labels={}):
@@ -279,9 +277,9 @@ class RecipPtDB():
            reciprocal space points
 
         """
-
-        for i, label in enumerate(labels_dict_input.keys()):
-            self.labels[label] = labels_dict_input[label]
+        labels_dict = labels_dict_input.copy()
+        for i, label in enumerate(labels_dict.keys()):
+            self.labels[label] = labels_dict[label]
 
     def remove_labels(self, labels_list):
         """
@@ -294,5 +292,5 @@ class RecipPtDB():
 
         """
 
-        for i, label in labels_list:
-            self.labels = self.labels.pop(label)
+        for label in labels_list:
+            self.labels.pop(label)
