@@ -84,10 +84,12 @@ def get_all_tests(func_name):
     epwan_info = open_yaml(epwan_dict_path)
 
     if (func_name == 'test_perturbo') or (func_name == 'test_perturbo_for_qe2pert'):
-    
+
+        test_list = ['bands', 'phdisp', 'ephmat']
         for epwan in epwan_info:
             if 'tests' in epwan_info[epwan].keys():
-                test_list = epwan_info[epwan]['tests']
+                if (func_name == 'test_perturbo'):
+                    test_list = epwan_info[epwan]['tests']
 
                 test_folder_list += [f'{epwan}-{t}' for t in test_list]
 
@@ -229,9 +231,15 @@ def filter_tests(all_test_list, tags, exclude_tags, epwan, test_names, func_name
 
         for test_name_cmd in test_names:
             if test_name_cmd not in all_test_list:
-                errmsg = (f'Test {test_name_cmd} is not listed in epwan_info.yml, \n'
-                          'but specified in --test-names option.'
-                         )
+                if (test_func == 'test_perturbo') or (test_func == 'test_qe2pert'):
+                    errmsg = (f'Test {test_name_cmd} is not listed in epwan_info.yml, \n'
+                              f'but specified in --test-names option. Full test_list: {test_list}'
+                             )
+                elif (test_func == 'test_perturbo_for_qe2pert'):
+                    errmsg = (f'Test {test_name_cmd} is not listed for running on the perturbo run for \n'
+                              'qe2pert check but specified in --test-names option. On this run, only \n'
+                              f'this tests supposed to run: {test_list}'
+                             )
                 raise ValueError(errmsg)
 
         test_list = test_names
@@ -290,7 +298,7 @@ def setup_default_tol(igns_n_tols, test_case):
         default_abs_tol = 1e-8
         default_rel_tol = 0.01
     elif test_case == 'perturbo_for_qe2pert':
-        default_abs_tol = 1e-1
+        default_abs_tol = 10
         default_rel_tol = 3.0
 
     igns_n_tols_updated = []

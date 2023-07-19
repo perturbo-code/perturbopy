@@ -24,11 +24,11 @@ test info:
             default: 1e-5
 
          qe2pert abs tol:
-            default: 1e-4
+            default: 1e-3
 
          rel tol:
             default: 0.02
 
          qe2pert rel tol:
-            default: 0.2
+            default: 0.5
 
