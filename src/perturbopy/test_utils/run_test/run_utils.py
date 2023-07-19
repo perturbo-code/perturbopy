@@ -231,11 +231,11 @@ def filter_tests(all_test_list, tags, exclude_tags, epwan, test_names, func_name
 
         for test_name_cmd in test_names:
             if test_name_cmd not in all_test_list:
-                if (test_func == 'test_perturbo') or (test_func == 'test_qe2pert'):
+                if (test_func == 'test_perturbo') or (func_name == 'test_qe2pert'):
                     errmsg = (f'Test {test_name_cmd} is not listed in epwan_info.yml, \n'
                               f'but specified in --test-names option. Full test_list: {test_list}'
                              )
-                elif (test_func == 'test_perturbo_for_qe2pert'):
+                elif (func_name == 'test_perturbo_for_qe2pert'):
                     errmsg = (f'Test {test_name_cmd} is not listed for running on the perturbo run for \n'
                               'qe2pert check but specified in --test-names option. On this run, only \n'
                               f'this tests supposed to run: {test_list}'
