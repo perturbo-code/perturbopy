@@ -9,7 +9,6 @@ setup(
       'pytest',
       'pytest-order',
       'h5py',
-      'hdfdict',
       'PyYAML',
       'pytest-profiling',
       'matplotlib>=2.2.0',

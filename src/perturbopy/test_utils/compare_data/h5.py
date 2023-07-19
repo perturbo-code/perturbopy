@@ -1,8 +1,7 @@
 """
    This module contains functions to compare hdf5 files
 """
-import hdfdict
-from hdfdict.hdfdict import LazyHdfDict
+import h5py
 import numpy as np
 from perturbopy.test_utils.run_test.run_utils import get_tol
 
@@ -144,9 +143,6 @@ def equal_dict(dict1, dict2, ig_n_tol, path):
        boolean specifying if both dicts contain the same keys and values
 
     """
-    if isinstance(dict1, LazyHdfDict) or isinstance(dict2, LazyHdfDict):
-        dict1 = dict(dict1)
-        dict2 = dict(dict2)
 
     # check that dict1 and dict2 are dictionaries
     errmsg = ('dic1/2 are not dictionaries')
@@ -175,7 +171,7 @@ def equal_dict(dict1, dict2, ig_n_tol, path):
 
         # pseudo path to current item being compared
         key_path = (f'{path}.{key}')
-        if isinstance(dict1[key], dict) or isinstance(dict1[key], LazyHdfDict):
+        if isinstance(dict1[key], dict):
             equal_value, diff = equal_dict(dict1[key], dict2[key], ig_n_tol, key_path)
 
         elif isinstance(dict1[key], np.ndarray):
@@ -210,6 +206,38 @@ def equal_dict(dict1, dict2, ig_n_tol, path):
     return equal_values, diff
 
 
+def hdf5_to_dict(file_path):
+    r"""
+    Read the hdf5 file and return it in the form of dictionary
+
+    Parameters
+    ----------
+    file_path : str
+        path to the hdf5 file
+
+    Returns
+    -------
+    hdf5_dict : dict
+       data from the hdf5 file in the form of dictionary
+
+    """
+    hdf5_dict = {}
+    with h5py.File(file_path, 'r') as file:
+        # Recursively traverse all groups and datasets within the file
+        def traverse_datasets(name, node):
+            if isinstance(node, h5py.Dataset):
+                hdf5_dict[name] = node[()]
+            elif isinstance(node, h5py.Group):
+                for key in node.keys():
+                    traverse_datasets(f"{name}/{key}", node[key])
+        
+        # Start traversing the file, starting with the root group
+        for key in file.keys():
+            traverse_datasets(key, file[key])
+    
+    return hdf5_dict
+
+
 def equal_values(file1, file2, ig_n_tol):
     """
     Checks if two h5 files contain the same hierarchy/groups/datasets
@@ -231,14 +259,8 @@ def equal_values(file1, file2, ig_n_tol):
 
     """
 
-    # h51_dict = dict(hdfdict.load(file1))
-    # h52_dict = dict(hdfdict.load(file2))
-
-    h51_dict = hdfdict.load(file1)
-    h52_dict = hdfdict.load(file2)
-
-    h51_dict.unlazy()
-    h52_dict.unlazy()
+    h51_dict = hdf5_to_dict(file1)
+    h52_dict = hdf5_to_dict(file2)
 
     if 'test keywords' in ig_n_tol:
         h51_del_keys = [key for key in h51_dict.keys() if key not in ig_n_tol['test keywords']]
