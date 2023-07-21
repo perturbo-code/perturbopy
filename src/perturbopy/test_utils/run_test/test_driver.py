@@ -499,6 +499,8 @@ def clean_ephr_folders(ephr_failed, config_machine, keep_ephr, keep_preliminary)
     """
     Delete all temporary ephr folders for the tests which were passed
 
+    TODO: write detailed description of how this works
+
     Parameters
     ----------
     ephr_failed : list
