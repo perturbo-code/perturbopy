@@ -60,7 +60,7 @@ def test_qe2pert(test_name, run_qe2pert, config_machine):
     -----
         test_name : str
             name of the computing ephr-file
-        run_qe2pert : str
+        run_qe2pert : bool
             do we run qe2pert testing or not
         config_machine : str
             name of file with computational information, which we'll use in this set of computations.
