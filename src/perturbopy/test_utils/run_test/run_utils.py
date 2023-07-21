@@ -265,15 +265,15 @@ def setup_default_tol(igns_n_tols, test_case):
 
     .. code-block :: python
 
-       output_file.yml:
-        abs tol:
-             default:
-                1e-8
+        output_file.yml:
+            abs tol:
+                default:
+                    1e-8
 
-          # in percents
-          rel tol:
-             default:
-                0.01
+            # relative error
+            rel tol:
+                default:
+                    0.01
 
     The elements are considerent different if the following equation does not apply:
 
@@ -281,16 +281,17 @@ def setup_default_tol(igns_n_tols, test_case):
 
     Parameters
     ----------
-    igns_n_tols : dict
-        dictionary containing the ignore keywords and tolerances needed to performance comparison of ref_outs and new_outs
+    igns_n_tols : list
+        list of dictionaries, which contain containing the tolerances needed 
+        to performance comparison of ref_outs and new_outs
     test_case : str
         define what type of the test we run - for perturbo testing or for the
         qe2pert testing.
 
     Returns
     -------
-    igns_n_tols_updated : dict
-        **updated** dictionary containing the ignore keywords and tolerances
+    igns_n_tols_updated : list
+        **updated** list containing the dictionary with tolerances
 
     """
 
@@ -298,14 +299,19 @@ def setup_default_tol(igns_n_tols, test_case):
         default_abs_tol = 1e-8
         default_rel_tol = 0.01
     elif test_case == 'perturbo_for_qe2pert':
-        default_abs_tol = 10
-        default_rel_tol = 3.0
+        # in case of the testing qe2pert relative error could be bigger
+        # due to the error that accumulates from scf calculations
+        default_abs_tol = 1e-6
+        default_rel_tol = 0.5
 
     igns_n_tols_updated = []
 
+    #run thru all files (their list is the keys set)
     for outfile in igns_n_tols:
 
         if not isinstance(outfile, dict):
+            # if we don't have any information about the errors 
+            # for this file - define default one
             outfile = {'abs tol':
                        {'default': default_abs_tol},
                        'rel tol':
@@ -314,20 +320,29 @@ def setup_default_tol(igns_n_tols, test_case):
 
         else:
             if test_case == 'perturbo_for_qe2pert':
+                # if we test perturbo for qe2pert, 
+                # we move error for qe2pert testing into the cells
+                # `abs_tol` and `rel_tol`
                 if 'qe2pert abs tol' in outfile.keys():
                     outfile['abs tol'] = outfile['qe2pert abs tol']
                 if 'qe2pert rel tol' in outfile.keys():
                     outfile['rel tol'] = outfile['qe2pert rel tol']
 
+            # if we have some dict but without `abs_tol` key - take default
             if 'abs tol' not in outfile.keys():
                 outfile['abs tol'] = {'default': default_abs_tol}
 
+            # if we have some `abs_tol` key, but only for specific cases,
+            # add default values
             elif 'default' not in outfile['abs tol'].keys():
                 outfile['abs tol']['default'] = default_abs_tol
 
+            # if we have some dict but without `rel_tol` key - take default
             if 'rel tol' not in outfile.keys():
                 outfile['rel tol'] = {'default': default_rel_tol}
 
+            # if we have some `rel_tol` key, but only for specific cases,
+            # add default values
             elif 'default' not in outfile['rel tol'].keys():
                 outfile['rel tol']['default'] = default_rel_tol
 

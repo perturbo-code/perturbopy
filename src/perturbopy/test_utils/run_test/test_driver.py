@@ -499,8 +499,6 @@ def clean_ephr_folders(ephr_failed, config_machine, keep_ephr, keep_preliminary)
     """
     Delete all temporary ephr folders for the tests which were passed
 
-    TODO: write detailed description of how this works
-
     Parameters
     ----------
     ephr_failed : list
@@ -524,30 +522,46 @@ def clean_ephr_folders(ephr_failed, config_machine, keep_ephr, keep_preliminary)
     cwd = os.getcwd()
     config_machine = open_yaml(f'{cwd}/config_machine/{config_machine}')
 
+    # looking for the  location with the temporary files
     work_path   = cwd + "PERT_SCRATCH"
     try:
         work_path    = config_machine['PERT_SCRATCH']
     except KeyError:
         print(f'PERT_SCRATCH not set in the config_machine. using default location -  {work_path}')
     ephr_dict_path = 'epwan_info.yml'
+    
+    #set of all ephr-files
     ephr_full_list = [ephr for ephr in open_yaml(ephr_dict_path)]
+    
+    #set of ephr-files, for which tests have passed succescfully - we can delete them
     deleting_ephr = list(set(ephr_full_list) - set(ephr_failed))
     print('\n == Tests finished ==\n\n')
     if not keep_preliminary:
-        # if keep_preliminary, simply pass this function
+        # if keep_preliminary, simply pass this function - we'll save all
+        # files in this case
+
         if keep_ephr:
             # if keep only ephr, collect them in a separate new folder:
             dst = os.path.join(work_path, 'collected_ephr')
             os.mkdir(dst)
+            
+            # collect all epwan-files
             for ephr in ephr_full_list:
                 src = os.path.join(work_path, 'ephr_calculation', ephr, 'qe2pert')
+                
+                # only if the directory with the epwan-file exist:
                 if os.path.isdir(src):
                     file_list = os.listdir(src)
+                    
+                    # looking for the epwan-files in the files list
                     for file_name in file_list:
                         if file_name.endswith('epwan.h5'):
                             full_src = os.path.join(src, file_name)
                             full_dst = os.path.join(dst, file_name)
+
+                            #copy this file in the new folder
                             shutil.copy2(full_src, dst)
+
         # last steps in both cases - delete all computational folders
         for ephr in deleting_ephr:
             del_dir = os.path.join(work_path, 'ephr_calculation', ephr)
