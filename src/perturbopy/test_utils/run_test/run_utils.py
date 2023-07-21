@@ -282,7 +282,7 @@ def setup_default_tol(igns_n_tols, test_case):
     Parameters
     ----------
     igns_n_tols : list
-        list of dictionaries, which contain containing the tolerances needed 
+        list of dictionaries, which contain containing the tolerances needed
         to performance comparison of ref_outs and new_outs
     test_case : str
         define what type of the test we run - for perturbo testing or for the
