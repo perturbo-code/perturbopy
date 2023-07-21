@@ -306,11 +306,11 @@ def setup_default_tol(igns_n_tols, test_case):
 
     igns_n_tols_updated = []
 
-    #run thru all files (their list is the keys set)
+    # run thru all files (their list is the keys set)
     for outfile in igns_n_tols:
 
         if not isinstance(outfile, dict):
-            # if we don't have any information about the errors 
+            # if we don't have any information about the errors
             # for this file - define default one
             outfile = {'abs tol':
                        {'default': default_abs_tol},
@@ -320,7 +320,7 @@ def setup_default_tol(igns_n_tols, test_case):
 
         else:
             if test_case == 'perturbo_for_qe2pert':
-                # if we test perturbo for qe2pert, 
+                # if we test perturbo for qe2pert,
                 # we move error for qe2pert testing into the cells
                 # `abs_tol` and `rel_tol`
                 if 'qe2pert abs tol' in outfile.keys():

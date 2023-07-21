@@ -530,10 +530,10 @@ def clean_ephr_folders(ephr_failed, config_machine, keep_ephr, keep_preliminary)
         print(f'PERT_SCRATCH not set in the config_machine. using default location -  {work_path}')
     ephr_dict_path = 'epwan_info.yml'
     
-    #set of all ephr-files
+    # set of all ephr-files
     ephr_full_list = [ephr for ephr in open_yaml(ephr_dict_path)]
     
-    #set of ephr-files, for which tests have passed succescfully - we can delete them
+    # set of ephr-files, for which tests have passed succescfully - we can delete them
     deleting_ephr = list(set(ephr_full_list) - set(ephr_failed))
     print('\n == Tests finished ==\n\n')
     if not keep_preliminary:
@@ -559,7 +559,7 @@ def clean_ephr_folders(ephr_failed, config_machine, keep_ephr, keep_preliminary)
                             full_src = os.path.join(src, file_name)
                             full_dst = os.path.join(dst, file_name)
 
-                            #copy this file in the new folder
+                            # copy this file in the new folder
                             shutil.copy2(full_src, dst)
 
         # last steps in both cases - delete all computational folders
