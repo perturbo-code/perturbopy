@@ -13,8 +13,8 @@ class BandsCalcMode(CalcMode):
     """
     Class representation of a Perturbo bands calculation.
 
-    Parametersss
-    ------------
+    Parameters
+    ----------
     pert_dict : dict
     Dictionary containing the inputs and outputs from the bands calculation.
 
@@ -241,3 +241,5 @@ class BandsCalcMode(CalcMode):
 
         if show_kpoint_labels:
             ax = plot_recip_pt_labels(ax, self.kpt.labels, self.kpt.points, self.kpt.path)
+
+        return ax
