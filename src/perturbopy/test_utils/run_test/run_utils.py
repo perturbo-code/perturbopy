@@ -438,19 +438,18 @@ def key_in_dict(k, d, exact_match=False):
 
         return k, False
         
-import os
-import shutil
+
 
 
 def define_nq_num(output_name):
     """
-    Define the number of the q-points, 
+    Define the number of the q-points,
     obtained during the phonon
     calculation
 
     Parameters:
     output_name : str
-        name to the ph output file from which we obtain 
+        name to the ph output file from which we obtain
         number of q-points
 
     Returns
@@ -464,10 +463,11 @@ def define_nq_num(output_name):
                 nq_num = int(line.split()[1])
     return nq_num
 
+
 def ph_collection(prefix, nq_num):
     """
     Collect the phonon data into a directory called save.
-    The save directory contains all the information needed 
+    The save directory contains all the information needed
     for PERTURBO to interface with QE
 
     Parameters:
@@ -495,7 +495,7 @@ def ph_collection(prefix, nq_num):
         if file.startswith(f'{prefix}.dyn'):
             shutil.copy(file, 'save')
 
-    for nq in range(1, nq_num+1):
+    for nq in range(1, nq_num + 1):
         
         # copy dvscf files
         if nq > 1:
