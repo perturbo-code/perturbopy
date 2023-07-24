@@ -3,8 +3,9 @@
    test tags.
 """
 import os
-import sys
 import copy
+import shutil
+import sys
 from perturbopy.io_utils.io import open_yaml
 
 
@@ -436,3 +437,77 @@ def key_in_dict(k, d, exact_match=False):
                 break
 
         return k, False
+        
+import os
+import shutil
+
+
+def define_nq_num(output_name):
+    """
+    Define the number of the q-points, 
+    obtained during the phonon
+    calculation
+
+    Parameters:
+    output_name : str
+        name to the ph output file from which we obtain 
+        number of q-points
+
+    Returns
+    -------
+    nq_num : int
+       number of q-points
+    """
+    with open(output_name, "r") as f:
+        for i, line in enumerate(f):
+            if line.find('q-points)') != -1:
+                nq_num = int(line.split()[1])
+    return nq_num
+
+def ph_collection(prefix, nq_num):
+    """
+    Collect the phonon data into a directory called save.
+    The save directory contains all the information needed 
+    for PERTURBO to interface with QE
+
+    Parameters:
+    prefix : str
+        prefix of this calculation
+    nq_num : int
+        number of q points in this calculation
+    """
+    print(os.getcwd())
+    
+    os.makedirs('save', exist_ok=True)
+    
+    # remove wfc files in tmp
+    if os.path.exists('tmp'):
+        for file in os.listdir('tmp'):
+            if 'wfc' in file:
+                os.remove(f'tmp/{file}')
+
+    dir = 'tmp/_ph0'
+    
+    shutil.copytree(f'{dir}/{prefix}.phsave', f'save/{prefix}.phsave')
+    
+    # copy dyn files
+    for file in os.listdir('.'):
+        if file.startswith(f'{prefix}.dyn'):
+            shutil.copy(file, 'save')
+
+    for nq in range(1, nq_num+1):
+        
+        # copy dvscf files
+        if nq > 1:
+            shutil.copy(f'{dir}/{prefix}.q_{nq}/{prefix}.dvscf1', f'save/{prefix}.dvscf_q{nq}')
+            for file in os.listdir(f'{dir}/{prefix}.q_{nq}'):
+                if file.endswith('wfc'):
+                    os.remove(f'{dir}/{prefix}.q_{nq}/{file}')
+        else:
+            shutil.copy(f'{dir}/{prefix}.dvscf1', f'save/{prefix}.dvscf_q{nq}')
+            for file in os.listdir(dir):
+                if 'wfc' in file:
+                    os.remove(f'{dir}/{file}')
+                    
+    shutil.copy(f'save/{prefix}.dyn0', f'save/{prefix}.dyn0.xml')
+

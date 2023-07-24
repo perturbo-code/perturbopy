@@ -4,12 +4,13 @@ Testing Perturbo
 .. contents::
    :depth: 3
 
-To test Perturbo (``perturbo.x`` executable), we provide a testsuite within the `perturbopy` package. We recommend to run the testsuite:
+To test Perturbo (``qe2pert.x`` and ``perturbo.x`` executables), we provide a testsuite within the `perturbopy` package. We recommend to run the testsuite:
 
-* to verify that the code runs correctly after download and installation
-* if some modifications to the source code have been made.
+* to verify that the code runs correctly after download and installation;
+* if some modifications to the source code have been made;
+* if you want to commit the changes into the Perturbo project (int this case, this is an obligatory step).
 
-For the Perturbo code download and installation, please refer to `this page <https://perturbo-code.github.io/mydoc_installation.html>`_.
+For the Perturbo code download and installation, please refer to `this page <https://perturbo-code.github.io/mydoc_installation.html>`_. Also, you can use and test Perturbo from the `Docker image <https://perturbo-code.github.io/mydoc_docker.html>`_.
 
 Running testsuite
 -----------------
@@ -19,23 +20,55 @@ Basic run
 
 We assume that the `pertpy` Python environment is :ref:`activated <Conda activate>` and `perturbopy` is :ref:`installed <Installation>`.
 
-The testsuite automatically launches the Perturbo executable and verifies that the produced output is the same as the reference output produced beforehand. Therefore, the testsuite must have access to the Perturbo executable. This is done through the PERTURBO_RUN environmental variable.
+The testuite work consists of three parts:
+
+1. Run ``perturbo.x`` for several configurations of input files and check that the results obtained are the same as the reference;
+2. Perform ab initio calculations from scratch (with self-consitent calculation, more on that `here <https://perturbo-code.github.io/mydoc_qe2pert.html>`_), and use ``qe2pert.x`` to get a new epr file;
+3. Using the resulting epr files, run the same calculations as in step 1 again, and compare them with the reference ones.
+
+We need step 3 because we have no way to compare the epr files directly due to gauge freedom. Therefore, we need to use ``perturbo.x``, whose correctness we confirmed in step 1, to use it to determine whether ``qe2pert.x`` worked correctly.
+
+At the same time, the ``qe2pert.x`` test can be disabled and not run every time (this calculations are computationally expensive). This is governed by the parameterization of the tests, discussed below.
+
+To be able to run the calculations on a specific device, you need to make changes to the configuration file. You can find it in the ``config_machine`` folder. It is a YAML-file, which structure you can understand by the example:
+
+.. code-block:: python
+
+    PERT_SCRATCH: tmp
+    prel_coms:
+        - module load perturbo
+        - module load qe
+    comp_info:
+        scf: 
+            exec: srun -n 64 pw.x -npools 8
+        phonon:
+            exec: srun -n 64 ph.x -npools 8
+        nscf:
+            exec: srun -n 64 pw.x -npools 8
+        wannier90:
+            exec: srun -n 2 wannier90.x
+        pw2wannier90:
+            exec: srun -n 1 pw2wannier90.x
+        qe2pert:
+            prel_coms:
+                - export OMP_NUM_THREADS=8
+            exec: srun -n 8 qe2pert -npools 8
+        perturbo:
+            exec: srun -n 8 perturbo.x -npools 8
+
+			
+Let's analyze the meaning of each of the blocks:
+
+* ``PERT_SCRATCH`` is the address of the folder where the auxiliary files in the tests will be located. This is an optional parameter, in case of its absence the ``PERT_SCRATCH`` address will be used; 
+* ``prel_coms`` is a set of commands to be executed before each of the computational steps. This could be loading packages, specifying any environment variables, and so on;
+* ``comp_info`` - this block stores information about each computational step. If you only want to test ``perturbo.x``, you only need a block named ``perturbo``. In the case of full testing, you must prescribe blocks for each of the steps. Each block in ``comp_info`` may contain 2 more blocks - ``prel_coms`` and ``exec``.  The first one also specifies the preliminary commands, but they will be executed before a particular calculation step (optional block). The second one contains how to perform calculations for each step (mandatory block).
 
 .. note::
 
-   The PERTURBO_RUN environmental variable must be set before running the testsuite.
+   The ``config_machine.yaml`` must contain information about the execution of each step, which you make during the stesting
 
-Here are the examples to set the PERTURBO_RUN environmental variable:
 
-.. code-block:: console
-
-   (pertpy) $ # for sequential runs:
-   (pertpy) $ export PERTURBO_RUN='<path>/perturbo.x'
-
-   (pertpy) $ # for MPI (+OpenMP)
-   (pertpy) $ export PERTURBO_RUN='mpirun -np 4 <path>/perturbo.x -npools 4'
-
-Once, the PERTURBO_RUN variable is set up, navigate to the `perturbopy/tests` folder and run:
+Once, the ``config_machine.yaml`` is set up, navigate to the `perturbopy/tests_f90` folder and run:
 
 .. code-block:: console
 
@@ -43,7 +76,7 @@ Once, the PERTURBO_RUN variable is set up, navigate to the `perturbopy/tests` fo
 
 In the case of successful run of all tests, one will see **<n> passed** as the final line of the output, where <n> is the number of tests.
 
-By default, the tests wil be run in the *perturbopy/tests/PERTURBO_SCRATCH* directory. If all tests are passed, this directory will be empty after the pytest run. In the case of a failure of one or more tests, the corresponding test folder(s) will be not removed from the *tests/PERTURBO_SCRATCH* directory.
+By default, the tests wil be run in the *perturbopy/tests_f90/PERTURBO_SCRATCH* directory. If all tests are passed, this directory will be empty after the pytest run. In the case of a failure of one or more tests, the corresponding test folder(s) will be not removed from the *tests_f90/PERTURBO_SCRATCH* directory.
 
 On clusters and supercomputers, the testsuite can be launched both in the interactive mode and as a job. 
 
@@ -64,17 +97,18 @@ To print the duration for each test, run:
 
    (pertpy) $ pytest --durations=0
 
-To specify the folder where the tests should be run, set the following environmental variable:
-
-.. code-block:: console
-
-   (pertpy) $ export PERTURBO_SCRATCH='dir/to/run/tests'
-
 Run tests in the development stage:
 
 .. code-block:: console
 
    (pertpy) $ pytest --devel
+   
+Run tests in the development stage:
+
+.. code-block:: console
+
+   (pertpy) $ pytest --devel
+
 
 
 Running testsuite on NERSC
@@ -188,32 +222,32 @@ Adding new tests
 
 Each test must have the pert_input.yml file, that has the following structure:
 
-.. code-block :: python
+.. code-block:: python
 
-test info:
-   executable: perturbo.x
+	test info:
+	   executable: perturbo.x
 
-   epwan: epwan1
+	   epwan: epwan1
 
-   tags:
-      - tag1
-      - tag2
+	   tags:
+	      - tag1
+	      - tag2
 
-   desc:
-      "Test description"
+	   desc:
+	      "Test description"
 
-   test files:
-      pert_output.yml:
+	   test files:
+	      pert_output.yml:
 
-         #only applies to top dict
-         test keywords:
-            - bands
+	         #only applies to top dict
+	         test keywords:
+	            - bands
 
-         #applies to dict at all levels
-         ignore keywords:
-            - input parameters
-            - start date and time
-            - timings
+	         #applies to dict at all levels
+	         ignore keywords:
+	            - input parameters
+	            - start date and time
+	            - timings
 
 The following keys **must be present** in the ``test info`` section of `pert_input.yml` file:
 

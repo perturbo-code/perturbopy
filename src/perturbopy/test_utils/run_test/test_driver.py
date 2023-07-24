@@ -10,8 +10,8 @@ import subprocess
 from perturbopy.io_utils.io import open_yaml
 from perturbopy.test_utils.run_test.env_utils import run_from_config_machine
 from perturbopy.test_utils.run_test.env_utils import perturbo_scratch_dir_config
-from perturbopy.test_utils.run_test.run_utils import print_test_info
-from perturbopy.test_utils.run_test.run_utils import setup_default_tol
+from perturbopy.test_utils.run_test.run_utils import print_test_info, setup_default_tol
+from perturbopy.test_utils.run_test.run_utils import ph_collection, define_nq_num
 
 
 def run_perturbo(cwd, perturbo_driver_dir_path, config_machine,
@@ -126,7 +126,7 @@ def run_scf(cwd, work_path, config_machine, input_name='scf.in', output_name='sc
     os.chdir(cwd)
     
 
-def run_phonon(cwd, work_path, config_machine, input_name='ph.in', output_name='ph.out'):
+def run_phonon(cwd, work_path, config_machine, prefix, input_name='ph.in', output_name='ph.out'):
     """
     Function for nscf calculation
 
@@ -138,6 +138,8 @@ def run_phonon(cwd, work_path, config_machine, input_name='ph.in', output_name='
         path to dir with input file, where we'll run the calculations
     config_machine : dict
         dictionary, which include the commands for phonon calculation
+    prefix : str
+        prefix which we use for the filenames
     input_name : str, optional
         name of the input file, default: 'ph.in'
     output_name : str, optional
@@ -164,11 +166,10 @@ def run_phonon(cwd, work_path, config_machine, input_name='ph.in', output_name='
 
     subprocess.run(preliminary_commands(config_machine, 'phonon') + run, shell=True)
     
-    collect = 'bash ./ph-collect.sh'
-    print(f' == Collect files == :\n {collect}')
+    nq_num = define_nq_num(output_name)
+    print(f' == Collect files == :\n ph_collection({prefix},{nq_num})')
     sys.stdout.flush()
-    
-    subprocess.run(shlex.split(collect))
+    ph_collection(prefix, nq_num)
     
     os.chdir(cwd)
 
@@ -445,7 +446,7 @@ def run_ephr_calculation(ephr_name, config_machine):
     run_scf(cwd, work_path, config_machine)
     
     # run phonon
-    run_phonon(cwd, work_path, config_machine)
+    run_phonon(cwd, work_path, config_machine, prefix)
 
     # run nscf
     run_nscf(cwd, work_path, config_machine)
