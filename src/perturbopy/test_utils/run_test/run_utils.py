@@ -439,8 +439,6 @@ def key_in_dict(k, d, exact_match=False):
         return k, False
         
 
-
-
 def define_nq_num(output_name):
     """
     Define the number of the q-points,
@@ -510,4 +508,3 @@ def ph_collection(prefix, nq_num):
                     os.remove(f'{dir}/{file}')
                     
     shutil.copy(f'save/{prefix}.dyn0', f'save/{prefix}.dyn0.xml')
-
