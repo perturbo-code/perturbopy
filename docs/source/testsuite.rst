@@ -86,28 +86,65 @@ Parametrization of testsuite
 Using the command-line options and environmental variables, one can parametrize running the testsuite.
 
 To see a verbose output, run:
-
-.. code-block:: console
-
-   (pertpy) $ pytest -s
-
-To print the duration for each test, run:
-
-.. code-block:: console
-
-   (pertpy) $ pytest --durations=0
-
-Run tests in the development stage:
-
-.. code-block:: console
-
-   (pertpy) $ pytest --devel
    
-Run tests in the development stage:
+  
+   
+.. option:: -s
 
-.. code-block:: console
+   Print output of the testing functions.
+   
+.. option:: --durations
 
-   (pertpy) $ pytest --devel
+   Show times for tests and setup and teardown. If `--durations=0`, show all times, if `--durations=1` - for the slowest one, `--durations=2` - for the two slowest, etc.
+   
+.. option:: --devel
+
+   Additionally run the tests in the development stage.
+   
+.. option:: --tags
+
+   List of tags to include in this testsuite run.
+   
+.. option:: --exclude-tags
+
+   List of tags to exclude from this testsuite run.
+   
+.. option:: --ephr_tags
+
+   List of ephr_tags to include in this testsuite run.
+  
+.. option:: --exclude-ephr_tags
+
+   List of ephr_tags to exclude from this testsuite run.
+   
+.. option:: --epwan
+
+   List of epwan files to test.
+
+
+.. option:: --test-names
+
+   List of test folder names to include in this testsuite run.
+   
+.. option:: --run_qe2pert
+
+   Include the qe2pert tests.
+   
+.. option:: --config_machine
+
+   Name of file with computational information for qe2pert computation. Should be in the folder tests_f90/comp_qe2pert.
+
+.. option:: --keep_perturbo
+
+   Save all the materials related to perturbo tests.
+
+.. option:: --keep_ephr
+
+   Save all ephr-files from the qe2pert testing.
+   
+.. option:: --keep_preliminary
+
+   Save all preliminary files for ephr calculation.
 
 
 
