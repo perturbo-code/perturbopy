@@ -20,11 +20,11 @@ import pytest
 def pytest_addoption(parser):
 
     parser.addoption('--tags',
-                     help='List of tags to include in this testsuite run.',
+                     help='List of tests tags to include in this testsuite run.',
                      nargs='*', default=None)
 
     parser.addoption('--exclude-tags',
-                     help='List of tags to exclude from this testsuite run.',
+                     help='List of tests tags to exclude from this testsuite run.',
                      nargs='*', default=None)
                      
     parser.addoption('--ephr_tags',
@@ -40,7 +40,7 @@ def pytest_addoption(parser):
                      nargs='*', default=None)
 
     parser.addoption('--test-names',
-                     help='List of test folder names to include in this testsuite run.',
+                     help='List of test names to include in this testsuite run.',
                      nargs='*', default=None)
 
     parser.addoption('--devel',
@@ -64,7 +64,7 @@ def pytest_addoption(parser):
                      action='store_true')
                      
     parser.addoption('--keep_preliminary',
-                     help='Save all preliminary files for ephr calculation',
+                     help='Save all preliminary files for ephr files calculations',
                      action='store_true')
 
 # generation of test for each type of test function. This function automatically called,
@@ -152,13 +152,6 @@ def config_machine(request):
 @pytest.fixture
 def keep_perturbo(request):
     return request.param
-
-# # this is predefined function of PyTest, which is runned after the end of all tests
-# def pytest_unconfigure(config):
-#     # Run your auxiliary function here
-#     if config.getoption('clean_tests'):
-#         clean_test_folder()
-        
 
 # this is predefined function of PyTest, which is runned after the end of all tests.
 # here we delete all ephr-folders, for which all tests were passed
