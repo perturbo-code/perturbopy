@@ -6,7 +6,7 @@ Testing Perturbo
 
 Perturbo package provides two executables: 
 
-1. ``qe2pert.x`` to postprocess the preliminary DFT, DFPT, and Wannier90 calculations and to compute the electron-phonon elements in the Wannier basis stored in the ``prefix_epr.h5`` file.
+1. ``qe2pert.x`` to postprocess the preliminary DFT, DFPT, and Wannier90 calculations and to compute the electron-phonon matrix elements in the Wannier basis stored in the ``prefix_epr.h5`` file.
 
 2. ``perturbo.x`` - the core executable of Perturbo package performing transport calculations, ultrafast dynamics, etc. 
 
@@ -16,7 +16,7 @@ To test Perturbo (``qe2pert.x`` and ``perturbo.x`` executables), we provide a te
 
 * to verify that the code runs correctly after download and installation;
 * if some modifications to the source code have been made;
-* if you would like to contribute to the Perturbo public version
+* if you would like to contribute to the Perturbo public version (in this situation, new test cases are also required).
 
 For the Perturbo code download and installation, please refer to `this page <https://perturbo-code.github.io/mydoc_installation.html>`_. Also, you can use and test Perturbo from the `Docker image <https://perturbo-code.github.io/mydoc_docker.html>`_.
 
@@ -34,22 +34,31 @@ If you plan to use (or you did modifications only to) the ``perturbo.x`` executa
 
 To test the ``perturbo.x`` executable:
 
-1. Modify the *config_machine/config_machine.yml* file:
+1. Copy the template YAML file in the *config_machine* folder (!!! check this !!!):
+
+.. code-block:: python
+    
+    cd config_machine
+    cp config_machine_perturbo.yml config_machine.yml
+
+
+2. Modify the *config_machine/config_machine.yml* YAML file:
 
 .. code-block:: python
 
     PERT_SCRATCH: tmp
     prel_coms:
         - module load perturbo
+        - export OMP_NUM_THREADS=8
     comp_info:
         perturbo:
             exec: srun -n 8 perturbo.x -npools 8
 
 Below the meaning of each of the blocks:
 
-* ``PERT_SCRATCH`` is the address of the folder where the auxiliary files in the tests will be located. This is an optional parameter, in case of its absence the ``PERT_SCRATCH`` folder name will be used.
-* ``prel_coms`` is a set of commands to be executed *before* the ``perturbo.x`` run. This could be loading packages, specifying any environment variables, etc.
-* ``comp_info`` - this block stores information about ``perturbo.x`` computation. It contains the exec field that specifies the execution command taking into account the parallelizaion and other commands specific to a machine.
+* ``PERT_SCRATCH`` is the address of the folder where the auxiliary files in the tests will be located. 
+* ``prel_coms`` is a set of commands to be executed *before* the ``perturbo.x`` run. This could be loading packages, specifying any environment variables, etc. Enter every command as a separate line preceded by a hyphen, respecting the file indentation.
+* ``comp_info`` - this block contains information about the ``perturbo.x`` computation. It has the ``exec`` field that specifies the run command taking into account the parallelizaion and other machine specifics. In this example, ``perturbo.x`` will be ran with the SLURM srun command using 8 MPI tasks
 
 Once, the ``config_machine.yml`` is set up, navigate to the `perturbopy/tests_f90` folder and run:
 
@@ -59,7 +68,7 @@ Once, the ``config_machine.yml`` is set up, navigate to the `perturbopy/tests_f9
 
 In the case of successful run of all tests, one will see **<n> passed** as the final line of the output, where <n> is the number of tests. You will also see that some tests have been skipped. This is fine, because the tests for ``qe2pert.x`` are skipped if it's not specified.
 
-By default, the tests wil be run in the *perturbopy/tests_f90/PERT_SCRATCH* directory. If all tests are passed, this directory will be empty after the pytest run. In the case of a failure of one or more tests, the corresponding test folder(s) will be not removed from the *tests_f90/PERT_SCRATCH* directory.
+If all tests are passed, the ``PERT_SCRATCH`` directory will be empty after the ``pytest`` run. In the case of a failure of one or more tests, the corresponding test folder(s) kept int the ``PERT_SRACTH`` directory.
 
 On clusters and supercomputers, the testsuite can be launched both in the interactive mode and as a job. 
 
@@ -69,16 +78,16 @@ Complete test of ``qe2pert.x`` and ``perturbo.x``
 If you would like to test both ``qe2pert.x`` and ``perturbo.x`` executables, which is recommended after a compilation of the code from scratch or if you have done modifications to ``qe2pert.x``, 
 the testuite will consist of three parts:
 
-1. Run ``perturbo.x`` for several materials and calculation modes and check that the results obtained with the new executable are the same as the reference.
-2. Perform preliminary *ab initio* calculations from scratch (DFT, DFPT, Wannier90, more on that `here <https://perturbo-code.github.io/mydoc_qe2pert.html>`_), and use ``qe2pert.x`` to get new ``prefix_epr.h5`` files.
-3. Run the same calculations as in step 1 again, and compare the outputs of ``perturbo.x`` produced with the new ``prefix_epr.h5`` files with the reference ones.
+1. Test ``perturbo.x`` (similar to the section above).
+2. Perform preliminary *ab initio* calculations from scratch (DFT, DFPT, Wannier90, more on that `here <https://perturbo-code.github.io/mydoc_qe2pert.html>`_), and use ``qe2pert.x`` to generate new ``prefix_epr.h5`` files.
+3. Run the same calculations as in step 1 again, and compare the outputs of ``perturbo.x`` produced with the new ``prefix_epr.h5`` files. 
 
-The step 3 is necessary to test the ``qe2pert.x`` executable because one cannot compare the ``prefix_epr.h5`` files to the reference once directly due to gauge freedom. Therefore, we need to use ``perturbo.x``, whose correctness we confirmed in step 1, to use it to determine whether ``qe2pert.x`` worked correctly. Since there is no need to check all the ``perturbo.x`` tests to verify the work of ``qe2pert.x``, at the third stage we run only three tests for each of the presented ``prefix_epr.h5`` files - ``phdisp``, ``ephmat`` and ``bands``. If these three tests pass, it means that ``qe2pert.x`` works correctly.
+The step 3 is necessary to test the ``qe2pert.x`` executable because one cannot compare the ``prefix_epr.h5`` files to the reference ones directly due to gauge freedom. Therefore, we need to use ``perturbo.x``, whose correctness we confirmed in step 1, to use it to determine whether ``qe2pert.x`` worked correctly. Since there is no need to check all the ``perturbo.x`` tests to verify the work of ``qe2pert.x``, at the third stage we run only three claculation modes of Perturbo for each ``prefix_epr.h5`` file: ``phdisp``, ``ephmat`` and ``bands``. If these three tests pass, it means that ``qe2pert.x`` works correctly.
 
 By default, the ``qe2pert.x`` testing is disabled as it is more time consuming (!!! indicate time estimation !!!) and requires a user to specify the Quantum Espresso and Wannier90 executables.
 To enable the tests of ``qe2pert.x``, activate the ??? option.
 
-Similarly to a simple ``perturbo.x`` tests, the user needs to modify the *config_machine/config_machine.yml* file, but this time the file should include more information.
+Similarly to ``perturbo.x``-only tests, the user needs to modify the *config_machine/config_machine.yml* file, but this time the file should include more information.
 
 Copy the template YAML file (check this !!!):
 
@@ -111,10 +120,12 @@ The file has the following structure:
                 - export OMP_NUM_THREADS=8
             exec: srun -n 8 qe2pert -npools 8
         perturbo:
+            prel_coms:
+                - export OMP_NUM_THREADS=8
             exec: srun -n 8 perturbo.x -npools 8
 
 			
-where ``PERT_SCRATCH`` amd ``prel_coms`` are similar to the ``perturbo.x``-only testing. Please note that the ``prel_coms`` will be executed before each of the stages. ``comp_info`` now includes the run commands for each of the stages. If there are preliminary commands to be run *only* before a specific stage, this can be specified by the ``prel_coms`` field within the stage (see example for the ``qe2pert`` run).
+where ``PERT_SCRATCH`` amd ``prel_coms`` are similar to the ``perturbo.x``-only testing. Please note that the ``prel_coms`` (the top one) will be executed before each of the stages. ``comp_info`` now includes the run commands for each of the stages. If there are preliminary commands to be run *only* before a specific stage, this can be specified by the ``prel_coms`` field within the stage (see examples for the ``qe2pert`` ``perturbo`` runs in the YAML file).
 
 .. note::
 

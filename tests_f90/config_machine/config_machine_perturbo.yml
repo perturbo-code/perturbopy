@@ -3,4 +3,5 @@ comp_info:
     perturbo:
         prel_coms:
             - module load perturbo
+            - export OMP_NUM_THREADS=8
         exec: srun -n 8 perturbo.x -npools 8
