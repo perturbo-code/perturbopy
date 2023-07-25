@@ -82,8 +82,8 @@ the testuite will consist of three parts:
 
 The step 3 is necessary to test the ``qe2pert.x`` executable because one cannot compare the ``prefix_epr.h5`` files to the reference ones directly due to gauge freedom. Therefore, we need to use ``perturbo.x``, whose correctness we confirmed in step 1, to use it to determine whether ``qe2pert.x`` worked correctly. Since there is no need to check all the ``perturbo.x`` tests to verify the work of ``qe2pert.x``, at the third stage we run only three claculation modes of Perturbo for each ``prefix_epr.h5`` file: ``phdisp``, ``ephmat`` and ``bands``. If these three tests pass, it means that ``qe2pert.x`` works correctly.
 
-By default, the ``qe2pert.x`` testing is disabled as it is more time consuming (!!! indicate time estimation !!!) and requires a user to specify the Quantum Espresso and Wannier90 executables.
-To enable the tests of ``qe2pert.x``, activate the ??? option.
+By default, the ``qe2pert.x`` testing is disabled as it is very time consuming (takes 7 times longer than ``perturbo.x`` testing) and requires a user to specify the Quantum Espresso and Wannier90 executables.
+To enable the tests of ``qe2pert.x``, activate the ``--run_qe2pert`` option.
 
 Similarly to ``perturbo.x``-only tests, the user needs to modify the *config_machine/config_machine.yml* file, but this time the file should include more information.
 
