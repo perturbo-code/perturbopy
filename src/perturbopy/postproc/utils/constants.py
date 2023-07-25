@@ -1,5 +1,5 @@
 """
-This is a module for working with constants, including storing values for different units and finding conversion factors
+This is a module for working with constants, including storing values for different units and finding conversion factors.
 
 """
 
@@ -22,30 +22,39 @@ length_units_vals = {'bohr': (1, 0), 'angstrom': (0.529177249, 0), 'm': (5.29177
 
 recip_points_units_names = {'cartesian': ['tpiba', 'cartesian', 'cart'], 'crystal': ['crystal', 'cryst', 'frac', 'fractional']}
 
-fcc_points = {'L': [0.5, 0.5, 0.5], 'X': [0.5, 0.0, 0.5],
-                            'W': [0.5, 0.25, 0.75], 'K': [0.375, 0.375, 0.75],
-                            r'$\Gamma$': [0, 0, 0]}
-
-special_recip_points_bct = {'L': [-0.25, 0.25, 0.25], 'X': [-0.5, -0.5, 0.5],
-                            'W': [-0.75, -0.25, 0.25], 'K': [-0.75, 0., 0.],
-                            '$\\Gamma$': [0., 0., 0.]}
+fcc_points = {'L': [0.5, 0.5, 0.5], 'X': [0.5, 0.0, 0.5], 'W': [0.5, 0.25, 0.75], 'K': [0.375, 0.375, 0.75], 'G': [0, 0, 0]}
 
 
 def prefix_exp(prefix):
     """"
-    Method to find the exponent corresponding to a prefix.
-
-    Example: the prefix 'c' (centi) corresponds to 1e-2, so the exponent returned would be -2
+    Finds the exponent corresponding to a prefix.
+    For example, the prefix 'c' (centi) corresponds to 1e-2, so the exponent returned would be -2.
 
     Parameters
     ----------
     prefix : str
-       The 1-2 letter case-sensitive prefix.
+        The 1-2 letter case-sensitive prefix.
 
     Returns
     -------
     exponent : int
-       The exponent corresponding to the prefix.
+        The exponent corresponding to the prefix.
+
+    Raises
+    ------
+    ValueError
+        If `prefix` is not in prefix_exps_dict.keys(). These are:
+            ['y', 'z', 'a', 'f', 'p', 'n', 'mu', 'm', 'c', 'd',
+             'da', 'h', 'k', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y']
+
+    Examples
+    --------
+    >>> prefix_exp('c')
+    -2
+    >>> prefix_exp('mu')
+    -6
+    >>> prefix_exp(k)
+    3
 
     """
 
@@ -60,41 +69,58 @@ def prefix_exp(prefix):
 
 def find_prefix_and_base_units(user_input_units, units_dict):
     """
-    Method to dissect units to a prefix and base units, both with standardized names as specified by units_dict.
-
-    Example:  If user_input_units = 'meV', the return values will be ('m', 'eV').
+    Dissects units to a prefix and base units, both with standardized names as specified by units_dict.
+    For example, for the units 'meV', the prefix is 'm' and the base units are 'eV'.
 
     Parameters
     ----------
     user_input_units : str
-       The units to be analyzed for its prefix and base.
+        The units to be analyzed for its prefix and base.
 
     units_dict : dict
-       A dictionary specifying the standard unit name corresponding to a set of possible units names (case-insensitive).
+        A dictionary specifying the standard unit name corresponding to a set of possible units names (case-insensitive).
 
-       Example: Several possible variations of the unit hatree include Ha, hartree, etc. If Ha is
-                chosen as the standard name, then the dictionary entry will be:
-                {'Ha': ['ha', 'hartree', 'eh', 'e_h', 'hartrees']}
+        For example, several possible variations of the unit hatree include Ha, hartree, etc. If Ha is
+        chosen as the standard name, then the dictionary entry will be:
+        {'Ha': ['ha', 'hartree', 'eh', 'e_h', 'hartrees']}
 
-                Adding the unit Joule to the dict, and setting its standard name to 'J':
-                {'Ha': ['ha', 'hartree', 'eh', 'e_h', 'hartrees'], 'J': ['j', 'joule', 'joules']}
+        Adding the unit Joule to the dict, and setting its standard name to 'J':
+        {'Ha': ['ha', 'hartree', 'eh', 'e_h', 'hartrees'], 'J': ['j', 'joule', 'joules']}
 
     Returns
     -------
     prefix : str
-       The standardized prefix.
+        The standardized prefix.
 
     standard_units_name : str
-       The standardized base unit name.
+        The standardized base unit name.
 
     Raises
     ------
     ValueError
-       If the user_input_units is not in the keys or values of the units_dict.
+        If the user_input_units, after removing any prefixes, is not in the keys or values of the units_dict.
+
+    Examples
+    --------
+    >>> find_prefix_and_base_units('nm', {'m':['m', 'meter']})
+    ('n', 'm')
+    >>> find_prefix_and_base_units('nmeter', {'m':['m', 'meter']})
+    ('n', 'm')
+    >>> find_prefix_and_base_units('meter', {'m':['m', 'meter']})
+    ('', 'm')
+    >>> find_prefix_and_base_units('cm', {'m':['m', 'meter']}, 'bohr': ['bohr', 'a.u'])
+    ('c', 'm')
+    >>> find_prefix_and_base_units('a.u.', {'m':['m', 'meter']}, 'bohr': ['bohr', 'a.u.'])
+    ('', 'bohr')
+
 
     """
 
     user_input_units = user_input_units.replace(' ', '').replace('-', '')
+
+    # only case where prefix may get confused
+    if user_input_units == 'mm':
+        return 'm', 'm'
 
     for units_name in units_dict.keys():
         for name_variation in units_dict[units_name]:
@@ -113,30 +139,31 @@ def find_prefix_and_base_units(user_input_units, units_dict):
 
 def standardize_units_name(user_input_units, units_dict):
     """
-    Method to convert any units to their standard name as specified in units_dict.
-
-    Example:  if user_input_units = 'hartree', and units dict = {'Ha': ['ha', 'hartree', 'eh', 'e_h', 'hartrees']}
-              the return value will be ('Ha')
+    Converts any units to their standard name as specified in units_dict. Uses find_prefix_and_base_units to convert
+    user_input_units to a prefix and standardized base units, then combines them into one string.
 
     Parameters
     ----------
     user_input_units : str
-       The units to be standardized
+        The units to be standardized
 
     units_dict : dict
-       A dictionary specifying the standard unit name corresponding to a set of possible units names (case-insensitive).
-
-       Example: Several possible variations of the unit hatree include Ha, hartree, etc. If Ha is
-                chosen as the standard name, then the dictionary entry will be:
-                {'Ha': ['ha', 'hartree', 'eh', 'e_h', 'hartrees']}
-
-                Adding the unit Joule to the dict, and setting its standard name to 'J':
-                {'Ha': ['ha', 'hartree', 'eh', 'e_h', 'hartrees'], 'J': ['j', 'joule', 'joules']}
+        A dictionary specifying the standard unit name corresponding to a set of possible units names (case-insensitive).
+        See prefix_and_base_units for details.
 
     Returns
     -------
     standard_units : str
        The standardized units name.
+
+    Examples
+    --------
+    >>> find_prefix_and_base_units('nm', {'m':['m', 'meter']})
+    'nm'
+    >>> find_prefix_and_base_units('nmeter', {'m':['m', 'meter']})
+    'nm'
+    >>> find_prefix_and_base_units('a.u.', {'m':['m', 'meter']}, 'bohr': ['bohr', 'a.u.'])
+    'bohr'
 
     """
     prefix, units = find_prefix_and_base_units(user_input_units, units_dict)
@@ -146,44 +173,58 @@ def standardize_units_name(user_input_units, units_dict):
 
 def conversion_factor(init_units, final_units, units_names, units_vals):
     """
-    Method to find the conversion factor between two units.
+    Finds the conversion factor between two units.
 
     Parameters
     ----------
     init_units : str
-       The initial units in the conversion.
+        The initial units in the conversion.
 
     final_units : str
-       The final units in the conversion.
+        The final units in the conversion.
 
     units_names : dict
-       A dictionary specifying the standard unit name corresponding to a set of possible units names (case-insensitive).
-
-       Example: Several possible variations of the unit hatree include Ha, hartree, etc. If Ha is
-                chosen as the standard name, then the dictionary entry will be:
-                {'Ha': ['ha', 'hartree', 'eh', 'e_h', 'hartrees']}
-
-                Adding the unit Joule to the dict, and setting its standard name to 'J':
-                {'Ha': ['ha', 'hartree', 'eh', 'e_h', 'hartrees'], 'J': ['j', 'joule', 'joules']}
+        A dictionary specifying the standard unit name corresponding to a set of possible units names (case-insensitive).
+        See prefix_and_base_units for details.
 
     units_vals : dict
-       A dictionary specifying the conversion factors between different units, with units labeled by their standard name as
-       specified in units_names. Values are represented as tuples (base, exponent).
+        A dictionary specifying the conversion factors between different units, with units labeled by their standard name as
+        specified in units_names. Values are represented as tuples (base, exponent).
 
-       Example: For energies, possible units include hartrees and electron-volts.' Setting one value (hartree = 1), the remaining values
-                are the conversion factors between different units and hartrees.
+        Example: For energies, possible units include hartrees and electron-volts.' Setting one value (hartree = 1), the remaining values
+                 are the conversion factors between different units and hartrees.
 
-       energy_units_vals = {'eV': (2.7211396132, 1), 'Ha': (1, 0),'Ry': (0.5, 0)}
+                 energy_units_vals = {'eV': (2.7211396132, 1), 'Ha': (1, 0),'Ry': (0.5, 0)}
 
     Returns
     -------
     conversion_factor : float
        The conversion factor to convert from init_units to final_units.
 
+    Raises
+    ------
+    ValueError
+        If the base units of `init_units` or `final_units` are not in the keys of `units_vals`
+
+    Examples
+    --------
+        >>> conversion_factor('fm', 'cm', {m': ['m', 'meter']},
+                                          {'m': (5.29177249, -11)})
+        1e-13
+        >>> conversion_factor('a.u', 'bohr', {'bohr': ['bohr', 'a.u'], 'angstrom': ['angstrom, a']},
+                                             {'bohr': (1, 0), 'angstrom': (0.529177249, 0)})
+        1.0
+        >>> conversion_factor('a.u', 'angstrom', {'bohr': ['bohr', 'a.u'], 'angstrom': ['angstrom, a']},
+                                                 {'bohr': (1, 0), 'angstrom': (0.529177249, 0)})
+        0.529177249
+         
     """
 
     init_prefix, init_units = find_prefix_and_base_units(init_units, units_names)
     final_prefix, final_units = find_prefix_and_base_units(final_units, units_names)
+
+    if init_units not in units_vals.keys() or final_units not in units_vals.keys():
+        raise ValueError(f"Base units {init_units}, {final_units} are not in the units_vals dictionary: {list(units_vals.keys())}")
 
     init_val = units_vals[init_units]
     final_val = units_vals[final_units]
@@ -196,21 +237,28 @@ def conversion_factor(init_units, final_units, units_names, units_vals):
 
 def energy_conversion_factor(init_units, final_units):
     """
-    Method to find the conversion factor between two energy units.
+    find the conversion factor between two energy units.
 
     Parameters
     ----------
     init_units : str
-       The initial units in the conversion.
+        The initial units in the conversion.
 
     final_units : str
-       The final units in the conversion.
+        The final units in the conversion.
 
     Returns
     -------
     conversion_factor : float
-       The conversion factor to convert from init_units to final_units.
+        The conversion factor to convert from init_units to final_units.
 
+    Examples
+    --------
+    >>> energy_conversion_factor('meV', 'Ha')
+    3.674930882447527e-05
+    >>> energy_conversion_factor('Ry', 'Ha')
+    2.0
+       
     """
 
     return conversion_factor(init_units, final_units, energy_units_names, energy_units_vals)
@@ -218,20 +266,27 @@ def energy_conversion_factor(init_units, final_units):
 
 def length_conversion_factor(init_units, final_units):
     """
-    Method to find the conversion factor between two length units.
+    find the conversion factor between two length units.
 
     Parameters
     ----------
     init_units : str
-       The initial units in the conversion.
+        The initial units in the conversion.
 
     final_units : str
-       The final units in the conversion.
+        The final units in the conversion.
 
     Returns
     -------
     conversion_factor : float
-       The conversion factor to convert from init_units to final_units.
+        The conversion factor to convert from init_units to final_units.
+
+    Examples
+    --------
+    >>> length_conversion_factor('a.u', 'bohr')
+    1.0
+    >>> length_conversion_factor('a.u', 'nm')
+    5.29177249e-2
 
     """
 
@@ -240,7 +295,7 @@ def length_conversion_factor(init_units, final_units):
 
 def hbar(units):
     """
-    Method to find the value of hbar for specific units.
+    find the value of hbar for specific units.
 
     Parameters
     ----------
@@ -251,6 +306,11 @@ def hbar(units):
     -------
     hbar : float
        The value of hbar in the specified units.
+
+    Raises
+    ------
+    ValueError
+        If `units` is not in the keys of `hbar_dict`
 
     """
     hbar_dict = {'ev*fs': (6.582119569, -1), 'ev*s': (6.582119569, -16), 'atomic': (1, 0), 'J*s': (1.054571817, -34)}
