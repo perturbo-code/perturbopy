@@ -1,5 +1,7 @@
 import numpy as np
+import warnings
 
+fcc_points = {'L': [0.5, 0.5, 0.5], 'X': [0.5, 0.0, 0.5], 'W': [0.5, 0.25, 0.75], 'K': [0.375, 0.375, 0.75], 'G': [0, 0, 0]}
 
 def reshape_points(point_array):
     """
@@ -21,17 +23,32 @@ def reshape_points(point_array):
     point_array: array
        An array of reciprocal points with shape (3,N)
 
+    Raises
+    ------
+    ValueError
+        If the shape of `point_array` is not (3, N), (N, 3), or (3,)
+
+    Warns
+    -----
+    UserWarning
+        If `point_array` is a 3x3 array, a warning is issued that the points are
+        assumed to be column-oriented already.
+
     """
     point_array = np.array(point_array)
+    point_array_shape = np.shape(point_array)
 
-    if np.shape(point_array)[0] == 3:
-        if len(np.shape(point_array)) == 1:
-            return np.reshape(point_array, (3, 1))
-        else:
-            return point_array
+    if 3 not in point_array_shape:
+        raise ValueError('Reciprocal points should be inputted as a 3xN array, where N is the number of points.')
 
-    elif np.shape(point_array)[1] != 3:
-        raise ValueError('Reciprocal points should be inputted as a 3xN matrix, where N is the number of points.')
+    if len(point_array_shape) == 1:
+        return np.reshape(point_array, (3, 1))
+
+    elif point_array_shape[0] == 3:
+        if point_array_shape[1] == 3:
+            warnings.warn('Reciprocal points are 3x3 array; assume points are already column-oriented', UserWarning)
+        return point_array
+
     else:
         return np.transpose(point_array)
 
@@ -110,7 +127,12 @@ def compute_distances(point_array1, point_array2):
     point_array1 = reshape_points(point_array1)
     point_array2 = reshape_points(point_array2)
 
-    distances = np.linalg.norm(reshape_points(point_array1) - reshape_points(point_array2), axis=0)
+    if np.shape(point_array1) != np.shape(point_array2) and np.shape(point_array1) != (3, 1) and np.shape(point_array2) != (3, 1):
+        print(np.shape(point_array1))
+        print(np.shape(point_array2))
+        raise ValueError("Shape of arrays should be the same, or one array should only contain one k-point.")
+
+    distances = np.linalg.norm(point_array1 - point_array2, axis=0)
 
     return distances
 

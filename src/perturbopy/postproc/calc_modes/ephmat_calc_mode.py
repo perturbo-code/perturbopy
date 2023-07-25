@@ -1,3 +1,9 @@
+import numpy as np
+from perturbopy.postproc.calc_modes.calc_mode import CalcMode
+from perturbopy.postproc.dbs.energy_db import EnergyDB
+from perturbopy.postproc.dbs.recip_pt_db import RecipPtDB
+from perturbopy.postproc.utils.plot_tools import plot_dispersion, plot_recip_pt_labels, plot_vals_on_bands
+
 class EphmatCalcMode(CalcMode):
     """
     Class representation of a Perturbo ephmat calculation.
@@ -38,7 +44,7 @@ class EphmatCalcMode(CalcMode):
         qpoint_units = self._pert_dict['ephmat'].pop('q-point coordinate units')
         qpoint = np.array(self._pert_dict['ephmat'].pop('q-point coordinates'))
 
-        ephmat_dat = self._pert_dict['ephmat'].pop('phonon index')
+        ephmat_dat = self._pert_dict['ephmat'].pop('phonon mode')
         
         self.kpt = RecipPtDB.from_lattice(kpoint, kpoint_units, self.lat, self.recip_lat, kpath, kpath_units)
         self.qpt = RecipPtDB.from_lattice(qpoint, qpoint_units, self.lat, self.recip_lat, qpath, qpath_units)
@@ -56,13 +62,91 @@ class EphmatCalcMode(CalcMode):
         self.defpot = EnergyDB(defpot, defpot_units)
         self.ephmat = EnergyDB(ephmat, ephmat_units)
 
-    def plot_phdisp
+    def plot_phdisp(self, ax, show_qpoint_labels=True, c='k', ls='-', energy_window=None):
+        """
+        Method to plot the phonon dispersion.
 
-    def plot_defpot
+        Parameters
+        ----------
+        ax : matplotlib.axes.Axes
+           Axis on which to plot the phdisp.
 
-    def plot_ephmat
+        energy_window : tuple of int, optional
+           The range of band energies to be shown on the y-axis.
 
-    def compare_ephmat
+        show_qpoint_labels : bool, optional
+           If true, the q-point labels stored in the labels attribute will be shown on the plot. Default true.
+
+        Returns
+        -------
+        ax: matplotlib.axes.Axes
+           Axis with the plotted bands.
+
+        """
+        ax = plot_dispersion(ax, self.qpt.path, self.phdisp.energies, self.phdisp.units, c, ls, energy_window)
+
+        if show_kpoint_labels:
+            ax = plot_recip_pt_labels(ax, self.qpt.labels, self.qpt.points, self.qpt.path)
+
+        return ax
+
+    def plot_defpot(self, ax, show_qpoint_labels=True, cmap='RdBu', energy_window=None):
+        """
+        Method to plot the phonon dispersion.
+
+        Parameters
+        ----------
+        ax : matplotlib.axes.Axes
+           Axis on which to plot the phdisp.
+
+        energy_window : tuple of int, optional
+           The range of band energies to be shown on the y-axis.
+
+        show_qpoint_labels : bool, optional
+           If true, the q-point labels stored in the labels attribute will be shown on the plot. Default true.
+
+        Returns
+        -------
+        ax: matplotlib.axes.Axes
+           Axis with the plotted bands.
+
+        """
+        ax = plot_vals_on_bands(ax, self.qpt.path, self.phdisp.energies, self.phdisp.units, values=self.defpot.energies, energy_window=energy_window, cmap=cmap)
+
+        if show_qpoint_labels:
+            ax = plot_recip_pt_labels(ax, self.qpt.labels, self.qpt.points, self.qpt.path)
+
+        return ax
+
+    def plot_ephmat(self, ax, show_qpoint_labels=True, cmap='RdBu', energy_window=None):
+        """
+        Method to plot the phonon dispersion.
+
+        Parameters
+        ----------
+        ax : matplotlib.axes.Axes
+           Axis on which to plot the phdisp.
+
+        energy_window : tuple of int, optional
+           The range of band energies to be shown on the y-axis.
+
+        show_qpoint_labels : bool, optional
+           If true, the q-point labels stored in the labels attribute will be shown on the plot. Default true.
+
+        Returns
+        -------
+        ax: matplotlib.axes.Axes
+           Axis with the plotted bands.
+
+        """
+        ax = plot_vals_on_bands(ax, self.qpt.path, self.phdisp.energies, self.phdisp.units, values=self.ephmat.energies, energy_window=energy_window, cmap=cmap)
+
+        if show_qpoint_labels:
+            ax = plot_recip_pt_labels(ax, self.qpt.labels, self.qpt.points, self.qpt.path)
+
+        return ax
+
+    # def compare_ephmat
 
 
 
