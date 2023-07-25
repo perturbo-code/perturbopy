@@ -26,7 +26,7 @@ The testuite work consists of three parts:
 2. Perform ab initio calculations from scratch (with self-consitent calculation, more on that `here <https://perturbo-code.github.io/mydoc_qe2pert.html>`_), and use ``qe2pert.x`` to get a new epr file;
 3. Using the resulting epr files, run the same calculations as in step 1 again, and compare them with the reference ones.
 
-We need step 3 because we have no way to compare the epr files directly due to gauge freedom. Therefore, we need to use ``perturbo.x``, whose correctness we confirmed in step 1, to use it to determine whether ``qe2pert.x`` worked correctly. Since there is no need to check all the `perturbo` tests to verify the work of `qe2pert`, at the third stage we run only three tests for each of the presented epwan files - ``phdisp``, ``ephmat`` and ``bands``. If these three tests pass, it means that the epwan file we obtained has physically reasonable values.
+We need step 3 because we have no way to compare the epr files directly due to gauge freedom. Therefore, we need to use ``perturbo.x``, whose correctness we confirmed in step 1, to use it to determine whether ``qe2pert.x`` worked correctly. Since there is no need to check all the ``perturbo`` tests to verify the work of ``qe2pert``, at the third stage we run only three tests for each of the presented epwan files - ``phdisp``, ``ephmat`` and ``bands``. If these three tests pass, it means that the epwan file we obtained has physically reasonable values.
 
 At the same time, the ``qe2pert.x`` test can be disabled and not run every time (this calculations are computationally expensive). This is governed by the parameterization of the tests, discussed below.
 
@@ -230,11 +230,11 @@ Adding new tests
 New tests for ``perturbo``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you want to add new tests for existing epwan-files, you need to provide the following information:
+If you want to add new tests for existing epwan files, you need to provide the following information:
 
-1. Test folder in format `epwanN-test-name`, where `N` - number of corresponding epwan-file. This folder should be saved in the directory `tests_f90/tests_perturbo` and contain:
+1. Test folder in format `epwanN-test-name`, where `N` - number of corresponding epwan file. This folder should be saved in the directory `tests_f90/tests_perturbo` and contain:
 
-	* Corresponding Epwan-file;
+	* Link to the corresponding epwan file (all files are saved in the folder `/perturbopy/tests_f90/refs_perturbo/epwan_files`);
 	* Input file `pert.in`;
 	* All necessary computational files for this input;
 	* File `pert_input.yml`, that has the following structure:
@@ -278,7 +278,7 @@ If you want to add new tests for existing epwan-files, you need to provide the f
 
 	The following keys **must be present** in the ``test info`` section of `pert_input.yml` file:
 
-	* ``epwan`` - name of corresponding epwan-file;
+	* ``epwan`` - name of corresponding epwan file;
 	* ``desc`` - description of this test;
 	* ``test files`` - names of files, for which we make a comparison;
 	* ``test keywords`` - which sections of the corresponding file would be checked.
@@ -293,7 +293,7 @@ If you want to add new tests for existing epwan-files, you need to provide the f
 	   |a - b| \leq (abs\_tol + rel\_tol \times |b|)
 
 	Same is true for the tolerances with `qe2pert` label, but this tolerances are applied on the the second run of ``perturbo`` tests. If you want to use a special tolerance for some block, specify it in the corresponding tolerances block with a key corresponding to your block (``keyword`` from the example above)
-2. Reference folder in format `epwanN-test-name`, where `N` - number of corresponding epwan-file. This folder should be saved in the directory `tests_f90/refs_perturbo` and contain all output files, for which comparison should be done.
+2. Reference folder in format `epwanN-test-name`, where `N` - number of corresponding epwan file. This folder should be saved in the directory `tests_f90/refs_perturbo` and contain all output files, for which comparison should be done.
 3. List the name of the test in the ``epwan_info.yml`` file stored in the ``tests_f90/`` folder. The list of tests is specified in the ``tests`` block of each of the epwan files. If you do not specify your test name there, that test will not be runned.
 
 New tests for ``qe2pert``
@@ -334,7 +334,7 @@ Here each subfolder corresponds to one of the calculation steps, plus additional
 	   filename: prefix_epwan.h5
 	   SOC: False
 	   polar: False
-	   description: "Desrciption of this epwan-fils"
+	   description: "Desrciption of this epwan file"
 	   pseudopotential: Description of the used pseudopotentials
 	   tags:
 	      - tag1
@@ -346,6 +346,8 @@ Here each subfolder corresponds to one of the calculation steps, plus additional
 		  - test4
 
 In general, the name of each block speaks for itself. Note that the list of tests includes ``bands``, ``phdisp`` and ``ephmat``.  These tests **must** be for the new epwan file. These particular tests are run to verify the operation of ``qe2pert``. The rest of the tests can be added as you wish.
+
+3. Save your epwan file in the folder `/perturbopy/tests_f90/refs_perturbo/epwan_files`.
 
 3. Add each of the specified tests using the procedure described in the previous subsection.
 
