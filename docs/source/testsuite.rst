@@ -66,11 +66,9 @@ Once, the ``config_machine.yml`` is set up, navigate to the `perturbopy/tests_f9
 
    (perturbopy) $ pytest
 
-In the case of successful run of all tests, one will see **<n> passed** as the final line of the output, where <n> is the number of tests. You will also see that some tests have been skipped. This is fine, because the tests for ``qe2pert.x`` are skipped if it's not specified.
+By default, in the case of successful run of all tests one will see **<n> passed** as the final line of the output, where <n> is the number of tests. You will also see that some tests have been skipped. This is fine, because the tests for ``qe2pert.x`` are skipped if it's not specified.
 
-If all tests are passed, the ``PERT_SCRATCH`` directory will be empty after the ``pytest`` run. In the case of a failure of one or more tests, the corresponding test folder(s) kept int the ``PERT_SRACTH`` directory.
-
-On clusters and supercomputers, the testsuite can be launched both in the interactive mode and as a job. 
+If all tests are passed, the ``PERT_SCRATCH`` directory will be empty after the ``pytest`` run. In the case of a failure of one or more tests, the corresponding test folder(s) kept in the ``PERT_SRACTH`` directory.
 
 Complete test of ``qe2pert.x`` and ``perturbo.x``
 +++++++++++++++++++++++++++++++++++++++++++++++++
@@ -131,6 +129,7 @@ where ``PERT_SCRATCH`` amd ``prel_coms`` are similar to the ``perturbo.x``-only 
 
    The ``config_machine.yml`` must contain information about the execution of each step, which you make during the testing
 
+On clusters and supercomputers, the testsuite can be launched both in the interactive mode and as a job. 
 
 Parametrization of testsuite
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -214,7 +213,7 @@ The example scripts and job submission files are in the `test_scripts` folder:
    number of **MPI tasks**, **OpenMP threads**, **job parameters** etc.
 
 Job submission
-..............
+~~~~~~~~~~~~~~
 
 #. Navigate to the tests folder:
 
@@ -236,7 +235,7 @@ Job submission
 	  The job must be submitted from the `tests_f90` folder and the `perturbopy` environment is not activated manually (it is       activated from the submission script).
 
 Interactive mode
-................
+~~~~~~~~~~~~~~~~
 
 Here are the commands to run the Perturbo testsuite on Perlmutter in the `interactive mode <https://docs.nersc.gov/jobs/interactive/>`_.
 
@@ -280,7 +279,7 @@ Adding new tests
 ----------------
 
 New tests for ``perturbo.x``
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you want to add new tests for existing epwan files, you need to provide the following information:
 
@@ -290,66 +289,66 @@ If you want to add new tests for existing epwan files, you need to provide the f
 	* Input file `pert.in`;
 	* All necessary computational files for this input;
 	* File `pert_input.yml`, that has the following structure:
-	.. code-block:: python
+		.. code-block:: python
 
-	    test info:
+		    test info:
 
-	        epwan: epwanN
+		        epwan: epwanN
 
-	        tags:
-	            - tag1
-	            - tag2
+		        tags:
+		            - tag1
+		            - tag2
 
-	        desc:
-	            "Test description"
+		        desc:
+		            "Test description"
 
-	        test files:
-	            pert_output.yml:
+		        test files:
+		            pert_output.yml:
 
-	                #only applies to top dict
-	                test keywords:
-	                    - bands
+		                #only applies to top dict
+		                test keywords:
+		                    - bands
 
-	                #applies to dict at all levels
-	                ignore keywords:
-	                    - input parameters
-	                    - start date and time
-	                    - timings
-	                abs tol:
-	                    - default: value_1
+		                #applies to dict at all levels
+		                ignore keywords:
+		                    - input parameters
+		                    - start date and time
+		                    - timings
+		                abs tol:
+		                    - default: value_1
 
-	                qe2pert abs tol:
-	                    - default: value_2
+		                qe2pert abs tol:
+		                    - default: value_2
 
-	                rel tol:
-	                    - default: value_3
+		                rel tol:
+		                    - default: value_3
 
-	                qe2pert rel tol:
-	                    - default: value_4
-	                    - keyword: value_5
+		                qe2pert rel tol:
+		                    - default: value_4
+		                    - keyword: value_5
 
-	The following keys **must be present** in the ``test info`` section of `pert_input.yml` file:
+		The following keys **must be present** in the ``test info`` section of `pert_input.yml` file:
 
-	* ``epwan`` - name of corresponding epwan file;
-	* ``desc`` - description of this test;
-	* ``test files`` - names of files, for which we make a comparison;
-	* ``test keywords`` - which sections of the corresponding file would be checked.
+		* ``epwan`` - name of corresponding epwan file;
+		* ``desc`` - description of this test;
+		* ``test files`` - names of files, for which we make a comparison;
+		* ``test keywords`` - which sections of the corresponding file would be checked.
 
-	The following keys **are optional** in the ``test info`` section of `pert_input.yml` file:
+		The following keys **are optional** in the ``test info`` section of `pert_input.yml` file:
 
-	* ``tags`` - tags of this test;
-	* ``ignore keywords`` - blocks of the YAML-file with this keys would be ignored during the comparison;
-	* ``abs tol``, ``rel tol``, ``qe2pert abs tol``, ``qe2pert rel tol`` - values of the tolerance, with which the result can be accepted as correct. The elements are considerent different if the following equation does not apply:
-	.. math::
+		* ``tags`` - tags of this test;
+		* ``ignore keywords`` - blocks of the YAML-file with this keys would be ignored during the comparison;
+		* ``abs tol``, ``rel tol``, ``qe2pert abs tol``, ``qe2pert rel tol`` - values of the tolerance, with which the result can be accepted as correct. The elements are considerent different if the following equation does not apply:
+			.. math::
 
-	   |a - b| \leq (abs\_tol + rel\_tol \times |b|)
+			   |a - b| \leq (abs\_tol + rel\_tol \times |b|)
 
-	Same is true for the tolerances with `qe2pert` label, but this tolerances are applied on the the second run of ``perturbo.x`` tests. If you want to use a special tolerance for some block, specify it in the corresponding tolerances block with a key corresponding to your block (``keyword`` from the example above)
+			Same is true for the tolerances with `qe2pert` label, but this tolerances are applied on the the second run of ``perturbo.x`` tests. If you want to use a special tolerance for some block, specify it in the corresponding tolerances block with a key corresponding to your block (``keyword`` from the example above).
 2. Reference folder in format `epwanN-test-name`, where `N` - number of corresponding epwan file. This folder should be saved in the directory `tests_f90/refs_perturbo` and contain all output files, for which comparison should be done.
 3. List the name of the test in the ``epwan_info.yml`` file stored in the ``tests_f90/`` folder. The list of tests is specified in the ``tests`` block of each of the epwan files. If you do not specify your test name there, that test will not be runned.
 
 New tests for ``qe2pert.x``
-~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you want to create a new test with a new epwan file, you will need to perform the following steps:
 
