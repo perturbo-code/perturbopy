@@ -52,11 +52,18 @@ class EphmatCalcMode(CalcMode):
             defpot[phidx] = ephmat_dat[phidx].pop('deformation potential')
             ephmat[phidx] = ephmat_dat[phidx].pop('e-ph matrix elements')
 
-
-        self.defpot = EnergyDB(phdisp, phdisp_units)
-        self.phdisp = EnergyDB(defpot, defpot_units)
+        self.phdisp = EnergyDB(phdisp, phdisp_units)
+        self.defpot = EnergyDB(defpot, defpot_units)
         self.ephmat = EnergyDB(ephmat, ephmat_units)
 
+    def plot_phdisp
 
-    
+    def plot_defpot
+
+    def plot_ephmat
+
+    def compare_ephmat
+
+
+
         
