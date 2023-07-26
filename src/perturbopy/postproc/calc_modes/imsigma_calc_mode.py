@@ -60,4 +60,6 @@ class ImsigmaCalcMode(CalcMode):
             self.defpot = EnergyDB(defpot, defpot_units)
             self.ephmat = EnergyDB(imsigmas, ephmat_units)
 
+# find temperature and chemical potential corresponding
+# include unit conversion 
    

@@ -1,5 +1,4 @@
 import numpy as np
-import math
 from scipy.optimize import curve_fit
 from perturbopy.postproc.calc_modes.calc_mode import CalcMode
 from perturbopy.postproc.utils.constants import energy_conversion_factor, length_conversion_factor
@@ -192,7 +191,7 @@ class BandsCalcMode(CalcMode):
             kpt_points = cryst2cart(kpt_points, self.lat, self.recip_lat, forward=True, real_space=False)
             kpoint = cryst2cart(kpoint, self.lat, self.recip_lat, forward=True, real_space=False)
 
-            kpoint_distances_squared = np.sum(np.square(kpt_points - kpoint), axis=0) * (math.pi * 2 / self.alat) ** 2
+            kpoint_distances_squared = np.sum(np.square(kpt_points - kpoint), axis=0) * (np.pi * 2 / self.alat) ** 2
 
             return kpoint_indices, kpoint_distances_squared
 
