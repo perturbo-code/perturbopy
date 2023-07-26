@@ -20,6 +20,3 @@ test info:
 
          abs tol:
             default: 1e-4
-
-         qe2pert abs tol:
-            default: 1e-3

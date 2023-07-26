@@ -25,13 +25,7 @@ test info:
          abs tol:
             default: 1e-6
 
-         qe2pert abs tol:
-            default: 1e-5
-
       gaas_popu.h5:
 
          abs tol:
             default: 5e-6
-
-         qe2pert abs tol:
-            default: 5e-5

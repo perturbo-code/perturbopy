@@ -302,8 +302,8 @@ def setup_default_tol(igns_n_tols, test_case):
     elif test_case == 'perturbo_for_qe2pert':
         # in case of the testing qe2pert relative error could be bigger
         # due to the error that accumulates from scf calculations
-        default_abs_tol = 1e-6
-        default_rel_tol = 0.5
+        default_abs_tol = 1e-8
+        default_rel_tol = 0.01
 
     igns_n_tols_updated = []
 
