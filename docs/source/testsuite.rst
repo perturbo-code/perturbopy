@@ -70,6 +70,7 @@ By default, in the case of successful run of all tests one will see **<n> passed
 
 If all tests are passed, the ``PERT_SCRATCH`` directory will be empty after the ``pytest`` run. In the case of a failure of one or more tests, the corresponding test folder(s) kept in the ``PERT_SRACTH`` directory.
 
+.. _test-complete:
 Complete test of ``qe2pert.x`` and ``perturbo.x``
 +++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -158,28 +159,28 @@ Using the command-line options and environmental variables, one can parametrize 
    
 .. option:: --ephr_tags
 
-   List of ephr_tags to include in this testsuite run.
+   List of tags of the epr files to include in this testsuite run.
   
 .. option:: --exclude-ephr_tags
 
-   List of ephr_tags to exclude from this testsuite run.
+   List of tags of the epr files to exclude from this testsuite run.
    
 .. option:: --epwan
 
-   List of epwan files to test.
+   List of epwan files to test. If the option is not specified, all the available epwan files will be included in testing.
 
 
 .. option:: --test-names
 
-   List of test names to include in this testsuite run.
+   List of test names to include in this testsuite run, e.g., epwan1_bands, etc.
    
 .. option:: --run_qe2pert
 
-   Include the ``qe2pert.x`` tests.
+   Include the ``qe2pert.x`` tests. See :ref:`test-complete`.
    
 .. option:: --config_machine
 
-   Name of file with computational information for qe2pert computation. Should be in the folder tests_f90/comp_qe2pert. By default called `config_machine.yml`
+   Name of file containing the run commands for Perturbo and, incase of ``qe2pert.x`` test, for Quantum Espresso, Wannier90. Should be in the folder tests_f90/config_machine. By default called `config_machine.yml`
 
 .. option:: --keep_perturbo
 
@@ -191,7 +192,7 @@ Using the command-line options and environmental variables, one can parametrize 
    
 .. option:: --keep_preliminary
 
-   Save all preliminary files for ephr files calculations.
+   Save all preliminary files for ephr files calculations in the ``qe2pert.x`` testing (outputs of  Quantum Espresso and Wannier90).
 
 
 
@@ -311,10 +312,10 @@ If you want to add new tests for existing epwan files, you need to provide the f
 
 		                #applies to dict at all levels
 		                ignore keywords:
-		                    - input parameters
-		                    - start date and time
-		                    - timings
-		                abs tol:
+		                    - ignore_key1
+		                    - ignore_key2
+		                
+                        abs tol:
 		                    - default: value_1
 
 		                qe2pert abs tol:
@@ -325,34 +326,39 @@ If you want to add new tests for existing epwan files, you need to provide the f
 
 		                qe2pert rel tol:
 		                    - default: value_4
-		                    - keyword: value_5
+		                    - keyword1: value_5
 
 		The following keys **must be present** in the ``test info`` section of `pert_input.yml` file:
 
 		* ``epwan`` - name of corresponding epwan file;
 		* ``desc`` - description of this test;
-		* ``test files`` - names of files, for which we make a comparison;
+		* ``test files`` - names of the output files, for which we make a comparison, file type must be YAML or HDF5;
 		* ``test keywords`` - which sections of the corresponding file would be checked.
 
 		The following keys **are optional** in the ``test info`` section of `pert_input.yml` file:
 
 		* ``tags`` - tags of this test;
 		* ``ignore keywords`` - blocks of the YAML-file with this keys would be ignored during the comparison;
-		* ``abs tol``, ``rel tol``, ``qe2pert abs tol``, ``qe2pert rel tol`` - values of the tolerance, with which the result can be accepted as correct. The elements are considerent different if the following equation does not apply:
+		* ``abs tol``, ``rel tol``, ``qe2pert abs tol``, ``qe2pert rel tol`` - values of the tolerance, with which the result can be accepted as correct. The elements are considered different if the following equation does not apply:
 			.. math::
 
 			   |a - b| \leq (abs\_tol + rel\_tol \times |b|)
 
-			Same is true for the tolerances with `qe2pert` label, but this tolerances are applied on the the second run of ``perturbo.x`` tests. If you want to use a special tolerance for some block, specify it in the corresponding tolerances block with a key corresponding to your block (``keyword`` from the example above).
+			Same is true for the tolerances with the `qe2pert` label, but these tolerances are applied on the the second run of ``perturbo.x`` tests. If you want to use a special tolerance for some block, specify it in the corresponding tolerances with a corresponding key (``keyword1`` from the example above).
 2. Reference folder in format `epwanN-test-name`, where `N` - number of corresponding epwan file. This folder should be saved in the directory `tests_f90/refs_perturbo` and contain all output files, for which comparison should be done.
 3. List the name of the test in the ``epwan_info.yml`` file stored in the ``tests_f90/`` folder. The list of tests is specified in the ``tests`` block of each of the epwan files. If you do not specify your test name there, that test will not be runned.
+
+.. note::
+
+    The output file extensions for the testsuite must be YAML or HDF5.
+
 
 New tests for ``qe2pert.x``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you want to create a new test with a new epwan file, you will need to perform the following steps:
 
-1. In the `tests_f90/ephr_computation/` folder, you will need to add a folder with the name of your epwan file. We number these folders, so for consistency, we suggest calling it `epwanN`. This folder will contain all the files needed for your epwan file's calculations. This folder should have the following hierarchy:
+1. In the `tests_f90/ephr_computation/` folder, you will need to add a folder with the name of your epwan file. We enumerate these folders, so for consistency, we suggest calling it `epwanN`. This folder will contain all the files needed for your epwan file's calculations. This folder should have the following hierarchy:
 
 .. code-block:: python
 
@@ -374,7 +380,7 @@ If you want to create a new test with a new epwan file, you will need to perform
 
 
 
-Here each subfolder corresponds to one of the calculation steps, plus additionally there is a folder with pseudopotentials. ``Prefix`` in the file ``prefix.win`` should be the same as specified in the ``scf.in`` file. Pseudopotentials also should be the same that enlisted in the ``scf.in`` file.
+Here each subfolder corresponds to one of the calculation steps, plus additionally there is a folder with pseudopotentials. ``prefix`` in the file ``prefix.win`` should be the same as specified in the ``scf.in`` file. Pseudopotentials also should be the same as enlisted in the ``scf.in`` file.
 
 2. Add information about the epwan file in the ``epwan_info.yml``. Block for each epwan file looks in the following way:
 
@@ -396,10 +402,13 @@ Here each subfolder corresponds to one of the calculation steps, plus additional
 	      - ephmat
 		  - test4
 
-In general, the name of each block speaks for itself. Note that the list of tests includes ``bands``, ``phdisp`` and ``ephmat``.  These tests **must** be for the new epwan file. These particular tests are run to verify the operation of ``qe2pert.x``. The rest of the tests can be added as you wish.
+In general, the name of each block speaks for itself. Note that the list of tests includes ``bands``, ``phdisp`` and ``ephmat``.  These ``perturbo.x`` calculation mode tests **must** be created for the new epwan file. These particular tests are run to verify the operation of ``qe2pert.x``. More tests for a given epwan file can be optionally added.
 
 3. Save your epwan file in the folder `/perturbopy/tests_f90/refs_perturbo/epwan_files`.
 
 3. Add each of the specified tests using the procedure described in the previous subsection.
 
+.. note::
+
+    The new ``perturbo.x`` or ``qe2pert.x`` tests must cover all of the new functionality that you added to the code. At the same time, new test cases should not significantly increase the runtime. We advise using very small grids, etc., which could result in physically incorrect outcome, however, this will still serve the purpose of testing the new functionality of the code.
 
