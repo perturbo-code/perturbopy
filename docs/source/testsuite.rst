@@ -279,6 +279,14 @@ Here are the commands to run the Perturbo testsuite on Perlmutter in the `intera
 Adding new tests
 ----------------
 
+Scenarios:
+
+1. You modified `pert-src`, which affected ``perturbo.x`` behavior and this can be tested used the `existing` epwan file: chose your epwan file among the list in test_f90/epwan_info.yml, add the test name in the ``tests`` field
+
+2. Same modification type as in 1 (You modified `pert-src`, which affected ``perturbo.x``), but you need `another` epwan file to test this: create new test case for ``qe2pert`` (:ref:section)
+
+3. You modified `qe2pert-src`, which affected ``qe2pert.x``: create new test case for ``qe2pert`` (:ref:section)
+
 New tests for ``perturbo.x``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
