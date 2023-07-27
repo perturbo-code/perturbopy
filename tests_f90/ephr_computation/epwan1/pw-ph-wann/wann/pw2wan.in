@@ -1,0 +1,7 @@
+&inputpp
+  outdir='./tmp'
+  prefix     =  'gaas'
+  seedname   =  'gaas'
+  write_amn  =  .true.
+  write_mmn  =  .true.
+/

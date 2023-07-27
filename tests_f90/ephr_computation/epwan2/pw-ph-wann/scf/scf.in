@@ -1,0 +1,34 @@
+&control
+    prefix='mos2'
+    calculation='scf'
+    pseudo_dir = '../pseudo'
+     outdir='./tmp'
+    verbosity = 'high'
+    wf_collect = .true.
+/
+&system
+    lspinorb=.true.
+    noncolin=.true.
+    assume_isolated='2D'
+    ibrav = 4 
+    a= 3.160
+    c = 17
+    nat= 3
+    ntyp= 2
+    ecutwfc =50
+/
+&electrons
+    diagonalization='david'
+    conv_thr =  1.0d-14
+/
+&ions
+/
+ATOMIC_SPECIES
+    Mo  95.95 Mo_DOJO_LDA_FR.upf
+    S   32.06  S_DOJO_LDA_FR.upf
+ATOMIC_POSITIONS crystal
+ Mo       0.0000000000000000   0.0000000000000000   0.000000000      0   0   0
+ S        0.3333333333333333   0.6666666666666667   0.090582344      0   0   1
+ S        0.3333333333333333   0.6666666666666667  -0.090582344      0   0   1
+K_POINTS automatic
+    6 6 1 0 0 0

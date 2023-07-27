@@ -1,0 +1,8 @@
+&inputpp
+  outdir='./tmp/'
+  prefix = 'mos2'
+  seedname = 'mos2'
+  spin_component = 'none'
+  write_mmn = .true.
+  write_amn = .true.
+/

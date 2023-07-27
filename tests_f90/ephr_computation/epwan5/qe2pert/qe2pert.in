@@ -1,0 +1,10 @@
+qe2pert
+&qe2pert
+  prefix='gaas_uspp'
+  outdir='./tmp'
+  phdir='../pw-ph-wann/phonon/save'
+  nk1=2, nk2=2, nk3=2
+  dft_band_min = 11
+  dft_band_max = 60
+  num_wann = 16
+/

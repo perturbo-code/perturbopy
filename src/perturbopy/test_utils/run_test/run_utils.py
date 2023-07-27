@@ -3,12 +3,13 @@
    test tags.
 """
 import os
-import sys
 import copy
+import shutil
+import sys
 from perturbopy.io_utils.io import open_yaml
 
 
-def read_test_tags(test_name):
+def read_test_tags(test_name, func_name):
     """
     Get a list of tags for a given test. List of tags is combined from the tags from
     pert_input.yml and epwan_info.yml for a given epwan file.
@@ -16,93 +17,119 @@ def read_test_tags(test_name):
     Parameters
     ----------
     test_name : str
-       name of the folder inside the tests/ folder
+        name of the folder inside the tests/ folder
+
+    func_name : str
+        name of the test programm, which we run
+        (do we test perturbo or qe2pert)
 
     Returns
     -------
     tag_list : list
-       list of tags for a given test
+        list of tags for a given test
     epwan_name : str
-       name of the epwan file associated with this test
+        name of the epwan file associated with this test
     """
 
     cwd = os.getcwd()
-
-    driver_path_suffix = 'tests_perturbo/' + test_name
-    perturbo_driver_dir_path = [x[0] for x in os.walk(cwd) if x[0].endswith(driver_path_suffix)][0]
-
-    pert_input = open_yaml(f'{perturbo_driver_dir_path}/pert_input.yml')
-
-    # Read the tags from pert_input.yml
-    input_tags = []
-    if 'tags' in pert_input['test info'].keys():
-        input_tags = pert_input['test info']['tags']
-
-    # Read the tags from epwan_info.yml
-    epwan_name = pert_input['test info']['epwan']
-
+    
     epwan_dict_path = 'epwan_info.yml'
-
     epwan_info = open_yaml(epwan_dict_path)
 
-    epwan_tags = []
-    if 'tags' in epwan_info[epwan_name].keys():
-        epwan_tags = epwan_info[epwan_name]['tags']
+    if (func_name == 'test_perturbo') or (func_name == 'test_perturbo_for_qe2pert'):
+        driver_path_suffix = 'tests_perturbo/' + test_name
+        perturbo_driver_dir_path = [x[0] for x in os.walk(cwd) if x[0].endswith(driver_path_suffix)][0]
+        pert_input = open_yaml(f'{perturbo_driver_dir_path}/pert_input.yml')
 
-    tag_list = input_tags + epwan_tags
-    tag_list = sorted(list(set(tag_list)))
+        # Read the tags from pert_input.yml
+        input_tags = []
+        if 'tags' in pert_input['test info'].keys():
+            input_tags = pert_input['test info']['tags']
+
+        # Read the tags from epwan_info.yml
+        epwan_name = pert_input['test info']['epwan']
+
+        epwan_tags = []
+        if 'tags' in epwan_info[epwan_name].keys():
+            epwan_tags = epwan_info[epwan_name]['tags']
+
+        tag_list = input_tags + epwan_tags
+        tag_list = sorted(list(set(tag_list)))
+    
+    elif func_name == 'test_qe2pert':
+        if 'tags' in epwan_info[test_name]:
+            tag_list = epwan_info[test_name]['tags']
+        epwan_name = test_name
 
     return tag_list, epwan_name
 
 
-def get_all_tests():
+def get_all_tests(func_name):
     """
     Get the names of all test folders based on the epwan_info.yml file.
+
+    Parameters
+    ----------
+    func_name : str
+       name of the metafunction, which we parametrize
 
     Returns
     -------
     test_folder_list : list
        list of all test names
     """
-
-    epwan_dict_path = 'epwan_info.yml'
-
-    epwan_info = open_yaml(epwan_dict_path)
-
     test_folder_list = []
     dev_test_folder_list = []
 
-    for epwan in epwan_info:
-        if 'tests' in epwan_info[epwan].keys():
-            test_list = epwan_info[epwan]['tests']
+    epwan_dict_path = 'epwan_info.yml'
+    epwan_info = open_yaml(epwan_dict_path)
 
-            test_folder_list += [f'{epwan}-{t}' for t in test_list]
+    if (func_name == 'test_perturbo') or (func_name == 'test_perturbo_for_qe2pert'):
 
-        if 'devel tests' in epwan_info[epwan].keys():
-            dev_test_list = epwan_info[epwan]['devel tests']
+        test_list = ['bands', 'phdisp', 'ephmat']
+        for epwan in epwan_info:
+            if 'tests' in epwan_info[epwan].keys():
+                if (func_name == 'test_perturbo'):
+                    test_list = epwan_info[epwan]['tests']
 
-            dev_test_folder_list += [f'{epwan}-{t}' for t in dev_test_list]
+                test_folder_list += [f'{epwan}-{t}' for t in test_list]
+
+            if 'devel tests' in epwan_info[epwan].keys():
+                dev_test_list = epwan_info[epwan]['devel tests']
+
+                dev_test_folder_list += [f'{epwan}-{t}' for t in dev_test_list]
+
+    elif func_name == 'test_qe2pert':
+        test_folder_list = [ephr for ephr in epwan_info]
 
     return test_folder_list, dev_test_folder_list
 
 
-def print_test_info(test_name, pert_input):
+def print_test_info(test_name, input_dict, test_type):
     """
     Print information about a test.
 
     Parameters
     ----------
     test_name : str
-       name of the test folder
-    pert_input : dict
-       dictionary contatining the test info
+        name of the test folder
+    input_dict : dict
+        dictionary contatining the test info
+    test_type : str
+        define that type of testing we make - either 'qe2pert' or 'perturbo'
     """
 
-    if 'desc' in pert_input['test info']:
-        desc = pert_input['test info']['desc']
-    else:
-        desc = None
-
+    if test_type == 'perturbo':
+        if 'desc' in input_dict['test info']:
+            desc = input_dict['test info']['desc']
+        else:
+            desc = None
+    elif test_type == 'qe2pert':
+        if 'description' in input_dict[test_name]:
+            desc = input_dict[test_name]['description']
+        else:
+            desc = None
+        
     print(f'\n === Test folder === :\n {test_name}')
 
     if desc is not None:
@@ -111,7 +138,7 @@ def print_test_info(test_name, pert_input):
     sys.stdout.flush()
 
 
-def filter_tests(all_test_list, tags, exclude_tags, epwan, test_names):
+def filter_tests(all_test_list, tags, exclude_tags, epwan, test_names, func_name):
     """
     Return the list of test folders based on command line options
 
@@ -131,6 +158,10 @@ def filter_tests(all_test_list, tags, exclude_tags, epwan, test_names):
 
     test_names : list or None
        list of test folders to include
+    
+    func_name : str
+        name of the test programm, which we run
+        (do we test perturbo or qe2pert)
 
     Returns
     -------
@@ -155,7 +186,7 @@ def filter_tests(all_test_list, tags, exclude_tags, epwan, test_names):
         for test_name in all_test_list:
 
             # tags for a given test
-            test_tag_list, epwan_name = read_test_tags(test_name)
+            test_tag_list, epwan_name = read_test_tags(test_name, func_name)
 
             # tags from command line
             if tags is not None:
@@ -201,9 +232,15 @@ def filter_tests(all_test_list, tags, exclude_tags, epwan, test_names):
 
         for test_name_cmd in test_names:
             if test_name_cmd not in all_test_list:
-                errmsg = (f'Test {test_name_cmd} is not listed in epwan_info.yml, \n'
-                          'but specified in --test-names option.'
-                         )
+                if (func_name == 'test_perturbo') or (func_name == 'test_qe2pert'):
+                    errmsg = (f'Test {test_name_cmd} is not listed in epwan_info.yml, \n'
+                              f'but specified in --test-names option. Full test_list: {test_list}'
+                             )
+                elif (func_name == 'test_perturbo_for_qe2pert'):
+                    errmsg = (f'Test {test_name_cmd} is not listed for running on the perturbo run for \n'
+                              'qe2pert check but specified in --test-names option. On this run, only \n'
+                              f'this tests supposed to run: {test_list}'
+                             )
                 raise ValueError(errmsg)
 
         test_list = test_names
@@ -219,7 +256,7 @@ def filter_tests(all_test_list, tags, exclude_tags, epwan, test_names):
     return test_list
 
 
-def setup_default_tol(igns_n_tols):
+def setup_default_tol(igns_n_tols, test_case):
     """
     Setup the default tolerances for each file to compare if the tolerances are
     not specified in the pert_input.yml file.
@@ -229,15 +266,15 @@ def setup_default_tol(igns_n_tols):
 
     .. code-block :: python
 
-       output_file.yml:
-          abs tol:
-             default:
-                1e-8
+        output_file.yml:
+            abs tol:
+                default:
+                    1e-8
 
-          # in percents
-          rel tol:
-             default:
-                0.01
+            # relative error
+            rel tol:
+                default:
+                    0.01
 
     The elements are considerent different if the following equation does not apply:
 
@@ -245,24 +282,37 @@ def setup_default_tol(igns_n_tols):
 
     Parameters
     ----------
-    igns_n_tols : dict
-       dictionary containing the ignore keywords and tolerances needed to performance comparison of ref_outs and new_outs
+    igns_n_tols : list
+        list of dictionaries, which contain containing the tolerances needed
+        to performance comparison of ref_outs and new_outs
+    test_case : str
+        define what type of the test we run - for perturbo testing or for the
+        qe2pert testing.
 
     Returns
     -------
-    igns_n_tols_updated : dict
-       **updated** dictionary containing the ignore keywords and tolerances
+    igns_n_tols_updated : list
+        **updated** list containing the dictionary with tolerances
 
     """
 
-    default_abs_tol = 1e-8
-    default_rel_tol = 0.01
+    if test_case == 'perturbo':
+        default_abs_tol = 1e-8
+        default_rel_tol = 0.01
+    elif test_case == 'perturbo_for_qe2pert':
+        # in case of the testing qe2pert relative error could be bigger
+        # due to the error that accumulates from scf calculations
+        default_abs_tol = 1e-8
+        default_rel_tol = 0.01
 
     igns_n_tols_updated = []
 
+    # run thru all files (their list is the keys set)
     for outfile in igns_n_tols:
 
         if not isinstance(outfile, dict):
+            # if we don't have any information about the errors
+            # for this file - define default one
             outfile = {'abs tol':
                        {'default': default_abs_tol},
                        'rel tol':
@@ -270,15 +320,30 @@ def setup_default_tol(igns_n_tols):
                       }
 
         else:
+            if test_case == 'perturbo_for_qe2pert':
+                # if we test perturbo for qe2pert,
+                # we move error for qe2pert testing into the cells
+                # `abs_tol` and `rel_tol`
+                if 'qe2pert abs tol' in outfile.keys():
+                    outfile['abs tol'] = outfile['qe2pert abs tol']
+                if 'qe2pert rel tol' in outfile.keys():
+                    outfile['rel tol'] = outfile['qe2pert rel tol']
+
+            # if we have some dict but without `abs_tol` key - take default
             if 'abs tol' not in outfile.keys():
                 outfile['abs tol'] = {'default': default_abs_tol}
 
+            # if we have some `abs_tol` key, but only for specific cases,
+            # add default values
             elif 'default' not in outfile['abs tol'].keys():
                 outfile['abs tol']['default'] = default_abs_tol
 
+            # if we have some dict but without `rel_tol` key - take default
             if 'rel tol' not in outfile.keys():
                 outfile['rel tol'] = {'default': default_rel_tol}
 
+            # if we have some `rel_tol` key, but only for specific cases,
+            # add default values
             elif 'default' not in outfile['rel tol'].keys():
                 outfile['rel tol']['default'] = default_rel_tol
 
@@ -372,3 +437,74 @@ def key_in_dict(k, d, exact_match=False):
                 break
 
         return k, False
+        
+
+def define_nq_num(output_name):
+    """
+    Define the number of the q-points,
+    obtained during the phonon
+    calculation
+
+    Parameters:
+    output_name : str
+        name to the ph output file from which we obtain
+        number of q-points
+
+    Returns
+    -------
+    nq_num : int
+       number of q-points
+    """
+    with open(output_name, "r") as f:
+        for i, line in enumerate(f):
+            if line.find('q-points)') != -1:
+                nq_num = int(line.split()[1])
+    return nq_num
+
+
+def ph_collection(prefix, nq_num):
+    """
+    Collect the phonon data into a directory called save.
+    The save directory contains all the information needed
+    for PERTURBO to interface with QE
+
+    Parameters:
+    prefix : str
+        prefix of this calculation
+    nq_num : int
+        number of q points in this calculation
+    """
+    print(os.getcwd())
+    
+    os.makedirs('save', exist_ok=True)
+    
+    # remove wfc files in tmp
+    if os.path.exists('tmp'):
+        for file in os.listdir('tmp'):
+            if 'wfc' in file:
+                os.remove(f'tmp/{file}')
+
+    dir = 'tmp/_ph0'
+    
+    shutil.copytree(f'{dir}/{prefix}.phsave', f'save/{prefix}.phsave')
+    
+    # copy dyn files
+    for file in os.listdir('.'):
+        if file.startswith(f'{prefix}.dyn'):
+            shutil.copy(file, 'save')
+
+    for nq in range(1, nq_num + 1):
+        
+        # copy dvscf files
+        if nq > 1:
+            shutil.copy(f'{dir}/{prefix}.q_{nq}/{prefix}.dvscf1', f'save/{prefix}.dvscf_q{nq}')
+            for file in os.listdir(f'{dir}/{prefix}.q_{nq}'):
+                if file.endswith('wfc'):
+                    os.remove(f'{dir}/{prefix}.q_{nq}/{file}')
+        else:
+            shutil.copy(f'{dir}/{prefix}.dvscf1', f'save/{prefix}.dvscf_q{nq}')
+            for file in os.listdir(dir):
+                if 'wfc' in file:
+                    os.remove(f'{dir}/{file}')
+                    
+    shutil.copy(f'save/{prefix}.dyn0', f'save/{prefix}.dyn0.xml')

@@ -1,5 +1,4 @@
-test info:
-   executable: perturbo.x 
+test info: 
 
    epwan: epwan3
 
@@ -26,4 +25,3 @@ test info:
 
          rel tol:
             default: 0.02
-

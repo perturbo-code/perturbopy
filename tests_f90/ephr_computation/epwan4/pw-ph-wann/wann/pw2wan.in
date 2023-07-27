@@ -1,0 +1,8 @@
+&inputpp
+  outdir='./tmp/'
+  prefix = 'graphite'
+  seedname = 'graphite'
+  spin_component = 'none'
+  write_mmn = .true.
+  write_amn = .true.
+/

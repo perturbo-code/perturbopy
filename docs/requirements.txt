@@ -6,5 +6,4 @@ sphinx-autodoc-typehints
 numpy
 pytest
 h5py
-hdfdict
 PyYAML

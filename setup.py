@@ -7,9 +7,9 @@ setup(
    install_requires=[
       'numpy>=1.21.4',
       'pytest',
+      'pytest-order',
       'h5py',
-      'hdfdict',
-      'PyYAML<6.0',
+      'PyYAML',
       'pytest-profiling',
       'matplotlib>=2.2.0',
       'scipy'
@@ -20,5 +20,5 @@ setup(
    packages=find_packages(
       where='./src'
    ),
-   package_dir={"": "src"} 
+   package_dir={"": "src"}
 )
