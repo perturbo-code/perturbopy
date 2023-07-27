@@ -15,7 +15,7 @@ def gaas_bands():
     bands : ppy.BandsCalcMode
 
     """
-    yml_path = os.path.join("tests", "refs", "gaas_bands.yml")
+    yml_path = os.path.join("refs", "gaas_bands.yml")
     return ppy.BandsCalcMode.from_yaml(yml_path)
 
 
