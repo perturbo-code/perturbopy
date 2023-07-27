@@ -16,8 +16,7 @@ comp_info:
     qe2pert:
         prel_coms:
             - export OMP_NUM_THREADS=8
-            - qe2pert=/home/skliavin/qe-7.0/perturbo-dev-master/bin/qe2pert.x
-        exec: srun -n 8 $qe2pert -npools 8
+        exec: srun -n 8 qe2pert.x -npools 8
     perturbo:
         prel_coms:
             - export OMP_NUM_THREADS=8
