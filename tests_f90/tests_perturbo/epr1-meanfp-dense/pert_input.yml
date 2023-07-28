@@ -1,0 +1,23 @@
+test info: 
+
+   epr: epr1
+
+   tags:
+      - meanfp-dense
+
+   desc:
+      "Imaginary part of the lowest-order e-ph self-energy.
+      States are in a range of bands."
+
+   test files:
+
+      pert_output.yml: 
+
+         test keywords:
+            - meanfp 
+
+         abs tol:
+            default: 1e-6
+
+         rel tol:
+            default: 1e-1

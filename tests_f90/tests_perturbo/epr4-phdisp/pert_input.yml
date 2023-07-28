@@ -1,0 +1,16 @@
+test info: 
+
+   epr: epr4
+
+   tags:
+      - random-q
+      - uniform
+      - phdisp
+
+   desc:
+      "Interpolation of the phonon dispersion using randomly-generated k-points."
+
+   test files:
+      pert_output.yml: 
+         test keywords:
+            - bands 

@@ -12,7 +12,7 @@ from perturbopy.io_utils.io import open_yaml
 def read_test_tags(test_name, func_name):
     """
     Get a list of tags for a given test. List of tags is combined from the tags from
-    pert_input.yml and epwan_info.yml for a given epwan file.
+    pert_input.yml and epr_info.yml for a given epr file.
 
     Parameters
     ----------
@@ -27,14 +27,14 @@ def read_test_tags(test_name, func_name):
     -------
     tag_list : list
         list of tags for a given test
-    epwan_name : str
-        name of the epwan file associated with this test
+    epr_name : str
+        name of the epr file associated with this test
     """
 
     cwd = os.getcwd()
     
-    epwan_dict_path = 'epwan_info.yml'
-    epwan_info = open_yaml(epwan_dict_path)
+    epr_dict_path = 'epr_info.yml'
+    epr_info = open_yaml(epr_dict_path)
 
     if (func_name == 'test_perturbo') or (func_name == 'test_perturbo_for_qe2pert'):
         driver_path_suffix = 'tests_perturbo/' + test_name
@@ -46,27 +46,27 @@ def read_test_tags(test_name, func_name):
         if 'tags' in pert_input['test info'].keys():
             input_tags = pert_input['test info']['tags']
 
-        # Read the tags from epwan_info.yml
-        epwan_name = pert_input['test info']['epwan']
+        # Read the tags from epr_info.yml
+        epr_name = pert_input['test info']['epr']
 
-        epwan_tags = []
-        if 'tags' in epwan_info[epwan_name].keys():
-            epwan_tags = epwan_info[epwan_name]['tags']
+        epr_tags = []
+        if 'tags' in epr_info[epr_name].keys():
+            epr_tags = epr_info[epr_name]['tags']
 
-        tag_list = input_tags + epwan_tags
+        tag_list = input_tags + epr_tags
         tag_list = sorted(list(set(tag_list)))
     
     elif func_name == 'test_qe2pert':
-        if 'tags' in epwan_info[test_name]:
-            tag_list = epwan_info[test_name]['tags']
-        epwan_name = test_name
+        if 'tags' in epr_info[test_name]:
+            tag_list = epr_info[test_name]['tags']
+        epr_name = test_name
 
-    return tag_list, epwan_name
+    return tag_list, epr_name
 
 
 def get_all_tests(func_name):
     """
-    Get the names of all test folders based on the epwan_info.yml file.
+    Get the names of all test folders based on the epr_info.yml file.
 
     Parameters
     ----------
@@ -81,26 +81,26 @@ def get_all_tests(func_name):
     test_folder_list = []
     dev_test_folder_list = []
 
-    epwan_dict_path = 'epwan_info.yml'
-    epwan_info = open_yaml(epwan_dict_path)
+    epr_dict_path = 'epr_info.yml'
+    epr_info = open_yaml(epr_dict_path)
 
     if (func_name == 'test_perturbo') or (func_name == 'test_perturbo_for_qe2pert'):
 
         test_list = ['bands', 'phdisp', 'ephmat']
-        for epwan in epwan_info:
-            if 'tests' in epwan_info[epwan].keys():
+        for epr in epr_info:
+            if 'tests' in epr_info[epr].keys():
                 if (func_name == 'test_perturbo'):
-                    test_list = epwan_info[epwan]['tests']
+                    test_list = epr_info[epr]['tests']
 
-                test_folder_list += [f'{epwan}-{t}' for t in test_list]
+                test_folder_list += [f'{epr}-{t}' for t in test_list]
 
-            if 'devel tests' in epwan_info[epwan].keys():
-                dev_test_list = epwan_info[epwan]['devel tests']
+            if 'devel tests' in epr_info[epr].keys():
+                dev_test_list = epr_info[epr]['devel tests']
 
-                dev_test_folder_list += [f'{epwan}-{t}' for t in dev_test_list]
+                dev_test_folder_list += [f'{epr}-{t}' for t in dev_test_list]
 
     elif func_name == 'test_qe2pert':
-        test_folder_list = [ephr for ephr in epwan_info]
+        test_folder_list = [epr for epr in epr_info]
 
     return test_folder_list, dev_test_folder_list
 
@@ -138,7 +138,7 @@ def print_test_info(test_name, input_dict, test_type):
     sys.stdout.flush()
 
 
-def filter_tests(all_test_list, tags, exclude_tags, epwan, test_names, func_name):
+def filter_tests(all_test_list, tags, exclude_tags, epr, test_names, func_name):
     """
     Return the list of test folders based on command line options
 
@@ -153,8 +153,8 @@ def filter_tests(all_test_list, tags, exclude_tags, epwan, test_names, func_name
     exclude_tags : list or None
        list of tags to exclude
 
-    epwan : list or None
-       list of the epwan files
+    epr : list or None
+       list of the epr files
 
     test_names : list or None
        list of test folders to include
@@ -182,11 +182,11 @@ def filter_tests(all_test_list, tags, exclude_tags, epwan, test_names, func_name
     test_list = copy.deepcopy(all_test_list)
 
     # sort based on tags
-    if tags is not None or exclude_tags is not None or epwan is not None:
+    if tags is not None or exclude_tags is not None or epr is not None:
         for test_name in all_test_list:
 
             # tags for a given test
-            test_tag_list, epwan_name = read_test_tags(test_name, func_name)
+            test_tag_list, epr_name = read_test_tags(test_name, func_name)
 
             # tags from command line
             if tags is not None:
@@ -214,10 +214,10 @@ def filter_tests(all_test_list, tags, exclude_tags, epwan, test_names, func_name
                 if not keep_test and test_name in test_list:
                     test_list.remove(test_name)
 
-            # epwan file name
-            if epwan is not None:
+            # epr file name
+            if epr is not None:
 
-                if epwan_name not in epwan and test_name in test_list:
+                if epr_name not in epr and test_name in test_list:
                     test_list.remove(test_name)
 
     # test name from command line
@@ -233,7 +233,7 @@ def filter_tests(all_test_list, tags, exclude_tags, epwan, test_names, func_name
         for test_name_cmd in test_names:
             if test_name_cmd not in all_test_list:
                 if (func_name == 'test_perturbo') or (func_name == 'test_qe2pert'):
-                    errmsg = (f'Test {test_name_cmd} is not listed in epwan_info.yml, \n'
+                    errmsg = (f'Test {test_name_cmd} is not listed in epr_info.yml, \n'
                               f'but specified in --test-names option. Full test_list: {test_list}'
                              )
                 elif (func_name == 'test_perturbo_for_qe2pert'):

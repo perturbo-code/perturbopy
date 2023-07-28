@@ -1,4 +1,4 @@
-from perturbopy.test_utils.run_test.test_driver import get_test_materials, run_ephr_calculation
+from perturbopy.test_utils.run_test.test_driver import get_test_materials, run_epr_calculation
 from perturbopy.test_utils.run_test.test_driver import clean_test_materials
 from perturbopy.test_utils.compare_data.compare import equal_values
 
@@ -59,7 +59,7 @@ def test_qe2pert(test_name, run_qe2pert, config_machine):
     Parameters
     -----
         test_name : str
-            name of the computing ephr-file
+            name of the computing epr-file
         run_qe2pert : bool
             do we run qe2pert testing or not
         config_machine : str
@@ -72,7 +72,7 @@ def test_qe2pert(test_name, run_qe2pert, config_machine):
     """
     if not run_qe2pert:
         pytest.skip("Skipping by default, pass the --run_qe2pert arg in the command line for this test")
-    run_ephr_calculation(test_name, config_machine)
+    run_epr_calculation(test_name, config_machine)
     assert True
     
 

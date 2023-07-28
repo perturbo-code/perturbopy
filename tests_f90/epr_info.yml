@@ -1,0 +1,134 @@
+#
+# The Perturbo tests are organized by corresponding epr HDF5 files: 
+# epr1, epr2, etc.
+# Each epr file has a set of tests associated with it. 
+# Each test has a correspoding folder, the foldername is made in the following way:
+# epr<n>-<testname>, where n is the index of the epr file 
+# and <testname> is a name of a given test.
+#
+epr1:
+   prefix: gaas
+   filename: gaas_epr.h5
+   SOC: True
+   polar: True
+   description: "GaAs with SOC"
+   pseudopotential: Ga and As from Pseudo-Dojo
+   tags:
+      - SOC
+      - polar
+      - norm-conserving
+      - lda
+      - fully-relativistic
+   tests:
+      - bands
+      - phdisp
+      - ephmat
+      - setup
+      - imsigma
+      - imsigma-dense
+      - meanfp
+      - meanfp-dense
+      - trans-rta
+      - trans-ita
+      - trans-ita-dense
+      - trans-rta-w-ims
+      - trans-ita-w-ims
+      - trans-mag-rta
+      - trans-mag-ita
+      - trans-rta-pp
+      - trans-ita-pp
+      - trans-mag-pp
+      - dynamics-euler
+      - dynamics-rk4
+      - dynamics-pp
+      - dynamics-restart
+      - dynamics-efield
+      - dynamics-efield-pp
+      - dynamics-efield-norm
+      - dynamics-efield-norm-pp
+
+   devel tests:
+      - dynamics-boltz-acc-thr
+      - dynamics-ph-mode-exclude
+
+epr2:
+   prefix: mos2
+   filename: mos2_epr.h5
+   SOC: True
+   polar: True
+   description: "MoS2 with SOC and 2D Coulomb cutoff"
+   pseudopotential: Mo and S from Pseudo-Dojo
+   tags:
+      - SOC
+      - polar
+      - norm-conserving
+      - lda
+      - fully-relativistic
+      - 2D cutoff
+   tests:
+      - bands
+      - phdisp
+      - ephmat
+
+epr3:
+   prefix: graphene
+   filename: graphene_epr.h5
+   SOC: False
+   polar: False
+   description: "Graphene, with 2D Coulomb cutoff and no SOC"
+   pseudopotential: C from Pseudo-Dojo
+   tags:
+      - norm-conserving
+      - LDA
+      - scalar-relativistic
+      - 2D cutoff
+   tests:
+      - bands
+      - phdisp
+      - ephmat
+
+epr4:
+   prefix: graphite
+   filename: graphite_epr.h5
+   SOC: False
+   polar: False
+   description: "Graphite, no SOC"
+   pseudopotential: C from Pseudo-Dojo
+   tags:
+      - norm-conserving
+      - LDA
+      - scalar-relativistic
+   tests:
+      - bands
+      - phdisp
+      - ephmat
+
+epr5:
+   prefix: gaas_uspp
+   filename: gaas_uspp_epr.h5
+   SOC: True
+   description: "GaAs with SOC + USPP"
+   pseudopotential: Ga and As from QE
+   tags:
+      - ultrasoft
+      - LDA
+      - fully-relativistic
+   tests:
+      - bands
+      - phdisp
+      - ephmat
+
+epr6:
+   prefix: fe
+   filename: fe_epr.h5
+   SOC: False
+   description: "Iron with LSDA"
+   pseudopotential: Fe from wannier90 example 
+   tags:
+      - norm-conserving
+      - pbe
+      - lsda
+   tests:
+      - bands
+      - phdisp
+      - ephmat

@@ -402,7 +402,7 @@ def get_test_materials(test_name, test_case, config_machine):
             igns_n_tols)
 
 
-def run_ephr_calculation(ephr_name, config_machine):
+def run_epr_calculation(epr_name, config_machine):
     """
     Run one test:
         #. Run scf calculation
@@ -413,8 +413,8 @@ def run_ephr_calculation(ephr_name, config_machine):
 
     Parameters
     ----------
-    ephr_name : str
-        name of computed ephr_name file
+    epr_name : str
+        name of computed epr_name file
     config_machine : str
         name of file with computational information, which we'll use in this set of computations.
         Should be in folder tests_f90/config_machine.
@@ -425,22 +425,22 @@ def run_ephr_calculation(ephr_name, config_machine):
     """
     # suffixes of paths needed to find driver/utils/references
     cwd = os.getcwd()
-    inputs_path_suffix = f'ephr_computation/{ephr_name}'
+    inputs_path_suffix = f'epr_computation/{epr_name}'
     config_machine = open_yaml(f'{cwd}/config_machine/{config_machine}')
 
     # determine needed paths
     inputs_dir_path = f'{cwd}/{inputs_path_suffix}/'
-    work_path = perturbo_scratch_dir_config(cwd, inputs_dir_path, ephr_name, config_machine, test_case='ephr_calculation')
+    work_path = perturbo_scratch_dir_config(cwd, inputs_dir_path, epr_name, config_machine, test_case='epr_calculation')
     
     # open input yaml-files with supplementary info
     # and computational commands
-    input_yaml = open_yaml(f'{cwd}/epwan_info.yml')
+    input_yaml = open_yaml(f'{cwd}/epr_info.yml')
 
     # print the test information before the run
-    print_test_info(ephr_name, input_yaml, test_type='qe2pert')
+    print_test_info(epr_name, input_yaml, test_type='qe2pert')
     
     # define the prefix - we'll need to have it in the later computations
-    prefix = input_yaml[ephr_name]['prefix']
+    prefix = input_yaml[epr_name]['prefix']
 
     # run scf
     run_scf(cwd, work_path, config_machine)
@@ -496,24 +496,24 @@ def clean_test_materials(test_name, new_outs, config_machine):
     return None
     
 
-def clean_ephr_folders(ephr_failed, config_machine, keep_ephr, keep_preliminary):
+def clean_epr_folders(epr_failed, config_machine, keep_epr, keep_preliminary):
     """
-    Delete all temporary ephr folders for the tests which were passed
+    Delete all temporary epr folders for the tests which were passed
 
     Parameters
     ----------
-    ephr_failed : list
-        names of ephr calculations, for which we obtained errors. The
+    epr_failed : list
+        names of epr calculations, for which we obtained errors. The
         corresponding folders will be saved
     
     config_machine : dict
         dictionary with computational information, which we'll use in this set of computations.
     
-    keep_ephr : bool
-        save all ephr-files from the qe2pert testing
+    keep_epr : bool
+        save all epr-files from the qe2pert testing
     
     keep_preliminary : bool
-        save all preliminary files for ephr calculation
+        save all preliminary files for epr calculation
 
     Returns
     -----
@@ -529,34 +529,34 @@ def clean_ephr_folders(ephr_failed, config_machine, keep_ephr, keep_preliminary)
         work_path    = config_machine['PERT_SCRATCH']
     except KeyError:
         print(f'PERT_SCRATCH not set in the config_machine. using default location -  {work_path}')
-    ephr_dict_path = 'epwan_info.yml'
+    epr_dict_path = 'epr_info.yml'
     
-    # set of all ephr-files
-    ephr_full_list = [ephr for ephr in open_yaml(ephr_dict_path)]
+    # set of all epr-files
+    epr_full_list = [epr for epr in open_yaml(epr_dict_path)]
     
-    # set of ephr-files, for which tests have passed succescfully - we can delete them
-    deleting_ephr = list(set(ephr_full_list) - set(ephr_failed))
+    # set of epr-files, for which tests have passed succescfully - we can delete them
+    deleting_epr = list(set(epr_full_list) - set(epr_failed))
     print('\n == Tests finished ==\n\n')
     if not keep_preliminary:
         # if keep_preliminary, simply pass this function - we'll save all
         # files in this case
 
-        if keep_ephr:
-            # if keep only ephr, collect them in a separate new folder:
-            dst = os.path.join(work_path, 'collected_ephr')
+        if keep_epr:
+            # if keep only epr, collect them in a separate new folder:
+            dst = os.path.join(work_path, 'collected_epr')
             os.mkdir(dst)
             
-            # collect all epwan-files
-            for ephr in ephr_full_list:
-                src = os.path.join(work_path, 'ephr_calculation', ephr, 'qe2pert')
+            # collect all epr-files
+            for epr in epr_full_list:
+                src = os.path.join(work_path, 'epr_calculation', epr, 'qe2pert')
                 
-                # only if the directory with the epwan-file exist:
+                # only if the directory with the epr-file exist:
                 if os.path.isdir(src):
                     file_list = os.listdir(src)
                     
-                    # looking for the epwan-files in the files list
+                    # looking for the epr-files in the files list
                     for file_name in file_list:
-                        if file_name.endswith('epwan.h5'):
+                        if file_name.endswith('epr.h5'):
                             full_src = os.path.join(src, file_name)
                             full_dst = os.path.join(dst, file_name)
 
@@ -564,8 +564,8 @@ def clean_ephr_folders(ephr_failed, config_machine, keep_ephr, keep_preliminary)
                             shutil.copy2(full_src, dst)
 
         # last steps in both cases - delete all computational folders
-        for ephr in deleting_ephr:
-            del_dir = os.path.join(work_path, 'ephr_calculation', ephr)
+        for epr in deleting_epr:
+            del_dir = os.path.join(work_path, 'epr_calculation', epr)
             if os.path.isdir(del_dir):
                 print(f'Removing {del_dir} ... \n')
                 shutil.rmtree(del_dir)

@@ -159,22 +159,22 @@ Using the command-line options and environmental variables, one can parametrize 
 
    List of tests tags to exclude from this testsuite run.
    
-.. option:: --ephr_tags
+.. option:: --epr_tags
 
    List of tags of the epr files to include in this testsuite run.
   
-.. option:: --exclude-ephr_tags
+.. option:: --exclude-epr_tags
 
    List of tags of the epr files to exclude from this testsuite run.
    
-.. option:: --epwan
+.. option:: --epr
 
    List of epr files to test. If the option is not specified, all the available epr files will be included in testing.
 
 
 .. option:: --test-names
 
-   List of test names to include in this testsuite run, e.g., epwan1_bands, etc.
+   List of test names to include in this testsuite run, e.g., epr1_bands, etc.
    
 .. option:: --run_qe2pert
 
@@ -189,13 +189,13 @@ Using the command-line options and environmental variables, one can parametrize 
 
    Save all the materials related to ``perturbo.x`` tests.
 
-.. option:: --keep_ephr
+.. option:: --keep_epr
 
-   Save all ephr-files from the ``qe2pert.x`` testing.
+   Save all epr-files from the ``qe2pert.x`` testing.
    
 .. option:: --keep_preliminary
 
-   Save all preliminary files for ephr files calculations in the ``qe2pert.x`` testing (outputs of  Quantum Espresso and Wannier90).
+   Save all preliminary files for epr files calculations in the ``qe2pert.x`` testing (outputs of  Quantum Espresso and Wannier90).
 
 
 
@@ -298,11 +298,11 @@ If you make changes to the ``perturbo`` source code, you **must** not only check
 Add new test
 ~~~~~~~~~~~~
 
-If you want to add new tests for existing epwan files, you need to provide the following information:
+If you want to add new tests for existing epr files, you need to provide the following information:
 
-1. Test folder in format `epwanN-test-name`, where `N` - number of corresponding epwan file. This folder should be saved in the directory `tests_f90/tests_perturbo` and contain:
+1. Test folder in format `eprN-test-name`, where `N` - number of corresponding epr file. This folder should be saved in the directory `tests_f90/tests_perturbo` and contain:
 
-* Link to the corresponding epwan file (all files are saved in the folder `/perturbopy/tests_f90/refs_perturbo/epwan_files`);
+* Link to the corresponding epr file (all files are saved in the folder `/perturbopy/tests_f90/refs_perturbo/epr_files`);
 * Input file `pert.in`;
 * All necessary computational files for this input;
 * File `pert_input.yml`, that has the following structure:
@@ -310,7 +310,7 @@ If you want to add new tests for existing epwan files, you need to provide the f
 
     test info:
 
-        epwan: epwanN
+        epr: eprN
 
         tags:
             - tag1
@@ -346,7 +346,7 @@ If you want to add new tests for existing epwan files, you need to provide the f
 
 The following keys **must be present** in the ``test info`` section of `pert_input.yml` file:
 
-* ``epwan`` - name of corresponding epwan file;
+* ``epr`` - name of corresponding epr file;
 * ``desc`` - description of this test;
 * ``test files`` - names of the output files, for which we make a comparison, file type must be YAML or HDF5;
 * ``test keywords`` - which sections of the corresponding file would be checked.
@@ -362,9 +362,9 @@ The following keys **are optional** in the ``test info`` section of `pert_input.
 
 Same is true for the tolerances with the `qe2pert` label, but these tolerances are applied on the the second run of ``perturbo.x`` tests. If you want to use a special tolerance for some block, specify it in the corresponding tolerances with a corresponding key (``keyword1`` from the example above).
 
-2. Reference folder in format `epwanN-test-name`, where `N` - number of corresponding epwan file. This folder should be saved in the directory `tests_f90/refs_perturbo` and contain all output files, for which comparison should be done.
+2. Reference folder in format `eprN-test-name`, where `N` - number of corresponding epr file. This folder should be saved in the directory `tests_f90/refs_perturbo` and contain all output files, for which comparison should be done.
 
-3. List the name of the test in the ``epwan_info.yml`` file stored in the ``tests_f90/`` folder. The list of tests is specified in the ``tests`` block of each of the epwan files. If you do not specify your test name there, that test will not be runned.
+3. List the name of the test in the ``epr_info.yml`` file stored in the ``tests_f90/`` folder. The list of tests is specified in the ``tests`` block of each of the epr files. If you do not specify your test name there, that test will not be runned.
 
 .. note::
 
@@ -375,9 +375,9 @@ Same is true for the tolerances with the `qe2pert` label, but these tolerances a
 Add new epr-files
 ~~~~~~~~~~~~~~~~~
 
-If you want to create a new test with a new epwan file, you will need to perform the following steps:
+If you want to create a new test with a new epr file, you will need to perform the following steps:
 
-1. In the `tests_f90/ephr_computation/` folder, you will need to add a folder with the name of your epwan file. We enumerate these folders, so for consistency, we suggest calling it `epwanN`. This folder will contain all the files needed for your epwan file's calculations. This folder should have the following hierarchy:
+1. In the `tests_f90/epr_computation/` folder, you will need to add a folder with the name of your epr file. We enumerate these folders, so for consistency, we suggest calling it `eprN`. This folder will contain all the files needed for your epr file's calculations. This folder should have the following hierarchy:
 
 .. code-block:: python
 
@@ -401,16 +401,16 @@ If you want to create a new test with a new epwan file, you will need to perform
 
 Here each subfolder corresponds to one of the calculation steps, plus additionally there is a folder with pseudopotentials. ``prefix`` in the file ``prefix.win`` should be the same as specified in the ``scf.in`` file. Pseudopotentials also should be the same as enlisted in the ``scf.in`` file.
 
-2. Add information about the epwan file in the ``epwan_info.yml``. Block for each epwan file looks in the following way:
+2. Add information about the epr file in the ``epr_info.yml``. Block for each epr file looks in the following way:
 
 .. code-block:: python
 
-	epwanN:
+	eprN:
 	   prefix: prefix
-	   filename: prefix_epwan.h5
+	   filename: prefix_epr.h5
 	   SOC: False
 	   polar: False
-	   description: "Description of this epwan file"
+	   description: "Description of this epr file"
 	   pseudopotential: Description of the used pseudopotentials
 	   tags:
 	      - tag1
@@ -421,9 +421,9 @@ Here each subfolder corresponds to one of the calculation steps, plus additional
 	      - ephmat
 	      - test4
 
-In general, the name of each block speaks for itself. Note that the list of tests includes ``bands``, ``phdisp`` and ``ephmat``.  These ``perturbo.x`` calculation mode tests **must** be created for the new epwan file. These particular tests are run to verify the operation of ``qe2pert.x``. More tests for a given epwan file can be optionally added.
+In general, the name of each block speaks for itself. Note that the list of tests includes ``bands``, ``phdisp`` and ``ephmat``.  These ``perturbo.x`` calculation mode tests **must** be created for the new epr file. These particular tests are run to verify the operation of ``qe2pert.x``. More tests for a given epr file can be optionally added.
 
-3. Save your epwan file in the folder `/perturbopy/tests_f90/refs_perturbo/epwan_files`.
+3. Save your epr file in the folder `/perturbopy/tests_f90/refs_perturbo/epr_files`.
 
 3. Add each of the specified tests using the procedure described in the previous subsection.
 
