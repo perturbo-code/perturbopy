@@ -1,0 +1,27 @@
+test info: 
+
+   epr: epr3
+
+   tags:
+      - ephmat
+      - random-k
+      - random-q
+      - uniform
+
+   desc:
+      "The absolute values of the e-ph matrix elements, 
+       summed over the number of electronic bands.\n
+       10 k- and 10 q-points are randomly generated"
+
+   test files:
+
+      pert_output.yml: 
+
+         test keywords:
+            - ephmat 
+
+         abs tol:
+            default: 1e-5
+
+         rel tol:
+            default: 0.02

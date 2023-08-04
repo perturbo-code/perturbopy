@@ -40,7 +40,7 @@ def run_from_config_machine(config_machine, step):
 
 def copy_folder_with_softlinks(src, dst, perturbo_scratch_dir_prefix=None, test_name=None, second_run=False):
     """
-    Copy the src directory to the dst directory, except the ephr file - for it softlink is created.
+    Copy the src directory to the dst directory, except the epr file - for it softlink is created.
 
     Parameters
     ----------
@@ -79,14 +79,14 @@ def copy_folder_with_softlinks(src, dst, perturbo_scratch_dir_prefix=None, test_
             src_file_path = os.path.join(root, file_name)
             dst_file_path = os.path.join(dst_subfolder, file_name)
 
-            if file_name.endswith("epwan.h5"):
-                # Create a softlink for files ending with "epwan.h5"
+            if file_name.endswith("epr.h5"):
+                # Create a softlink for files ending with "epr.h5"
                 if not second_run:
                     # if it's first run of perturbo - simply make softlink of file
                     os.symlink(src_file_path, dst_file_path)
                 else:
                     # if it's second run - softlink the file from our previous calculations
-                    softlink_ephr_files(perturbo_scratch_dir_prefix, test_name, dst_file_path, file_name)
+                    softlink_epr_files(perturbo_scratch_dir_prefix, test_name, dst_file_path, file_name)
             else:
                 # Copy other files
                 shutil.copy2(src_file_path, dst_file_path)
@@ -96,7 +96,7 @@ def perturbo_scratch_dir_config(cwd, perturbo_inputs_dir_path, test_name, config
     """
     Check if the PERT_SCRATCH variable is written in the config_machine file.
     If not - use default location "/PERT_SCRATCH".
-    After it, this programm make the copy from folder with tests from either ephr_computation or tests_perturbo folder.
+    After it, this programm make the copy from folder with tests from either epr_computation or tests_perturbo folder.
     
 
     Parameters
@@ -145,12 +145,12 @@ def perturbo_scratch_dir_config(cwd, perturbo_inputs_dir_path, test_name, config
     if os.path.isdir(dst):
         print(f'\n directory {dst} exists. Removing this directory ...\n')
         shutil.rmtree(dst)
-        if test_case == 'perturbo' or test_case == 'ephr_calculation':
+        if test_case == 'perturbo' or test_case == 'epr_calculation':
             copy_folder_with_softlinks(src, dst)
         elif test_case == 'perturbo_for_qe2pert':
             copy_folder_with_softlinks(src, dst, perturbo_scratch_dir_prefix, test_name, second_run=True)
     else:
-        if test_case == 'perturbo' or test_case == 'ephr_calculation':
+        if test_case == 'perturbo' or test_case == 'epr_calculation':
             copy_folder_with_softlinks(src, dst)
         elif test_case == 'perturbo_for_qe2pert':
             copy_folder_with_softlinks(src, dst, perturbo_scratch_dir_prefix, test_name, second_run=True)
@@ -158,9 +158,9 @@ def perturbo_scratch_dir_config(cwd, perturbo_inputs_dir_path, test_name, config
     return perturbo_scratch_dir
         
    
-def softlink_ephr_files(perturbo_scratch_dir_prefix, test_name, dst, file_name):
+def softlink_epr_files(perturbo_scratch_dir_prefix, test_name, dst, file_name):
     """
-    Make a softlink from scratch folder to the computed ephr file
+    Make a softlink from scratch folder to the computed epr file
 
     Parameters
     ----------
@@ -174,23 +174,23 @@ def softlink_ephr_files(perturbo_scratch_dir_prefix, test_name, dst, file_name):
         folder where the softlink will be placed
     
     file_name : str
-        name of the linked ephr-file
+        name of the linked epr-file
 
     Raises
     ------
     ValueError
-       if corresponding ephr-file wasn't found or calculated.
+       if corresponding epr-file wasn't found or calculated.
 
     Returns
     -------
     None
 
     """
-    ephr_name = test_name[:test_name.find('-')]
-    ephr_address = os.path.join(perturbo_scratch_dir_prefix, 'ephr_calculation', ephr_name, 'qe2pert')
+    epr_name = test_name[:test_name.find('-')]
+    epr_address = os.path.join(perturbo_scratch_dir_prefix, 'epr_calculation', epr_name, 'qe2pert')
     # copy from our previous computation to the current computation folder
     try:
-        src = os.path.abspath(os.path.join(ephr_address, file_name))
+        src = os.path.abspath(os.path.join(epr_address, file_name))
         os.symlink(src, dst)
     except FileNotFoundError:
         raise FileNotFoundError(f"Ephr-file for {test_name} wasn't found or calculated")

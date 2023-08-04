@@ -3,7 +3,7 @@ How this works.
 
 In the tests fodler, the test_perturbo.py script runs Perturbo for
 a given 'test_name'. The idea is to use the same function (test_perturbo())
-to run all of the calc. modes, ephr files, etc. All of this should be
+to run all of the calc. modes, epr files, etc. All of this should be
 happening under the pytest environment (ran by `pytest`).
 
 In this file (conftest.py), we parametrize pytest to make this work.
@@ -11,7 +11,7 @@ In this file (conftest.py), we parametrize pytest to make this work.
 
 from perturbopy.test_utils.run_test.run_utils import get_all_tests
 from perturbopy.test_utils.run_test.run_utils import filter_tests
-from perturbopy.test_utils.run_test.test_driver import clean_ephr_folders
+from perturbopy.test_utils.run_test.test_driver import clean_epr_folders
 import pytest
 
 # define all supplementary arguments for the test running. This function declared in the PyTest itself
@@ -27,16 +27,16 @@ def pytest_addoption(parser):
                      help='List of tests tags to exclude from this testsuite run.',
                      nargs='*', default=None)
                      
-    parser.addoption('--ephr_tags',
-                     help='List of ephr_tags to include in this testsuite run.',
+    parser.addoption('--epr_tags',
+                     help='List of epr_tags to include in this testsuite run.',
                      nargs='*', default=None)
 
-    parser.addoption('--exclude-ephr_tags',
-                     help='List of ephr_tags to exclude from this testsuite run.',
+    parser.addoption('--exclude-epr_tags',
+                     help='List of epr_tags to exclude from this testsuite run.',
                      nargs='*', default=None)
 
-    parser.addoption('--epwan',
-                     help='List of epwan files to test.',
+    parser.addoption('--epr',
+                     help='List of epr files to test.',
                      nargs='*', default=None)
 
     parser.addoption('--test-names',
@@ -59,12 +59,12 @@ def pytest_addoption(parser):
                      help='Save all the materials related to perturbo tests',
                      action='store_true')
                      
-    parser.addoption('--keep_ephr',
-                     help='Save all ephr-files from the qe2pert testing',
+    parser.addoption('--keep_epr',
+                     help='Save all epr-files from the qe2pert testing',
                      action='store_true')
                      
     parser.addoption('--keep_preliminary',
-                     help='Save all preliminary files for ephr files calculations',
+                     help='Save all preliminary files for epr files calculations',
                      action='store_true')
 
 # generation of test for each type of test function. This function automatically called,
@@ -77,8 +77,8 @@ def pytest_generate_tests(metafunc):
     tests/test_perturbo.py test_perturbo(test_name) function.
     Here, this function is referred as 'metafunc'.
 
-    First, we get the list of all of the test folders using the tests/epwan_info.yml file.
-    We retrieve the test folder as <epwan name>-<test name>. This is done by the get_all_tests()
+    First, we get the list of all of the test folders using the tests/epr_info.yml file.
+    We retrieve the test folder as <epr name>-<test name>. This is done by the get_all_tests()
     function.
 
     Next, we remove some of the tests based on the command line options and obtain the target
@@ -102,16 +102,16 @@ def pytest_generate_tests(metafunc):
                 all_test_list,
                 metafunc.config.getoption('tags'),
                 metafunc.config.getoption('exclude_tags'),
-                metafunc.config.getoption('epwan'),
+                metafunc.config.getoption('epr'),
                 metafunc.config.getoption('test_names'),
                 metafunc.function.__name__
                 )
         elif (metafunc.function.__name__ == 'test_qe2pert'):
             test_list = filter_tests(
                 all_test_list,
-                metafunc.config.getoption('ephr_tags'),
-                metafunc.config.getoption('exclude_ephr_tags'),
-                metafunc.config.getoption('epwan'),
+                metafunc.config.getoption('epr_tags'),
+                metafunc.config.getoption('exclude_epr_tags'),
+                metafunc.config.getoption('epr'),
                 None,
                 metafunc.function.__name__
                 )
@@ -154,19 +154,19 @@ def keep_perturbo(request):
     return request.param
 
 # this is predefined function of PyTest, which is runned after the end of all tests.
-# here we delete all ephr-folders, for which all tests were passed
+# here we delete all epr-folders, for which all tests were passed
 def pytest_terminal_summary(terminalreporter, exitstatus, config):
     if config.getoption('run_qe2pert'):
         if exitstatus == 0:
-            # delete all ephr files
-            ephr_failed = []
+            # delete all epr files
+            epr_failed = []
         else:
             failed_reports = terminalreporter.getreports('failed')
             # Process the list of failed test reports as needed
-            ephr_failed = set()
+            epr_failed = set()
             for report in failed_reports:
-                # obtain ephr-name of failed test
-                ephr_failed.add(report.nodeid.split("[")[1].rstrip("]").split('-')[0])
-            ephr_failed = list(ephr_failed)
+                # obtain epr-name of failed test
+                epr_failed.add(report.nodeid.split("[")[1].rstrip("]").split('-')[0])
+            epr_failed = list(epr_failed)
     
-        clean_ephr_folders(ephr_failed, config.getoption('config_machine'), config.getoption('keep_ephr'), config.getoption('keep_preliminary'))
+        clean_epr_folders(epr_failed, config.getoption('config_machine'), config.getoption('keep_epr'), config.getoption('keep_preliminary'))
