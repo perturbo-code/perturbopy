@@ -492,7 +492,7 @@ def ph_collection(prefix, nq_num):
     for file in os.listdir('.'):
         if file.startswith(f'{prefix}.dyn'):
             shutil.copy(file, 'save')
-    print('before the cicle')
+
     for nq in range(1, nq_num + 1):
         
         # copy dvscf files
