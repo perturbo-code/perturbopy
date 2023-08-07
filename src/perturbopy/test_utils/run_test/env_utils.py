@@ -92,7 +92,7 @@ def copy_folder_with_softlinks(src, dst, perturbo_scratch_dir_prefix=None, test_
                 shutil.copy2(src_file_path, dst_file_path)
                 
 
-def perturbo_scratch_dir_config(cwd, perturbo_inputs_dir_path, test_name, config_machine, test_case='perturbo', rm_preexist_dir=True):
+def perturbo_scratch_dir_config(source_folder, perturbo_inputs_dir_path, test_name, config_machine, test_case='perturbo', rm_preexist_dir=True):
     """
     Check if the PERT_SCRATCH variable is written in the config_machine file.
     If not - use default location "/PERT_SCRATCH".
@@ -101,8 +101,8 @@ def perturbo_scratch_dir_config(cwd, perturbo_inputs_dir_path, test_name, config
 
     Parameters
     ----------
-    cwd : str
-        path to cwd which should be .../perturbopy/tests_f90
+    source_folder : str
+        path of source directory
 
     perturbo_inputs_dir_path : str
         folder with all input files for the test
@@ -128,9 +128,9 @@ def perturbo_scratch_dir_config(cwd, perturbo_inputs_dir_path, test_name, config
 
     """
     # Read the perturbo_run variable from the environment
-    perturbo_scratch_dir_prefix   = cwd + "/PERT_SCRATCH"
+    perturbo_scratch_dir_prefix   = os.path.join(source_folder, "PERT_SCRATCH")
     try:
-        perturbo_scratch_dir_prefix = config_machine['PERT_SCRATCH']
+        perturbo_scratch_dir_prefix = os.path.join(source_folder, config_machine['PERT_SCRATCH'])
     except KeyError:
         print(f'PSCRATCH not set in the config_machine. using default location -  {perturbo_scratch_dir_prefix}')
 

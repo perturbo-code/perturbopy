@@ -13,11 +13,17 @@ from perturbopy.test_utils.run_test.run_utils import get_all_tests
 from perturbopy.test_utils.run_test.run_utils import filter_tests
 from perturbopy.test_utils.run_test.test_driver import clean_epr_folders
 import pytest
+import os
 
 # define all supplementary arguments for the test running. This function declared in the PyTest itself
 
 
 def pytest_addoption(parser):
+
+    parser.addoption('--source_folder',
+                     help='address of the folder with all reference files for the test performance',
+                     nargs="?",
+                     required=True)
 
     parser.addoption('--tags',
                      help='List of tests tags to include in this testsuite run.',
@@ -88,9 +94,12 @@ def pytest_generate_tests(metafunc):
     as the test_name input argument of the function.
     """
     if 'test_name' in metafunc.fixturenames:
+        
+        # define folder with supplementary information
+        source_folder = os.path.abspath(metafunc.config.getoption('source_folder'))
 
         # Get the list of all test folders
-        all_test_list, all_dev_test_list = get_all_tests(metafunc.function.__name__)
+        all_test_list, all_dev_test_list = get_all_tests(metafunc.function.__name__, source_folder)
 
         # Add the devel tests if --devel was specified
         if metafunc.config.getoption('devel'):
@@ -104,8 +113,9 @@ def pytest_generate_tests(metafunc):
                 metafunc.config.getoption('exclude_tags'),
                 metafunc.config.getoption('epr'),
                 metafunc.config.getoption('test_names'),
-                metafunc.function.__name__
-                )
+                metafunc.function.__name__,
+                source_folder
+            )
         elif (metafunc.function.__name__ == 'test_qe2pert'):
             test_list = filter_tests(
                 all_test_list,
@@ -113,22 +123,26 @@ def pytest_generate_tests(metafunc):
                 metafunc.config.getoption('exclude_epr_tags'),
                 metafunc.config.getoption('epr'),
                 None,
-                metafunc.function.__name__
-                )
+                metafunc.function.__name__,
+                source_folder
+            )
         
         if metafunc.function.__name__ == 'test_perturbo_for_qe2pert':
             metafunc.parametrize('test_name', test_list, indirect=True)
             metafunc.parametrize('config_machine', [metafunc.config.getoption('config_machine')], indirect=True)
             metafunc.parametrize('keep_perturbo', [metafunc.config.getoption('keep_perturbo')], indirect=True)
             metafunc.parametrize('run_qe2pert', [metafunc.config.getoption('run_qe2pert')], indirect=True)
+            metafunc.parametrize('source_folder', [source_folder], indirect=True)
         elif metafunc.function.__name__ == 'test_qe2pert':
             metafunc.parametrize('test_name', test_list, indirect=True)
             metafunc.parametrize('run_qe2pert', [metafunc.config.getoption('run_qe2pert')], indirect=True)
             metafunc.parametrize('config_machine', [metafunc.config.getoption('config_machine')], indirect=True)
+            metafunc.parametrize('source_folder', [source_folder], indirect=True)
         elif metafunc.function.__name__ == 'test_perturbo':
             metafunc.parametrize('test_name', test_list, indirect=True)
             metafunc.parametrize('config_machine', [metafunc.config.getoption('config_machine')], indirect=True)
             metafunc.parametrize('keep_perturbo', [metafunc.config.getoption('keep_perturbo')], indirect=True)
+            metafunc.parametrize('source_folder', [source_folder], indirect=True)
         
 # in order to properly run pytest functions, we need to declare fixtures,
 # which allow us to use parametrization of test functions
@@ -153,8 +167,15 @@ def config_machine(request):
 def keep_perturbo(request):
     return request.param
 
+
+@pytest.fixture
+def source_folder(request):
+    return request.param
+
 # this is predefined function of PyTest, which is runned after the end of all tests.
 # here we delete all epr-folders, for which all tests were passed
+
+
 def pytest_terminal_summary(terminalreporter, exitstatus, config):
     if config.getoption('run_qe2pert'):
         if exitstatus == 0:
@@ -169,4 +190,5 @@ def pytest_terminal_summary(terminalreporter, exitstatus, config):
                 epr_failed.add(report.nodeid.split("[")[1].rstrip("]").split('-')[0])
             epr_failed = list(epr_failed)
     
-        clean_epr_folders(epr_failed, config.getoption('config_machine'), config.getoption('keep_epr'), config.getoption('keep_preliminary'))
+        clean_epr_folders(epr_failed, config.getoption('config_machine'), config.getoption('keep_epr'),
+                          config.getoption('keep_preliminary'), os.path.abspath(config.getoption('source_folder')))
