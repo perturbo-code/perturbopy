@@ -497,14 +497,33 @@ def ph_collection(prefix, nq_num):
         
         # copy dvscf files
         if nq > 1:
-            shutil.copy(f'{dir}/{prefix}.q_{nq}/{prefix}.dvscf1', f'save/{prefix}.dvscf_q{nq}')
+
+            # parallel version
+            if os.path.exists(f'{dir}/{prefix}.q_{nq}/{prefix}.dvscf1'):
+                shutil.copy(f'{dir}/{prefix}.q_{nq}/{prefix}.dvscf1', f'save/{prefix}.dvscf_q{nq}')
+            # serial version
+            elif os.path.exists(f'{dir}/{prefix}.q_{nq}/{prefix}.dvscf'):
+                shutil.copy(f'{dir}/{prefix}.q_{nq}/{prefix}.dvscf', f'save/{prefix}.dvscf_q{nq}')
+            else:
+                raise FileNotFoundError(f"{dir}/{prefix}.q_{nq}/{prefix}.dvscf and {dir}/{prefix}.q_{nq}/{prefix}.dvscf1 don't exist")
+
             for file in os.listdir(f'{dir}/{prefix}.q_{nq}'):
                 if file.endswith('wfc'):
                     os.remove(f'{dir}/{prefix}.q_{nq}/{file}')
+
         else:
-            shutil.copy(f'{dir}/{prefix}.dvscf1', f'save/{prefix}.dvscf_q{nq}')
+
+            # parallel version
+            if os.path.exists(f'{dir}/{prefix}.dvscf1'):
+                shutil.copy(f'{dir}/{prefix}.dvscf1', f'save/{prefix}.dvscf_q{nq}')
+            # serial version
+            elif os.path.exists(f'{dir}/{prefix}.dvscf'):
+                shutil.copy(f'{dir}/{prefix}.dvscf', f'save/{prefix}.dvscf_q{nq}')
+            else:
+                raise FileNotFoundError(f"{dir}/{prefix}.dvscf and {dir}/{prefix}.dvscf1 don't exist")
+
             for file in os.listdir(dir):
                 if 'wfc' in file:
                     os.remove(f'{dir}/{file}')
-                    
+             
     shutil.copy(f'save/{prefix}.dyn0', f'save/{prefix}.dyn0.xml')
