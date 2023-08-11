@@ -14,7 +14,7 @@ from perturbopy.test_utils.run_test.run_utils import print_test_info, setup_defa
 from perturbopy.test_utils.run_test.run_utils import ph_collection, define_nq_num
 
 
-def run_perturbo(cwd, perturbo_driver_dir_path, config_machine,
+def run_perturbo(source_folder, perturbo_driver_dir_path, config_machine,
                  input_name='pert.in', output_name='pert.out'):
     """
     Function to run Perturbo and produce output files
@@ -27,8 +27,8 @@ def run_perturbo(cwd, perturbo_driver_dir_path, config_machine,
 
     Parameters
     ----------
-    cwd : str
-        path of current working directory
+    source_folder : str
+        path of source directory
     perturbo_driver_dir_path : str
         path to dir with pert.in file
     config_machine : dict
@@ -57,7 +57,7 @@ def run_perturbo(cwd, perturbo_driver_dir_path, config_machine,
 
     subprocess.run(preliminary_commands(config_machine, 'perturbo') + run, shell=True)
 
-    os.chdir(cwd)
+    os.chdir(source_folder)
     
 
 def preliminary_commands(config_machine, step):
@@ -88,14 +88,14 @@ def preliminary_commands(config_machine, step):
     return list_of_coms
     
 
-def run_scf(cwd, work_path, config_machine, input_name='scf.in', output_name='scf.out'):
+def run_scf(source_folder, work_path, config_machine, input_name='scf.in', output_name='scf.out'):
     """
     Function for scf calculation
 
     Parameters
     ----------
-    cwd : str
-        path of current working directory
+    source_folder : str
+        path of source directory
     work_path : str
         path to dir with input file, where we'll run the calculations
     config_machine : dict
@@ -123,17 +123,17 @@ def run_scf(cwd, work_path, config_machine, input_name='scf.in', output_name='sc
 
     subprocess.run(preliminary_commands(config_machine, 'scf') + run, shell=True)
 
-    os.chdir(cwd)
+    os.chdir(source_folder)
     
 
-def run_phonon(cwd, work_path, config_machine, prefix, input_name='ph.in', output_name='ph.out'):
+def run_phonon(source_folder, work_path, config_machine, prefix, input_name='ph.in', output_name='ph.out'):
     """
     Function for nscf calculation
 
     Parameters
     ----------
-    cwd : str
-        path of current working directory
+    source_folder : str
+        path of source directory
     work_path : str
         path to dir with input file, where we'll run the calculations
     config_machine : dict
@@ -171,17 +171,17 @@ def run_phonon(cwd, work_path, config_machine, prefix, input_name='ph.in', outpu
     sys.stdout.flush()
     ph_collection(prefix, nq_num)
     
-    os.chdir(cwd)
+    os.chdir(source_folder)
 
     
-def run_nscf(cwd, work_path, config_machine, input_name='nscf.in', output_name='nscf.out'):
+def run_nscf(source_folder, work_path, config_machine, input_name='nscf.in', output_name='nscf.out'):
     """
     Function for nscf calculation
 
     Parameters
     ----------
-    cwd : str
-        path of current working directory
+    source_folder : str
+        path of source directory
     work_path : str
         path to dir with input file, where we'll run the calculations
     config_machine : dict
@@ -212,17 +212,17 @@ def run_nscf(cwd, work_path, config_machine, input_name='nscf.in', output_name='
 
     subprocess.run(preliminary_commands(config_machine, 'nscf') + run, shell=True)
 
-    os.chdir(cwd)
+    os.chdir(source_folder)
     
 
-def run_wannier(cwd, work_path, config_machine, prefix, input_name='pw2wan.in', output_name='pw2wan.out'):
+def run_wannier(source_folder, work_path, config_machine, prefix, input_name='pw2wan.in', output_name='pw2wan.out'):
     """
     Function for wannier90 calculation
 
     Parameters
     ----------
-    cwd : str
-        path of current working directory
+    source_folder : str
+        path of source directory
     work_path : str
         path to dir with input file, where we'll run the calculations
     config_machine : dict
@@ -271,17 +271,17 @@ def run_wannier(cwd, work_path, config_machine, prefix, input_name='pw2wan.in', 
     sys.stdout.flush()
     subprocess.run(preliminary_commands(config_machine, 'wannier90') + run, shell=True)
     
-    os.chdir(cwd)
+    os.chdir(source_folder)
     
 
-def run_qe2pert(cwd, work_path, config_machine, prefix, input_name='qe2pert.in', output_name='qe2pert.out'):
+def run_qe2pert(source_folder, work_path, config_machine, prefix, input_name='qe2pert.in', output_name='qe2pert.out'):
     """
     Function for qe2pert calculation
 
     Parameters
     ----------
-    cwd : str
-       path of current working directory
+    source_folder : str
+        path of source directory
     work_path : str
         path to dir with input file, where we'll run the calculations
     config_machine : dict
@@ -331,10 +331,10 @@ def run_qe2pert(cwd, work_path, config_machine, prefix, input_name='qe2pert.in',
     
     subprocess.run(preliminary_commands(config_machine, 'qe2pert') + run, shell=True)
 
-    os.chdir(cwd)
+    os.chdir(source_folder)
 
 
-def get_test_materials(test_name, test_case, config_machine):
+def get_test_materials(test_name, test_case, config_machine, source_folder):
     """
     Run one test:
        #. run perturbo.x to produce output files
@@ -350,7 +350,9 @@ def get_test_materials(test_name, test_case, config_machine):
         qe2pert testing.
     config_machine : str
         name of file with computational information, which we'll use in this set of computations.
-        Should be in folder tests_f90/config_machine
+        Should be in folder {source_folder}/config_machine
+    source_folder : str
+        name of the folder, where should be all the testing supplementary files (reference, input files, etc.)
 
     Returns
     -----
@@ -366,13 +368,12 @@ def get_test_materials(test_name, test_case, config_machine):
     inputs_path_suffix = 'tests_perturbo/' + test_name
     ref_data_path_suffix = 'refs_perturbo/' + test_name
 
-    cwd = os.getcwd()
-    config_machine = open_yaml(f'{cwd}/config_machine/{config_machine}')
+    config_machine = open_yaml(os.path.join(source_folder, f'config_machine/{config_machine}'))
 
     # determine needed paths
-    perturbo_inputs_dir_path = [x[0] for x in os.walk(cwd) if x[0].endswith(inputs_path_suffix)][0]
-    work_path                = perturbo_scratch_dir_config(cwd, perturbo_inputs_dir_path, test_name, config_machine, test_case)
-    ref_path                 = [x[0] for x in os.walk(cwd) if x[0].endswith(ref_data_path_suffix)][0]
+    perturbo_inputs_dir_path = [x[0] for x in os.walk(source_folder) if x[0].endswith(inputs_path_suffix)][0]
+    work_path                = perturbo_scratch_dir_config(source_folder, perturbo_inputs_dir_path, test_name, config_machine, test_case)
+    ref_path                 = [x[0] for x in os.walk(source_folder) if x[0].endswith(ref_data_path_suffix)][0]
 
     # input yaml for perturbo job
     pert_input = open_yaml(f'{work_path}/pert_input.yml')
@@ -389,7 +390,7 @@ def get_test_materials(test_name, test_case, config_machine):
     print_test_info(test_name, pert_input, test_type='perturbo')
 
     # run Perturbo to produce outputs
-    run_perturbo(cwd, work_path, config_machine)
+    run_perturbo(source_folder, work_path, config_machine)
 
     # list of dict. Each dict contains ignore keywords and
     # tolerances (information about how to compare outputs)
@@ -402,7 +403,7 @@ def get_test_materials(test_name, test_case, config_machine):
             igns_n_tols)
 
 
-def run_epr_calculation(epr_name, config_machine):
+def run_epr_calculation(epr_name, config_machine, source_folder):
     """
     Run one test:
         #. Run scf calculation
@@ -417,24 +418,25 @@ def run_epr_calculation(epr_name, config_machine):
         name of computed epr_name file
     config_machine : str
         name of file with computational information, which we'll use in this set of computations.
-        Should be in folder tests_f90/config_machine.
+        Should be in folder {source_folder}/config_machine.
+    source_folder : str
+        name of the folder, where should be all the testing supplementary files (reference, input files, etc.)
 
     Returns
     -----
     None
     """
     # suffixes of paths needed to find driver/utils/references
-    cwd = os.getcwd()
     inputs_path_suffix = f'epr_computation/{epr_name}'
-    config_machine = open_yaml(f'{cwd}/config_machine/{config_machine}')
+    config_machine = open_yaml(os.path.join(source_folder, f'config_machine/{config_machine}'))
 
     # determine needed paths
-    inputs_dir_path = f'{cwd}/{inputs_path_suffix}/'
-    work_path = perturbo_scratch_dir_config(cwd, inputs_dir_path, epr_name, config_machine, test_case='epr_calculation')
+    inputs_dir_path = os.path.join(source_folder, inputs_path_suffix)
+    work_path = perturbo_scratch_dir_config(source_folder, inputs_dir_path, epr_name, config_machine, test_case='epr_calculation')
     
     # open input yaml-files with supplementary info
     # and computational commands
-    input_yaml = open_yaml(f'{cwd}/epr_info.yml')
+    input_yaml = open_yaml(os.path.join(source_folder, 'epr_info.yml'))
 
     # print the test information before the run
     print_test_info(epr_name, input_yaml, test_type='qe2pert')
@@ -443,24 +445,24 @@ def run_epr_calculation(epr_name, config_machine):
     prefix = input_yaml[epr_name]['prefix']
 
     # run scf
-    run_scf(cwd, work_path, config_machine)
+    run_scf(source_folder, work_path, config_machine)
     
     # run phonon
-    run_phonon(cwd, work_path, config_machine, prefix)
+    run_phonon(source_folder, work_path, config_machine, prefix)
 
     # run nscf
-    run_nscf(cwd, work_path, config_machine)
+    run_nscf(source_folder, work_path, config_machine)
     
     # run wannier90
-    run_wannier(cwd, work_path, config_machine, prefix)
+    run_wannier(source_folder, work_path, config_machine, prefix)
     
     # run qe2pert
-    run_qe2pert(cwd, work_path, config_machine, prefix)
+    run_qe2pert(source_folder, work_path, config_machine, prefix)
 
     return
 
 
-def clean_test_materials(test_name, new_outs, config_machine):
+def clean_test_materials(test_name, new_outs, config_machine, source_folder):
     """
     clean one test:
        #. removes new files and dirs produced by test
@@ -473,6 +475,8 @@ def clean_test_materials(test_name, new_outs, config_machine):
        list of paths to produced outputs
     config_machine : dict
         dictionary with computational information, which we'll use in this set of computations.
+    source_folder : str
+        path of source directory
 
     Returns
     -----
@@ -482,12 +486,11 @@ def clean_test_materials(test_name, new_outs, config_machine):
     # suffixes of paths needed to find driver/utils/references
     inputs_path_suffix = 'tests_perturbo/' + test_name
 
-    cwd = os.getcwd()
-    config_machine = open_yaml(f'{cwd}/config_machine/{config_machine}')
+    config_machine = open_yaml(os.path.join(source_folder, f'config_machine/{config_machine}'))
 
     # determine paths
-    perturbo_inputs_dir_path = [x[0] for x in os.walk(cwd) if x[0].endswith(inputs_path_suffix)][0]
-    work_path                = perturbo_scratch_dir_config(cwd, perturbo_inputs_dir_path, test_name, config_machine, rm_preexist_dir=False)
+    perturbo_inputs_dir_path = [x[0] for x in os.walk(source_folder) if x[0].endswith(inputs_path_suffix)][0]
+    work_path                = perturbo_scratch_dir_config(source_folder, perturbo_inputs_dir_path, test_name, config_machine, rm_preexist_dir=False)
 
     if os.path.isdir(work_path):
         print(f'\n === Test {test_name} passed ===\n\n Removing {work_path} ...')
@@ -496,7 +499,7 @@ def clean_test_materials(test_name, new_outs, config_machine):
     return None
     
 
-def clean_epr_folders(epr_failed, config_machine, keep_epr, keep_preliminary):
+def clean_epr_folders(epr_failed, config_machine, keep_epr, keep_preliminary, source_folder):
     """
     Delete all temporary epr folders for the tests which were passed
 
@@ -514,22 +517,24 @@ def clean_epr_folders(epr_failed, config_machine, keep_epr, keep_preliminary):
     
     keep_preliminary : bool
         save all preliminary files for epr calculation
+    
+    source_folder : str
+        name of the folder, where should be all the testing supplementary files (reference, input files, etc.)
 
     Returns
     -----
     None
 
     """
-    cwd = os.getcwd()
-    config_machine = open_yaml(f'{cwd}/config_machine/{config_machine}')
+    config_machine = open_yaml(os.path.join(source_folder, f'config_machine/{config_machine}'))
 
     # looking for the  location with the temporary files
-    work_path   = cwd + "PERT_SCRATCH"
+    work_path   = os.path.join(source_folder, "PERT_SCRATCH")
     try:
         work_path    = config_machine['PERT_SCRATCH']
     except KeyError:
         print(f'PERT_SCRATCH not set in the config_machine. using default location -  {work_path}')
-    epr_dict_path = 'epr_info.yml'
+    epr_dict_path = os.path.join(source_folder, 'epr_info.yml')
     
     # set of all epr-files
     epr_full_list = [epr for epr in open_yaml(epr_dict_path)]

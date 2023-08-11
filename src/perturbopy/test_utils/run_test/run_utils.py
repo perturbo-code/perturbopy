@@ -9,7 +9,7 @@ import sys
 from perturbopy.io_utils.io import open_yaml
 
 
-def read_test_tags(test_name, func_name):
+def read_test_tags(test_name, func_name, source_folder):
     """
     Get a list of tags for a given test. List of tags is combined from the tags from
     pert_input.yml and epr_info.yml for a given epr file.
@@ -22,7 +22,8 @@ def read_test_tags(test_name, func_name):
     func_name : str
         name of the test programm, which we run
         (do we test perturbo or qe2pert)
-
+    source_folder : str
+        name of the folder, where should be all the testing supplementary files (reference, input files, etc.)
     Returns
     -------
     tag_list : list
@@ -30,15 +31,13 @@ def read_test_tags(test_name, func_name):
     epr_name : str
         name of the epr file associated with this test
     """
-
-    cwd = os.getcwd()
     
-    epr_dict_path = 'epr_info.yml'
+    epr_dict_path = os.path.join(source_folder, 'epr_info.yml')
     epr_info = open_yaml(epr_dict_path)
 
     if (func_name == 'test_perturbo') or (func_name == 'test_perturbo_for_qe2pert'):
         driver_path_suffix = 'tests_perturbo/' + test_name
-        perturbo_driver_dir_path = [x[0] for x in os.walk(cwd) if x[0].endswith(driver_path_suffix)][0]
+        perturbo_driver_dir_path = [x[0] for x in os.walk(source_folder) if x[0].endswith(driver_path_suffix)][0]
         pert_input = open_yaml(f'{perturbo_driver_dir_path}/pert_input.yml')
 
         # Read the tags from pert_input.yml
@@ -64,7 +63,7 @@ def read_test_tags(test_name, func_name):
     return tag_list, epr_name
 
 
-def get_all_tests(func_name):
+def get_all_tests(func_name, source_folder):
     """
     Get the names of all test folders based on the epr_info.yml file.
 
@@ -77,11 +76,13 @@ def get_all_tests(func_name):
     -------
     test_folder_list : list
        list of all test names
+    source_folder : str
+        name of the folder, where should be all the testing supplementary files (reference, input files, etc.)
     """
     test_folder_list = []
     dev_test_folder_list = []
 
-    epr_dict_path = 'epr_info.yml'
+    epr_dict_path = os.path.join(source_folder, 'epr_info.yml')
     epr_info = open_yaml(epr_dict_path)
 
     if (func_name == 'test_perturbo') or (func_name == 'test_perturbo_for_qe2pert'):
@@ -138,7 +139,7 @@ def print_test_info(test_name, input_dict, test_type):
     sys.stdout.flush()
 
 
-def filter_tests(all_test_list, tags, exclude_tags, epr, test_names, func_name):
+def filter_tests(all_test_list, tags, exclude_tags, epr, test_names, func_name, source_folder):
     """
     Return the list of test folders based on command line options
 
@@ -162,6 +163,8 @@ def filter_tests(all_test_list, tags, exclude_tags, epr, test_names, func_name):
     func_name : str
         name of the test programm, which we run
         (do we test perturbo or qe2pert)
+    source_folder : str
+        name of the folder, where should be all the testing supplementary files (reference, input files, etc.)
 
     Returns
     -------
@@ -186,7 +189,7 @@ def filter_tests(all_test_list, tags, exclude_tags, epr, test_names, func_name):
         for test_name in all_test_list:
 
             # tags for a given test
-            test_tag_list, epr_name = read_test_tags(test_name, func_name)
+            test_tag_list, epr_name = read_test_tags(test_name, func_name, source_folder)
 
             # tags from command line
             if tags is not None:
