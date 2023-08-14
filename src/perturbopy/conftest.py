@@ -105,7 +105,7 @@ def pytest_generate_tests(metafunc):
         if metafunc.config.getoption('devel'):
             all_test_list += all_dev_test_list
 
-        if (metafunc.function.__name__ == 'test_perturbo'):
+        if (metafunc.function.__name__ == 'test_perturbo') or (metafunc.function.__name__ == 'test_perturbo_for_qe2pert'):
             # sort out test folders based on command-line options (if present)
             test_list = filter_tests(
                 all_test_list,
@@ -114,21 +114,9 @@ def pytest_generate_tests(metafunc):
                 metafunc.config.getoption('epr'),
                 metafunc.config.getoption('test_names'),
                 metafunc.function.__name__,
+                metafunc.config.getoption('run_qe2pert'),
                 source_folder
             )
-        elif (metafunc.function.__name__ == 'test_perturbo_for_qe2pert'):
-            if metafunc.config.getoption('run_qe2pert'):
-                test_list = filter_tests(
-                    all_test_list,
-                    metafunc.config.getoption('tags'),
-                    metafunc.config.getoption('exclude_tags'),
-                    metafunc.config.getoption('epr'),
-                    metafunc.config.getoption('test_names'),
-                    metafunc.function.__name__,
-                    source_folder
-                )
-            else:
-                test_list = []
         elif (metafunc.function.__name__ == 'test_qe2pert'):
             test_list = filter_tests(
                 all_test_list,
@@ -137,6 +125,7 @@ def pytest_generate_tests(metafunc):
                 metafunc.config.getoption('epr'),
                 None,
                 metafunc.function.__name__,
+                metafunc.config.getoption('run_qe2pert'),
                 source_folder
             )
         
