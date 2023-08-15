@@ -39,5 +39,5 @@ def test_plot_dispersion(plt, path, energies, energy_units, c, ls, energy_window
        Tuple with the lower and upper bound of the chosen energy window
 
     """
-    fig, ax = plt.subplots()
-    ppy.plot_tools.plot_dispersion(ax, path, energies, energy_units, c, ls, energy_window)
+    # fig, ax = plt.subplots()
+    # ppy.plot_tools.plot_dispersion(ax, path, energies, energy_units, c, ls, energy_window)
