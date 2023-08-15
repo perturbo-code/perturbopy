@@ -23,6 +23,6 @@ We also provide tutorials for customizing default plots:
 
 * :ref:`Parametersss`
 
-* :ref:`perturbopy.postproc.calc_modes.bands_calc_mode.BandsCalcMode`
-`
+* :doc:`perturbopy.postproc.calc_modes.bands_calc_mode.BandsCalcMode`
+
 
