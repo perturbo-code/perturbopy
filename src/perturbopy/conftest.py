@@ -114,6 +114,7 @@ def pytest_generate_tests(metafunc):
                 metafunc.config.getoption('epr'),
                 metafunc.config.getoption('test_names'),
                 metafunc.function.__name__,
+                metafunc.config.getoption('run_qe2pert'),
                 source_folder
             )
         elif (metafunc.function.__name__ == 'test_qe2pert'):
@@ -124,6 +125,7 @@ def pytest_generate_tests(metafunc):
                 metafunc.config.getoption('epr'),
                 None,
                 metafunc.function.__name__,
+                metafunc.config.getoption('run_qe2pert'),
                 source_folder
             )
         

@@ -531,7 +531,7 @@ def clean_epr_folders(epr_failed, config_machine, keep_epr, keep_preliminary, so
     # looking for the  location with the temporary files
     work_path   = os.path.join(source_folder, "PERT_SCRATCH")
     try:
-        work_path    = config_machine['PERT_SCRATCH']
+        work_path    = os.path.join(source_folder, config_machine['PERT_SCRATCH'])
     except KeyError:
         print(f'PERT_SCRATCH not set in the config_machine. using default location -  {work_path}')
     epr_dict_path = os.path.join(source_folder, 'epr_info.yml')

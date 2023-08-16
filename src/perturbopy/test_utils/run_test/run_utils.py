@@ -139,7 +139,7 @@ def print_test_info(test_name, input_dict, test_type):
     sys.stdout.flush()
 
 
-def filter_tests(all_test_list, tags, exclude_tags, epr, test_names, func_name, source_folder):
+def filter_tests(all_test_list, tags, exclude_tags, epr, test_names, func_name, run_qe2pert, source_folder):
     """
     Return the list of test folders based on command line options
 
@@ -163,6 +163,10 @@ def filter_tests(all_test_list, tags, exclude_tags, epr, test_names, func_name, 
     func_name : str
         name of the test programm, which we run
         (do we test perturbo or qe2pert)
+    
+    run_qe2pert : bool
+        whether perturbo_for_qe2pert tests are conducted or not
+
     source_folder : str
         name of the folder, where should be all the testing supplementary files (reference, input files, etc.)
 
@@ -239,12 +243,13 @@ def filter_tests(all_test_list, tags, exclude_tags, epr, test_names, func_name, 
                     errmsg = (f'Test {test_name_cmd} is not listed in epr_info.yml, \n'
                               f'but specified in --test-names option. Full test_list: {test_list}'
                              )
-                elif (func_name == 'test_perturbo_for_qe2pert'):
+                    raise ValueError(errmsg)
+                elif (func_name == 'test_perturbo_for_qe2pert') and run_qe2pert:
                     errmsg = (f'Test {test_name_cmd} is not listed for running on the perturbo run for \n'
                               'qe2pert check but specified in --test-names option. On this run, only \n'
                               f'this tests supposed to run: {test_list}'
                              )
-                raise ValueError(errmsg)
+                    raise ValueError(errmsg)
 
         test_list = test_names
 

@@ -16,7 +16,7 @@
   lspinorb = .true.
 /
 &ELECTRONS
-  conv_thr = 1.0d-11
+  conv_thr = 1.0d-10
   diago_full_acc = .true.   
 /
 ATOMIC_SPECIES
