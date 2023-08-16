@@ -1,8 +1,0 @@
-&inputpp
-  outdir='./tmp/'
-  prefix = 'graphene'
-  seedname = 'graphene'
-  spin_component = 'none'
-  write_mmn = .true.
-  write_amn = .true.
-/

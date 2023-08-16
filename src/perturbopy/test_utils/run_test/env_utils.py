@@ -96,7 +96,7 @@ def perturbo_scratch_dir_config(source_folder, perturbo_inputs_dir_path, test_na
     """
     Check if the PERT_SCRATCH variable is written in the config_machine file.
     If not - use default location "/PERT_SCRATCH".
-    After it, this programm make the copy from folder with tests from either epr_computation or tests_perturbo folder.
+    After it, this programm make the copy from folder with tests from either epr_computation or inputs folder.
     
 
     Parameters

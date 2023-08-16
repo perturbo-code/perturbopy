@@ -1,5 +1,0 @@
-&perturbo
-  prefix      = 'gaas'
-  calc_mode   = 'phdisp'
-  fqlist      = 'gaas_phdisp.qpt'
-/

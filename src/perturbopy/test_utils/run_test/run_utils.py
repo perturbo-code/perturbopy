@@ -36,7 +36,7 @@ def read_test_tags(test_name, func_name, source_folder):
     epr_info = open_yaml(epr_dict_path)
 
     if (func_name == 'test_perturbo') or (func_name == 'test_perturbo_for_qe2pert'):
-        driver_path_suffix = 'tests_perturbo/' + test_name
+        driver_path_suffix = 'inputs/' + test_name
         perturbo_driver_dir_path = [x[0] for x in os.walk(source_folder) if x[0].endswith(driver_path_suffix)][0]
         pert_input = open_yaml(f'{perturbo_driver_dir_path}/pert_input.yml')
 
