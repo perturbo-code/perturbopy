@@ -100,7 +100,7 @@ def pytest_generate_tests(metafunc):
         
         if not os.path.exists((os.path.join(source_folder, f'config_machine/{metafunc.config.getoption("config_machine")}'))):
             raise FileNotFoundError(f"File {metafunc.config.getoption('config_machine')} not found in the {source_folder}/config_machine folder. "
-                                    f"Please create this file. In the folder {source_folder}/config_machine you can find examples of the configurational files. "
+                                    f"Please create this file. In the folder {source_folder}/config_machine you can find examples of configurational files. "
                                     "Make your own copy with the name config_machine.yml in the same folder and run the testsuite again.")
 
         # Get the list of all test folders
