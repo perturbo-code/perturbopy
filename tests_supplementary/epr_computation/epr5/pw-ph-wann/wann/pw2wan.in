@@ -1,7 +1,0 @@
-&inputpp
-  outdir='./tmp'
-  prefix     =  'gaas_uspp'
-  seedname   =  'gaas_uspp'
-  write_amn  =  .true.
-  write_mmn  =  .true.
-/

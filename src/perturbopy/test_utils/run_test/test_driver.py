@@ -19,11 +19,6 @@ def run_perturbo(source_folder, perturbo_driver_dir_path, config_machine,
     """
     Function to run Perturbo and produce output files
 
-    .. note ::
-       The Perturbo run command must be specified in the PERTURBO_RUN environment
-       variable. Check the perturbopy/tests/test_scripts/env_setup_examples.sh script
-       for examples.
-
 
     Parameters
     ----------
@@ -365,8 +360,8 @@ def get_test_materials(test_name, test_case, config_machine, source_folder):
 
     """
     # suffixes of paths needed to find driver/utils/references
-    inputs_path_suffix = 'tests_perturbo/' + test_name
-    ref_data_path_suffix = 'refs_perturbo/' + test_name
+    inputs_path_suffix = 'inputs/' + test_name
+    ref_data_path_suffix = 'refs/' + test_name
 
     config_machine = open_yaml(os.path.join(source_folder, f'config_machine/{config_machine}'))
 
@@ -484,7 +479,7 @@ def clean_test_materials(test_name, new_outs, config_machine, source_folder):
 
     """
     # suffixes of paths needed to find driver/utils/references
-    inputs_path_suffix = 'tests_perturbo/' + test_name
+    inputs_path_suffix = 'inputs/' + test_name
 
     config_machine = open_yaml(os.path.join(source_folder, f'config_machine/{config_machine}'))
 
