@@ -31,13 +31,15 @@ Basic run
 
 We assume that the Python environment is :ref:`activated <Conda activate>` and `Perturbopy` package is :ref:`installed <Installation>`.
 
+To run testsuite you need a folder with input files, reference files, configuration files, etc. You can find an example of such a `tests` folder in the `perturbo repository <https://github.com/perturbo-code/perturbo/tree/master/tests>`_..  We advise you to use this set of files for initial testing. Below we assume that you have downloaded this folder and work with it.
+
 Testing ``perturbo.x`` only
 +++++++++++++++++++++++++++
 If you plan to use (or you did modifications only to) the ``perturbo.x`` executable, the testsuite will automatically run ``perturbo.x`` for several materials and calculation modes and check that the results obtained with the new executable are the same as the reference.
 
-To test the ``perturbo.x`` executable you need to make the configuration file. As an example, in the *tests_f90/config_machine* folder, you can take the *config_machine_perturbo.yml* file. This file contains basic information about running tesuite for ``perturbo.x``. 
+To test the ``perturbo.x`` executable you need to make the configuration file. As an example, in the *tests/config_machine* folder, you can take the *config_machine_perturbo.yml* file. This file contains basic information about running tesuite for ``perturbo.x``. 
 
-1. Copy the template YAML file inside the *tests_f90/config_machine* folder:
+1. Copy the template YAML file inside the *tests/config_machine* folder:
 
 .. code-block:: python
 
@@ -65,15 +67,17 @@ Below the meaning of each of the blocks:
 * ``comp_info`` - this block contains information about the ``perturbo.x`` computation. It has the ``exec`` field that specifies the run command taking into account the parallelization and other machine specifics. In this example, ``perturbo.x`` will be ran with the SLURM srun command using 8 MPI tasks
 
 
-Once, the ``config_machine.yml`` is set up, navigate to the `perturbopy/tests_f90` folder and run:
+Once, the ``config_machine.yml`` is set up, navigate to the `tests` folder and run:
 
 .. code-block:: console
 
-   (perturbopy) $ pytest
+   (perturbopy) $ ./run_tests.py
+   
+This script will automatically load and run all the tests from the `perturbopy` package.
 
 By default, in the case of successful run of all tests one will see **<n> passed** as the final line of the output, where <n> is the number of tests. You will also see that some tests have been skipped. This is fine, because the tests for ``qe2pert.x`` are skipped if it's not specified.
 
-If all tests are passed, the ``PERT_SCRATCH`` directory will be empty after the ``pytest`` run. In the case of a failure of one or more tests, the corresponding test folder(s) kept in the ``PERT_SCRATH`` directory.
+If all tests are passed, the `PERT_SCRATCH/perturbo` directory will be empty after the ``./run_tests.py`` execution. In the case of a failure of one or more tests, the corresponding test folder(s) kept in the ``PERT_SCRATH/perturbo`` directory.
 
 .. _test-complete:
 
@@ -90,7 +94,11 @@ the testsuite will consist of three parts:
 The step 3 is necessary to test the ``qe2pert.x`` executable because one cannot compare the ``prefix_epr.h5`` files to the reference ones directly due to gauge freedom. Therefore, we need to use ``perturbo.x``, whose correctness we confirmed in step 1, to use it to determine whether ``qe2pert.x`` worked correctly. Since there is no need to check all the ``perturbo.x`` tests to verify the work of ``qe2pert.x``, at the third stage we run only three claculation modes of Perturbo for each ``prefix_epr.h5`` file: ``phdisp``, ``ephmat`` and ``bands``. If these three tests pass, it means that ``qe2pert.x`` works correctly.
 
 By default, the ``qe2pert.x`` testing is disabled as it is very time consuming (takes 7 times longer than ``perturbo.x`` testing) and requires a user to specify the Quantum Espresso and Wannier90 executables.
-To enable the tests of ``qe2pert.x``, activate the ``--run_qe2pert`` option.
+To enable the tests of ``qe2pert.x``, activate the ``--run_qe2pert`` option:
+
+.. code-block:: console
+
+   (perturbopy) $ ./run_tests.py --run_qe2pert
 
 Similarly to ``perturbo.x``-only tests, the user needs to make a new the *config_machine/config_machine.yml* file, but this time the file should include more information. As a reference, you can take file  *config_machine_qe2pert.yaml*
 
@@ -151,6 +159,10 @@ Using the command-line options and environmental variables, one can parametrize 
 
    Show times for tests and setup and teardown. If `--durations=0`, show all times, if `--durations=1` - for the slowest one, `--durations=2` - for the two slowest, etc.
    
+.. option:: --source_folder
+
+   Address of the folder with all reference files for the test performance. By default equal to ``./``
+   
 .. option:: --tags
 
    List of tests tags to include in this testsuite run.
@@ -183,7 +195,7 @@ Using the command-line options and environmental variables, one can parametrize 
    .. _command-line options:
 .. option:: --config_machine
 	
-   Name of file containing the run commands for Perturbo and, in case of ``qe2pert.x`` test, for Quantum Espresso, Wannier90. Should be in the folder tests_f90/config_machine. By default called `config_machine.yml`
+   Name of file containing the run commands for Perturbo and, in case of ``qe2pert.x`` test, for Quantum Espresso, Wannier90. Should be in the folder `tests/config_machine`. By default equal to `config_machine.yml`
 
 .. option:: --keep_perturbo
 
@@ -236,7 +248,7 @@ Job submission
 #. The testsuite output will be written into the `pytest_output` file.
 
    .. note::
-	  The job must be submitted from the `tests_f90` folder and the `perturbopy` environment is not activated manually (it is       activated from the submission script).
+	  The job must be submitted from the `tests` folder and the `perturbopy` environment is not activated manually (it is       activated from the submission script).
 
 Interactive mode
 ~~~~~~~~~~~~~~~~
@@ -300,9 +312,9 @@ Add new test
 
 If you want to add new tests for existing epr files, you need to provide the following information:
 
-1. Test folder in format `eprN-test-name`, where `N` - number of corresponding epr file. This folder should be saved in the directory `tests_f90/tests_perturbo` and contain:
+1. Test folder in format `eprN-test-name`, where `N` - number of corresponding epr file. This folder should be saved in the directory `tests/tests_perturbo` and contain:
 
-* Link to the corresponding epr file (all files are saved in the folder `/perturbopy/tests_f90/refs_perturbo/epr_files`);
+* Link to the corresponding epr file (all files are saved in the folder `/tests/refs_perturbo/epr_files`);
 * Input file `pert.in`;
 * All necessary computational files for this input;
 * File `pert_input.yml`, that has the following structure:
@@ -362,9 +374,9 @@ The following keys **are optional** in the ``test info`` section of `pert_input.
 
 Same is true for the tolerances with the `qe2pert` label, but these tolerances are applied on the the second run of ``perturbo.x`` tests. If you want to use a special tolerance for some block, specify it in the corresponding tolerances with a corresponding key (``keyword1`` from the example above).
 
-2. Reference folder in format `eprN-test-name`, where `N` - number of corresponding epr file. This folder should be saved in the directory `tests_f90/refs_perturbo` and contain all output files, for which comparison should be done.
+2. Reference folder in format `eprN-test-name`, where `N` - number of corresponding epr file. This folder should be saved in the directory `tests/refs_perturbo` and contain all output files, for which comparison should be done.
 
-3. List the name of the test in the ``epr_info.yml`` file stored in the ``tests_f90/`` folder. The list of tests is specified in the ``tests`` block of each of the epr files. If you do not specify your test name there, that test will not be runned.
+3. List the name of the test in the ``epr_info.yml`` file stored in the ``tests/`` folder. The list of tests is specified in the ``tests`` block of each of the epr files. If you do not specify your test name there, that test will not be runned.
 
 .. note::
 
@@ -377,7 +389,7 @@ Add new epr-files
 
 If you want to create a new test with a new epr file, you will need to perform the following steps:
 
-1. In the `tests_f90/epr_computation/` folder, you will need to add a folder with the name of your epr file. We enumerate these folders, so for consistency, we suggest calling it `eprN`. This folder will contain all the files needed for your epr file's calculations. This folder should have the following hierarchy:
+1. In the `tests/epr_computation/` folder, you will need to add a folder with the name of your epr file. We enumerate these folders, so for consistency, we suggest calling it `eprN`. This folder will contain all the files needed for your epr file's calculations. This folder should have the following hierarchy:
 
 .. code-block:: python
 
@@ -423,7 +435,7 @@ Here each subfolder corresponds to one of the calculation steps, plus additional
 
 In general, the name of each block speaks for itself. Note that the list of tests includes ``bands``, ``phdisp`` and ``ephmat``.  These ``perturbo.x`` calculation mode tests **must** be created for the new epr file. These particular tests are run to verify the operation of ``qe2pert.x``. More tests for a given epr file can be optionally added.
 
-3. Save your epr file in the folder `/perturbopy/tests_f90/refs_perturbo/epr_files`.
+3. Save your epr file in the folder `/tests/refs_perturbo/epr_files`.
 
 3. Add each of the specified tests using the procedure described in the previous subsection.
 
