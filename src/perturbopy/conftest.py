@@ -23,7 +23,7 @@ def pytest_addoption(parser):
     parser.addoption('--source_folder',
                      help='address of the folder with all reference files for the test performance',
                      nargs="?",
-                     required=True)
+                     default='./')
 
     parser.addoption('--tags',
                      help='List of tests tags to include in this testsuite run.',
