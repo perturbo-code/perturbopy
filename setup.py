@@ -4,6 +4,7 @@ setup(
    name='perturbopy',
    version='0.1.0',
    python_requires='>=3.7.12',
+   include_package_data=True,
    install_requires=[
       'numpy>=1.21.4',
       'pytest',
