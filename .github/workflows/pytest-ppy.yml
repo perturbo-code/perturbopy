@@ -16,8 +16,8 @@ jobs:
       - name: Install pytest
         run: |
           pip install .
-          pip install pytest-plt
+          pip install pytest
       - name: run pytest
         run: |
           cd tests
-          pytest --plots
+          pytest 

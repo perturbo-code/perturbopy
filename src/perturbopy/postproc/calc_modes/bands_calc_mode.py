@@ -207,7 +207,7 @@ class BandsCalcMode(CalcMode):
         if ax is not None:
             ax = self.plot_bands(ax, 'k')
 
-            plot_indices, plot_distances_squared = get_fit_data(max_distance * 1.8, kpoint, direction) #, max_points=len(fit_indices)+7)
+            plot_indices, plot_distances_squared = get_fit_data(max_distance * 1.8, kpoint, direction)  #, max_points=len(fit_indices)+7)
             energies_fitted = (fit_params[0] * plot_distances_squared + E_0) * energy_conversion_factor('hartree', self.bands.units)
 
             ax.plot(self.kpt.path[plot_indices], energies_fitted, c, marker=None, ls='--')

@@ -302,7 +302,8 @@ We can zoom in to see the parabolic fit better. The dashed line is the parabolic
 .. image:: figures/silicon_el_effective_mass_zoom.png
 	:width: 400
 	:align: center
-To increase the number of points used in the calculation, we should increase max_dist. 
+
+To increase the number of points used in the calculation, we should increase max_dist.
 
 Next, let's compute the effective mass for holes at the VBM (n=4, kpoint=[0, 0, 0]) in the [0.5, 0.5, 0.5] direction and [0.5, 0, 0.5] directions, which are the left and right effective masses, respectively. Note that, because this is a hole, we expect the effective mass to be negative. 
 
@@ -373,6 +374,7 @@ We can also change the energy window:
 .. image:: figures/silicon_bands_window.png
 	:width: 450
 	:align: center
+
 Other options include changing the linestyle and color.
 
 .. code-block :: python
@@ -382,6 +384,7 @@ Other options include changing the linestyle and color.
 .. image:: figures/silicon_bands_color_linestyle.png
 	:width: 450
 	:align: center
+	
 The colors and linestyles can also be a list.
 
 .. code-block :: python

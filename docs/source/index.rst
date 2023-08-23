@@ -28,7 +28,8 @@ Contents
 .. toctree::
    :maxdepth: 2
 
+   postproc/index
+
    Usage <usage>
    Testsuite <testsuite>
-   Postprocessing <postproc/postprocessing>
-   API reference <../_autosummary/perturbopy>
+   api

@@ -35,6 +35,7 @@ plotparams = {'figure.figsize': (16, 9),
 points_fcc = {'L': [0.5, 0.5, 0.5], 'X': [0.5, 0.0, 0.5], 'W': [0.5, 0.25, 0.75],
               'K': [0.375, 0.375, 0.75], r'$\Gamma$': [0, 0, 0]}
 
+
 def plot_recip_pt_labels(ax, labels, point_array, path_array, label_height="lower", show_line=True):
     """"
     Method to add reciprocal point labels to the plot

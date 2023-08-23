@@ -32,9 +32,6 @@ Provide more details
 
 	gaas_bands = ppy.BandsCalcMode.from_yaml("gaas_bands.yml")
 
-:ref:`BandsCalcMode`
-:doc:`..\_autosummary\perturbopy.postproc.dbs.recip_pt_db.RecipPtDB.rst`
-
 The ``gaas_bands`` object contains inputs, outputs, and basic data from the calculation. 
 
 Basic data is stored as instance variables. For example:
@@ -42,26 +39,26 @@ Basic data is stored as instance variables. For example:
 .. code-block :: python
 	
 	gaas_bands.alat
-	gaas_bands.lat
-	gaas_bands.lat_units
-
-.. program-output:: python
+	
+	>> 10.5
    
-   10.5
-   array([[-0.5,  0. , -0.5],
+	gaas_bands.lat
+	
+	>> array([[-0.5,  0. , -0.5],
           [ 0. ,  0.5,  0.5],
           [ 0.5,  0.5,  0. ]])
-   'alat'
+   
+	gaas_bands.lat_units
+   
+   >> 'alat'
 
 Remaining data from the YAML file are stored in the _pert_dict attribute. For example, calculation inputs are stored in the _pert_dict['input parameters'] subdictionary.
 
-.. program-output :: python -V
-	
+.. code-block :: python
+
 	gaas_bands._pert_dict['input parameters']['after conversion']['sampling']
 
-.. program-output :: python -V
-   
-   'uniform'
+    >> 'uniform'
 
 Outputs from the calculation are stored by child classes in additional variables specific to the calculation mode. For further details, see the sections organized by calculation mode below.
 

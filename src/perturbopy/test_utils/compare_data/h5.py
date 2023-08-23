@@ -1,5 +1,6 @@
 """
-   This module contains functions to compare hdf5 files
+This module contains functions to compare hdf5 files
+
 """
 import hdfdict
 from hdfdict.hdfdict import LazyHdfDict

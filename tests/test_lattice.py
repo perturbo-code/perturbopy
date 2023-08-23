@@ -27,7 +27,12 @@ def test_reshape_points(test_points, expected_points):
        The expected reshaped array of points
 
     """
-    test_points = ppy.lattice.reshape_points(test_points)
+
+    if np.shape(test_points) == (3, 3):
+        with pytest.warns(UserWarning, match='Reciprocal points are 3x3 array; assume points are already column-oriented'):
+            test_points = ppy.lattice.reshape_points(test_points)
+    else:
+        test_points = ppy.lattice.reshape_points(test_points)
 
     assert(np.all(test_points == expected_points))
     assert(isinstance(test_points, np.ndarray))
@@ -96,14 +101,14 @@ def test_compute_distances(test_points1, test_points2, expected_distances):
 
 
 @pytest.mark.parametrize("test_point, test_points_array, max_dist, nearest, expected", [
-                        ([1, 1, 1], [[1, 1, 1], [1, 1, 1], [1, 1, 1]], None, True, [0, 1, 2]),
-                        ([1, 1, 1], [[1, 1, 1], [1, 1, 1], [.96, 0.96, 0.96]], None, True, []),
-                        ([1, 1, 1], [[1, 1, 1], [1, 1, 1], [.96, 0.96, 0.96]], 0.0401, True, [0, 1, 2]),
-                        ([1, 1, 1], [[1, 1, 1], [1, 1, 1], [.9, 0.9, 0.9]], None, True, []),
-                        ([1, 1, 1], [[1, 1, 1], [1, 1, 1], [.9, 0.9, 0.9]], 0.2, True, [0, 1, 2]),
-                        ([[1], [1], [1]], [[1, 1, 1], [1, 1, 1], [.9, 0.9, 0.9]], 0.2, True, [0, 1, 2]),
-                        ([1, 1, 1], [[1, 1, 1], [1, 1, 1], [1, 0.995, 0.995]], None, True, [0]),
-                        ([1, 1, 1], [[1, 1, 1], [1, 1, 1], [1, 0.995, 0.995]], None, False, [0, 1, 2])
+                        ([1, 1, 1], [[1, 1, 1, 0.1], [1, 1, 1, 0.1], [1, 1, 1, 0.2]], None, True, [0, 1, 2]),
+                        ([1, 1, 1], [[1, 1, 1, 0.1], [1, 1, 1, 0.1], [.96, 0.96, 0.96, 0.2]], None, True, []),
+                        ([1, 1, 1], [[1, 1, 1, 0.1], [1, 1, 1, 0.1], [.96, 0.96, 0.96, 0.2]], 0.0401, True, [0, 1, 2]),
+                        ([1, 1, 1], [[1, 1, 1, 0.1], [1, 1, 1, 0.1], [.9, 0.9, 0.9, 0.2]], None, True, []),
+                        ([1, 1, 1], [[1, 1, 1, 0.1], [1, 1, 1, 0.1], [.9, 0.9, 0.9, 0.2]], 0.2, True, [0, 1, 2]),
+                        ([[1], [1], [1]], [[1, 1, 1, 0], [1, 1, 1, 0], [.9, 0.9, 0.9, 0]], 0.2, True, [0, 1, 2]),
+                        ([1, 1, 1], [[1, 1, 1, 0], [1, 1, 1, 0], [1, 0.995, 0.995, 0]], None, True, [0]),
+                        ([1, 1, 1], [[1, 1, 1, 0], [1, 1, 1, 0], [1, 0.995, 0.995, 0]], None, False, [0, 1, 2])
 ])
 def test_find_point(test_point, test_points_array, max_dist, nearest, expected):
     """"

@@ -8,11 +8,10 @@ In the Perturbopy postprocessing module, we provide tools to help process the ou
 * visualize data
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
 
-    Getting started <getting_started>
-    Tutorials <tutorials>
-    Documentation <documentation>
+    tutorials/index
+    documentation/index
+    getting_started
     
 
-:ref:`<Cross-References to Locations in the Same Document>`
