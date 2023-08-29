@@ -40,7 +40,7 @@ class TransConfig():
         mobility : array_like
         seebeck_coeff : array_like
         thermal_conductivity : array_like
-        conductivity_iter : array_like
+        conductivity_iter : dict
 
         """
 
