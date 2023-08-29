@@ -24,6 +24,10 @@ A typical transport calculation solves the BTE for several different configurati
 	si_trans[1].concentration
 	>> 9.945835e+17
 
+.. warning ::
+	Please note that indexing starts at **1** to match the Perturbo indexing.
+	
+
 We can also access the results with :py:attr:`.TransConfig.conductivity`, :py:attr:`.TransConfig.mobility`, :py:attr:`.TransConfig.seebeck_coeff`, and :py:attr:`.TransConfig.thermal_conductivity`. These are all stored as tensors; i.e.  For example, here are the results for the conductivity tensor:
 
 .. code-block :: python
@@ -36,7 +40,7 @@ We can also access the results with :py:attr:`.TransConfig.conductivity`, :py:at
 
 	# Access the 'xy' component
 	si_trans[1].conductivity[0, 1]
-
+	>> -3.1056698e-02
 
 Additionally, if we are using ITA rather than RTA, we can access the convergence of the conductivity tensor for each iteration of solving the BTE. 
 
@@ -66,3 +70,5 @@ Finally, we can use :py:attr:`.TransCalcMode.units` to see the units of various 
 It is often convenient to get an array of all the temperatures, all the mobilities, etc. In this case, we can use the ``:py:meth:.TransCalcMode.get_temperatures()`` method.
 
 To do: plotting, plotting with experiments, finalize data storage, units conversion 
+
+Add: plotting example 

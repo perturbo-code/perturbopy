@@ -12,6 +12,6 @@ In the Perturbopy postprocessing module, we provide tools to help process the ou
 
     tutorials/index
     documentation/index
-    getting_started
+    getting_started/index
     
 

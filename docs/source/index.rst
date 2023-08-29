@@ -28,8 +28,7 @@ Contents
 .. toctree::
    :maxdepth: 2
 
-   postproc/index
-
    Usage <usage>
+   postproc/index
    Testsuite <testsuite>
    api
