@@ -6,7 +6,7 @@ from perturbopy.io_utils.io import open_yaml, open_hdf5, close_hdf5
 
 class DynamicsRunCalcMode(CalcMode):
     """
-    Class representation of a Perturbo imsigma calculation.
+    Class representation of a Perturbo dynamics-run calculation.
 
     Parameters
     ----------
