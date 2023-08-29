@@ -2,6 +2,7 @@ import numpy as np
 from perturbopy.postproc.calc_modes.calc_mode import CalcMode
 from perturbopy.postproc.calc_modes.trans_config import TransConfig
 
+
 class TransCalcMode(CalcMode):
     """
     Class representation of a Perturbo imsigma calculation.
@@ -9,11 +10,7 @@ class TransCalcMode(CalcMode):
     Parameters
     ----------
     pert_dict : dict
-    Dictionary containing the inputs and outputs from the transport calculation.
-
-    Attributes
-    ----------
-
+        Dictionary containing the inputs and outputs from the transport calculation.
 
     """
 
@@ -30,7 +27,7 @@ class TransCalcMode(CalcMode):
         self.units = {}
         self._dat = {}
 
-        for key in ['temperature', 'chemical potential', 'concentration', 'conductivity', 
+        for key in ['temperature', 'chemical potential', 'concentration', 'conductivity',
                     'mobility', 'Seebeck coefficient', 'thermal conductivity']:
             self.units[key] = self._pert_dict['trans'].pop(f'{key} units')
 
@@ -72,11 +69,3 @@ class TransCalcMode(CalcMode):
 
         """
         return self._dat[index]
-
-
-    # plot _ vs _
-    # properties
-    # iteration
-    # index by temperature
-    # unit conversion 
-    # plot convergence    

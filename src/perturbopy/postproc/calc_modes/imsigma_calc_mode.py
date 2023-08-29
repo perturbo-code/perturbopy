@@ -3,6 +3,8 @@ from perturbopy.postproc.calc_modes.calc_mode import CalcMode
 from perturbopy.postproc.calc_modes.imsigma_config import ImsigmaConfig
 from perturbopy.postproc.dbs.energy_db import EnergyDB
 from perturbopy.postproc.dbs.recip_pt_db import RecipPtDB
+
+
 class ImsigmaCalcMode(CalcMode):
     """
     Class representation of a Perturbo imsigma calculation.
@@ -43,6 +45,7 @@ class ImsigmaCalcMode(CalcMode):
 
         num_config = self._pert_dict['imsigma'].pop('number of configurations')
         config_dat = self._pert_dict['imsigma'].pop('configuration index')
+        num_modes = self._pert_dict['imsigma'].pop('number of phonon modes')
 
         for key in ['temperature', 'chemical potential', 'Im(Sigma)']:
             self.units[key] = self._pert_dict['imsigma'].pop(f'{key} units')
@@ -55,9 +58,13 @@ class ImsigmaCalcMode(CalcMode):
             imsigma = {}
             imsigma_mode = {}
 
+            for mode in np.arange(1, num_modes + 1):
+                imsigma_mode[mode] = {}
+
             for band_index in imsigma_dat.keys():
                 imsigma[band_index] = imsigma_dat[band_index]['Im(Sigma)']['total']
-                imsigma_mode[band_index] = imsigma_dat[band_index]['Im(Sigma)']['phonon mode']
+                for mode in np.arange(1, num_modes + 1):
+                    imsigma_mode[mode][band_index] = imsigma_dat[band_index]['Im(Sigma)']['phonon mode'][mode]
 
             self._dat[config_idx] = ImsigmaConfig(temperature, chem_potential, imsigma, imsigma_mode)
 
@@ -77,5 +84,3 @@ class ImsigmaCalcMode(CalcMode):
 
         """
         return self._dat[index]
-
-        

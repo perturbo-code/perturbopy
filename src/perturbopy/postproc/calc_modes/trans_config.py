@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class TransConfig():
     """
     Class representation of a Perturbo imsigma calculation.
@@ -21,7 +22,7 @@ class TransConfig():
     thermal_conductivity : np.ndarray
         The 3x3 thermal conductivity tensor of this configuration
     conductivity_iter : dict
-        The dictionary of 3x3 set of conductivity tensors for each of the n_iter iterations of 
+        The dictionary of 3x3 set of conductivity tensors for each of the n_iter iterations of
         this configuration
 
 

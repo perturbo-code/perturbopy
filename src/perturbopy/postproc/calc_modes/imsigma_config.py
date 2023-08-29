@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class ImsigmaConfig():
     """
     Class representation of a Perturbo imsigma calculation.
