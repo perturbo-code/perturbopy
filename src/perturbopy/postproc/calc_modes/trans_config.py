@@ -28,7 +28,7 @@ class TransConfig():
 
     """
 
-    def __init__(self, temperature, chem_potential, concentration, conductivity, mobility, seebeck_coeff, thermal_conductivity, conductivity_iter):
+    def __init__(self, temperature, chem_potential, concentration, conductivity, mobility, seebeck_coeff, thermal_conductivity, conductivity_iter=None):
         """
         Constructor method
         
@@ -53,7 +53,8 @@ class TransConfig():
         self.seebeck_coeff = np.array(seebeck_coeff)
         self.thermal_conductivity = np.array(thermal_conductivity)
 
-        for iteration in conductivity_iter.keys():
-            conductivity_iter[iteration] = np.array(conductivity_iter[iteration])
+        if conductivity_iter is not None:
+            for iteration in conductivity_iter.keys():
+                conductivity_iter[iteration] = np.array(conductivity_iter[iteration])
 
-        self.conductivity_iter = conductivity_iter
+            self.conductivity_iter = conductivity_iter

@@ -43,13 +43,17 @@ class TransCalcMode(CalcMode):
             seebeck_coeff = trans_dat[config_idx].pop('Seebeck coefficient')['tensor']
             thermal_conductivity = trans_dat[config_idx].pop('thermal conductivity')['tensor']
 
-            num_iter = trans_dat[config_idx].pop('number of iterations')
-            iteration_dat = trans_dat[config_idx].pop('iteration')
-            conductivity_iter = {}
+            if 'number of iterations' in trans_dat[config_idx].keys():
+                num_iter = trans_dat[config_idx].pop('number of iterations')
+                iteration_dat = trans_dat[config_idx].pop('iteration')
+                conductivity_iter = {}
 
-            for iteration in iteration_dat.keys():
-                conductivity_iter[iteration] = iteration_dat[iteration]['conductivity']['tensor']
+                for iteration in iteration_dat.keys():
+                    conductivity_iter[iteration] = iteration_dat[iteration]['conductivity']['tensor']
 
+            else:
+                conductivity_iter = None
+                
             self._dat[config_idx] = TransConfig(temperature, chem_potential, concentration, conductivity,
                                                 mobility, seebeck_coeff, thermal_conductivity, conductivity_iter)
 
