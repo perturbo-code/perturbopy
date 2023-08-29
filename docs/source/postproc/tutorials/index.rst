@@ -1,10 +1,5 @@
 Tutorials
 =========
-
-.. toctree::
-    :maxdepth: 1
-
-    bands
     
 In this section, we provide tutorials for Perturbo postprocessing. For each tutorial, we first must perform a Perturbo calculation, described `here <https://perturbo-code.github.io/mydoc_running_perturbo.html>`_. Perturbo offers several different *calculation modes*, which each compute different properties of a material. Each Perturbopy tutorials describes how to process the outputs of a particular calculation mode. 
 
@@ -12,8 +7,12 @@ We follow the tutorials on the Perturbo website to explain how to process the re
 
 Tutorials are given for each Perturbo calculation mode:
 
-* :doc:`bands`
+.. toctree::
+    :maxdepth: 1
 
-We also provide tutorials for customizing default plots:
-
+    bands
+    phdisp
+    ephmat
+    trans
+    imsigma
 

@@ -222,7 +222,7 @@ def convert_point2path(point, point_array, path_array, max_dist=0.025, nearest=T
         return path_coord
 
 
-def convert_path2point(path_coord, point_array, path_array, atol=1e-8, rtol=1e-5, nearest=True):
+def convert_path2point(path_coord, point_array, path_array, atol=1e-5, rtol=1e-2, nearest=True):
     """
     Method to find the point corresponding to a path coordinate
 
@@ -259,7 +259,7 @@ def convert_path2point(path_coord, point_array, path_array, atol=1e-8, rtol=1e-5
     distances = np.abs(path_array - path_coord)
     min_distance = np.amin(distances)
 
-    if min_distance <= atol + rtol * min_distance:
+    if min_distance <= atol + rtol * path_coord:
         path_indices = np.where(np.isclose(distances, min_distance))[0]
         return np.reshape(point_array[:, path_indices], (3,))
     else:

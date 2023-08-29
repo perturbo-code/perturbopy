@@ -233,7 +233,7 @@ class RecipPtDB():
 
         return path_coord
 
-    def path2point(self, path_coord, atol=1e-8, rtol=1e-5, nearest=True):
+    def path2point(self, path_coord, atol=1e-5, rtol=1e-2, nearest=True):
         """
         Method to find the reciprocal space point corresponding to a path coordinate
 
