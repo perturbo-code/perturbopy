@@ -2,7 +2,7 @@ import numpy as np
 from scipy.optimize import curve_fit
 from perturbopy.postproc.calc_modes.calc_mode import CalcMode
 from perturbopy.postproc.utils.constants import energy_conversion_factor, length_conversion_factor
-from perturbopy.postproc.dbs.energy_db import EnergyDB
+from perturbopy.postproc.dbs.units_dict import UnitsDict
 from perturbopy.postproc.dbs.recip_pt_db import RecipPtDB
 from perturbopy.postproc.utils.plot_tools import plot_dispersion, plot_recip_pt_labels
 from perturbopy.postproc.utils.lattice import reshape_points, cryst2cart
@@ -21,7 +21,7 @@ class BandsCalcMode(CalcMode):
     ----------
     kpt : RecipPtDB
        Database for the k-points used in the bands calculation.
-    bands : EnergyDB
+    bands : UnitsDict
        Database for the band energies computed by the bands calculation.
 
     """
@@ -42,11 +42,15 @@ class BandsCalcMode(CalcMode):
         kpoint = np.array(self._pert_dict['bands'].pop('k-point coordinates'))
 
         energies_dict = self._pert_dict['bands'].pop('band index')
+        
+        for band_idx in energies_dict.keys():
+            energies_dict[band_idx] = np.array(energies_dict[band_idx])
+            
         num_bands = self._pert_dict['bands'].pop('number of bands')
         energy_units = self._pert_dict['bands'].pop('band units')
 
         self.kpt = RecipPtDB.from_lattice(kpoint, kpoint_units, self.lat, self.recip_lat, kpath, kpath_units)
-        self.bands = EnergyDB(energies_dict, energy_units)
+        self.bands = UnitsDict.from_dict(energies_dict, energy_units)
 
     def indirect_bandgap(self, n_lower, n_upper):
         """
@@ -73,16 +77,16 @@ class BandsCalcMode(CalcMode):
 
         """
 
-        if n_lower not in self.bands.indices or n_upper not in self.bands.indices:
+        if n_lower not in self.bands.keys() or n_upper not in self.bands.keys():
             raise ValueError("n_lower and n_upper must be valid band numbers.")
 
         if n_lower > n_upper:
             raise ValueError("n_lower must be less than or equal to n_upper.")
 
-        gap = np.min(self.bands.energies[n_upper]) - np.max(self.bands.energies[n_lower])
+        gap = np.min(self.bands[n_upper]) - np.max(self.bands[n_lower])
 
-        lower_kpoint = self.kpt.points[:, np.argmax(self.bands.energies[n_lower])]
-        upper_kpoint = self.kpt.points[:, np.argmin(self.bands.energies[n_upper])]
+        lower_kpoint = self.kpt.points[:, np.argmax(self.bands[n_lower])]
+        upper_kpoint = self.kpt.points[:, np.argmin(self.bands[n_upper])]
 
         return gap, lower_kpoint, upper_kpoint
 
@@ -110,13 +114,13 @@ class BandsCalcMode(CalcMode):
            if n_lower is greater than n_upper.
 
         """
-        if n_lower not in self.bands.indices or n_upper not in self.bands.indices:
+        if n_lower not in self.bands.keys() or n_upper not in self.bands.keys():
             raise ValueError("n_lower and n_upper must be valid band numbers")
 
         if n_lower > n_upper:
             raise ValueError("n_lower must be less than or equal to n_upper.")
 
-        transitions = self.bands.energies[n_upper] - self.bands.energies[n_lower]
+        transitions = self.bands[n_upper] - self.bands[n_lower]
         gap = np.min(transitions)
         kpoint = self.kpt.points[:, np.argmin(transitions)]
 
@@ -163,7 +167,7 @@ class BandsCalcMode(CalcMode):
 
         kpoint = reshape_points(kpoint)
 
-        energies = self.bands.energies[n] * energy_conversion_factor(self.bands.units, 'hartree')
+        energies = self.bands[n] * energy_conversion_factor(self.bands.units, 'hartree')
         alat = self.alat * length_conversion_factor(self.alat_units, 'bohr')
         E_0 = energies[self.kpt.find(kpoint)][0]
 
@@ -236,7 +240,7 @@ class BandsCalcMode(CalcMode):
            Axis with the plotted bands.
 
         """
-        ax = plot_dispersion(ax, self.kpt.path, self.bands.energies, self.bands.units, c, ls, energy_window)
+        ax = plot_dispersion(ax, self.kpt.path, self.bands, self.bands.units, c, ls, energy_window)
 
         if show_kpoint_labels:
             ax = plot_recip_pt_labels(ax, self.kpt.labels, self.kpt.points, self.kpt.path)

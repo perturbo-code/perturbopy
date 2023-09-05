@@ -15,7 +15,7 @@ class DynamicsRunCalcMode(CalcMode):
 
     """
 
-    def __init__(self, cdyna_file, tet_file pert_dict):
+    def __init__(self, cdyna_file, tet_file, pert_dict):
         """
         Constructor method
 

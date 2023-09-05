@@ -1,6 +1,6 @@
 import numpy as np
 from perturbopy.postproc.calc_modes.calc_mode import CalcMode
-from perturbopy.postproc.dbs.energy_db import EnergyDB
+from perturbopy.postproc.dbs.units_dict import UnitsDict
 from perturbopy.postproc.dbs.recip_pt_db import RecipPtDB
 from perturbopy.postproc.utils.plot_tools import plot_dispersion, plot_recip_pt_labels
 
@@ -18,7 +18,7 @@ class PhdispCalcMode(CalcMode):
     ----------
     qpt : RecipPtDB
        Database for the q-points used in the phdisp calculation.
-    phdisp : EnergiesDB
+    phdisp : UnitsDict
        Database for the phonon energies computed by the phdisp calculation.
 
     """
@@ -39,11 +39,15 @@ class PhdispCalcMode(CalcMode):
         qpoint = np.array(self._pert_dict['bands'].pop('k-point coordinates'))
 
         energies_dict = self._pert_dict['bands'].pop('band index')
+
+        for mode_idx in energies_dict.keys():
+            energies_dict[mode_idx] = np.array(energies_dict[mode_idx])
+
         num_modes = self._pert_dict['bands'].pop('number of bands')
         energy_units = self._pert_dict['bands'].pop('band units')
 
         self.qpt = RecipPtDB.from_lattice(qpoint, qpoint_units, self.lat, self.recip_lat, qpath, qpath_units)
-        self.phdisp = EnergyDB(energies_dict, energy_units, num_modes)
+        self.phdisp = UnitsDict.from_dict(energies_dict, energy_units)
 
     def plot_phdisp(self, ax, energy_window=None, show_qpoint_labels=True, **kwargs):
         """
