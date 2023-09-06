@@ -25,8 +25,10 @@ class DynamicsRunCalcMode(CalcMode):
         if self.calc_mode != 'dynamics-run':
             raise ValueError('Calculation mode for a DynamicsRunCalcMode object should be "dynamics-run"')
 
+        kpoint = np.array(tet_file['kpts_all_cryst_coord'][()])
+
+        self.kpt = RecipPtDB.from_lattice(kpoint, "crystal", self.lat, self.recip_lat)
         self._dat = {}
-        self.time_units = 'fs'
 
         num_runs = cdyna_file['num_runs'][()]
 
@@ -50,7 +52,7 @@ class DynamicsRunCalcMode(CalcMode):
             else: 
                 efield = np.array([0.0, 0.0, 0.0])
 
-            self._dat[irun] = DynamicsRun(num_steps, time_step, snap_t, efield)
+            self._dat[irun] = DynamicsRun(num_steps, time_step, snap_t, time_units='fs', efield=efield)
 
 
     @classmethod

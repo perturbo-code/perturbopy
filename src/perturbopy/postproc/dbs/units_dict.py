@@ -9,7 +9,7 @@ class UnitsDict(dict):
     Attributes
     ----------
     data : dict
-       Dictionary of arrays of physical quantities
+       Dictionary of floats or arrays of physical quantities
     units : str {}
        The units of the physical quantities
 
@@ -29,6 +29,7 @@ class UnitsDict(dict):
         Class method to create a UnitsDict object from a Python dictionary and a set of units.
 
         """
+
         units_dict = cls(units)
         units_dict.update(input_dict)
         

@@ -68,19 +68,3 @@ class DynamicsPPCalcMode(CalcMode):
         return cls(cdyna_file, yaml_dict)
 
 
-    def __getitem__(self, index):
-        """
-        Method to index the DynamicsRunCalcMode object
-
-        Parameters
-        ----------
-        index : int
-            The dynamics run requested
-
-        Returns
-        -------
-        dynamics_run: DynamicsRun
-           Object containing information for the dynamics run
-
-        """
-        return self._dat[index]

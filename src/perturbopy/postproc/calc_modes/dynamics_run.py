@@ -13,7 +13,7 @@ class DynamicsRun():
     snap_t : array_like
     """
 
-    def __init__(self, num_steps, time_step, snap_t, efield):
+    def __init__(self, num_steps, time_step, snap_t, time_units='fs', efield=None):
         """
         Constructor method
         
