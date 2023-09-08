@@ -2,11 +2,12 @@ import numpy as np
 import os
 from perturbopy.postproc.calc_modes.calc_mode import CalcMode
 from perturbopy.postproc.dbs.recip_pt_db import RecipPtDB
-from perturbopy.postproc.calc_modes.dyn_indiv_run import DynIndivRun
+from perturbopy.postproc.calc_modes.dyna_indiv_run import DynaIndivRun
 from perturbopy.io_utils.io import open_yaml, open_hdf5, close_hdf5
 from perturbopy.postproc.utils.timing import Timing, TimingGroup
+from perturbopy.postproc.dbs.units_dict import UnitsDict
 
-class DynRun(CalcMode):
+class DynaRun(CalcMode):
     """
     Class representation of a Perturbo dynamics-run calculation.
 
@@ -23,7 +24,7 @@ class DynRun(CalcMode):
 
         """
         
-        self.timing = TimingGroup("dynamics-run")
+        self.timings = TimingGroup("dynamics-run")
 
         super().__init__(pert_dict)
 
@@ -33,11 +34,17 @@ class DynRun(CalcMode):
         kpoint = np.array(tet_file['kpts_all_crys_coord'][()])
 
         self.kpt = RecipPtDB.from_lattice(kpoint, "crystal", self.lat, self.recip_lat)
+        self.bands = UnitsDict.from_dict
+
+        energies = np.array(cdyna_file['band_structure_ryd'][()])
+        energies_dict = {i + 1: np.array(energies[:, i]) for i in range(0, energies.shape[1])}
+        self.bands = UnitsDict.from_dict(energies_dict, 'Ry')
+
         self._data = {}
 
         self.num_runs = cdyna_file['num_runs'][()]
 
-        with self.timing.add('iterate_dyna') as t:
+        with self.timings.add('iterate_dyna') as t:
 
             for irun in range(1, self.num_runs + 1):
                 dyn_str = f'dynamics_run_{irun}'
@@ -59,7 +66,7 @@ class DynRun(CalcMode):
                 else: 
                     efield = np.array([0.0, 0.0, 0.0])
 
-                self._data[irun] = DynIndivRun(num_steps, time_step, snap_t, time_units='fs', efield=efield)
+                self._data[irun] = DynaIndivRun(num_steps, time_step, snap_t, time_units='fs', efield=efield)
 
     @classmethod
     def from_hdf5_yaml(cls, cdyna_path, tet_path, yaml_path='pert_output.yml'):

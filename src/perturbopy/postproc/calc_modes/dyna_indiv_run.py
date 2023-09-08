@@ -1,7 +1,7 @@
 import numpy as np
 
 
-class DynIndivRun():
+class DynaIndivRun():
     """
     Class representation of a dynamics run
 

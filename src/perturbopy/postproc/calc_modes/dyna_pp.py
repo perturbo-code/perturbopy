@@ -3,7 +3,7 @@ import os
 from perturbopy.postproc.calc_modes.calc_mode import CalcMode
 from perturbopy.io_utils.io import open_yaml, open_hdf5, close_hdf5
 
-class DynPP(CalcMode):
+class DynaPP(CalcMode):
     """
     Class representation of a Perturbo dynamics-pp calculation.
 
@@ -66,9 +66,4 @@ class DynPP(CalcMode):
 
         return cls(cdyna_file, yaml_dict)
 
-
-    def popu_vs_t():
-        """
-
-        """
 

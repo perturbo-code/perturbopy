@@ -15,7 +15,8 @@ First, we give an overview on the workflow to use Perturbopy. In additional sect
     ephmat
     trans
     imsigma
-
+    dynamics-run
+    dynamics-pp
 
 1. Perturbo calculation
 -----------------------
