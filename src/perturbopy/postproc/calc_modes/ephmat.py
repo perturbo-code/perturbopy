@@ -5,7 +5,7 @@ from perturbopy.postproc.dbs.recip_pt_db import RecipPtDB
 from perturbopy.postproc.utils.plot_tools import plot_dispersion, plot_recip_pt_labels, plot_vals_on_bands
 
 
-class EphmatCalcMode(CalcMode):
+class Ephmat(CalcMode):
     """
     Class representation of a Perturbo ephmat calculation.
 

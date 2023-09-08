@@ -4,7 +4,7 @@ from perturbopy.postproc.dbs.units_dict import UnitsDict
 from perturbopy.postproc.dbs.recip_pt_db import RecipPtDB
 
 
-class ImsigmaCalcMode(CalcMode):
+class Imsigma(CalcMode):
     """
     Class representation of a Perturbo imsigma calculation.
 

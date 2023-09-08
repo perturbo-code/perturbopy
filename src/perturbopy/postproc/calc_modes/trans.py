@@ -3,7 +3,7 @@ from perturbopy.postproc.dbs.units_dict import UnitsDict
 from perturbopy.postproc.calc_modes.calc_mode import CalcMode
 
 
-class TransCalcMode(CalcMode):
+class Trans(CalcMode):
     """
     Class representation of a Perturbo imsigma calculation.
 

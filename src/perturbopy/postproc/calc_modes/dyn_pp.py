@@ -1,10 +1,9 @@
 import numpy as np
 import os
 from perturbopy.postproc.calc_modes.calc_mode import CalcMode
-from perturbopy.postproc.calc_modes.dynamics_run import DynamicsRun
 from perturbopy.io_utils.io import open_yaml, open_hdf5, close_hdf5
 
-class DynamicsPPCalcMode(CalcMode):
+class DynPP(CalcMode):
     """
     Class representation of a Perturbo dynamics-pp calculation.
 
@@ -15,7 +14,7 @@ class DynamicsPPCalcMode(CalcMode):
 
     """
 
-    def __init__(self, popu_file, tet_file pert_dict):
+    def __init__(self, popu_file, pert_dict):
         """
         Constructor method
 
@@ -31,10 +30,10 @@ class DynamicsPPCalcMode(CalcMode):
         self.energy_units = 'ev'
         self.energy_grid = popu_file['energy_grid_ev'][()]
 
-        self.popu = np.zeros((len(energy_grid), len(times)))
+        self.popu = np.zeros((len(self.energy_grid), len(self.times)))
 
-        for itime, time in enumerate(times):
-            self.popu[:, itime] = popu_file['energy distribution'][f'popu_t{time_idx}'][()]
+        for itime, time in enumerate(self.times):
+            self.popu[:, itime] = popu_file['energy_distribution'][f'popu_t{itime}'][()]
 
 
     @classmethod
@@ -67,4 +66,9 @@ class DynamicsPPCalcMode(CalcMode):
 
         return cls(cdyna_file, yaml_dict)
 
+
+    def popu_vs_t():
+        """
+
+        """
 

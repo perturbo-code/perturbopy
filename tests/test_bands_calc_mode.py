@@ -16,7 +16,7 @@ def gaas_bands():
 
     """
     yml_path = os.path.join("refs", "gaas_bands.yml")
-    return ppy.BandsCalcMode.from_yaml(yml_path)
+    return ppy.Bands.from_yaml(yml_path)
 
 
 @pytest.mark.parametrize("n_lower, n_upper, expected_gap, expected_kpoint", [

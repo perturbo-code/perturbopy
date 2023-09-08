@@ -3,6 +3,7 @@ Open/close binary and ASCII files (HDF5, YAML, text inputs/outputs)
 
 """
 from yaml import load
+
 try:
     from yaml import CLoader as Loader
 except ImportError:

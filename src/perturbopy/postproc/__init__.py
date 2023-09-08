@@ -2,12 +2,13 @@
 Suite of Python scripts for the Perturbo code testing and postprocessing.
 """
 from .calc_modes.calc_mode import CalcMode
-from .calc_modes.bands_calc_mode import BandsCalcMode
-from .calc_modes.phdisp_calc_mode import PhdispCalcMode
-from .calc_modes.ephmat_calc_mode import EphmatCalcMode
-from .calc_modes.trans_calc_mode import TransCalcMode
-from .calc_modes.imsigma_calc_mode import ImsigmaCalcMode
-from .calc_modes.dynamics_run_calc_mode import DynamicsRunCalcMode
+from .calc_modes.bands import Bands
+from .calc_modes.phdisp import Phdisp
+from .calc_modes.ephmat import Ephmat
+from .calc_modes.trans import Trans
+from .calc_modes.imsigma import Imsigma
+from .calc_modes.dyn_run import DynRun
+from .calc_modes.dyn_pp import DynPP
 
 from .dbs.units_dict import UnitsDict
 from .dbs.recip_pt_db import RecipPtDB

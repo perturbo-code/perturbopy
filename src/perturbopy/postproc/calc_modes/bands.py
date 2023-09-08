@@ -8,7 +8,7 @@ from perturbopy.postproc.utils.plot_tools import plot_dispersion, plot_recip_pt_
 from perturbopy.postproc.utils.lattice import reshape_points, cryst2cart
 
 
-class BandsCalcMode(CalcMode):
+class Bands(CalcMode):
     """
     Class representation of a Perturbo bands calculation.
 
@@ -158,12 +158,11 @@ class BandsCalcMode(CalcMode):
 
         """
 
+        # Default direction is longitudinal, i.e. in same direction as central k-point
         if direction is None:
             direction = kpoint
         else:
             direction = reshape_points(direction)
-
-        epsilon = 1e-6
 
         kpoint = reshape_points(kpoint)
 
@@ -171,9 +170,12 @@ class BandsCalcMode(CalcMode):
         alat = self.alat * length_conversion_factor(self.alat_units, 'bohr')
         E_0 = energies[self.kpt.find(kpoint)][0]
 
-        def get_fit_data(max_fit_distance, kpoint, direction, max_points=None):
+        def get_fit_data(max_fit_distance, kpoint, direction, max_points=None, epsilon=1e-6):
+
             kpoint_distances = np.linalg.norm(self.kpt.points - np.array(kpoint), axis=0)
             kpoint_mag_squared = np.linalg.norm(self.kpt.points, axis=0)
+
+            # Find all k-points parallel to the direction within a tolerance, epsilon
             kpoint_parallel = abs(np.divide(np.dot(np.reshape(direction, (3,)), self.kpt.points), (np.linalg.norm(direction) * kpoint_mag_squared),
                                             where=kpoint_mag_squared != 0) - 1) < epsilon
 
