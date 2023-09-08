@@ -23,7 +23,7 @@ class Phdisp(CalcMode):
         """
         Constructor method
 
-         Parameters
+        Parameters
         ----------
         pert_dict : dict
            Dictionary containing the inputs and outputs from the phdisp calculation.
@@ -40,10 +40,6 @@ class Phdisp(CalcMode):
         qpoint = np.array(self._pert_dict['phdisp'].pop('q-point coordinates'))
 
         energies_dict = self._pert_dict['phdisp'].pop('phonon mode')
-
-        for mode_idx in energies_dict.keys():
-            energies_dict[mode_idx] = np.array(energies_dict[mode_idx])
-
         num_modes = self._pert_dict['phdisp'].pop('number of modes')
         energy_units = self._pert_dict['phdisp'].pop('phdisp units')
 
@@ -63,10 +59,10 @@ class Phdisp(CalcMode):
            If true, the q-point labels stored in the labels attribute will be shown on the plot.
 
         c : str, list
-            See plot_tools.plot_dispersion function
+            See corresponding entry in plot_tools.plot_dispersion function
 
         ls : str, list
-            See plot_tools.plot_dispersion function 
+            See corresponding entry in plot_tools.plot_dispersion function 
 
         energy_window : tuple of float, optional
            The range of phonon energies to be shown on the y-axis.
@@ -77,7 +73,7 @@ class Phdisp(CalcMode):
            Axis with the plotted phonons.
 
         """
-        ax = plot_dispersion(ax, self.qpt.path, self.phdisp.energies, self.phdisp.units, energy_window)
+        ax = plot_dispersion(ax, self.qpt.path, self.phdisp, self.phdisp.units, c, ls, energy_window)
 
         if show_qpoint_labels:
             ax = plot_recip_pt_labels(ax, self.qpt.labels, self.qpt.points, self.qpt.path)

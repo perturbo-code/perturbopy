@@ -56,19 +56,3 @@ class Trans(CalcMode):
                     conductivity_iter[iteration] = iteration_dat[iteration]['conductivity']['tensor']
 
                 self.conductivities_iter[config_idx] = conductivity_iter
-
-    def get_conductivities(self, index):
-
-        xyz_to_int = {'xx':(0, 0), 'xy':(0, 1), 'xz':(0, 2),
-                      'yx':(1, 0), 'yy':(1, 1), 'yz':(1, 2),
-                      'zx':(2, 0), 'zy':(2, 1), 'zz':(2, 2)}
-
-        if index.lower() not in xyz_to_int.keys():
-            raise ValueError(f"Index {index.lower()} should be one of: {list(xyz_to_int.keys())}")
-
-        conductivities_index = UnitsDict(units=self.conductivities.units)
-
-        for config in self.conductivities.keys():
-            conductivities_index[config] = self.conductivities[config].__getitem__(xyz_to_int[index.lower()])
-
-        return conductivities_index

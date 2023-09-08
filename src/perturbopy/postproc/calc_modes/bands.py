@@ -42,10 +42,6 @@ class Bands(CalcMode):
         kpoint = np.array(self._pert_dict['bands'].pop('k-point coordinates'))
 
         energies_dict = self._pert_dict['bands'].pop('band index')
-        
-        for band_idx in energies_dict.keys():
-            energies_dict[band_idx] = np.array(energies_dict[band_idx])
-            
         num_bands = self._pert_dict['bands'].pop('number of bands')
         energy_units = self._pert_dict['bands'].pop('band units')
 

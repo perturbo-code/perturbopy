@@ -41,7 +41,6 @@ def test_direct_bandgap(gaas_bands, n_lower, n_upper, expected_gap, expected_kpo
     assert(np.isclose(expected_gap, gap))
     assert(np.allclose(expected_kpoint, kpoint))
 
-
 @pytest.mark.parametrize("n_lower, n_upper, expected_gap, expected_kpoint_lower, expected_kpoint_upper", [
                          [8, 9, 0.44878296240000104, [0., 0., 0.], [0., 0., 0.]],
                          [10, 11, -0.2976607195999996, [0.21635, 0.21635, 0.43269], [0.5, 0., 0.5]]
@@ -92,6 +91,6 @@ def test_effective_mass(gaas_bands, n, kpoint, max_distance, direction, expected
        The expected effective mass computed
 
     """
+    print(gaas_bands.bands)
     m = gaas_bands.effective_mass(n, kpoint, max_distance, direction)
-    print(m)
     assert(np.isclose(expected_m, m))
