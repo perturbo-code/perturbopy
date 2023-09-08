@@ -9,11 +9,6 @@ class Ephmat(CalcMode):
     """
     Class representation of a Perturbo ephmat calculation.
 
-    Parameters
-    ----------
-    pert_dict : dict
-    Dictionary containing the inputs and outputs from the ephmat calculation.
-
     Attributes
     ----------
 
@@ -23,6 +18,11 @@ class Ephmat(CalcMode):
     def __init__(self, pert_dict):
         """
         Constructor method
+
+        Parameters
+        ----------
+        pert_dict : dict
+        Dictionary containing the inputs and outputs from the ephmat calculation.
 
         """
         super().__init__(pert_dict)
@@ -58,6 +58,11 @@ class Ephmat(CalcMode):
             phdisp[phidx] = ephmat_dat[phidx].pop('phonon energy')
             defpot[phidx] = ephmat_dat[phidx].pop('deformation potential')
             ephmat[phidx] = ephmat_dat[phidx].pop('e-ph matrix elements')
+
+            # in the case of multiple k-points and q-points, need to make defpot and ephmat two-dimensional
+            if len(kpath) > 1 and len(qpath) > 1:
+                defpot[phidx] = np.array(defpot).reshape(len(kpath), len(qpath))
+                ephmat[phidx] = np.array(ephmat).reshape(len(kpath), len(qpath))
 
         self.phdisp = UnitsDict.from_dict(phdisp, phdisp_units)
         self.defpot = UnitsDict.from_dict(defpot, defpot_units)

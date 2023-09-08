@@ -1,5 +1,3 @@
-:.. _tutorials_intro:
-
 Tutorials
 =========
     
@@ -28,6 +26,8 @@ All Perturbo calculations output a YAML file (default name **<prefix>_<calc_mode
 * outputs from the Perturbo calculation (fields that are specific to each ``calc_mode``, described in individual tutorials)
 
 We will use this YAML file to export the data to Python with Perturbopy.
+
+:.. _exporting_data:
 
 2. Exporting data
 -----------------

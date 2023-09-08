@@ -24,7 +24,6 @@ class DynaPP(CalcMode):
         if self.calc_mode != 'dynamics-pp':
             raise ValueError('Calculation mode for a DynamicsPPCalcMode object should be "dynamics-pp"')
 
-        self._dat = {}
         self.time_units = 'fs'
         self.times = popu_file['times_fs'][()]
         self.energy_units = 'ev'

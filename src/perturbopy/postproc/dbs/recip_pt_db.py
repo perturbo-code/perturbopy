@@ -8,7 +8,7 @@ class RecipPtDB():
     """
     This is a class representation of a set of points in reciprocal space.
 
-    Parameters
+    Attributes
     ----------
     points_cart : array_like
        Array of reciprocal space points in cartesian coordinates, in units of 2pi/a.
@@ -21,6 +21,10 @@ class RecipPtDB():
        If units = 'crystal', then points_cryst will be used instead of points_cart when
        a method such as "distances" is called on the RecipPtDB object.
 
+    points : array_like
+       Array of reciprocal space points in crystal or cartesian coordinates, depending on the 
+       value of "units".
+       
     path : array_like
        Array of floats corresponding to each reciprocal space point, for plotting purposes.
 
@@ -38,6 +42,28 @@ class RecipPtDB():
         """
         Constructor method
 
+        Parametrs
+        ---------
+        points_cart : array_like
+           Array of reciprocal space points in cartesian coordinates, in units of 2pi/a.
+
+        points_cryst : array_like
+           Array of reciprocal space points in crystal coordinates.
+
+        units : str
+           The units that calculations will be performed in (crystal or cartesian).
+           If units = 'crystal', then points_cryst will be used instead of points_cart when
+           a method such as "distances" is called on the RecipPtDB object.
+
+        path : array_like
+           Array of floats corresponding to each reciprocal space point, for plotting purposes.
+
+        path_units : str
+           Units of path, typically arbitrary
+
+        labels : dict
+           Dictionary of reciprocal space point labels
+           example: {"Gamma": [0, 0, 0], 'L': [.5,.5,.5]}
         """
         self.points_cart = lattice.reshape_points(points_cart)
         self.points_cryst = lattice.reshape_points(points_cryst)

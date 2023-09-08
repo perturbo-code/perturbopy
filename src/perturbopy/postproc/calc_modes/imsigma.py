@@ -2,7 +2,7 @@ import numpy as np
 from perturbopy.postproc.calc_modes.calc_mode import CalcMode
 from perturbopy.postproc.dbs.units_dict import UnitsDict
 from perturbopy.postproc.dbs.recip_pt_db import RecipPtDB
-
+from perturbopy.postproc.utils.constants import hbar
 
 class Imsigma(CalcMode):
     """
@@ -43,27 +43,47 @@ class Imsigma(CalcMode):
         config_dat = self._pert_dict['imsigma'].pop('configuration index')
         num_modes = self._pert_dict['imsigma'].pop('number of phonon modes')
 
-        self.temperatures = UnitsDict(units = self._pert_dict['imsigma'].pop('temperature units'))
-        self.chem_potentials = UnitsDict(units = self._pert_dict['imsigma'].pop('chemical potential units'))
-        self.imsigmas = UnitsDict(units = self._pert_dict['imsigma'].pop('Im(Sigma) units'))
-        self.imsigmas_mode = UnitsDict(units = self._pert_dict['imsigma'].pop('Im(Sigma) units'))
+        self.temperature = UnitsDict(units = self._pert_dict['imsigma'].pop('temperature units'))
+        self.chem_pot = UnitsDict(units = self._pert_dict['imsigma'].pop('chemical potential units'))
+        self.imsigma = UnitsDict(units = self._pert_dict['imsigma'].pop('Im(Sigma) units'))
+        self.imsigma_mode = UnitsDict(units = self._pert_dict['imsigma'].pop('Im(Sigma) units'))
 
         for config_idx in config_dat.keys():
             self.temperature[config] = config_dat[config_idx].pop('temperature')
-            self.chem_potential[config] = config_dat[config_idx].pop('chemical potential')
+            self.chem_pot[config] = config_dat[config_idx].pop('chemical potential')
             
             imsigma_dat = config_dat[config_idx].pop('band index')
 
-            imsigma = {}
-            imsigma_mode = {}
+            imsigma_tmp = {}
+            imsigma_mode_tmp = {}
 
             for mode in np.arange(1, num_modes + 1):
                 imsigma_mode[mode] = {}
 
             for band_index in imsigma_dat.keys():
-                imsigma[band_index] = imsigma_dat[band_index]['Im(Sigma)']['total']
+                imsigma_tmp[band_index] = imsigma_dat[band_index]['Im(Sigma)']['total']
                 for mode in np.arange(1, num_modes + 1):
-                    imsigma_mode[mode][band_index] = imsigma_dat[band_index]['Im(Sigma)']['phonon mode'][mode]
+                    imsigma_mode_tmp[mode][band_index] = imsigma_dat[band_index]['Im(Sigma)']['phonon mode'][mode]
 
-            self.imsigmas[config] = imsigma
-            self.imsigmas_mode[config] = imsigma_mode
+            self.imsigma[config] = imsigma_tmp
+            self.imsigma_mode[config] = imsigma_mode_tmp
+
+    # def tau(self, units='s'):
+
+    #     tau = UnitsDict.from_dict(units)
+    #     conversion = hbar(f'{self.imsigma.units}*{units}') / 2
+
+    #     for key, value in self.imsigma.items():
+    #         tau[key] = conversion * value    
+    #         return 
+
+    # def tau_mode(self, units='s'):
+
+    #     tau_mode = UnitsDict.from_dict(units)
+    #     conversion = hbar(f'{self.imsigma_mode.units}*{units}') / 2
+
+    #     for key, value in self.imsigma.items():
+    #         tau[key] = conversion * value    
+    #         return 
+
+    # def scat_rate
