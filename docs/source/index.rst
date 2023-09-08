@@ -29,6 +29,6 @@ Contents
    :maxdepth: 2
 
    Usage <usage>
-   postproc/index
+   Postprocessing <postproc/index>
    Testsuite <testsuite>
-   api
+   API reference <api>
