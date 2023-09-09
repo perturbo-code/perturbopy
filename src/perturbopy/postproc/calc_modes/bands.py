@@ -177,6 +177,12 @@ class Bands(CalcMode):
 
             if max_points is None:
                 kpoint_indices = np.where(np.logical_and(kpoint_distances < max_fit_distance, kpoint_parallel))[0]
+
+                kpoint_idx = self.kpt.find(kpoint)[0]
+
+                if kpoint_idx not in kpoint_indices.flatten():
+                    kpoint_indices = np.append(kpoint_indices, kpoint_idx)
+
                 kpoint_indices = np.sort(kpoint_indices)
             else:
                 kpoint_indices = np.where(kpoint_parallel)[0]
@@ -184,9 +190,6 @@ class Bands(CalcMode):
                 kpoint_indices = np.where(abs(kpoint_indices - kpoint_idx) <= max_points)[0]
 
             kpoint_idx = self.kpt.find(kpoint)[0]
-
-            if kpoint_idx not in kpoint_indices.flatten():
-                kpoint_indices = np.append(kpoint_indices, kpoint_idx)
 
             kpt_points = self.kpt.points[:, kpoint_indices]
 

@@ -70,7 +70,7 @@ class Imsigma(CalcMode):
         config_dat = self._pert_dict['imsigma'].pop('configuration index')
         num_modes = self._pert_dict['imsigma'].pop('number of phonon modes')
 
-        self.temperature = UnitsDict(units=self._pert_dict['imsigma'].pop('temperature units'))
+        self.temper = UnitsDict(units=self._pert_dict['imsigma'].pop('temperature units'))
         self.chem_pot = UnitsDict(units=self._pert_dict['imsigma'].pop('chemical potential units'))
         self.imsigma = UnitsDict(units=self._pert_dict['imsigma'].pop('Im(Sigma) units'))
         self.imsigma_mode = UnitsDict(units=self.imsigma.units)
@@ -79,7 +79,7 @@ class Imsigma(CalcMode):
             
             self.imsigma[config_idx] = {}
             self.imsigma_mode[config_idx] = {}
-            self.temperature[config_idx] = config_dat[config_idx].pop('temperature')
+            self.temper[config_idx] = config_dat[config_idx].pop('temperature')
             self.chem_pot[config_idx] = config_dat[config_idx].pop('chemical potential')
             
             imsigma_dat = config_dat[config_idx].pop('band index')

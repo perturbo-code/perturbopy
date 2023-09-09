@@ -1,9 +1,9 @@
 Phdisp tutorial
 ===============
 
-In this section, we describe how to use Perturbopy to process a Perturbo ``phdisp`` calculation. 
+In this section, we describe how to use Perturbopy to process a Perturbo ``'phdisp'`` calculation. 
 
-The ``phdisp`` calculation mode interpolates the phonon dispersion by Fourier transforming real-space interatomic force constants. We first run the Perturbo calculation following the instructions on the Perturbo website and obtain the YAML file, *si_phdisp.yml*. For more information, please refer to the `Perturbo website <https://perturbo-code.github.io/mydoc_interpolation#phonon-dispersioncalc_mode--phdisp>`_. 
+The ``'phdisp'`` calculation mode interpolates the phonon dispersion by Fourier transforming real-space interatomic force constants. We first run the Perturbo calculation following the instructions on the Perturbo website and obtain the YAML file, *'si_phdisp.yml'*. For more information, please refer to the `Perturbo website <https://perturbo-code.github.io/mydoc_interpolation#phonon-dispersioncalc_mode--phdisp>`_. 
 
 Next, we create the :py:class:`.Phdisp` object using the YAML file as an input. This object contains all of the information from the YAML file.
 
@@ -21,7 +21,7 @@ The main results of the results are stored in two objects:
 * :py:attr:`.Phdisp.qpt` stores the q-points used in the calculation
 * :py:attr:`.Phdisp.phdisp` stores the interpolated phonon energies computed
 
-See :ref:`exporting_data` to learn how to access data from ``si_phdisp`` that is general for all calculation modes, such as input parameters and the material's crystal structure. # ERROR
+See :ref:`exporting_data` to learn how to access data from ``si_phdisp`` that is general for all calculation modes, such as input parameters and the material's crystal structure.
 
 Q-points
 ~~~~~~~~
@@ -35,8 +35,8 @@ Q-points
     si_phdisp.qpt.points[:, :2]
 
     >> array([[0.5   , 0.4902],
-          [0.5   , 0.4902],
-          [0.5   , 0.4902]]) 
+              [0.5   , 0.4902],
+              [0.5   , 0.4902]]) 
 
     # The points are a 3x206 array, as there are 206 q-points
     si_phdisp.qpt.points.shape
@@ -92,7 +92,7 @@ We can quickly visualize the data by plotting the phonon dispersion.
 
     # Optional, used to label the q-points with labels for the FCC crystal structure.
     # For example, [0.5, 0.5, 0.5] is the 'L' point in the FCC Brillouin zone.
-    si_phdisp.qpt.add_labels(ppy.plot_tools.points_fcc)
+    si_phdisp.qpt.add_labels(ppy.lattice.points_fcc)
 
     si_phdisp.plot_phdisp(ax)
     plt.show()

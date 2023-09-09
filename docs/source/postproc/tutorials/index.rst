@@ -16,6 +16,8 @@ First, we give an overview on the workflow to use Perturbopy. In additional sect
     dynamics-run
     dynamics-pp
 
+.. _perturbo_calculation:
+
 Perturbo calculation
 -----------------------
 
@@ -30,7 +32,7 @@ We will use this YAML file to export the data to Python with Perturbopy.
 .. _exporting_data:
 
 Exporting data
------------------
+--------------
 
 The first step is to create a object containing the data. All of the data from the YAML file is stored in Perturbopy objects, which have a datatype specific to their ``calc_mode``. For example, let's say the ``calc_mode`` = ``bands``. To postprocess the results, we should create a :py:class:`.Bands` object called ``si_bands``, using the YAML file as an input. The ``si_bands`` object contains all the data stored in the YAML file, **'si_bands.yml'**. 
 
@@ -221,11 +223,11 @@ Note these labels can be removed with `kpt.remove_labels`.
 
 	>> {'X': [0.5, 0.0, 0.5]}
 
-A dictionary of labels for the FCC lattice can be found in ``ppy.plot_tools.points_fcc``.
+A dictionary of labels for the FCC lattice can be found in ``ppy.lattice.points_fcc``.
 
 .. code-block :: python
 	
-	si_bands.kpt.add_labels(ppy.plot_tools.points_fcc)
+	si_bands.kpt.add_labels(ppy.lattice.points_fcc)
 	si_bands.kpt.labels
 
 	>> {'L': [0.5, 0.5, 0.5],
