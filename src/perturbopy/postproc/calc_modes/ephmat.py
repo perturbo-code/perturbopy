@@ -113,7 +113,7 @@ class Ephmat(CalcMode):
 
         return ax
 
-    def plot_defpot(self, ax, show_qpoint_labels=True, cmap='RdBu', energy_window=None):
+    def plot_defpot(self, ax, kpoint_idx=0, show_qpoint_labels=True, cmap='RdBu', energy_window=None):
         """
         Method to plot the phonon dispersion.
 
@@ -121,6 +121,10 @@ class Ephmat(CalcMode):
         ----------
         ax : matplotlib.axes.Axes
            Axis on which to plot the phdisp.
+
+        kpoint_idex : int, optional
+            Index of the k-point to plot the deformation potentials for. Deformation potentials will be plotted along q-points, at this k-point
+            By default, it will be the first k-point.
 
         energy_window : tuple of int, optional
            The range of band energies to be shown on the y-axis.
@@ -134,14 +138,20 @@ class Ephmat(CalcMode):
            Axis with the plotted bands.
 
         """
-        ax = plot_vals_on_bands(ax, self.qpt.path, self.phdisp, self.phdisp.units, values=self.defpot.flatten(), energy_window=energy_window, cmap=cmap)
+
+        values = {}
+
+        for key, val in self.defpot.items():
+            values[key] =  self.defpot[key][kpoint_idx, :]
+
+        ax = plot_vals_on_bands(ax, self.qpt.path, self.phdisp, self.phdisp.units, values=values, energy_window=energy_window, cmap=cmap)
 
         if show_qpoint_labels:
             ax = plot_recip_pt_labels(ax, self.qpt.labels, self.qpt.points, self.qpt.path)
 
         return ax
 
-    def plot_ephmat(self, ax, show_qpoint_labels=True, cmap='RdBu', energy_window=None):
+    def plot_ephmat(self, ax, kpoint_idx=0, show_qpoint_labels=True, cmap='RdBu', energy_window=None):
         """
         Method to plot the phonon dispersion.
 
@@ -150,6 +160,9 @@ class Ephmat(CalcMode):
         ax : matplotlib.axes.Axes
            Axis on which to plot the phdisp.
 
+        kpoint_idex : int, optional
+            Index of the k-point to plot the e-ph elements for. E-ph elements will be plotted along q-points, at this k-point
+            By default, it will be the first k-point.
         energy_window : tuple of int, optional
            The range of band energies to be shown on the y-axis.
 
@@ -163,7 +176,12 @@ class Ephmat(CalcMode):
 
         """
 
-        ax = plot_vals_on_bands(ax, self.qpt.path, self.phdisp, self.phdisp.units, values=self.ephmat.flatten(), energy_window=energy_window, cmap=cmap)
+        values = {}
+
+        for key, val in self.ephmat.items():
+            values[key] =  self.ephmat[key][kpoint_idx, :]
+
+        ax = plot_vals_on_bands(ax, self.qpt.path, self.phdisp, self.phdisp.units, values=values, energy_window=energy_window, cmap=cmap)
 
         if show_qpoint_labels:
             ax = plot_recip_pt_labels(ax, self.qpt.labels, self.qpt.points, self.qpt.path)

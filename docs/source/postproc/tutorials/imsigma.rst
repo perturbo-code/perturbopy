@@ -16,7 +16,7 @@ Next, we create the :py:class:`.Imsigma` object using the YAML file as an input.
 
 
 Accessing the data
-~~~~~~~~~~~~~~~~~~
+------------------
 
 The main results of the results are categorized below: 
 
@@ -27,7 +27,7 @@ The main results of the results are categorized below:
 See :ref:`exporting_data` to learn how to access data from ``si_imsigma`` that is general for all calculation modes, such as input parameters and the material's crystal structure. # ERROR
 
 Bands data
-----------
+~~~~~~~~~~
 
 The k-points used for the bands calculation are stored in the :py:attr:`.Imsigma.kpt` attribute, which is of type :py:class:`.RecipPtDB`. For example, to access the k-point coordinates and their units:
 
@@ -57,7 +57,7 @@ The  band energies are stored in the :py:attr:`.Imsigma.bands` attribute, which 
 Please see the section :ref:`physical_quantities` for details on accessing the bands and their units.
 
 Configuration data
-------------------
+~~~~~~~~~~~~~~~~~~
 
 Imsigmaport calculations are run for various system configurations, i.e. the temperature, chemical potential, and carrier concentration. Information about the configuration(s), are stored in the following attributes:
 
@@ -82,7 +82,7 @@ For example, let's look at the temperatures.
 Please see the section :ref:`physical_quantities` for details on working with :py:class:`UnitsDict` objects.
 
 Imsigma results
----------------
+~~~~~~~~~~~~~~~
 
 The e-ph self energies are stored in the :py:attr:`.Imsigma.imsigma` object, which is of type :py:class:`.UnitsDict`. There are two levels in this dictionary. The first level gives the configuration number. The second level gives the band index. The values are arrays of the e-ph self energies computed along all the k-points, at that configuration and band index.
 

@@ -14,7 +14,7 @@ Next, we create the :py:class:`.Phdisp` object using the YAML file as an input. 
     si_phdisp = ppy.Phdisp.from_yaml('si_phdisp.yml')
 
 Accessing the data
-~~~~~~~~~~~~~~~~~~
+------------------
 
 The main results of the results are stored in two objects: 
 
@@ -24,7 +24,7 @@ The main results of the results are stored in two objects:
 See :ref:`exporting_data` to learn how to access data from ``si_phdisp`` that is general for all calculation modes, such as input parameters and the material's crystal structure. # ERROR
 
 Q-points
---------
+~~~~~~~~
 
 :py:attr:`.Phdisp.qpt` is a :py:class:`.RecipPtDB` object that stores the q-points. For example, we can access the first q-points with the :py:attr:`.RecipPtDB.points` property, which has the shape 3xN (where N is the number of q-points). Note that the q-points are column-oriented. For example, to access the first two q-points:
 
@@ -53,7 +53,7 @@ Please see the section :ref:`handling_kpt_qpt` for more details on accessing inf
 
 
 Phonon energies
----------------
+~~~~~~~~~~~~~~~
 
 The interpolated phonon dispersion computed by the phdisp calculation are stored in the :py:attr:`.Phdisp.phdisp` attribute, which is a :py:class:`.UnitsDict` object. The keys represent the phonon mode, and the values are arrays containing the phonon energies corresponding to each q-point. 
 

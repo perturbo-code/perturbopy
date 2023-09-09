@@ -22,7 +22,7 @@ Next, we create the :py:class:`.Trans` object using the YAML file as an input. T
 
 
 Accessing the data
-~~~~~~~~~~~~~~~~~~
+------------------
 
 The main results of the results are categorized below: 
 
@@ -32,7 +32,7 @@ The main results of the results are categorized below:
 See :ref:`exporting_data` to learn how to access data from ``si_phdisp`` that is general for all calculation modes, such as input parameters and the material's crystal structure. # ERROR
 
 Configuration data
-------------------
+~~~~~~~~~~~~~~~~~~
 
 Transport calculations are run for various system configurations, i.e. the temperature, chemical potential, and carrier concentration. Information about the configuration(s), are stored in the following attributes:
 
@@ -70,7 +70,7 @@ If we use the magnetic field calculation,
 Please see the section :ref:`physical_quantities` for details on working with :py:class:`UnitsDict` objects.
 
 Transport results
------------------
+~~~~~~~~~~~~~~~~~
 
 The following transport results are stored: 
 
@@ -101,7 +101,7 @@ If a quantity is empty, it means it was not computed. This is sometimes the case
 Please see the section :ref:`physical_quantities` for details on working with :py:class:`UnitsDict` objects.
 
 Iteration data
---------------
+~~~~~~~~~~~~~~
 
 If we run ``calc_mode`` = ``trans-ita`` or ``trans-mag-ita``, we are solving the BTE iteratively. In this case, we can obtain information on the convergence of the conductivity over the iterations.  The data is stored in :py:attr:`.Trans.cond_iter`, which is a dictionary of dictionaries. The top level keys give the configuration number, and the second level keys give the iteration number.
 
@@ -127,7 +127,7 @@ If we run ``calc_mode`` = ``trans-ita`` or ``trans-mag-ita``, we are solving the
     si_trans_ita.cond_iter.units
 
 Plotting the data
-~~~~~~~~~~~~~~~~~
+-----------------
 
 Below is an example for plotting the 'xx' component of mobility as a function of temperature.
 
