@@ -51,6 +51,8 @@ The k-points are stored in :py:attr:`Ephmat.kpt`, which is a :py:class:`RecipPtD
     si_ephmat.phdisp.units
     >> 'meV'
 
+Please see the section :ref:`handling_kpt_qpt` for more details on accessing information from :py:attr:`.Ephmat.kpt` and :py:attr:`.Ephmat.qpt`, such as labeling the k, q-points and converting to Cartesian coordinates.
+
 The ephmat calculation interpolates the deformation potentials and e-ph elements which are stored in dictionaries :py:attr:`Ephmat.defpot` and :py:attr:`Ephmat.ephmat`, respectively. Both are :py:class:`UnitsDict` objects. The keys represent the phonon mode, and the values are (num_kpoints x num_qpoints) size arrays.
 
 .. code-block :: python

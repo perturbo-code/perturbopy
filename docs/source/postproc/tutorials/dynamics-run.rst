@@ -3,7 +3,9 @@ Dynamics-run tutorial
 
 In this section, we describe how to use Perturbopy to process a Perturbo ``dynamics-run`` calculation.
 
-The ultrafast dynamics calculation solves the real-time Boltzman transport equation (rt-BTE). Please see the `Perturbo website <https://perturbo-code.github.io/mmydoc_dynamics.html>`_ for more details. We first run the Perturbo calculation following the instructions on the Perturbo website and obtain the YAML file, *si_dynamics-run.yml*. We also obtain two other important files: the tet HDF5 file *si_tet.h5* (from the setup calculation), and the cdyna HDF5 file *si_cdyna.h5*. These files store data on the k-points and the dynamics results which are too large to be outputted to the YAML file.
+The ultrafast dynamics calculation solves the real-time Boltzman transport equation (rt-BTE). Please see the `Perturbo website <https://perturbo-code.github.io/mmydoc_dynamics.html>`_ for more details.
+
+We first run the Perturbo calculation following the instructions on the Perturbo website and obtain the YAML file, *'si_dynamics-run.yml'*. We also obtain two other important files: *'si_tet.h5'* (from the setup calculation), and *'si_cdyna.h5'*. These files store data on the k-points and the dynamics results which are too large to be outputted to the YAML file.
 
 Next, we create the :py:class:`.DynaRun` object using the YAML file, cdyna HDF5 file, and tet HDF5 file as inputs. This :py:class:`.DynaRun` object contains all of the information from those three files.
 
@@ -14,19 +16,16 @@ Next, we create the :py:class:`.DynaRun` object using the YAML file, cdyna HDF5 
     cdyna_path = "si_cdyna.h5"
     tet_path = "si_tet.h5"
     yaml_path = "si_dynamics_run.yml"
+
     si_dyna_run = ppy.DynaRun.from_hdf5_yaml(cdyna_path, tet_path, yaml_path)
 
 
 Accessing the data
 ~~~~~~~~~~~~~~~~~~
 
-We can get information on the number of runs, (total number of performed simulations), the number of time steps and their increment for each run, and the electric field for each run.
+We can get a summary on the number of runs, (total number of performed simulations), the number of time steps and their increment for each run, and the electric field for each run.
 
 .. code-block :: python
-    
-    si_dyna_run.num_runs
-
-    >> 1
 
     si_dyna_run.get_info()
 
@@ -37,22 +36,23 @@ We can get information on the number of runs, (total number of performed simulat
         Time step (fs): 2.0
         Electric field (V/cm): [0. 0. 0.]
 
-Below, we describe how to access information on a particular run. The ``si_dyna_run`` object contains information on the k-points and band structure, stored in :py:attr:`DynaRun.kpt` and :py:attr:`DynaRun.bands`. These are also described below.
-
-
 Individual runs
 ---------------
 
-We can index the ``si_dyna_run`` object to obtain information on a particular run (stored in :py:class:`.DynaIndivRun` objects. For example, to obtain information on configuration 1,
+We can index the ``si_dyna_run`` object to obtain information on a particular run (stored in :py:class:`.DynaIndivRun` objects. For example, to obtain information on configuration 1:
 
 .. code-block :: python
+
+    # There was only one simulation in this run
+    len(si_dyna_run)
+    >> 1
 
     si_dyna_run[1]
 
 .. note ::
     Indexing starts at 1 to be consistent with Perturbo indices.
 
-For each run, we can obtain the distribution function at each time using the :py:attr:`DynaIndivRun.snap_t` attribute. The shape of this attribute is num_bands x num_kpoints x num_time_steps.
+For each run, we can obtain the distribution function at each time using the :py:attr:`DynaIndivRun.snap_t` attribute. The shape of this attribute is :math:`N_{bands} \times N_{kpoints} \times N_{\Delta t}`.
 
 .. code-block :: python
 
@@ -93,7 +93,7 @@ The k-points used for the bands calculation are stored in the :py:attr:`.DynaRun
 
     >> 'crystal'
 
-Please see the section :ref:`handling_kpt_qpt` for details on accessing the k-points through this attribute.
+Please see the section :ref:`handling_kpt_qpt` for more details on accessing information from :py:attr:`.DynaRun.kpt`, such as labeling the k-points and converting to Cartesian coordinates.
 
 Band energies
 -------------
