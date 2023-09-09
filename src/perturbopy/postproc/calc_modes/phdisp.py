@@ -13,9 +13,12 @@ class Phdisp(CalcMode):
     Attributes
     ----------
     qpt : RecipPtDB
-       Database for the q-points used in the phdisp calculation.
+       Database for the q-points used in the phdisp calculation, containing M points.
+    
     phdisp : UnitsDict
-       Database for the phonon energies computed by the phdisp calculation.
+       Database for the phonon energies computed by the phdisp calculation. The keys are
+       the phonon mode, and the values are an array (of length M) containing the energies at each q-point
+       with units phdisp.units
 
     """
 
@@ -32,7 +35,7 @@ class Phdisp(CalcMode):
         super().__init__(pert_dict)
 
         if self.calc_mode != 'phdisp':
-            raise ValueError('Calculation mode for a PhdispCalcMode object should be "phdisp"')
+            raise ValueError('Calculation mode for a Phdisp object should be "phdisp"')
 
         qpath_units = self._pert_dict['phdisp'].pop('q-path coordinate units')
         qpath = np.array(self._pert_dict['phdisp'].pop('q-path coordinates'))

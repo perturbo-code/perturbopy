@@ -11,7 +11,26 @@ class Ephmat(CalcMode):
 
     Attributes
     ----------
-
+    kpt : RecipPtDB
+       Database for the k-points used in the ephmat calculation, containing N points.
+    
+    qpt : RecipPtDB
+       Database for the q-points used in the ephmat calculation, containing M points.
+    
+    phdisp : UnitsDict
+       Database for the phonon energies computed by the ephmat calculation. The keys are
+       the phonon mode, and the values are an array (of length M) containing the energies at each q-point
+       with units phdisp.units
+    
+    ephmat : UnitsDict
+       Database for the e-ph matrix elements computed by the ephmat calculation. The keys are
+       the phonon mode, and the values are an array (of length NxM) where element (n, m)
+       is the e-ph matrix element (units ephmat.units) between an electron at k-point n and phonon at q-point m
+    
+    defpot : UnitsDict
+       Database for the deformation potentials computed by the phdisp calculation. The keys are
+       the phonon mode, and the values are an array (of length NxM) where element (n, m)
+       is the deformation potential (units defpot.units) of an electron at k-point n and phonon at q-point m.
 
     """
 
@@ -22,13 +41,13 @@ class Ephmat(CalcMode):
         Parameters
         ----------
         pert_dict : dict
-        Dictionary containing the inputs and outputs from the ephmat calculation.
+            Dictionary containing the inputs and outputs from the ephmat calculation.
 
         """
         super().__init__(pert_dict)
 
         if self.calc_mode != 'ephmat':
-            raise ValueError('Calculation mode for a ephmatCalcMode object should be "ephmat"')
+            raise ValueError('Calculation mode for a Ephmat object should be "ephmat"')
 
         phdisp_units = self._pert_dict['ephmat'].pop('phonon energy units')
         defpot_units = self._pert_dict['ephmat'].pop('deformation potential units')
@@ -54,15 +73,13 @@ class Ephmat(CalcMode):
         defpot = {}
         ephmat = {}
 
+        N = len(self.kpt.path)
+        M = len(self.qpt.path)
+
         for phidx in ephmat_dat.keys():
             phdisp[phidx] = ephmat_dat[phidx].pop('phonon energy')
-            defpot[phidx] = ephmat_dat[phidx].pop('deformation potential')
-            ephmat[phidx] = ephmat_dat[phidx].pop('e-ph matrix elements')
-
-            # in the case of multiple k-points and q-points, need to make defpot and ephmat two-dimensional
-            if len(kpath) > 1 and len(qpath) > 1:
-                defpot[phidx] = np.array(defpot).reshape(len(kpath), len(qpath))
-                ephmat[phidx] = np.array(ephmat).reshape(len(kpath), len(qpath))
+            defpot[phidx] = np.array(ephmat_dat[phidx].pop('deformation potential')).reshape(N, M)
+            ephmat[phidx] = np.array(ephmat_dat[phidx].pop('e-ph matrix elements')).reshape(N, M)
 
         self.phdisp = UnitsDict.from_dict(phdisp, phdisp_units)
         self.defpot = UnitsDict.from_dict(defpot, defpot_units)
@@ -89,7 +106,7 @@ class Ephmat(CalcMode):
            Axis with the plotted bands.
 
         """
-        ax = plot_dispersion(ax, self.qpt.path, self.phdisp.energies, self.phdisp.units, c, ls, energy_window)
+        ax = plot_dispersion(ax, self.qpt.path, self.phdisp, self.phdisp.units, c, ls, energy_window)
 
         if show_qpoint_labels:
             ax = plot_recip_pt_labels(ax, self.qpt.labels, self.qpt.points, self.qpt.path)
@@ -117,7 +134,7 @@ class Ephmat(CalcMode):
            Axis with the plotted bands.
 
         """
-        ax = plot_vals_on_bands(ax, self.qpt.path, self.phdisp.energies, self.phdisp.units, values=self.defpot.energies, energy_window=energy_window, cmap=cmap)
+        ax = plot_vals_on_bands(ax, self.qpt.path, self.phdisp, self.phdisp.units, values=self.defpot.flatten(), energy_window=energy_window, cmap=cmap)
 
         if show_qpoint_labels:
             ax = plot_recip_pt_labels(ax, self.qpt.labels, self.qpt.points, self.qpt.path)
@@ -145,7 +162,8 @@ class Ephmat(CalcMode):
            Axis with the plotted bands.
 
         """
-        ax = plot_vals_on_bands(ax, self.qpt.path, self.phdisp.energies, self.phdisp.units, values=self.ephmat.energies, energy_window=energy_window, cmap=cmap)
+
+        ax = plot_vals_on_bands(ax, self.qpt.path, self.phdisp, self.phdisp.units, values=self.ephmat.flatten(), energy_window=energy_window, cmap=cmap)
 
         if show_qpoint_labels:
             ax = plot_recip_pt_labels(ax, self.qpt.labels, self.qpt.points, self.qpt.path)

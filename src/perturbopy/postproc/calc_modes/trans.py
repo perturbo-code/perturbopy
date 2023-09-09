@@ -12,33 +12,41 @@ class Trans(CalcMode):
     temper : UnitsDict
         Dictionary of temperatures used in each configuration. The keys give the configuration number,
         and the values are floats giving the temperature (with units temper.units)
+    
     chem_pot : UnitsDict
         Dictionary of chemical potentials used in each configuration. The keys
         give the configuration number, and the values are floats giving the 
         chemical potential (with units chem_pot.units)
+    
     conc : UnitsDict
         Dictionary of carrier concentrations used in each configuration. The keys
         give the configuration number, and the values are floats giving the 
         concentration (with units conc.units)
+    
     cond : UnitsDict
         Dictionary of conductivity tensors computed for each configuration. The keys are the 
         configuration number, and the values are 3x3 arrays giving the
         conductivity tensor (with units cond.units)
+    
     mob : UnitsDict
         Dictionary of mobility tensors computed for each configuration. The keys give the
         configuration number, and the values are 3x3 arrays for the mobility tensor (with units mob.units)
+    
     seebeck : UnitsDict
         Dictionary of Seebeck coefficient tensors computed for each configuration. The keys give the
         configuration number, and the values are 3x3 arrays giving theSeebeck coefficient tensor
         (with units seebeck.units). If not computed, this field will be None.
+    
     thermal_cond : UnitsDict
         Dictionary of thermal conductivity tensors computed for each configuration. The keys give
         the configuration number, and the values are 3x3 arrays giving the thermal conductivity tensor
         (with units thermal_cond.units) If not computed, this field will be None.
+    
     B_field : UnitsDict
         Dictionary of magnetic fields used in each configuration, if running a magnetic field transport
         calculation (if not, this field will be None). The keys are the configuration number, and the values
         are the 3-dimensional magnetic field (with units of B_field.units)
+    
     cond_iter : UnitsDict
         Dictionary of dictionaries giving conductivity tensor computed at each iteration when solving
         the iterative BTE, if running an ITA calculation (if not, this field will be None).
@@ -61,7 +69,7 @@ class Trans(CalcMode):
         super().__init__(pert_dict)
 
         if self.calc_mode.split('-')[0] != 'trans':
-            raise ValueError('Calculation mode for a TransCalcMode object should begin with "trans-"')
+            raise ValueError('Calculation mode for a Trans object should begin with "trans-"')
 
         self.temper = UnitsDict(units = self._pert_dict['trans'].pop('temperature units'))
         self.chem_pot = UnitsDict(units = self._pert_dict['trans'].pop('chemical potential units'))

@@ -105,7 +105,7 @@ The  band energies are stored in the :py:attr:`.DynaRun.bands` attribute, which 
 	si_dyna_run.bands.keys()
 	>> dict_keys([1, 2])
 
-	si_dyna_run.bands[8]
+	si_dyna_run.bands[2]
 	>> array([0.51121006, 0.51080167, 0.51173707, ..., 0.50932315, 0.50955554, 0.51121006])
 
 Please see the section :ref:`physical_quantities` for details on accessing the bands and their units.
