@@ -4,6 +4,7 @@ from perturbopy.postproc.dbs.units_dict import UnitsDict
 from perturbopy.postproc.dbs.recip_pt_db import RecipPtDB
 from perturbopy.postproc.utils.constants import hbar
 
+
 class Imsigma(CalcMode):
     """
     Class representation of a Perturbo imsigma calculation.
@@ -24,16 +25,16 @@ class Imsigma(CalcMode):
     
     chem_pot : UnitsDict
         Dictionary of chemical potentials used in each configuration. The keys
-        give the configuration number, and the values are floats giving the 
+        give the configuration number, and the values are floats giving the
         chemical potential (with units chem_pot.units)
     
     imsigma : UnitsDict
-        Dictionary of imaginary self-energies computed for each configuration. The top level keys are the 
+        Dictionary of imaginary self-energies computed for each configuration. The top level keys are the
         configuration number, and the second level keys are the band index. The values are arrays of length N giving the
         imaginary self-energies along all the k-points at that band index for the configuration. Units are in imsigma.units.
 
     imsigma_mode : UnitsDict
-        Dictionary of imaginary self-energies resolved by phonon mode computed. The top level keys are the 
+        Dictionary of imaginary self-energies resolved by phonon mode computed. The top level keys are the
         configuration number, and the second level keys are the band index. The third level keys are
         the phonon mode. Finally,the values are arrays of length N giving the imaginary self-energies along all the k-points
         due to the given phonon mode at that band index for the configuration. Units are in imsigma_mode.units.
@@ -69,10 +70,10 @@ class Imsigma(CalcMode):
         config_dat = self._pert_dict['imsigma'].pop('configuration index')
         num_modes = self._pert_dict['imsigma'].pop('number of phonon modes')
 
-        self.temperature = UnitsDict(units = self._pert_dict['imsigma'].pop('temperature units'))
-        self.chem_pot = UnitsDict(units = self._pert_dict['imsigma'].pop('chemical potential units'))
-        self.imsigma = UnitsDict(units = self._pert_dict['imsigma'].pop('Im(Sigma) units'))
-        self.imsigma_mode = UnitsDict(units = self.imsigma.units)
+        self.temperature = UnitsDict(units=self._pert_dict['imsigma'].pop('temperature units'))
+        self.chem_pot = UnitsDict(units=self._pert_dict['imsigma'].pop('chemical potential units'))
+        self.imsigma = UnitsDict(units=self._pert_dict['imsigma'].pop('Im(Sigma) units'))
+        self.imsigma_mode = UnitsDict(units=self.imsigma.units)
 
         for config_idx in config_dat.keys():
             

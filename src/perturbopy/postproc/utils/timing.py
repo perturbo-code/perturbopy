@@ -2,6 +2,7 @@
 import time
 from collections import OrderedDict
 
+
 class Timing:
     """
     Class to measure timing for a specific task.
@@ -100,8 +101,6 @@ class Timing:
         self.stop()
 
     def __str__(self):
-        #'└'
-        #'──'
 
         tag_text = self.tag
         lev = self.level
@@ -157,7 +156,7 @@ class TimingGroup:
         DIAGO  (s): Total Runtime: 2.000, Call Count: 1
     """
     def __init__(self, name=None):
-        #self.timings = {}
+        # self.timings = {}
         self.name = name
         self.timings = OrderedDict()
 
@@ -178,7 +177,7 @@ class TimingGroup:
 
     def __str__(self):
 
-        #self.sort()
+        # self.sort()
         width = 60
 
         output = ''
@@ -213,12 +212,12 @@ class TimingGroup:
 
         """
 
-        timings_dict = {tag: 
-            {'runtime': round(timing.total_runtime,3), 'call_count': timing.call_count} 
-            for tag, timing in self.timings.items()
-            }
+        timings_dict = {tag:
+                            {'runtime': round(timing.total_runtime, 3), 'call_count': timing.call_count}
+                            for tag, timing in self.timings.items()
+                        }
 
-        #timings_dict = {tag: timing.total_runtime for tag, timing in self.timings.items()}
+        # timings_dict = {tag: timing.total_runtime for tag, timing in self.timings.items()}
         return timings_dict
 
 
@@ -230,7 +229,7 @@ def measure_runtime_and_calls(method):
     def wrapper(self, *args, **kwargs):
         if not hasattr(self, 'timings'):
             # Create TimingGroup instance as an attribute
-            self.timings = TimingGroup()  
+            self.timings = TimingGroup()
         timings = self.timings
         with timings.add(method.__name__, level=1) as t:
             result = method(self, *args, **kwargs)

@@ -65,7 +65,7 @@ class Phdisp(CalcMode):
             Color(s) for phonon modes; see corresponding entry in plot_tools.plot_dispersion function
 
         ls : str, list
-            Linestyle(s) for phonon modes; see corresponding entry in plot_tools.plot_dispersion function 
+            Linestyle(s) for phonon modes; see corresponding entry in plot_tools.plot_dispersion function
 
         energy_window : tuple of float, optional
            The range of phonon energies to be shown on the y-axis.

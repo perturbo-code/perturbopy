@@ -3,6 +3,7 @@ import os
 from perturbopy.postproc.calc_modes.calc_mode import CalcMode
 from perturbopy.io_utils.io import open_yaml, open_hdf5, close_hdf5
 
+
 class DynaPP(CalcMode):
     """
     Class representation of a Perturbo dynamics-pp calculation.
@@ -51,7 +52,6 @@ class DynaPP(CalcMode):
         for itime, time in enumerate(self.times):
             self.popu[:, itime] = popu_file['energy_distribution'][f'popu_t{itime}'][()]
 
-
     @classmethod
     def from_hdf5_yaml(cls, popu_path, yaml_path='pert_output.yml'):
         """
@@ -73,13 +73,11 @@ class DynaPP(CalcMode):
         """
 
         if not os.path.isfile(popu_path):
-            raise FileNotFoundError(f'File {cdyna_path} not found')
+            raise FileNotFoundError(f'File {popu_path} not found')
         if not os.path.isfile(yaml_path):
             raise FileNotFoundError(f'File {yaml_path} not found')
 
-        cdyna_file = open_hdf5(popu_path)
+        popu_file = open_hdf5(popu_path)
         yaml_dict = open_yaml(yaml_path)
 
-        return cls(cdyna_file, yaml_dict)
-
-
+        return cls(popu_file, yaml_dict)

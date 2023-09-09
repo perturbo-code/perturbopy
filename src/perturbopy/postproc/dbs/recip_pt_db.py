@@ -22,7 +22,7 @@ class RecipPtDB():
        a method such as "distances" is called on the RecipPtDB object.
 
     points : array_like
-       Array of reciprocal space points in crystal or cartesian coordinates, depending on the 
+       Array of reciprocal space points in crystal or cartesian coordinates, depending on the
        value of "units".
        
     path : array_like

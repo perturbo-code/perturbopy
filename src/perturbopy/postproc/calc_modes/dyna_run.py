@@ -7,6 +7,7 @@ from perturbopy.io_utils.io import open_yaml, open_hdf5, close_hdf5
 from perturbopy.postproc.utils.timing import Timing, TimingGroup
 from perturbopy.postproc.dbs.units_dict import UnitsDict
 
+
 class DynaRun(CalcMode):
     """
     Class representation of a Perturbo dynamics-run calculation.
@@ -73,7 +74,7 @@ class DynaRun(CalcMode):
                 # Get E-field, which is only present if nonzero
                 if "efield" in cdyna_file[dyn_str].keys():
                     efield = cdyna_file[dyn_str]["efield"][()]
-                else: 
+                else:
                     efield = np.array([0.0, 0.0, 0.0])
 
                 self._data[irun] = DynaIndivRun(num_steps, time_step, snap_t, time_units='fs', efield=efield)
@@ -112,7 +113,6 @@ class DynaRun(CalcMode):
         tet_file = open_hdf5(tet_path)
 
         return cls(cdyna_file, tet_file, yaml_dict)
-
 
     def __getitem__(self, index):
         """

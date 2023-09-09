@@ -10,6 +10,7 @@ except ImportError:
     from yaml import Loader
 import h5py
 
+
 def open_yaml(file_name):
     """
     Load YAML file as dictionary
@@ -30,9 +31,11 @@ def open_yaml(file_name):
 
     return yaml_dict
 
+
 def open_hdf5(filename, mode='r'):
     hdf5_file = h5py.File(filename, mode)
     return hdf5_file
+
 
 def close_hdf5(hdf5_file):
     hdf5_file.close()

@@ -15,16 +15,16 @@ class Trans(CalcMode):
     
     chem_pot : UnitsDict
         Dictionary of chemical potentials used in each configuration. The keys
-        give the configuration number, and the values are floats giving the 
+        give the configuration number, and the values are floats giving the
         chemical potential (with units chem_pot.units)
     
     conc : UnitsDict
         Dictionary of carrier concentrations used in each configuration. The keys
-        give the configuration number, and the values are floats giving the 
+        give the configuration number, and the values are floats giving the
         concentration (with units conc.units)
     
     cond : UnitsDict
-        Dictionary of conductivity tensors computed for each configuration. The keys are the 
+        Dictionary of conductivity tensors computed for each configuration. The keys are the
         configuration number, and the values are 3x3 arrays giving the
         conductivity tensor (with units cond.units)
     
@@ -71,24 +71,24 @@ class Trans(CalcMode):
         if self.calc_mode.split('-')[0] != 'trans':
             raise ValueError('Calculation mode for a Trans object should begin with "trans-"')
 
-        self.temper = UnitsDict(units = self._pert_dict['trans'].pop('temperature units'))
-        self.chem_pot = UnitsDict(units = self._pert_dict['trans'].pop('chemical potential units'))
-        self.conc = UnitsDict(units = self._pert_dict['trans'].pop('concentration units'))
-        self.cond = UnitsDict(units = self._pert_dict['trans'].pop('conductivity units'))
-        self.mob = UnitsDict(units = self._pert_dict['trans'].pop('mobility units'))
+        self.temper = UnitsDict(units=self._pert_dict['trans'].pop('temperature units'))
+        self.chem_pot = UnitsDict(units=self._pert_dict['trans'].pop('chemical potential units'))
+        self.conc = UnitsDict(units=self._pert_dict['trans'].pop('concentration units'))
+        self.cond = UnitsDict(units=self._pert_dict['trans'].pop('conductivity units'))
+        self.mob = UnitsDict(units=self._pert_dict['trans'].pop('mobility units'))
 
         if 'Seebeck coefficient units' in self._pert_dict['trans'].keys():
-            self.seebeck = UnitsDict(units = self._pert_dict['trans'].pop('Seebeck coefficient units'))
+            self.seebeck = UnitsDict(units=self._pert_dict['trans'].pop('Seebeck coefficient units'))
         else:
             self.seebeck = None
 
         if 'thermal conductivity units' in self._pert_dict['trans'].keys():
-            self.thermal_cond = UnitsDict(units = self._pert_dict['trans'].pop('thermal conductivity units'))
+            self.thermal_cond = UnitsDict(units=self._pert_dict['trans'].pop('thermal conductivity units'))
         else:
             self.thermal_cond = None
 
         if 'magnetic field units' in self._pert_dict['trans'].keys():
-            self.bfield = UnitsDict(units = self._pert_dict['trans'].pop('magnetic field units'))
+            self.bfield = UnitsDict(units=self._pert_dict['trans'].pop('magnetic field units'))
         else:
             self.bfield = None
 
@@ -96,7 +96,7 @@ class Trans(CalcMode):
         trans_dat = self._pert_dict['trans'].pop('configuration index')
 
         if 'number of iterations' in trans_dat[1].keys():
-            self.cond_iter = UnitsDict(units = self.cond.units)
+            self.cond_iter = UnitsDict(units=self.cond.units)
         else:
             self.cond_iter = None
 
@@ -107,16 +107,16 @@ class Trans(CalcMode):
             self.cond[config_idx] = np.array(trans_dat[config_idx].pop('conductivity')['tensor'])
             self.mob[config_idx] = np.array(trans_dat[config_idx].pop('mobility')['tensor'])
 
-            if self.seebeck != None:
+            if self.seebeck is not None:
                 self.seebeck[config_idx] = np.array(trans_dat[config_idx].pop('Seebeck coefficient')['tensor'])
             
-            if self.thermal_cond != None:
+            if self.thermal_cond is not None:
                 self.seebeck[config_idx] = np.array(trans_dat[config_idx].pop('thermal conductivity')['tensor'])
 
-            if self.bfield != None:
+            if self.bfield is not None:
                 self.bfield[config_idx] = np.array(trans_dat[config_idx].pop('magnetic field'))
 
-            if self.cond_iter != None:
+            if self.cond_iter is not None:
                 num_iter = trans_dat[config_idx].pop('number of iterations')
                 iteration_dat = trans_dat[config_idx].pop('iteration')
                 conductivity_iter = {}

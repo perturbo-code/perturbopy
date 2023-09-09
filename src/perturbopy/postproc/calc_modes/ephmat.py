@@ -142,7 +142,7 @@ class Ephmat(CalcMode):
         values = {}
 
         for key, val in self.defpot.items():
-            values[key] =  self.defpot[key][kpoint_idx, :]
+            values[key] = self.defpot[key][kpoint_idx, :]
 
         ax = plot_vals_on_bands(ax, self.qpt.path, self.phdisp, self.phdisp.units, values=values, energy_window=energy_window, cmap=cmap)
 
@@ -179,7 +179,7 @@ class Ephmat(CalcMode):
         values = {}
 
         for key, val in self.ephmat.items():
-            values[key] =  self.ephmat[key][kpoint_idx, :]
+            values[key] = self.ephmat[key][kpoint_idx, :]
 
         ax = plot_vals_on_bands(ax, self.qpt.path, self.phdisp, self.phdisp.units, values=values, energy_window=energy_window, cmap=cmap)
 
