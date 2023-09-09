@@ -5,7 +5,7 @@ In this section, we describe how to use Perturbopy to process a Perturbo ``dynam
 
 The ultrafast dynamics calculation solves the real-time Boltzman transport equation (rt-BTE). Please see the `Perturbo website <https://perturbo-code.github.io/mmydoc_dynamics.html>`_ for more details. We first run the Perturbo calculation following the instructions on the Perturbo website and obtain the YAML file, *si_dynamics-run.yml*. We also obtain two other important files: the tet HDF5 file *si_tet.h5* (from the setup calculation), and the cdyna HDF5 file *si_cdyna.h5*. These files store data on the k-points and the dynamics results which are too large to be outputted to the YAML file.
 
-Next, we create the :py:class:`.DynaRun` object using the YAML file, cdyna HDF5 file as an input. This object contains all of the information from those three files.
+Next, we create the :py:class:`.DynaRun` object using the YAML file, cdyna HDF5 file, and tet HDF5 file as inputs. This :py:class:`.DynaRun` object contains all of the information from those three files.
 
 .. code-block :: python
 

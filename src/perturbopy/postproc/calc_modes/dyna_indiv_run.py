@@ -8,9 +8,16 @@ class DynaIndivRun():
     Attributes
     ----------
     num_steps : int
+        Number of time steps
+
     time_step : float
         Time step in fs
-    snap_t : array_like
+
+    snap_t : np.ndarray
+        Distribution function computed at each time step
+
+    efield : np.ndarray
+        Electric field assumed during the calculation. Default value is [0, 0, 0].
     """
 
     def __init__(self, num_steps, time_step, snap_t, time_units='fs', efield=None):

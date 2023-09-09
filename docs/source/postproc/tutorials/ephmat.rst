@@ -3,7 +3,7 @@ Ephmat tutorial
 
 In this section, we describe how to use Perturbopy to process a Perturbo ``ephmat`` calculation. 
 
-The ephmat calculation computes the e-ph elements between electrons in states defined by a k-point and band index, and phonons in states defined by a q-point and mode index. We first run the Perturbo calculation following the instructions on the Perturbo website and obtain the YAML file, *si_phdisp.yml*. For more information, please refer to the `Perturbo website <https://perturbo-code.github.io/mydoc_interpolation.html#e-ph-matrix-elements-calc_mode--ephmat>`_. 
+The ephmat calculation The absolute values of the e-ph matrix elements, summed over the number of electronic bands, given two lists of k-points and q-points. We first run the Perturbo calculation following the instructions on the Perturbo website and obtain the YAML file, *si_phdisp.yml*. For more information, please refer to the `Perturbo website <https://perturbo-code.github.io/mydoc_interpolation.html#e-ph-matrix-elements-calc_mode--ephmat>`_. 
 
 Next, we create the :py:class:`.Ephmat` object using the YAML file as an input. This object contains all of the information from the YAML file.
 

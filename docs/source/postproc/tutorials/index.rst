@@ -16,7 +16,7 @@ First, we give an overview on the workflow to use Perturbopy. In additional sect
     dynamics-run
     dynamics-pp
 
-1. Perturbo calculation
+Perturbo calculation
 -----------------------
 
 All Perturbo calculations output a YAML file (default name **<prefix>_<calc_mode>.yml.**). This YAML file structure is described on the `Perturbo website <https://perturbo-code.github.io/mydoc_running_perturbo.html#yaml-file-structure>`_. It contains the following information:
@@ -27,9 +27,9 @@ All Perturbo calculations output a YAML file (default name **<prefix>_<calc_mode
 
 We will use this YAML file to export the data to Python with Perturbopy.
 
-:.. _exporting_data:
+.. _exporting_data:
 
-2. Exporting data
+Exporting data
 -----------------
 
 The first step is to create a object containing the data. All of the data from the YAML file is stored in Perturbopy objects, which have a datatype specific to their ``calc_mode``. For example, let's say the ``calc_mode`` = ``bands``. To postprocess the results, we should create a :py:class:`.Bands` object called ``si_bands``, using the YAML file as an input. The ``si_bands`` object contains all the data stored in the YAML file, **'si_bands.yml'**. 

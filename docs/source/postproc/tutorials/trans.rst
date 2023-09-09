@@ -39,7 +39,7 @@ Transport calculations are run for various system configurations, i.e. the tempe
 * :py:attr:`.Trans.temper`
 * :py:attr:`.Trans.chem_pot`
 * :py:attr:`.Trans.conc`
-* :py:attr:`.Trans.B_field` (if applicable)
+* :py:attr:`.Trans.bfield` (if applicable)
 
 All of these attributes are :py:class:`.UnitsDict` objects, which are Python dictionaries with an additional attribute that stores the units. The keys of the dictionary represent the configuration number. The values are floats representing the temperature, chemical potential, or carrier concentration of that configuration. If running a magnetic field calculation, there will also be an attribute for the magnetic field of each configuration.
 
@@ -60,11 +60,11 @@ If we use the magnetic field calculation,
 .. code-block :: python
 
     # We have one configuration and one B field
-    si_trans_mag_rta.B_field
+    si_trans_mag_rta.bfield
     >> {1: array([0.1, 0. , 0. ])}
     
     # Units are in Tesla
-    si_trans_mag_rta.B_field.units
+    si_trans_mag_rta.bfield.units
     >> 'T'
 
 Please see the section :ref:`physical_quantities` for details on working with :py:class:`UnitsDict` objects.

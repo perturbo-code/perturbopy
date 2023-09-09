@@ -42,10 +42,10 @@ class Trans(CalcMode):
         the configuration number, and the values are 3x3 arrays giving the thermal conductivity tensor
         (with units thermal_cond.units) If not computed, this field will be None.
     
-    B_field : UnitsDict
+    bfield : UnitsDict
         Dictionary of magnetic fields used in each configuration, if running a magnetic field transport
         calculation (if not, this field will be None). The keys are the configuration number, and the values
-        are the 3-dimensional magnetic field (with units of B_field.units)
+        are the 3-dimensional magnetic field (with units of bfield.units)
     
     cond_iter : UnitsDict
         Dictionary of dictionaries giving conductivity tensor computed at each iteration when solving
@@ -88,9 +88,9 @@ class Trans(CalcMode):
             self.thermal_cond = None
 
         if 'magnetic field units' in self._pert_dict['trans'].keys():
-            self.B_field = UnitsDict(units = self._pert_dict['trans'].pop('magnetic field units'))
+            self.bfield = UnitsDict(units = self._pert_dict['trans'].pop('magnetic field units'))
         else:
-            self.B_field = None
+            self.bfield = None
 
         num_config = self._pert_dict['trans'].pop('number of configurations')
         trans_dat = self._pert_dict['trans'].pop('configuration index')
@@ -113,8 +113,8 @@ class Trans(CalcMode):
             if self.thermal_cond != None:
                 self.seebeck[config_idx] = np.array(trans_dat[config_idx].pop('thermal conductivity')['tensor'])
 
-            if self.B_field != None:
-                self.B_field[config_idx] = np.array(trans_dat[config_idx].pop('magnetic field'))
+            if self.bfield != None:
+                self.bfield[config_idx] = np.array(trans_dat[config_idx].pop('magnetic field'))
 
             if self.cond_iter != None:
                 num_iter = trans_dat[config_idx].pop('number of iterations')
