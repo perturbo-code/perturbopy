@@ -20,4 +20,4 @@ jobs:
       - name: run pytest
         run: |
           cd tests
-          pytest --plots
+          pytest 

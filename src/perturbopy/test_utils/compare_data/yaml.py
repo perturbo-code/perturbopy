@@ -1,5 +1,6 @@
 """
-   This module contains functions to compare YAML files
+This module contains functions to compare YAML files
+
 """
 from numbers import Number
 import numpy as np
