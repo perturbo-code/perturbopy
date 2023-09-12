@@ -6,6 +6,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.collections import LineCollection
 from perturbopy.postproc.utils import lattice
+import matplotlib.colors as colors
+import warnings
 
 plotparams = {'figure.figsize': (16, 9),
                      'axes.grid': False,
@@ -161,7 +163,7 @@ def plot_dispersion(ax, path, energies, energy_units, c="k", ls='-', energy_wind
     return ax
 
 
-def plot_vals_on_bands(ax, path, energies, energy_units, values, cmap='RdBu', energy_window=None, max_val=None):
+def plot_vals_on_bands(ax, path, energies, energy_units, values, cmap='RdBu', log=False, energy_window=None):
     """
     Method to plot the dispersion (phonon dispersion or band structure).
 
@@ -195,14 +197,24 @@ def plot_vals_on_bands(ax, path, energies, energy_units, values, cmap='RdBu', en
     """
 
     # Create a continuous norm to map from data points to colors
-    vmin = min([min(values[key]) for key in values.keys()])
-    vmax = max([max(values[key]) for key in values.keys()])
 
-    if max_val is not None:
-        vmax = max_val
+    if log:
+        threshold = 0
+        masked_values = {key: np.ma.masked_less_equal(values[key], threshold) for key in values.keys()}
+        mask_on = np.any([masked_values[key].mask.any() for key in values.keys()])
 
-    norm = plt.Normalize(vmin, vmax)
+        if mask_on:
+            warnings.warn(f"Some values are less than or equal to {threshold} and will be excluded from the plot.", UserWarning)
 
+        vmin = min([min(masked_values[key]) for key in masked_values.keys()])
+        vmax = max([max(masked_values[key]) for key in masked_values.keys()])
+        norm = colors.LogNorm(vmin, vmax)
+
+    else:
+        vmin = min([min(values[key]) for key in values.keys()])
+        vmax = max([max(values[key]) for key in values.keys()])
+        norm = plt.Normalize(vmin, vmax)
+    
     for n in energies.keys():
 
         x = np.array(path)

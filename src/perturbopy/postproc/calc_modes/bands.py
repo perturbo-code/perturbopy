@@ -220,7 +220,7 @@ class Bands(CalcMode):
 
         return effective_mass
 
-    def plot_bands(self, ax, show_kpoint_labels=True, c='k', ls='-', energy_window=None):
+    def plot_bands(self, ax, show_kpoint_labels=True, **kwargs):
         """
         Method to plot the band structure.
 
@@ -241,7 +241,7 @@ class Bands(CalcMode):
            Axis with the plotted bands.
 
         """
-        ax = plot_dispersion(ax, self.kpt.path, self.bands, self.bands.units, c, ls, energy_window)
+        ax = plot_dispersion(ax, self.kpt.path, self.bands, self.bands.units, **kwargs)
 
         if show_kpoint_labels:
             ax = plot_recip_pt_labels(ax, self.kpt.labels, self.kpt.points, self.kpt.path)
