@@ -85,7 +85,7 @@ class Ephmat(CalcMode):
         self.defpot = UnitsDict.from_dict(defpot, defpot_units)
         self.ephmat = UnitsDict.from_dict(ephmat, ephmat_units)
 
-    def plot_phdisp(self, ax, show_qpoint_labels=True, c='k', ls='-', energy_window=None):
+    def plot_phdisp(self, ax, show_qpoint_labels=True, **kwargs):
         """
         Method to plot the phonon dispersion.
 
@@ -106,14 +106,14 @@ class Ephmat(CalcMode):
            Axis with the plotted bands.
 
         """
-        ax = plot_dispersion(ax, self.qpt.path, self.phdisp, self.phdisp.units, c, ls, energy_window)
+        ax = plot_dispersion(ax, self.qpt.path, self.phdisp, self.phdisp.units, **kwargs)
 
         if show_qpoint_labels:
             ax = plot_recip_pt_labels(ax, self.qpt.labels, self.qpt.points, self.qpt.path)
 
         return ax
 
-    def plot_defpot(self, ax, kpoint_idx=0, show_qpoint_labels=True, cmap='RdBu', energy_window=None):
+    def plot_defpot(self, ax, kpoint_idx=0, show_qpoint_labels=True, **kwargs):
         """
         Method to plot the phonon dispersion.
 
@@ -144,14 +144,14 @@ class Ephmat(CalcMode):
         for key, val in self.defpot.items():
             values[key] = self.defpot[key][kpoint_idx, :]
 
-        ax = plot_vals_on_bands(ax, self.qpt.path, self.phdisp, self.phdisp.units, values=values, energy_window=energy_window, cmap=cmap)
+        ax = plot_vals_on_bands(ax, self.qpt.path, self.phdisp, self.phdisp.units, values=values, **kwargs)
 
         if show_qpoint_labels:
             ax = plot_recip_pt_labels(ax, self.qpt.labels, self.qpt.points, self.qpt.path)
 
         return ax
 
-    def plot_ephmat(self, ax, kpoint_idx=0, show_qpoint_labels=True, cmap='RdBu', energy_window=None):
+    def plot_ephmat(self, ax, kpoint_idx=0, show_qpoint_labels=True, **kwargs):
         """
         Method to plot the phonon dispersion.
 
@@ -181,7 +181,7 @@ class Ephmat(CalcMode):
         for key, val in self.ephmat.items():
             values[key] = self.ephmat[key][kpoint_idx, :]
 
-        ax = plot_vals_on_bands(ax, self.qpt.path, self.phdisp, self.phdisp.units, values=values, energy_window=energy_window, cmap=cmap)
+        ax = plot_vals_on_bands(ax, self.qpt.path, self.phdisp, self.phdisp.units, values=values, **kwargs)
 
         if show_qpoint_labels:
             ax = plot_recip_pt_labels(ax, self.qpt.labels, self.qpt.points, self.qpt.path)

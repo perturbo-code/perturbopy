@@ -100,6 +100,8 @@ We can quickly visualize the e-ph elements by plotting them as a colormap overla
     :width: 450
     :align: center
 
+.. code-block :: python
+
 We can also plot the deformation potential instead.
 
 .. code-block :: python

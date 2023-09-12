@@ -49,7 +49,7 @@ class Phdisp(CalcMode):
         self.qpt = RecipPtDB.from_lattice(qpoint, qpoint_units, self.lat, self.recip_lat, qpath, qpath_units)
         self.phdisp = UnitsDict.from_dict(energies_dict, energy_units)
 
-    def plot_phdisp(self, ax, show_qpoint_labels=True, c='k', ls='-', energy_window=None):
+    def plot_phdisp(self, ax, show_qpoint_labels=True, **kwargs):
         """
         Method to plot the phonon dispersion.
 
@@ -76,7 +76,7 @@ class Phdisp(CalcMode):
            Axis with the plotted phonons.
 
         """
-        ax = plot_dispersion(ax, self.qpt.path, self.phdisp, self.phdisp.units, c, ls, energy_window)
+        ax = plot_dispersion(ax, self.qpt.path, self.phdisp, self.phdisp.units, **kwargs)
 
         if show_qpoint_labels:
             ax = plot_recip_pt_labels(ax, self.qpt.labels, self.qpt.points, self.qpt.path)
