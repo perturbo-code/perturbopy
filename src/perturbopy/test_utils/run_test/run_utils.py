@@ -199,7 +199,7 @@ def filter_tests(all_test_list, tags, exclude_tags, epr, test_names, func_name, 
             if tags is not None:
 
                 keep_test = False
-                l=0
+
                 for tag in tags:
                     if tag in test_tag_list:
                         keep_test = True
@@ -253,10 +253,10 @@ def filter_tests(all_test_list, tags, exclude_tags, epr, test_names, func_name, 
 
         test_list = test_names
 
-    if not test_list and not ((func_name=='test_perturbo_for_qe2pert') and not (run_qe2pert)):
+    if not test_list and not ((func_name == 'test_perturbo_for_qe2pert') and not (run_qe2pert)):
         raise RuntimeError('No test folders selected')
     
-    if (func_name=='test_perturbo'):
+    if (func_name == 'test_perturbo'):
         print('\n\n === Test folders == :')
     print(' \n'.join(test_list))
     print('')
