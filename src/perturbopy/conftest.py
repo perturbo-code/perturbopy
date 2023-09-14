@@ -49,10 +49,6 @@ def pytest_addoption(parser):
                      help='List of test names to include in this testsuite run.',
                      nargs='*', default=None)
 
-    parser.addoption('--devel',
-                     help='Include the development-stage tests.',
-                     action='store_true', default=False)
-
     parser.addoption('--run_qe2pert',
                      help='Include the qe2pert tests',
                      action='store_true')
@@ -105,10 +101,6 @@ def pytest_generate_tests(metafunc):
 
         # Get the list of all test folders
         all_test_list, all_dev_test_list = get_all_tests(metafunc.function.__name__, source_folder)
-
-        # Add the devel tests if --devel was specified
-        if metafunc.config.getoption('devel'):
-            all_test_list += all_dev_test_list
 
         if (metafunc.function.__name__ == 'test_perturbo') or (metafunc.function.__name__ == 'test_perturbo_for_qe2pert'):
             # sort out test folders based on command-line options (if present)

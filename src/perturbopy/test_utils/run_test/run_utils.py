@@ -12,7 +12,7 @@ from perturbopy.io_utils.io import open_yaml
 def read_test_tags(test_name, func_name, source_folder):
     """
     Get a list of tags for a given test. List of tags is combined from the tags from
-    pert_input.yml and epr_info.yml for a given epr file.
+    pert_input.yml and test_listing.yml for a given epr file.
 
     Parameters
     ----------
@@ -32,7 +32,7 @@ def read_test_tags(test_name, func_name, source_folder):
         name of the epr file associated with this test
     """
     
-    epr_dict_path = os.path.join(source_folder, 'epr_info.yml')
+    epr_dict_path = os.path.join(source_folder, 'test_listing.yml')
     epr_info = open_yaml(epr_dict_path)
 
     if (func_name == 'test_perturbo') or (func_name == 'test_perturbo_for_qe2pert'):
@@ -45,7 +45,7 @@ def read_test_tags(test_name, func_name, source_folder):
         if 'tags' in pert_input['test info'].keys():
             input_tags = pert_input['test info']['tags']
 
-        # Read the tags from epr_info.yml
+        # Read the tags from test_listing.yml
         epr_name = pert_input['test info']['epr']
 
         epr_tags = []
@@ -65,7 +65,7 @@ def read_test_tags(test_name, func_name, source_folder):
 
 def get_all_tests(func_name, source_folder):
     """
-    Get the names of all test folders based on the epr_info.yml file.
+    Get the names of all test folders based on the test_listing.yml file.
 
     Parameters
     ----------
@@ -82,7 +82,7 @@ def get_all_tests(func_name, source_folder):
     test_folder_list = []
     dev_test_folder_list = []
 
-    epr_dict_path = os.path.join(source_folder, 'epr_info.yml')
+    epr_dict_path = os.path.join(source_folder, 'test_listing.yml')
     epr_info = open_yaml(epr_dict_path)
 
     if (func_name == 'test_perturbo') or (func_name == 'test_perturbo_for_qe2pert'):
@@ -240,7 +240,7 @@ def filter_tests(all_test_list, tags, exclude_tags, epr, test_names, func_name, 
         for test_name_cmd in test_names:
             if test_name_cmd not in all_test_list:
                 if (func_name == 'test_perturbo') or (func_name == 'test_qe2pert'):
-                    errmsg = (f'Test {test_name_cmd} is not listed in epr_info.yml, \n'
+                    errmsg = (f'Test {test_name_cmd} is not listed in test_listing.yml, \n'
                               f'but specified in --test-names option. Full test_list: {test_list}'
                              )
                     raise ValueError(errmsg)
@@ -253,10 +253,11 @@ def filter_tests(all_test_list, tags, exclude_tags, epr, test_names, func_name, 
 
         test_list = test_names
 
-    if not test_list:
+    if not test_list and not ((func_name == 'test_perturbo_for_qe2pert') and not (run_qe2pert)):
         raise RuntimeError('No test folders selected')
-
-    print('\n\n === Test folders == :')
+    
+    if (func_name == 'test_perturbo'):
+        print('\n\n === Test folders == :')
     print(' \n'.join(test_list))
     print('')
     sys.stdout.flush()
