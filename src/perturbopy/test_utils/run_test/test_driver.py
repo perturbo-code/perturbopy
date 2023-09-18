@@ -431,7 +431,7 @@ def run_epr_calculation(epr_name, config_machine, source_folder):
     
     # open input yaml-files with supplementary info
     # and computational commands
-    input_yaml = open_yaml(os.path.join(source_folder, 'epr_info.yml'))
+    input_yaml = open_yaml(os.path.join(source_folder, 'test_listing.yml'))
 
     # print the test information before the run
     print_test_info(epr_name, input_yaml, test_type='qe2pert')
@@ -529,7 +529,7 @@ def clean_epr_folders(epr_failed, config_machine, keep_epr, keep_preliminary, so
         work_path    = os.path.join(source_folder, config_machine['PERT_SCRATCH'])
     except KeyError:
         print(f'PERT_SCRATCH not set in the config_machine. using default location -  {work_path}')
-    epr_dict_path = os.path.join(source_folder, 'epr_info.yml')
+    epr_dict_path = os.path.join(source_folder, 'test_listing.yml')
     
     # set of all epr-files
     epr_full_list = [epr for epr in open_yaml(epr_dict_path)]
