@@ -163,7 +163,7 @@ def plot_dispersion(ax, path, energies, energy_units, c="k", ls='-', energy_wind
     return ax
 
 
-def plot_vals_on_bands(ax, path, energies, energy_units, values, cmap='RdBu', log=False, energy_window=None):
+def plot_vals_on_bands(ax, path, energies, energy_units, values, cmap='YlOrRd', label='values', log=False, energy_window=None):
     """
     Method to plot the dispersion (phonon dispersion or band structure).
 
@@ -239,7 +239,8 @@ def plot_vals_on_bands(ax, path, energies, energy_units, values, cmap='RdBu', lo
         if ax.get_ylim()[1] < y.max():
             ax.set_ylim(ax.get_ylim()[0], y.max())
 
-    plt.colorbar(line, ax=ax)
+    cbar = plt.colorbar(line, ax=ax)
+    cbar.set_label(label, rotation=0, labelpad=30)
 
     if energy_window is not None:
         ax = set_energy_window(ax, energy_window)
