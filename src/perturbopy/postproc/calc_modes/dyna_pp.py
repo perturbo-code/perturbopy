@@ -52,6 +52,20 @@ class DynaPP(CalcMode):
         for itime, time in enumerate(self.times):
             self.popu[:, itime] = popu_file['energy_distribution'][f'popu_t{itime}'][()]
 
+        if 'concentration' in pert_dict['dynamics-pp'].keys():
+            self.conc = pert_dict['dynamics-pp'].pop('concentration')
+            self.conc_units = pert_dict['dynamics-pp'].pop('concentation units')
+        else:
+            self.conc = None
+            self.conc_units = None
+
+        if 'velocity' in pert_dict['dynamics-pp'].keys():
+            self.drift_vel = pert_dict['dynamics-pp'].pop('velocity')
+            self.drift_vel_units = pert_dict['dynamics-pp'].pop('velocity units')
+        else:
+            self.drift_vel = None
+            self.drift_vel_units = None
+
     @classmethod
     def from_hdf5_yaml(cls, popu_path, yaml_path='pert_output.yml'):
         """

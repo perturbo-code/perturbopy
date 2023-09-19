@@ -144,7 +144,7 @@ class Ephmat(CalcMode):
         for key, val in self.defpot.items():
             values[key] = self.defpot[key][kpoint_idx, :]
 
-        ax = plot_vals_on_bands(ax, self.qpt.path, self.phdisp, self.phdisp.units, values=values, **kwargs)
+        ax = plot_vals_on_bands(ax, self.qpt.path, self.phdisp, self.phdisp.units, values=values, label=r'$\Phi$', **kwargs)
 
         if show_qpoint_labels:
             ax = plot_recip_pt_labels(ax, self.qpt.labels, self.qpt.points, self.qpt.path)
@@ -181,7 +181,7 @@ class Ephmat(CalcMode):
         for key, val in self.ephmat.items():
             values[key] = self.ephmat[key][kpoint_idx, :]
 
-        ax = plot_vals_on_bands(ax, self.qpt.path, self.phdisp, self.phdisp.units, values=values, **kwargs)
+        ax = plot_vals_on_bands(ax, self.qpt.path, self.phdisp, self.phdisp.units, values=values, label=r'$|g|$', **kwargs)
 
         if show_qpoint_labels:
             ax = plot_recip_pt_labels(ax, self.qpt.labels, self.qpt.points, self.qpt.path)

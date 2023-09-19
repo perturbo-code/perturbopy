@@ -74,7 +74,10 @@ class Trans(CalcMode):
         self.temper = UnitsDict(units=self._pert_dict['trans'].pop('temperature units'))
         self.chem_pot = UnitsDict(units=self._pert_dict['trans'].pop('chemical potential units'))
         self.conc = UnitsDict(units=self._pert_dict['trans'].pop('concentration units'))
-        self.cond = UnitsDict(units=self._pert_dict['trans'].pop('conductivity units'))
+        if 'conductance units' in self._pert_dict['trans'].keys():
+            self.cond = UnitsDict(units=self._pert_dict['trans'].pop('conductance units'))
+        else:
+            self.cond = UnitsDict(units=self._pert_dict['trans'].pop('conductivity units'))
         self.mob = UnitsDict(units=self._pert_dict['trans'].pop('mobility units'))
 
         if 'Seebeck coefficient units' in self._pert_dict['trans'].keys():
