@@ -160,3 +160,39 @@ class DynaRun(CalcMode):
             print(f"{'Time step (fs)':>30}: {dynamics_run.time_step}")
             print(f"{'Electric field (V/cm)':>30}: {dynamics_run.efield}")
             print("")
+
+    def extract_steady_drift_vel(self, dyna_pp_yaml_path):
+        """
+        Method to extract the drift velocities and equilibrium carrier concentrations
+
+        Returns
+        -------
+        num_runs : int
+            Number of runs
+        """
+
+        if not os.path.isfile(dyna_pp_yaml_path):
+            raise FileNotFoundError(f'File {dyna_pp_yaml_path} not found')
+
+        dyna_pp_dict = open_yaml(dyna_pp_yaml_path)
+        
+        vels = dyna_pp_dict['dynamics-pp']['velocity']
+        concs = dyna_pp_dict['dynamics-pp']['concentration']
+
+        step_number = 0
+
+        steady_drift_vel = []
+        steady_conc = []
+
+        for irun, dynamics_run in self._data.items():
+            
+            step_number += dynamics_run.num_steps
+            
+            if np.allclose(dynamics_run.efield, np.array([0.0, 0.0, 0.0])):
+                steady_drift_vel.append(None)
+                steady_conc.append(concs[step_number])
+            else:
+                steady_drift_vel.append((-1.0) * vels[step_number])
+                steady_conc.append(concs[step_number])
+
+        return steady_drift_vel, steady_conc
