@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.optimize import curve_fit
 from perturbopy.postproc.calc_modes.calc_mode import CalcMode
-from perturbopy.postproc.utils.constants import energy_conversion_factor, length_conversion_factor
+from perturbopy.postproc.utils.constants import conversion_factor
 from perturbopy.postproc.dbs.units_dict import UnitsDict
 from perturbopy.postproc.dbs.recip_pt_db import RecipPtDB
 from perturbopy.postproc.utils.plot_tools import plot_dispersion, plot_recip_pt_labels
@@ -15,7 +15,7 @@ class Bands(CalcMode):
     Parameters
     ----------
     pert_dict : dict
-    Dictionary containing the inputs and outputs from the bands calculation.
+        Dictionary containing the inputs and outputs from the bands calculation.
 
     Attributes
     ----------
@@ -46,7 +46,7 @@ class Bands(CalcMode):
         energy_units = self._pert_dict['bands'].pop('band units')
 
         self.kpt = RecipPtDB.from_lattice(kpoint, kpoint_units, self.lat, self.recip_lat, kpath, kpath_units)
-        self.bands = UnitsDict.from_dict(energies_dict, energy_units)
+        self.bands = UnitsDict(energy_units, energies_dict)
 
     def indirect_bandgap(self, n_lower, n_upper):
         """
@@ -162,8 +162,8 @@ class Bands(CalcMode):
 
         kpoint = reshape_points(kpoint)
 
-        energies = self.bands[n] * energy_conversion_factor(self.bands.units, 'hartree')
-        alat = self.alat * length_conversion_factor(self.alat_units, 'bohr')
+        energies = self.bands[n] * conversion_factor(self.bands.units, 'hartree')
+        alat = self.alat * conversion_factor(self.alat_units, 'bohr')
         E_0 = energies[self.kpt.find(kpoint)][0]
 
         def get_fit_data(max_fit_distance, kpoint, direction, max_points=None, epsilon=1e-6):
@@ -213,10 +213,10 @@ class Bands(CalcMode):
             ax = self.plot_bands(ax, 'k')
 
             plot_indices, plot_distances_squared = get_fit_data(max_distance * 1.8, kpoint, direction)
-            energies_fitted = (fit_params[0] * plot_distances_squared + E_0) * energy_conversion_factor('hartree', self.bands.units)
+            energies_fitted = (fit_params[0] * plot_distances_squared + E_0) * conversion_factor('hartree', self.bands.units)
 
             ax.plot(self.kpt.path[plot_indices], energies_fitted, c, marker=None, ls='--')
-            ax.plot(self.kpt.path[fit_indices], energies[fit_indices] * energy_conversion_factor('hartree', self.bands.units), c, marker='o')
+            ax.plot(self.kpt.path[fit_indices], energies[fit_indices] * conversion_factor('hartree', self.bands.units), c, marker='o')
 
         return effective_mass
 

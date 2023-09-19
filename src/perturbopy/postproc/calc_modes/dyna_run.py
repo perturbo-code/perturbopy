@@ -45,11 +45,10 @@ class DynaRun(CalcMode):
         kpoint = np.array(tet_file['kpts_all_crys_coord'][()])
 
         self.kpt = RecipPtDB.from_lattice(kpoint, "crystal", self.lat, self.recip_lat)
-        self.bands = UnitsDict.from_dict
 
         energies = np.array(cdyna_file['band_structure_ryd'][()])
         energies_dict = {i + 1: np.array(energies[:, i]) for i in range(0, energies.shape[1])}
-        self.bands = UnitsDict.from_dict(energies_dict, 'Ry')
+        self.bands = UnitsDict('Ry', energies_dict)
 
         self._data = {}
 
@@ -78,6 +77,9 @@ class DynaRun(CalcMode):
                     efield = np.array([0.0, 0.0, 0.0])
 
                 self._data[irun] = DynaIndivRun(num_steps, time_step, snap_t, time_units='fs', efield=efield)
+
+        self.drift_vel = np.full(len(self), None)
+        self.equil_conc = np.full(len(self), None)
 
     @classmethod
     def from_hdf5_yaml(cls, cdyna_path, tet_path, yaml_path='pert_output.yml'):
@@ -160,3 +162,34 @@ class DynaRun(CalcMode):
             print(f"{'Time step (fs)':>30}: {dynamics_run.time_step}")
             print(f"{'Electric field (V/cm)':>30}: {dynamics_run.efield}")
             print("")
+
+    def extract_drift_vel(self, dyna_pp_yaml_path):
+        """
+        Method to extract the drift velocities and equilibrium carrier concentrations
+
+        Returns
+        -------
+        num_runs : int
+            Number of runs
+        """
+
+        if not os.path.isfile(dyna_pp_yaml_path):
+            raise FileNotFoundError(f'File {dyna_pp_yaml_path} not found')
+
+        dyna_pp_dict = open_yaml(dyna_pp_yaml_path)
+        
+        vels = dyna_pp_dict['dynamics-pp']['velocity']
+        concs = dyna_pp_dict['dynamics-pp']['concentration']
+
+        step_number = 0
+
+        for irun, dynamics_run in self._data.items():
+            
+            step_number += dynamics_run.num_steps
+            
+            if np.allclose(dynamics_run.efield, np.array([0.0, 0.0, 0.0])):
+                self.drift_vel[irun] = None
+            else:
+                print(step_number)
+                self.drift_vel[irun - 1] = (-1.0) * vels[step_number]
+                self.equil_conc[irun - 1] = (-1.0) * concs[step_number]

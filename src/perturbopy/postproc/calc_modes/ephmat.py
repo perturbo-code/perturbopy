@@ -81,9 +81,9 @@ class Ephmat(CalcMode):
             defpot[phidx] = np.array(ephmat_dat[phidx].pop('deformation potential')).reshape(N, M)
             ephmat[phidx] = np.array(ephmat_dat[phidx].pop('e-ph matrix elements')).reshape(N, M)
 
-        self.phdisp = UnitsDict.from_dict(phdisp, phdisp_units)
-        self.defpot = UnitsDict.from_dict(defpot, defpot_units)
-        self.ephmat = UnitsDict.from_dict(ephmat, ephmat_units)
+        self.phdisp = UnitsDict(phdisp_units, phdisp)
+        self.defpot = UnitsDict(defpot_units, defpot)
+        self.ephmat = UnitsDict(ephmat_units, ephmat)
 
     def plot_phdisp(self, ax, show_qpoint_labels=True, **kwargs):
         """

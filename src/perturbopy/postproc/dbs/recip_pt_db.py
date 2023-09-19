@@ -1,5 +1,4 @@
 import numpy as np
-from perturbopy.postproc.utils.constants import standardize_units_name, recip_points_units_names
 from perturbopy.postproc.utils.plot_tools import points_fcc
 from perturbopy.postproc.utils import lattice
 
@@ -37,13 +36,13 @@ class RecipPtDB():
 
     """
 
-    def __init__(self, points_cart, points_cryst, units='crystal', path=None, path_units='arbitrary', labels={}):
+    def __init__(self, points_cart, points_cryst, units='crystal', path=None, path_units='arbitrary', labels={'G':[0, 0, 0]}):
 
         """
         Constructor method
 
-        Parametrs
-        ---------
+        Parameters
+        ----------
         points_cart : array_like
            Array of reciprocal space points in cartesian coordinates, in units of 2pi/a.
 
@@ -67,7 +66,7 @@ class RecipPtDB():
         """
         self.points_cart = lattice.reshape_points(points_cart)
         self.points_cryst = lattice.reshape_points(points_cryst)
-        self.units = standardize_units_name(units, recip_points_units_names)
+        self.units = lattice.rename_lattice_units(units)
 
         if self.units == 'cartesian':
             self.points = self.points_cart
@@ -121,7 +120,7 @@ class RecipPtDB():
            The RecipPtDB created from the lattice information and reciprocal space points
 
         """
-        units = standardize_units_name(units, recip_points_units_names)
+        units = lattice.rename_lattice_units(units)
 
         if units == 'cartesian':
             points_cart = lattice.reshape_points(points)
@@ -153,7 +152,7 @@ class RecipPtDB():
 
         """
 
-        self.units = standardize_units_name(new_units, recip_points_units_names)
+        self.units = lattice.rename_lattice_units(new_units)
 
         if self.units == 'cartesian':
             self.points = self.points_cart

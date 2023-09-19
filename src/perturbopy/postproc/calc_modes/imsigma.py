@@ -2,7 +2,6 @@ import numpy as np
 from perturbopy.postproc.calc_modes.calc_mode import CalcMode
 from perturbopy.postproc.dbs.units_dict import UnitsDict
 from perturbopy.postproc.dbs.recip_pt_db import RecipPtDB
-from perturbopy.postproc.utils.constants import hbar
 
 
 class Imsigma(CalcMode):
@@ -64,7 +63,7 @@ class Imsigma(CalcMode):
         energy_units = self._pert_dict['imsigma'].pop('energy units')
         num_bands = self._pert_dict['imsigma'].pop('number of bands')
         energies_dict = self._pert_dict['imsigma']['energy'].pop('band index')
-        self.bands = UnitsDict.from_dict(energies_dict, energy_units)
+        self.bands = UnitsDict(energy_units, energies_dict)
 
         num_config = self._pert_dict['imsigma'].pop('number of configurations')
         config_dat = self._pert_dict['imsigma'].pop('configuration index')

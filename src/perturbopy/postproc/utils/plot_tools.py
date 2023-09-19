@@ -83,8 +83,13 @@ def plot_recip_pt_labels(ax, labels, point_array, path_array, label_height="lowe
             continue
         for x in path_to_label:
             if show_line:
+                label_formatted = label
+                
+                if label_formatted == 'G':
+                    label_formatted = '\Gamma'
+
                 ax.axvline(x, c="lightgray")
-                ax.text(x=x, y=label_height, s=label)
+                ax.text(x=x, y=label_height, s=label_formatted)
 
     return ax
 
@@ -163,7 +168,7 @@ def plot_dispersion(ax, path, energies, energy_units, c="k", ls='-', energy_wind
     return ax
 
 
-def plot_vals_on_bands(ax, path, energies, energy_units, values, cmap='RdBu', log=False, energy_window=None):
+def plot_vals_on_bands(ax, path, energies, energy_units, values, cmap='turbo', cbar_label='g', log=False, energy_window=None):
     """
     Method to plot the dispersion (phonon dispersion or band structure).
 
@@ -239,7 +244,7 @@ def plot_vals_on_bands(ax, path, energies, energy_units, values, cmap='RdBu', lo
         if ax.get_ylim()[1] < y.max():
             ax.set_ylim(ax.get_ylim()[0], y.max())
 
-    plt.colorbar(line, ax=ax)
+    plt.colorbar(line, ax=ax, label=cbar_label)
 
     if energy_window is not None:
         ax = set_energy_window(ax, energy_window)

@@ -4,6 +4,24 @@ import math
 import perturbopy.postproc as ppy
 
 
+@pytest.mark.parametrize("test_units, expected_units", [
+                        ('cart', 'cartesian'), ('Cart', 'cartesian'), ('cartesian', 'cartesian'), ('tPiba', 'cartesian'),
+                        ('cryst', 'crystal'), ('Frac', 'crystal')
+])
+def test_rename_lattice_units(test_units, expected_units):
+    """
+    Test the lattice.rename_lattice_units function
+
+    Parameters
+    ----------
+    test_units : str
+       The units to be converted to a standard units name
+    expected_units : str
+       The expected standardized units to be returned
+
+    """
+    assert(ppy.lattice.rename_lattice_units(test_units) == expected_units)
+
 @pytest.mark.parametrize("test_points, expected_points", [
 
                         ([3, 3, 2], np.array([[3], [3], [2]])),

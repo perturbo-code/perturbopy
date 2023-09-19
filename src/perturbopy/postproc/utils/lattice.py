@@ -2,7 +2,29 @@ import numpy as np
 import warnings
 
 points_fcc = {'L': [0.5, 0.5, 0.5], 'X': [0.5, 0.0, 0.5], 'W': [0.5, 0.25, 0.75], 'K': [0.375, 0.375, 0.75], 'G': [0, 0, 0]}
+lattice_units = {'cartesian': ['tpiba', 'cartesian', 'cart'], 'crystal': ['crystal', 'cryst', 'frac', 'fractional']}
 
+def rename_lattice_units(units):
+    """
+    Method to standardize the name of a lattice unit. For example the standard name for 'cart' would be 'cartesian'
+
+    Parameters
+    ----------
+    units : str
+        The units to be renamed
+    
+    Returns
+    -------
+    renamed_units : str
+        The same units, with the standardized name
+    """
+    
+    if units.lower() in lattice_units['cartesian']:
+        return 'cartesian'
+    elif units.lower() in lattice_units['crystal']:
+        return 'crystal'
+    else:
+        raise ValueError(f"Please choose units from the following list: {list(units_dict.keys())}")    
 
 def reshape_points(point_array):
     """

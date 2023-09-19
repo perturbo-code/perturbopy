@@ -15,7 +15,7 @@ Next, we create the :py:class:`.DynaRun` object using the YAML file, cdyna HDF5 
 
     cdyna_path = "si_cdyna.h5"
     tet_path = "si_tet.h5"
-    yaml_path = "si_dynamics_run.yml"
+    yaml_path = "si_dynamics-run.yml"
 
     si_dyna_run = ppy.DynaRun.from_hdf5_yaml(cdyna_path, tet_path, yaml_path)
 

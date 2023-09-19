@@ -20,6 +20,7 @@ setup(
         'pytest-profiling',
         'matplotlib>=2.2.0',
         'scipy'
+        'pint'
     ],
     extras_require={
         'interactive': ['jupyter', 'pytest-plots'],

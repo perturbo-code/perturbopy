@@ -47,7 +47,7 @@ class Phdisp(CalcMode):
         energy_units = self._pert_dict['phdisp'].pop('phdisp units')
 
         self.qpt = RecipPtDB.from_lattice(qpoint, qpoint_units, self.lat, self.recip_lat, qpath, qpath_units)
-        self.phdisp = UnitsDict.from_dict(energies_dict, energy_units)
+        self.phdisp = UnitsDict(energy_units, energies_dict)
 
     def plot_phdisp(self, ax, show_qpoint_labels=True, **kwargs):
         """
