@@ -1,0 +1,11 @@
+
+wy-side-nav-search .wy-dropdown>a img.logo, .wy-side-nav-search>a img.logo {
+    display: inline-block;
+    margin-right: 10;
+    height: 80px;
+    width: 240px;
+    vertical-align: top;
+    border-radius: 0;
+    max-width: 100%;
+    background: transparent;
+}
