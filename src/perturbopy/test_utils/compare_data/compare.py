@@ -51,6 +51,7 @@ def equal_values(file1, file2, ig_n_tol):
         raise ValueError(errmsg)
 
     if not equal_values:
+        
         print(f' difference: {diff}')
 
     return equal_values
