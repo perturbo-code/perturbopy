@@ -98,4 +98,3 @@ def test_perturbo_for_qe2pert(test_name, run_qe2pert, config_machine, keep_pertu
     if not run_qe2pert:
         pytest.skip("Skipping by default, pass the --run_qe2pert arg in the command line for this test")
     test_perturbo(test_name, config_machine, keep_perturbo, source_folder, test_case='perturbo_for_qe2pert')
-    
