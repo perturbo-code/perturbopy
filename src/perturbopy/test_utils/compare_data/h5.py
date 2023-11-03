@@ -67,10 +67,11 @@ def format_string(val1, val2):
     Return the string in the desired format.
 
     """
-    try:
-        rel_diff = abs(val2 - val1) / val2
-    except ZeroDivisionError:
+    if abs(val2)<1e-20:
         rel_diff = float('inf')
+    else:
+        rel_diff = abs(val2 - val1) / val2
+
     return f"value here: {val1:.2e}, reference:({val2:.2e}), abs_diff={abs(val2-val1):.2e}, rel_diff={rel_diff:.2e}"
 
 
