@@ -67,7 +67,7 @@ def format_string(val1, val2):
     Return the string in the desired format.
 
     """
-    if abs(val2)<1e-20:
+    if abs(val2) < 1e-20:
         rel_diff = float('inf')
     else:
         rel_diff = abs(val2 - val1) / val2
