@@ -2,6 +2,7 @@
    Utils to select which tests to run based on the command line arguments and
    test tags.
 """
+import numpy as np
 import os
 import copy
 import shutil
@@ -191,34 +192,20 @@ def filter_tests(all_test_list, tags, exclude_tags, epr, test_names, func_name, 
     # sort based on tags
     if tags is not None or exclude_tags is not None or epr is not None:
         for test_name in all_test_list:
-
             # tags for a given test
             test_tag_list, epr_name = read_test_tags(test_name, func_name, source_folder)
-
             # tags from command line
             if tags is not None:
 
-                keep_test = False
-
-                for tag in tags:
-                    if tag in test_tag_list:
-                        keep_test = True
-                        break
-
-                if not keep_test:
+                keep_test = np.intersect1d(np.array(test_tag_list), np.array(tags))
+                if keep_test.size == 0:
                     test_list.remove(test_name)
 
             # exclude tags from command line
             if exclude_tags is not None:
 
-                keep_test = True
-
-                for tag in exclude_tags:
-                    if tag in test_tag_list:
-                        keep_test = False
-                        break
-
-                if not keep_test and test_name in test_list:
+                del_test = np.intersect1d(np.array(test_tag_list), np.array(exclude_tags))
+                if del_test.size > 0 and test_name in test_list:
                     test_list.remove(test_name)
 
             # epr file name
