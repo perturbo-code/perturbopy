@@ -10,16 +10,13 @@ import sys
 from perturbopy.io_utils.io import open_yaml
 
 
-def read_test_tags(test_name, func_name, source_folder):
+def read_test_tags(func_name, source_folder):
     """
     Get a list of tags for a given test. List of tags is combined from the tags from
     pert_input.yml and test_listing.yml for a given epr file.
 
     Parameters
     ----------
-    test_name : str
-        name of the folder inside the tests/ folder
-
     func_name : str
         name of the test programm, which we run
         (do we test perturbo or qe2pert)
@@ -27,41 +24,31 @@ def read_test_tags(test_name, func_name, source_folder):
         name of the folder, where should be all the testing supplementary files (reference, input files, etc.)
     Returns
     -------
-    tag_list : list
-        list of tags for a given test
-    epr_name : str
-        name of the epr file associated with this test
+    tag_dict : dict
+        dictionary with test names as keys and lists of tags as values
+    epr_dict : dict
+        dictionary with names of epr as keys and name of the epr file associated with this test values
     """
     
     epr_dict_path = os.path.join(source_folder, 'test_listing.yml')
     epr_info = open_yaml(epr_dict_path)
-
+    epr_names = list(epr_info.keys())
     if (func_name == 'test_perturbo') or (func_name == 'test_perturbo_for_qe2pert'):
-        driver_path_suffix = 'inputs/' + test_name
-        perturbo_driver_dir_path = [x[0] for x in os.walk(source_folder) if x[0].endswith(driver_path_suffix)][0]
-        pert_input = open_yaml(f'{perturbo_driver_dir_path}/pert_input.yml')
-
-        # Read the tags from pert_input.yml
-        input_tags = []
-        if 'tags' in pert_input['test info'].keys():
-            input_tags = pert_input['test info']['tags']
-
-        # Read the tags from test_listing.yml
-        epr_name = pert_input['test info']['epr']
-
-        epr_tags = []
-        if 'tags' in epr_info[epr_name].keys():
-            epr_tags = epr_info[epr_name]['tags']
-
-        tag_list = input_tags + epr_tags
-        tag_list = sorted(list(set(tag_list)))
-    
+        tag_dict = {}
+        epr_dict = {}
+        for epr_name in epr_names:
+            for test_name in list(epr_info[epr_name]['tests'].keys()):
+                tag_dict[f'{epr_name}-{test_name}'] = sorted(list(set(epr_info[epr_name]['tags'] + epr_info[epr_name]['tests'][test_name])))
+                epr_dict[f'{epr_name}-{test_name}'] = epr_name
+        epr_names = epr_dict
     elif func_name == 'test_qe2pert':
-        if 'tags' in epr_info[test_name]:
-            tag_list = epr_info[test_name]['tags']
-        epr_name = test_name
+        tag_dict = {}
+        epr_dict = {}
+        for test_name in epr_names:
+            tag_dict[test_name] = epr_info[test_name]['tags']
+            epr_dict[test_name] = test_name
 
-    return tag_list, epr_name
+    return tag_dict, epr_dict
 
 
 def get_all_tests(func_name, source_folder):
@@ -92,7 +79,7 @@ def get_all_tests(func_name, source_folder):
         for epr in epr_info:
             if 'tests' in epr_info[epr].keys():
                 if (func_name == 'test_perturbo'):
-                    test_list = epr_info[epr]['tests']
+                    test_list = list(epr_info[epr]['tests'].keys())
 
                 test_folder_list += [f'{epr}-{t}' for t in test_list]
 
@@ -186,34 +173,29 @@ def filter_tests(all_test_list, tags, exclude_tags, epr, test_names, func_name, 
     ValueError
        if --test-names contains a name of a test that is not present
     """
-
     test_list = copy.deepcopy(all_test_list)
-
     # sort based on tags
     if tags is not None or exclude_tags is not None or epr is not None:
+        test_tag_dict, epr_names = read_test_tags(func_name, source_folder)
         for test_name in all_test_list:
-            # tags for a given test
-            test_tag_list, epr_name = read_test_tags(test_name, func_name, source_folder)
-            # tags from command line
             if tags is not None:
-
-                keep_test = np.intersect1d(np.array(test_tag_list), np.array(tags))
+                
+                keep_test = np.intersect1d(np.array(test_tag_dict[test_name]), np.array(tags))
                 if keep_test.size == 0:
                     test_list.remove(test_name)
 
             # exclude tags from command line
             if exclude_tags is not None:
 
-                del_test = np.intersect1d(np.array(test_tag_list), np.array(exclude_tags))
+                del_test = np.intersect1d(np.array(test_tag_dict[test_name]), np.array(exclude_tags))
                 if del_test.size > 0 and test_name in test_list:
                     test_list.remove(test_name)
 
             # epr file name
             if epr is not None:
 
-                if epr_name not in epr and test_name in test_list:
+                if epr_names[test_name] not in epr and test_name in test_list:
                     test_list.remove(test_name)
-
     # test name from command line
     if test_names is not None:
 
@@ -248,7 +230,6 @@ def filter_tests(all_test_list, tags, exclude_tags, epr, test_names, func_name, 
     print(' \n'.join(test_list))
     print('')
     sys.stdout.flush()
-
     return test_list
 
 
