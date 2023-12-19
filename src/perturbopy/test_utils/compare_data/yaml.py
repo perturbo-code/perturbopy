@@ -121,6 +121,17 @@ def equal_list(list1, list2, key, ig_n_tol, path):
             equal_value, diff, output_res = equal_scalar(item1, item2, key, ig_n_tol)
 
         elif isinstance(item1, str):
+            item1 = item1.lower()
+            item2 = item2.lower()
+
+            # Some Fortran compilers output 'Infinity' while others output
+            # 'Inf'.  Convert all such strings to 'inf' so that infinity
+            # values compare equal.
+            if item1.endswith('infinity'):
+                item1 = item1.lower()[:-5]
+            if item2.endswith('infinity'):
+                item2 = item2.lower()[:-5]
+
             equal_value = item1 == item2
             diff = f'{item1} {item2}'
 
@@ -221,8 +232,19 @@ def equal_dict(dict1, dict2, ig_n_tol, path):
             equal_value, diff, output_res = equal_scalar(dict1[key], dict2[key], key, ig_n_tol)
 
         elif isinstance(dict1[key], str):
-            equal_value = dict1[key] == dict2[key]
-            diff = f'{dict1[key]} {dict2[key]}'
+            item1 = dict1[key].lower()
+            item2 = dict2[key].lower()
+
+            # Some Fortran compilers output 'Infinity' while others output
+            # 'Inf'.  Convert all such strings to 'inf' so that infinity
+            # values compare equal.
+            if item1.endswith('infinity'):
+                item1 = item1[:-5]
+            if item2.endswith('infinity'):
+                item2 = item2[:-5]
+
+            equal_value = item1 == item2
+            diff = f'{item1} {item2}'
 
         elif isinstance(dict1[key], type(None)):
             equal_value = dict1[key] == dict2[key]
