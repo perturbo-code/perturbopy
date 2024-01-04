@@ -8,7 +8,7 @@ For developers
 
     utils
 
-In this section, we provide notes for developers on how the code is structured. For full documentation, please refer to the API.
+In this section, we provide notes for potential developers on how the code is structured. For full documentation, please refer to the API.
 
 The code is organized in three main folders: the ``utils`` folder, the ``dbs`` folder, and the ``calc_modes`` folder. 
 
