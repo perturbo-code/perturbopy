@@ -3,6 +3,9 @@
 """
 import os
 import shutil
+import re
+import requests
+
 
 
 def run_from_config_machine(config_machine, step):
@@ -194,3 +197,43 @@ def softlink_epr_files(perturbo_scratch_dir_prefix, test_name, dst, file_name):
         os.symlink(src, dst)
     except FileNotFoundError:
         raise FileNotFoundError(f"Ephr-file for {test_name} wasn't found or calculated")
+        
+def download_files_from_url(url, path):
+    # uploas the content of the page
+    response = requests.get(url)
+    html_content = response.text
+
+    # looking for the files and folders
+    file_links = re.findall(r'href="(https://[^\s"]+\.(?:pdf|zip|jpg|png|docx))"', html_content)
+    folder_links = re.findall(r'href="(https://[^\s"]+/s/[^\s"]+)"', html_content)
+
+    # load files
+    for file_url in file_links:
+        file_name = file_url.split('/')[-1]
+        file_path = os.path.join(path, file_name)
+
+        print(f'Load {file_name}...')
+        file_response = requests.get(file_url)
+        with open(file_path, 'wb') as file:
+            file.write(file_response.content)
+
+        print(f'{file_name} downloaded in {file_path}')
+
+    # Recursive process for the subfolders
+    for folder_url in folder_links:
+        # take the folder name from the url
+        folder_name = folder_url.split('/')[-1]
+        new_path = os.path.join(path, folder_name)
+
+        # make corresponding folder
+        if not os.path.exists(new_path):
+            os.makedirs(new_path)
+
+        print(f'Go to the folder: {folder_name}')
+        download_files_from_url(folder_url, new_path)
+        
+def load_files_from_box(link, save_folder):
+    if not os.path.exists(save_folder):
+        os.makedirs(save_folder)
+    download_files_from_url(link, save_folder)
+    

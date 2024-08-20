@@ -9,7 +9,7 @@ import shutil
 import subprocess
 from perturbopy.io_utils.io import open_yaml
 from perturbopy.test_utils.run_test.env_utils import run_from_config_machine
-from perturbopy.test_utils.run_test.env_utils import perturbo_scratch_dir_config
+from perturbopy.test_utils.run_test.env_utils import perturbo_scratch_dir_config, load_files_from_box
 from perturbopy.test_utils.run_test.run_utils import print_test_info, setup_default_tol
 from perturbopy.test_utils.run_test.run_utils import ph_collection, define_nq_num
 
@@ -398,15 +398,66 @@ def get_test_materials(test_name, test_case, config_machine, source_folder):
             igns_n_tols)
 
 
+# def run_epr_calculation(epr_name, config_machine, source_folder):
+#     """
+#     Run one test:
+#         #. Run scf calculation
+#         #. Run phonon calculation
+#         #. Run nscf calculation
+#         #. Run wannier90 calculation
+#         #. Run qe2pert calculation
+#
+#     Parameters
+#     ----------
+#     epr_name : str
+#         name of computed epr_name file
+#     config_machine : str
+#         name of file with computational information, which we'll use in this set of computations.
+#         Should be in folder {source_folder}/config_machine.
+#     source_folder : str
+#         name of the folder, where should be all the testing supplementary files (reference, input files, etc.)
+#
+#     Returns
+#     -----
+#     None
+#     """
+#     # suffixes of paths needed to find driver/utils/references
+#     inputs_path_suffix = f'epr_computation/{epr_name}'
+#     config_machine = open_yaml(os.path.join(source_folder, f'config_machine/{config_machine}'))
+#
+#     # determine needed paths
+#     inputs_dir_path = os.path.join(source_folder, inputs_path_suffix)
+#     work_path = perturbo_scratch_dir_config(source_folder, inputs_dir_path, epr_name, config_machine, test_case='epr_calculation')
+#
+#     # open input yaml-files with supplementary info
+#     # and computational commands
+#     input_yaml = open_yaml(os.path.join(source_folder, 'test_listing.yml'))
+#
+#     # print the test information before the run
+#     print_test_info(epr_name, input_yaml, test_type='qe2pert')
+#
+#     # define the prefix - we'll need to have it in the later computations
+#     prefix = input_yaml[epr_name]['prefix']
+#
+#     # run scf
+#     run_scf(source_folder, work_path, config_machine)
+#
+#     # run phonon
+#     run_phonon(source_folder, work_path, config_machine, prefix)
+#
+#     # run nscf
+#     run_nscf(source_folder, work_path, config_machine)
+#
+#     # run wannier90
+#     run_wannier(source_folder, work_path, config_machine, prefix)
+#
+#     # run qe2pert
+#     run_qe2pert(source_folder, work_path, config_machine, prefix)
+#
+#     return
+
 def run_epr_calculation(epr_name, config_machine, source_folder):
     """
-    Run one test:
-        #. Run scf calculation
-        #. Run phonon calculation
-        #. Run nscf calculation
-        #. Run wannier90 calculation
-        #. Run qe2pert calculation
-
     Parameters
     ----------
     epr_name : str
@@ -428,29 +479,20 @@ def run_epr_calculation(epr_name, config_machine, source_folder):
     # determine needed paths
     inputs_dir_path = os.path.join(source_folder, inputs_path_suffix)
     work_path = perturbo_scratch_dir_config(source_folder, inputs_dir_path, epr_name, config_machine, test_case='epr_calculation')
-    
+
     # open input yaml-files with supplementary info
     # and computational commands
     input_yaml = open_yaml(os.path.join(source_folder, 'test_listing.yml'))
 
     # print the test information before the run
     print_test_info(epr_name, input_yaml, test_type='qe2pert')
-    
+
     # define the prefix - we'll need to have it in the later computations
     prefix = input_yaml[epr_name]['prefix']
 
     # run scf
-    run_scf(source_folder, work_path, config_machine)
-    
-    # run phonon
-    run_phonon(source_folder, work_path, config_machine, prefix)
+    load_files_from_box(f'{config_machine["source_link"]}/{epr_name}',work_path)
 
-    # run nscf
-    run_nscf(source_folder, work_path, config_machine)
-    
-    # run wannier90
-    run_wannier(source_folder, work_path, config_machine, prefix)
-    
     # run qe2pert
     run_qe2pert(source_folder, work_path, config_machine, prefix)
 
