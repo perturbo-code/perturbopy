@@ -39,10 +39,11 @@ def run_from_config_machine(config_machine, step):
 
     return run
     
+
 def move_qe2pert_files(source_folder, work_path, epr_name, config_machine):
     """
-    Moves the auxiliary files for qe2pert tests from a previously downloaded 
-    and unzipped archive to the folder where all tests are run. 
+    Moves the auxiliary files for qe2pert tests from a previously downloaded
+    and unzipped archive to the folder where all tests are run.
     
     Parameters
     ----------
@@ -78,14 +79,14 @@ def move_qe2pert_files(source_folder, work_path, epr_name, config_machine):
         
         # Create the corresponding subdirectory in the destination folder
         dst_subfolder = os.path.join(work_path, relative_path)
-        #dst_subfolder = work_path
+
         if not os.path.exists(dst_subfolder):
             os.makedirs(dst_subfolder)
 
         for file_name in files:
             src_file_path = os.path.join(root, file_name)
             dst_file_path = os.path.join(dst_subfolder, file_name)
-            shutil.copy2(src_file_path, dst_file_path) 
+            shutil.copy2(src_file_path, dst_file_path)
     
 
 def copy_folder_with_softlinks(src, dst, perturbo_scratch_dir_prefix=None, test_name=None, second_run=False):
@@ -244,11 +245,12 @@ def softlink_epr_files(perturbo_scratch_dir_prefix, test_name, dst, file_name):
         os.symlink(src, dst)
     except FileNotFoundError:
         raise FileNotFoundError(f"Ephr-file for {test_name} wasn't found or calculated")
-        
+
+
 def load_files_from_box(source_folder, config_machine):
     """
-    Downloads files needed for qe2pert tests from remote cloud storage. 
-    Runs once during test initialization. 
+    Downloads files needed for qe2pert tests from remote cloud storage.
+    Runs once during test initialization.
 
     Parameters
     ----------

@@ -83,7 +83,7 @@ def preliminary_commands(config_machine, step):
     return list_of_coms
     
 
-# Legacy code, it may be possible to use it again in the future, so don't delete it yet. 
+# Legacy code, it may be possible to use it again in the future, so don't delete it yet.
 # def run_scf(source_folder, work_path, config_machine, input_name='scf.in', output_name='scf.out'):
 #     """
 #     Function for scf calculation
@@ -494,7 +494,6 @@ def run_epr_calculation(epr_name, config_machine, source_folder):
 
     # move supplementary files for this calculation
     move_qe2pert_files(source_folder, work_path, epr_name, config_machine)
-    
 
     # run qe2pert
     run_qe2pert(source_folder, work_path, config_machine, prefix)
