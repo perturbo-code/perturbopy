@@ -77,24 +77,24 @@ def test_qe2pert(test_name, run_qe2pert, config_machine, source_folder):
     assert True
     
 
-# @pytest.mark.order(after="test_qe2pert")
-# def test_perturbo_for_qe2pert(test_name, run_qe2pert, config_machine, keep_perturbo, source_folder):
-#     """
-#     Second driver to run the tests for the perturbo.x executable.
-#     We call it only in the case if we call test_qe2pert as well
-#
-#     Parameters
-#     -----
-#     test_name : str
-#         name of the folder inside the tests/ folder
-#     run_qe2pert : str
-#         do we run qe2pert testing or not
-#     source_folder : str
-#         name of the folder, where should be all the testing supplementary files (reference, input files, etc.)
-#     Returns
-#     -----
-#     None
-#     """
-#     if not run_qe2pert:
-#         pytest.skip("Skipping by default, pass the --run_qe2pert arg in the command line for this test")
-#     test_perturbo(test_name, config_machine, keep_perturbo, source_folder, test_case='perturbo_for_qe2pert')
+@pytest.mark.order(after="test_qe2pert")
+def test_perturbo_for_qe2pert(test_name, run_qe2pert, config_machine, keep_perturbo, source_folder):
+    """
+    Second driver to run the tests for the perturbo.x executable.
+    We call it only in the case if we call test_qe2pert as well
+
+    Parameters
+    -----
+    test_name : str
+        name of the folder inside the tests/ folder
+    run_qe2pert : str
+        do we run qe2pert testing or not
+    source_folder : str
+        name of the folder, where should be all the testing supplementary files (reference, input files, etc.)
+    Returns
+    -----
+    None
+    """
+    if not run_qe2pert:
+        pytest.skip("Skipping by default, pass the --run_qe2pert arg in the command line for this test")
+    test_perturbo(test_name, config_machine, keep_perturbo, source_folder, test_case='perturbo_for_qe2pert')
