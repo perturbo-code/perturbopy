@@ -3,6 +3,8 @@
 """
 import os
 import shutil
+import subprocess
+from perturbopy.io_utils.io import open_yaml
 
 
 def run_from_config_machine(config_machine, step):
@@ -36,6 +38,55 @@ def run_from_config_machine(config_machine, step):
         raise AttributeError(errmsg)
 
     return run
+    
+
+def move_qe2pert_files(source_folder, work_path, epr_name, config_machine):
+    """
+    Moves the auxiliary files for qe2pert tests from a previously downloaded
+    and unzipped archive to the folder where all tests are run.
+    
+    Parameters
+    ----------
+    source_folder : str
+        path of source directory. Inside of this folder we need to have additional temporary
+        folder for calculations ('PERT_SCRATCH')
+    
+    work_path : str
+        working directory to which the function moves the files
+    
+    epr_name : str
+        name of epr-file calculation, for which files are moved
+    
+    config_machine : dict
+        dictionary with executional commands for the test steps
+
+    Returns
+    -------
+    None
+
+    """
+
+    try:
+        source_folder = os.path.join(source_folder, config_machine['PERT_SCRATCH'])
+    except KeyError:
+        source_folder   = os.path.join(source_folder, "PERT_SCRATCH")
+    src = f'{source_folder}/tests_qe2pert/{epr_name}'
+    # Get the list of files in the source folder
+    for root, dirs, files in os.walk(src):
+        
+        # Determine the relative path of the current directory
+        relative_path = os.path.relpath(root, src)
+        
+        # Create the corresponding subdirectory in the destination folder
+        dst_subfolder = os.path.join(work_path, relative_path)
+
+        if not os.path.exists(dst_subfolder):
+            os.makedirs(dst_subfolder)
+
+        for file_name in files:
+            src_file_path = os.path.join(root, file_name)
+            dst_file_path = os.path.join(dst_subfolder, file_name)
+            shutil.copy2(src_file_path, dst_file_path)
     
 
 def copy_folder_with_softlinks(src, dst, perturbo_scratch_dir_prefix=None, test_name=None, second_run=False):
@@ -194,3 +245,41 @@ def softlink_epr_files(perturbo_scratch_dir_prefix, test_name, dst, file_name):
         os.symlink(src, dst)
     except FileNotFoundError:
         raise FileNotFoundError(f"Ephr-file for {test_name} wasn't found or calculated")
+
+
+def load_files_from_box(source_folder, config_machine):
+    """
+    Downloads files needed for qe2pert tests from remote cloud storage.
+    Runs once during test initialization.
+
+    Parameters
+    ----------
+    source_folder : str
+        path of source directory
+    
+    config_machine : str
+        name of config_machine file for this tests
+
+    Raises
+    ------
+    ValueError
+       if corresponding epr-file wasn't found or calculated.
+
+    Returns
+    -------
+    None
+
+    """
+    config_machine = open_yaml(os.path.join(source_folder, f'config_machine/{config_machine}'))
+    try:
+        save_folder = os.path.join(source_folder, config_machine['PERT_SCRATCH'])
+    except KeyError:
+        save_folder   = os.path.join(source_folder, "PERT_SCRATCH")
+    if not os.path.exists(save_folder):
+        os.makedirs(save_folder)
+    # just download and unpack zip-archive. Ommit download if we already have this folder
+    if not os.path.exists(f'{save_folder}/tests_qe2pert'):
+        subprocess.run(f'wget {config_machine["source_link"]} -P {save_folder}', shell=True)
+        subprocess.run(['unzip', f'{save_folder}/{config_machine["source_link"].split("/")[-1]}', '-d', f'{save_folder}'])
+    
+    
