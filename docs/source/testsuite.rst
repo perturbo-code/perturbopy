@@ -88,12 +88,13 @@ If you would like to test both ``qe2pert.x`` and ``perturbo.x`` executables, whi
 the testsuite will consist of three parts:
 
 1. Test ``perturbo.x`` (similar to the section above).
-2. Perform preliminary *ab initio* calculations from scratch (DFT, DFPT, Wannier90, more on that `here <https://perturbo-code.github.io/mydoc_qe2pert.html>`_), and use ``qe2pert.x`` to generate new ``prefix_epr.h5`` files.
+2. Download results of preliminary *ab initio* calculations (DFT, DFPT, Wannier90, more on that `here <https://perturbo-code.github.io/mydoc_qe2pert.html>`_) from the cloud, and use ``qe2pert.x`` to generate new ``prefix_epr.h5`` files.
 3. Run part of the calculations from step 1 again, and compare the outputs of ``perturbo.x`` produced with the new ``prefix_epr.h5`` files. 
 
 The step 3 is necessary to test the ``qe2pert.x`` executable because one cannot compare the ``prefix_epr.h5`` files to the reference ones directly due to gauge freedom. Therefore, we need to use ``perturbo.x``, whose correctness we confirmed in step 1, to use it to determine whether ``qe2pert.x`` worked correctly. Since there is no need to check all the ``perturbo.x`` tests to verify the work of ``qe2pert.x``, at the third stage we run only three claculation modes of Perturbo for each ``prefix_epr.h5`` file: ``phdisp``, ``ephmat`` and ``bands``. If these three tests pass, it means that ``qe2pert.x`` works correctly.
 
-By default, the ``qe2pert.x`` testing is disabled as it is very time consuming (takes 7 times longer than ``perturbo.x`` testing) and requires a user to specify the Quantum Espresso and Wannier90 executables.
+By default, the ``qe2pert.x`` testing is disabled, because the programs associated with this executable are rarely modified, and also these tests require additional files to be downloaded from the cloud.
+
 To enable the tests of ``qe2pert.x``, activate the ``--run_qe2pert`` option:
 
 .. code-block:: console
@@ -114,20 +115,10 @@ Similarly to ``perturbo.x``-only tests, the user needs to make a new the *config
 .. code-block:: python
 
     PERT_SCRATCH: tmp
+	source_link: https://caltech.box.com/shared/static/3xj9sknmt75aho66eyad1wwa6dat4s0d.zip
     prel_coms:
         - module load perturbo
-        - module load qe
     comp_info:
-        scf: 
-            exec: srun -n 64 pw.x -npools 8
-        phonon:
-            exec: srun -n 64 ph.x -npools 8
-        nscf:
-            exec: srun -n 64 pw.x -npools 8
-        wannier90:
-            exec: srun -n 2 wannier90.x
-        pw2wannier90:
-            exec: srun -n 1 pw2wannier90.x
         qe2pert:
             prel_coms:
                 - export OMP_NUM_THREADS=8
@@ -138,11 +129,7 @@ Similarly to ``perturbo.x``-only tests, the user needs to make a new the *config
             exec: srun -n 8 perturbo.x -npools 8
 
 			
-where ``PERT_SCRATCH`` and ``prel_coms`` are similar to the ``perturbo.x``-only testing. Please note that the ``prel_coms`` (the top one) will be executed before each of the stages. ``comp_info`` now includes the run commands for each of the stages. If there are preliminary commands to be run *only* before a specific stage, this can be specified by the ``prel_coms`` field within the stage (see examples for the ``qe2pert`` ``perturbo`` runs in the YAML file).
-
-.. note::
-
-   The ``config_machine.yml`` must contain information about the execution of each step, which you make during the testing
+where ``PERT_SCRATCH`` and ``prel_coms`` are similar to the ``perturbo.x``-only testing. Please note that the ``prel_coms`` (the top one) will be executed before each of the stages. An additional parameter here is ``source_link``, which defines where all auxiliary files for testing ``qe2pert.x`` should be downloaded from. The archive with the files is small (~400 MB), but comparable to the size of the main perturbo code and is not used regularly, so it was decided to keep it apart. ``comp_info`` now includes the run commands for ``perturbo.x`` and ``qe2pert.x`` stages. If there are preliminary commands to be run *only* before a specific stage, this can be specified by the ``prel_coms`` field within the stage (see examples for the ``qe2pert`` and ``perturbo`` runs in the YAML file).
 
 On clusters and supercomputers, the testsuite can be launched both in the interactive mode and as a job. 
 
@@ -204,11 +191,6 @@ Using the command-line options and environmental variables, one can parametrize 
 .. option:: --keep_epr
 
    Save all epr-files from the ``qe2pert.x`` testing.
-   
-.. option:: --keep_preliminary
-
-   Save all preliminary files for epr files calculations in the ``qe2pert.x`` testing (outputs of  Quantum Espresso and Wannier90).
-
 
 
 Running testsuite on NERSC
@@ -411,7 +393,7 @@ If you want to create a new test with a new epr file, you will need to perform t
 
 
 
-Here each subfolder corresponds to one of the calculation steps, plus additionally there is a folder with pseudopotentials. ``prefix`` in the file ``prefix.win`` should be the same as specified in the ``scf.in`` file. Pseudopotentials also should be the same as enlisted in the ``scf.in`` file.
+Here each subfolder corresponds to one of the calculation steps, plus additionally there is a folder with pseudopotentials. ``prefix`` in the file ``prefix.win`` should be the same as specified in the ``scf.in`` file. Pseudopotentials also should be the same as enlisted in the ``scf.in`` file. We need all this information to be able to generate all the auxiliary files for ``qe2pert.x``.
 
 2. Add information about the epr file in the ``epr_info.yml``. Block for each epr file looks in the following way:
 
