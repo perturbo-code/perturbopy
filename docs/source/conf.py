@@ -18,11 +18,11 @@ sys.path.insert(0, os.path.abspath('../../src/'))
 # -- Project information -----------------------------------------------------
 
 project = 'perturbopy'
-copyright = '2022, Perturbo developers'
+copyright = '2024, Perturbo developers'
 author = 'Perturbo developers'
 
 # The full version, including alpha/beta/rc tags
-release = '0.1'
+release = '0.6'
 
 
 # -- General configuration ---------------------------------------------------
