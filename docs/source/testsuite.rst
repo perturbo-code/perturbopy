@@ -64,7 +64,7 @@ Below the meaning of each of the blocks:
 
 * ``PERT_SCRATCH`` is the address of the folder where the auxiliary files in the tests will be located. 
 * ``prel_coms`` is a set of commands to be executed *before* the ``perturbo.x`` run. This could be loading packages, specifying any environment variables, etc. Enter every command as a separate line preceded by a hyphen, respecting the file indentation.
-* ``comp_info`` - this block contains information about the ``perturbo.x`` computation. It has the ``exec`` field that specifies the run command taking into account the parallelization and other machine specifics. In this example, ``perturbo.x`` will be ran with the SLURM srun command using 8 MPI tasks
+* ``comp_info`` - this block contains information about the ``perturbo.x`` computation. It has the ``exec`` field that specifies the run command taking into account the parallelization and other machine specifics. In this example, ``perturbo.x`` will be ran with the SLURM srun command using 8 MPI tasks.
 
 
 Once, the ``config_machine.yml`` is set up, navigate to the `tests` folder and run:
@@ -101,7 +101,7 @@ To enable the tests of ``qe2pert.x``, activate the ``--run_qe2pert`` option:
 
    (perturbopy) $ ./run_tests.py --run_qe2pert
 
-Similarly to ``perturbo.x``-only tests, the user needs to make a new the *config_machine/config_machine.yml* file, but this time the file should include more information. As a reference, you can take file  *config_machine_qe2pert.yaml*
+Similarly to ``perturbo.x``-only tests, the user needs to make a new the *config_machine/config_machine.yml* file, but this time the file should include more information. As a reference, you can take file  *config_machine_qe2pert.yaml*.
 
 1. Make your copy of the template YAML file:
 
@@ -148,7 +148,7 @@ Using the command-line options and environmental variables, one can parametrize 
    
 .. option:: --source_folder
 
-   Address of the folder with all reference files for the test performance. By default equal to ``./``
+   Address of the folder with all reference files for the test performance. By default equal to ``./``.
    
 .. option:: --tags
 
@@ -182,7 +182,7 @@ Using the command-line options and environmental variables, one can parametrize 
    .. _command-line options:
 .. option:: --config_machine
 	
-   Name of file containing the run commands for Perturbo and, in case of ``qe2pert.x`` test, for Quantum Espresso, Wannier90. Should be in the folder `tests/config_machine`. By default equal to `config_machine.yml`
+   Name of file containing the run commands for Perturbo and, in case of ``qe2pert.x`` test, for Quantum Espresso, Wannier90. Should be in the folder `tests/config_machine`. By default equal to `config_machine.yml`.
 
 .. option:: --keep_perturbo
 
@@ -269,7 +269,7 @@ Here are the commands to run the Perturbo testsuite on Perlmutter in the `intera
 
    .. note::
 
-      Don't forget to create configurational file with the set of running commands for your case
+      Don't forget to create configurational file with the set of running commands for your case.
 	  
 	  
 
@@ -281,9 +281,9 @@ Modifications of code and new tests
 
 If you make changes to the ``perturbo`` source code, you **must** not only check the performance of existing tests, but also write new ones. The required tests depend on the specific case:
 
-1. You modified `pert-src`, which affected ``perturbo.x`` behavior and this can be tested used the `existing` epr file. Than you need to `add new test`_;
+1. You modified `pert-src`, which affected ``perturbo.x`` behavior and this can be tested used the `existing` epr file. Than you need to `add new test`_.
 
-2. Same modification type as in 1 (You modified `pert-src`, which affected ``perturbo.x``), but you need `another` epr file to test this. Than you need to `add new epr`_ with the set of tests for it;
+2. Same modification type as in 1 (You modified `pert-src`, which affected ``perturbo.x``), but you need `another` epr file to test this. Than you need to `add new epr`_ with the set of tests for it.
 
 3. You modified `qe2pert-src`, which affected ``qe2pert.x``. In this case, you also need to `add new epr`_ with the set of tests for it.
 
@@ -419,7 +419,9 @@ In general, the name of each block speaks for itself. Note that the list of test
 
 3. Save your epr file in the folder `/tests/refs_perturbo/epr_files`.
 
-3. Add each of the specified tests using the procedure described in the previous subsection.
+4. Provide the supplementary files, which are used for the ``qe2pert.x`` calculations, to the code developers. We need to add them to the current cloud storage in order to be able to download all of them at once from the one place. 
+
+5. Add each of the specified tests using the procedure described in the previous subsection.
 
 .. note::
 
