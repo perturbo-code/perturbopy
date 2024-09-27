@@ -117,7 +117,8 @@ def pytest_generate_tests(metafunc):
             )
         elif (metafunc.function.__name__ == 'test_qe2pert'):
             # download the necessary files from remote storage
-            load_files_from_box(source_folder, metafunc.config.getoption('config_machine'))
+            if metafunc.config.getoption('run_qe2pert'):
+                load_files_from_box(source_folder, metafunc.config.getoption('config_machine'))
             test_list = filter_tests(
                 all_test_list,
                 metafunc.config.getoption('epr_tags'),
