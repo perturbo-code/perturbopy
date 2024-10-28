@@ -1,0 +1,381 @@
+---
+# This is a yaml file that contains the information about the input parameters for the perturbo.x code.
+# From this file, the mydoc_input_parameters_perturbo.html file is automatically generated
+
+#
+# Description of the input parameters families
+#
+job_control: 
+   type: family
+   description: Job control 
+   color_hsl: [9, 100, 64]
+   
+bte: 
+   type: family
+   description: Boltzmann Transport Equation
+   color_hsl: [39, 100, 50]
+   
+polar_correction: 
+   type: family
+   description: Polar correction 
+   #(required only for calc_mode='imsigma')
+   color_hsl: [147, 50, 47]
+   
+dynamics: 
+   type: family
+   description: Ultra-fast dynamics 
+   #(via the time-dependent BTE)
+   color_hsl: [210, 100, 56]
+   
+#
+# Input parameters
+#
+prefix:
+   family: job_control
+   type: string
+   typical: "'prefix'"
+   default: "''"
+   len: 80
+   attributes: save
+   description: Job name prefix. It should be the same as the prefix used in QE.
+ 
+calc_mode:
+   family: job_control
+   type: string 
+   options:
+      "'bands'": interpolated electronic band structure (<a href="mydoc_perturbo.html#calc_mode_bands">see in the section</a>)
+      "'phdisp'": interpolated phonon dispersions along a given crystal momentum path (<a href="mydoc_perturbo.html#calc_mode_phdisp">see in the section</a>)
+      "'ephmat'": absolute values of the e-ph matrix elements (<a href="mydoc_perturbo.html#calc_mode_ephmat">see in the section</a>) 
+      "'setup'": set up transport property calculations (<a href="mydoc_perturbo.html#calc_mode_setup">see in the section</a>)
+      "'imsigma'": imaginary part of the lowest-order e-ph self-energy (<a href="mydoc_perturbo.html#calc_mode_imsigma">see in the section</a>)
+      "'meanfp'": e-ph mean free paths for electronic states (<a href="mydoc_perturbo.html#calc_mode_meanfp">see in the section</a>)
+      "'trans'": electrical conductivity and carrier mobility tensors (<a href="mydoc_perturbo.html#calc_mode_trans">see in the section</a>)
+      "'trans-pp'": computes Seebeck coefficient (<a href="mydoc_perturbo.html#calc_mode_trans-pp">see in the section</a>)
+      "'dynamics-run'": ultrafast hot carrier dynamics (<a href="mydoc_perturbo.html#calc_mode_dynamics-run">see in the section</a>)
+      "'dynamics-pp'": computes the energy-dependent carrier population as a function of time (<a href="mydoc_perturbo.html#calc_mode_dynamics-pp">see in the section</a>)
+   default: "''"
+   len: 80
+   attributes: save
+   description: Calculation mode.
+
+fklist:
+   family: job_control
+   type: string
+   typical: "'prefix_tet.kpt'"
+   default: "''"
+   len: 80
+   attributes: save
+   description: Name of the file containing the k-point list (in crystal coordiates). 
+
+fqlist:
+   family: job_control
+   type: string
+   typical: "'prefix_phdisp.qpt'"
+   default: "''"
+   len: 80
+   attributes: save
+   description: Name of the file containing the q-point list (in crystal coordiates).
+
+ftemper:
+   family: job_control
+   type: string
+   typical: "'prefix.temper'"
+   default: "''"
+   len: 80
+   attributes: save
+   description: Name of the file containing values for the temperature (K), chemical potential (eV), and carrier concentration (cm<sup>-2</sup> or cm<sup>-3</sup>).
+
+debug:
+   family: job_control
+   type: logical
+   default: False
+   attributes: save
+   description: Debug mode.
+
+yaml_fname:
+   family: job_control
+   type: string
+   default: "'.yml'"
+   len: 80
+   attributes: save
+   description: Name of the YAML output file. If the parameter (<code>yaml_fname</code>) is not changed by the user, the output name of the YAML file will be {prefix}_{calc_mode}.yml. For example, for Si bands calculation, the YAML file would be called si_bands.yml.
+
+hole:
+   family: job_control
+   type: logical
+   default: False
+   attributes: save
+   description: Set to .true. for calculations on hole carriers.
+
+tmp_dir:
+   family: job_control
+   type: string
+   typical: "'./tmp'"
+   default: "'.'"
+   len: 80
+   attributes: save
+   description: The directory where the e-ph matrix elements are stored when <code><a href=#calc_mode>calc_mode</a>='trans'</code>.
+
+load_scatter_eph:
+   family: job_control
+   type: logical
+   default: False
+   len: 80
+   attributes: save
+   description: Read the e-ph matrix elements from the files in tmp_dir. Used for <code><a href=#calc_mode>calc_mode</a>='trans'</code>.
+
+find_efermi:
+   family: job_control
+   type: logical
+   default: False
+   description: Find chemical potential (Fermi energy) given the concentration (if set to <code>.true.</code>). Find concentration given the chemical potential (if <code>.false.</code>).
+
+boltz_kdim:
+   family: bte
+   type: integer
+   dimensions: (3)
+   default: (1,1,1)
+   attributes: save
+   description: Number of <b>k</b> points along each dimension for the Boltzmann equation.
+
+boltz_qdim:
+   family: bte
+   type: integer
+   dimensions: (3)
+   default: (0,0,0)
+   attributes: save
+#  default: ('boltz_kdim(1)','boltz_kdim(2)','boltz_kdim(3)')
+   description: Number of <b>q</b> points along each dimension for the Boltzmann equation. It should be same with boltz_kdim.
+
+band_min:
+   family: bte
+   type: integer
+   default: 1
+   attributes: save
+   description: Lowest band included.
+
+band_max:
+   family: bte
+   type: integer
+   default: 9999999
+   attributes: save
+   description: Highest band included.
+
+boltz_emin:
+   family: bte
+   type: real
+   default: -9999.0
+   units: eV
+   attributes: save
+   description: Bottom of the energy window for the Boltzmann equation.
+
+boltz_emax:
+   family: bte
+   type: real
+   default: 9999.0
+   units: eV
+   attributes: save
+   description: Top of the energy window for the Boltzmann equation.
+
+boltz_nstep:
+   family: bte
+   type: integer
+   default: 0
+   typical: 50
+   attributes: save
+   description: Number of iterations for solving the Boltzmann transport equation.
+
+boltz_de:
+   family: bte
+   type: real 
+   default: 1.0
+   units: meV
+   attributes: save
+   description: Energy step for the integrals in the Boltzmann equation.
+
+delta_smear:
+   family: bte
+   type: real
+   default: 10.0
+   units: meV
+   attributes: save
+   description: Smearing for the Dirac delta function. 
+
+full_ite:
+   family: bte
+   type: logical
+   default: True
+   attributes: save
+   description: Solve BTE with both E- and T-fields iteratively.
+
+phfreq_cutoff:
+   family: bte
+   type: real
+   typical: 1.0
+   default: 1.0
+   units: meV
+   attributes: save
+   description: Phonon energy threshold. Phonons with energy smaller than phfreq_cutoff will be excluded.
+
+trans_thr:
+   family: bte
+   type: real
+   default: 0.002
+   attributes: save
+   description: Threshold for the iterative procedure.
+
+polar_split:
+   family: polar_correction
+   type: string
+   default: "''"
+   options:
+      "''": (leave blank) both the polar and nonpolar parts, no split
+      "'polar'": polar part only
+      "'rmpol'": remainder part
+   len: 80
+   attributes: save
+   description: Polar correction mode.
+
+sampling:
+   family: job_control
+   type: string
+   default: "'uniform'"
+   options:
+      "'uniform'": random sampling from an uniform distribution.
+      "'cauchy'": random sampling from a Cauchy disrtibution.
+   len: 80
+   attributes: save
+   description: Random q points sampling method.
+
+cauchy_scale:
+   family: job_control
+   type: real
+   typical: 1.0
+   default: 0.05
+   attributes: save
+   description: Scale parameter gamma for the Cauchy distribution; used when <code><a href="#sampling">sampling</a>='cauchy'</code>. 
+
+nsamples:
+   family: job_control
+   type: integer
+   default: 100000
+   attributes: save
+   description: Number of q-points for the summation over the q-points in imsigma calculation.
+
+time_step:
+   family: dynamics
+   type: real
+   typical: 1.0
+   default: 1.0
+   units: fs
+   attributes: save
+   description: Time step for the carrier dynamics.
+
+output_nstep:
+   family: dynamics
+   type: integer
+   default: 1
+   attributes: save
+   description: Print out the results every <code>output_nstep</code> time steps.
+
+boltz_init_dist:
+   family: dynamics
+   type: string
+   options:
+      "'restart'": restart from the previous calculations.
+      "'lorentz'": Loretnzian distribution
+      "'fermi'": Fermi-Dirac distribution
+      "'gaussian'": Gaussian distribution
+   typical: "'gaussian'"
+   default: "''"
+   len: 80
+   attributes: save
+   description: Initial electron distribution at time zero.
+
+boltz_init_e0:
+   family: dynamics
+   type: real
+   typical: 1.0
+   units: eV
+   default: -9999.0
+   attributes: save
+   description: Energy parameter used to generate initial distribution. Needs to be specified for <code><a href=#boltz_init_dist>boltz_init_dist</a>='lorentz'</code> (center), <code>'gaussian'</code> (center), or <code>'fermi'</code> (chemical potential).
+
+boltz_init_smear:
+   family: dynamics
+   type: real
+   typical: 1.0
+   units: meV
+   default: 20.0
+   attributes: save
+   description: The broadening or width of the initial distribution for <code><a href=#boltz_init_dist>boltz_init_dist</a>='lorentz'</code> or <code>'gaussian'</code>, or temperature (in meV) for <code>'fermi'</code>.
+
+solver:
+   family: dynamics
+   type: string
+   default: "'rk4'"
+   options:
+      "'euler'": Euler method (first-order)
+      "'rk4'": fourth-order Runge-Kutta method
+   len: 80
+   attributes: save
+   description: Solver type for the Boltzmann transport equation.
+
+boltz_efield:
+   family: dynamics
+   type: real
+   dimensions: (3)
+   default: (0.0, 0.0, 0.0)
+   units: V/cm
+   attributes: save
+   description: External electric field for the ultrafast real-time dynamics.
+
+boltz_norm_dist:
+   family: dynamics
+   type: logical
+   default: False
+   attributes: save
+   description: Normalize the distribution function at each step of the real-time Boltzmann Transport Equation simulation.
+
+boltz_acc_thr:
+   family: dynamics
+   type: real
+   typical: 1.0
+   default: 0.0
+   units: cm/s2
+   attributes: save
+   description: Drift acceleration threshold. If specified, the real-time simulation will stop when at least 10 last iterations had a drift acceleration lower than the threshold.
+
+boltz_nstep_min:
+   family: dynamics
+   type: integer
+   default: 1
+   typical: 100
+   attributes: save
+   description: Minimum number of iterations of real-time dynamics. Used with <code><a href=#boltz_acc_thr>boltz_acc_thr</a></code>. Will not be applied if <code><a href=#boltz_acc_thr>boltz_acc_thr</a></code> is not specified, in this case, use <code><a href=#boltz_nstep>boltz_nstep</a></code> instead.
+
+ph_mode_exclude_ranges:
+   family: dynamics
+   output: False
+   type: integer
+   dimensions: (30, 2)
+   default: -1
+   attributes: save
+   description: "Specify the phonon modes to exclude in rt-BTE: the g2 factor will be set to zero for these modes. The modes to exclude are specified with ranges, e.g. to exclude modes from 2 to 5, write in the input file: <code>ph_mode_exclude_ranges(1,:)=2,5 </code>. To add another range to exclude, specify <code>ph_mode_exclude_ranges(2,:)=7,10 </code>. One can use up to 30 ranges. To exclude one mode, set first and second number to the phonon mode index. The indices of the phonon modes to exclude must be smaller than the total number of modes in a system."
+
+use_mem:
+   family: job_control
+   type: logical 
+   default: True 
+   typical: True
+   attributes: save 
+   description: Flag for using memory or not and only used in boltz_scatter
+
+find_efermi:
+   family: job_control
+   type: logical 
+   default: False 
+   typical: False
+   attributes: save 
+   description: Flag to indicate whether to find the Fermi energy, which means fix the Fermi energy or occupancy.
+...

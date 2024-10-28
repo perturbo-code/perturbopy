@@ -1,0 +1,164 @@
+---
+# This is a yaml file that contains the information about the request 
+# input parameters for different tasks. used for automatically generating input files
+# NOTE:  "prefix" is mandatory for all, thus not listed. 
+#     "calc_mode" is mandatory for all tasks except qe2pert.
+
+qe2pert:
+   mandatory:
+      outdir:
+      phdir:
+      nk1: coarse k grid (used to construct Wannier functions)
+      nk2: 
+      nk3:
+      num_wann: number of wannier functions
+
+   optional:
+      dft_band_min: lowest band index used in Wannier90.
+      dft_band_max: highest band index used in Wannier90.
+      dis_win_min: the same as 'dis_win_min' used in Wannier90.
+      system_2d: set it to .true. for 2D systems
+      lwannier: compute g(k,q) using wavefunctions in wannier gauge directly.
+      debug: debug mode, stop after g(k,q) (does not compute g in wannier basis)
+      load_ephmat: load prefix_elph.h5
+      asr: acoustic sum rules
+      polar_alpha: convergence parameter used in the Ewald sum, only used for polar correction. 
+      thickness_2d: for 2D polar e-ph correction. Only needed when system_2d=.true.
+      eig_corr: usually used when one wants to use modified eigenvalues (e.g., from GW)
+
+
+bands:
+   mandatory:
+      fklist:
+
+phdisp:
+   mandatory:
+      fqlist:
+
+ephmat:
+   mandatory:
+      fklist:
+      fqlist:
+
+   optional:
+      band_min:
+      band_max:
+      phfreq_cutoff: Phonons with energy smaller than phfreq_cutoff will be excluded.
+
+setup:
+   mandatory:
+      boltz_kdim:
+      ftemper:
+
+   optional:
+      band_min:
+      band_max:
+      boltz_emin:
+      boltz_emax:
+      find_efermi:
+      hole: Set to .true. for calculations on hole carriers of semiconductors.
+
+
+imsigma:
+   mandatory:
+      ftemper:
+      fklist:
+
+   optional:
+      band_min:
+      band_max:
+      delta_smear:
+      phfreq_cutoff:
+      polar_split:
+      fqlist:
+      sampling:
+      cauchy_scale:
+      nsamples:
+
+
+meanfp:
+   mandatory:
+      fklist:
+      ftemper:
+   
+   optional:
+      band_min:
+      band_max:
+
+trans:
+   mandatory:
+      boltz_kdim:
+      ftemper:
+
+   optional:
+      boltz_qdim:
+      band_min:
+      band_max:
+      boltz_emin:
+      boltz_emax:
+      delta_smear:
+      phfreq_cutoff:
+      boltz_nstep:
+      boltz_de:
+      trans_thr:
+      hole:
+      load_scatter_eph:
+      tmp_dir:
+      full_ite:
+      
+trans-pp:
+   mandatory:
+      boltz_kdim:
+      ftemper:
+
+   optional:
+      band_min:
+      band_max:
+      boltz_emin:
+      boltz_emax:
+      boltz_de:
+      hole:
+
+dynamics-run:
+   mandatory:
+      boltz_kdim:
+      ftemper:
+      boltz_nstep:
+      output_nstep:
+      time_step:
+      boltz_init_dist:
+
+   optional:
+      solver:
+      boltz_init_e0:
+      boltz_init_smear:
+      delta_smear:
+      phfreq_cutoff:
+      boltz_qdim:
+      hole:
+      band_min:
+      band_max:
+      boltz_emin:
+      boltz_emax:
+      load_scatter_eph:      
+      tmp_dir:
+      boltz_efield:
+      boltz_norm_dist:
+      boltz_acc_thr:
+      boltz_nstep_min:
+      ph_mode_exclude_ranges:
+
+dynamics-pp:
+   mandatory:
+      boltz_kdim:
+      ftemper:
+
+   optional:
+      hole:
+      boltz_de:
+      band_min:
+      band_max:
+      boltz_emin:
+      boltz_emax:
+      boltz_efield:
+...
