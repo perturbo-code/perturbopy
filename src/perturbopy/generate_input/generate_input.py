@@ -1,6 +1,7 @@
-import datetime,os,sys
-import numpy as np
 import datetime
+import os
+import sys
+import numpy as np
 import argparse
 import re
 from ast import literal_eval
@@ -12,7 +13,7 @@ except ImportError:
     from yaml import Loader, Dumper
 
 
-def set_default(param_name,param_data, executable): 
+def set_default(param_name, param_data, executable):
     """
     Define the default value for the provided calculation
     parameter
@@ -40,6 +41,7 @@ def set_default(param_name,param_data, executable):
     else:
         sys.exit('Each variable must contain \'default\' or \'typical field\' in yaml file')
 
+
 def get_description(description):
     """
     Return description without the formating symbols
@@ -59,9 +61,10 @@ def get_description(description):
     desc = re.sub(r'<.*?code>', '', desc, flags=re.DOTALL)
     return desc
 
-def create_arg_namespace(param_data,input_data):
+
+def create_arg_namespace(param_data, input_data):
     """
-    Function that returns a dictionary with all the calculation parameters. 
+    Function that returns a dictionary with all the calculation parameters.
 
     Parameters
     ----------
@@ -84,11 +87,11 @@ def create_arg_namespace(param_data,input_data):
     help_description = 'Generate an exemplified input file for the PERTURBO code'
    
     parser = argparse.ArgumentParser(description=help_description)
-    parser.add_argument('-c','--calc_mode', help='Calculation mode.', choices=list_calc_mode, required=True)
-    parser.add_argument('-i','--input_name', help='Name of the input file.')
+    parser.add_argument('-c', '--calc_mode', help='Calculation mode.', choices=list_calc_mode, required=True)
+    parser.add_argument('-i', '--input_name', help='Name of the input file.')
 
     # add all perturbo parameters as arguments, expcept calc_mode
-    for key,value in param_data['perturbo'].items():
+    for key, value in param_data['perturbo'].items():
         if key == 'calc_mode':
             continue
         if value['type'] == 'family':
@@ -96,11 +99,11 @@ def create_arg_namespace(param_data,input_data):
       
         # description for the help. remove <code>, </code>, <a>*</a>
         description = get_description(value['description'])
-        parser.add_argument('--'+key, help=description)
+        parser.add_argument('--' + key, help=description)
 
     # add all qe2pert parameters as arguments, except repeated_parameters
-    for key,value in param_data['qe2pert'].items():
-        repeated_parameters = ['prefix','debug','output_yaml','yaml_fname']
+    for key, value in param_data['qe2pert'].items():
+        repeated_parameters = ['prefix', 'debug', 'output_yaml', 'yaml_fname']
         if key in repeated_parameters:
             continue
         if value['type'] == 'family':
@@ -108,13 +111,14 @@ def create_arg_namespace(param_data,input_data):
       
         # description for the help. remove <code>, </code>, <a>*</a>
         description = get_description(value['description'])
-        parser.add_argument('--'+key, help=description)
+        parser.add_argument('--' + key, help=description)
 
     return parser.parse_args()
 
-def write_parameter_to_input(finput,param,executable,args,param_data,optional=False):
+
+def write_parameter_to_input(finput, param, executable, args, param_data, optional=False):
     """
-    Function that write the calculation to the input file 
+    Function that write the calculation to the input file
 
     Parameters
     ----------
@@ -143,14 +147,14 @@ def write_parameter_to_input(finput,param,executable,args,param_data,optional=Fa
     if optional:
         if args.__dict__[param] is None:
             str_key = '! ' + str(param)
-            param_value = set_default(param,param_data, executable)
+            param_value = set_default(param, param_data, executable)
         else:
             str_key = ' ' + str(param)
             param_value = args.__dict__[param]
     else:
         str_key = ' ' + str(param)
         if args.__dict__[param] is None:
-            param_value = set_default(param,param_data, executable)
+            param_value = set_default(param, param_data, executable)
         else:
             param_value = args.__dict__[param]
 
@@ -159,7 +163,7 @@ def write_parameter_to_input(finput,param,executable,args,param_data,optional=Fa
     # Dimensions
     if 'dimensions' in param_data[executable][param].keys():
         try:
-            dimensions = int(param_data[executable][param]['dimensions'].replace('(','').replace(')',''))
+            dimensions = int(param_data[executable][param]['dimensions'].replace('(', '').replace(')', ''))
         except ValueError:
             dimensions = 1
     else:
@@ -171,15 +175,15 @@ def write_parameter_to_input(finput,param,executable,args,param_data,optional=Fa
     else:
         units = None
 
-    if param_type == 'string':  
+    if param_type == 'string':
         if param_value == "''":
             finput.write('{:20} = \'\'\n'.format(str_key))
         else:
             # Replace prefix if it was specified
             if args.__dict__['prefix'] is not None:
-                param_value = re.sub('prefix',args.__dict__['prefix'],param_value)
+                param_value = re.sub('prefix', args.__dict__['prefix'], param_value)
             # finput.write('{:20} = \'{}\'\n'.format(str_key,param_value))
-            finput.write('{:20} = {}\n'.format(str_key,param_value))
+            finput.write('{:20} = {}\n'.format(str_key, param_value))
    
     elif param_type == 'logical':
         true_false = param_value
@@ -187,9 +191,9 @@ def write_parameter_to_input(finput,param,executable,args,param_data,optional=Fa
             if 'true' in true_false.lower():
                 true_false = True
             else:
-                true_false = False   
+                true_false = False
 
-        if true_false: 
+        if true_false:
             finput.write('{:20} = .true.\n'.format(str_key))
         else:
             finput.write('{:20} = .false.\n'.format(str_key))
@@ -197,18 +201,17 @@ def write_parameter_to_input(finput,param,executable,args,param_data,optional=Fa
     elif dimensions != 1:
         default_tuple = literal_eval(param_value)
         for dim in range(dimensions):
-            finput.write('{:20} = {}\n'.format(str_key+'('+str(dim+1)+')',default_tuple[dim]) )
-    else: 
+            finput.write('{:20} = {}\n'.format(str_key + '(' + str(dim + 1) + ')', default_tuple[dim]))
+    else:
         if units:
-            finput.write('{:20} = {:<15} ! {}\n'.format(str_key,param_value,units) )
+            finput.write('{:20} = {:<15} ! {}\n'.format(str_key, param_value, units))
         else:
-            finput.write('{:20} = {:}\n'.format(str_key,param_value) )
-
+            finput.write('{:20} = {:}\n'.format(str_key, param_value))
 
 
 def input_generation():
     """
-    Function that write the calculation to the input file 
+    Function that write the calculation to the input file
 
     Parameters
     ----------
@@ -234,24 +237,24 @@ def input_generation():
 
     """
     module_dir = os.path.dirname(__file__)  # Папка, где находится модуль
-    param_qe2pert = os.path.join(module_dir,'input_parameters_qe2pert.yml') 
-    param_perturbo = os.path.join(module_dir,'input_parameters_perturbo.yml')
-    input_template = os.path.join(module_dir,'input_template.yml')
+    param_qe2pert = os.path.join(module_dir, 'input_parameters_qe2pert.yml')
+    param_perturbo = os.path.join(module_dir, 'input_parameters_perturbo.yml')
+    input_template = os.path.join(module_dir, 'input_template.yml')
 
     param_data = {}
 
     # Read the yaml files
-    with open(param_qe2pert,'r') as stream:
-        param_data['qe2pert'] = load(stream,Loader=Loader)
+    with open(param_qe2pert, 'r') as stream:
+        param_data['qe2pert'] = load(stream, Loader=Loader)
 
-    with open(param_perturbo,'r') as stream:
-        param_data['perturbo'] = load(stream,Loader=Loader)
+    with open(param_perturbo, 'r') as stream:
+        param_data['perturbo'] = load(stream, Loader=Loader)
 
-    with open(input_template,'r') as stream:
-        input_data = load(stream,Loader=Loader)
+    with open(input_template, 'r') as stream:
+        input_data = load(stream, Loader=Loader)
 
     # Parse the command line
-    args = create_arg_namespace(param_data,input_data)
+    args = create_arg_namespace(param_data, input_data)
 
     # Check if the user did not specify a variabe which is not used in a given calc_mode
     list_used_param = []
@@ -270,7 +273,7 @@ def input_generation():
             continue
         if args.__dict__[arg] is not None:
             if arg not in list_used_param:
-                print('WARNING: '+arg+' input parameter is not used in '+args.calc_mode+' calculation mode.')
+                print('WARNING: ' + arg + ' input parameter is not used in ' + args.calc_mode + ' calculation mode.')
 
     # Write the input
     if not args.input_name:
@@ -281,43 +284,41 @@ def input_generation():
     else:
         input_name = args.input_name
 
-    finput = open(input_name,'w')
+    finput = open(input_name, 'w')
 
-    finput.write('! This input file for PERTURBO was generated by {} script'.format(os.path.basename(__file__))+'\n')
-    finput.write('! Date: {} '.format(datetime.datetime.now().strftime("%B %d, %Y  %H:%M"))+'\n'*2)
+    finput.write('! This input file for PERTURBO was generated by {} script'.format(os.path.basename(__file__)) + '\n')
+    finput.write('! Date: {} '.format(datetime.datetime.now().strftime("%B %d, %Y  %H:%M")) + '\n' * 2)
 
     if args.calc_mode == 'qe2pert':
-        finput.write('&qe2pert'+'\n')
+        finput.write('&qe2pert' + '\n')
     else:
-        finput.write('&perturbo'+'\n')
+        finput.write('&perturbo' + '\n')
    
-    # ===========MANDATORY=================  
-    finput.write('! ***Mandatory parameters***'+'\n')
+    # ===========MANDATORY=================
+    finput.write('! ***Mandatory parameters***' + '\n')
 
     if args.calc_mode == 'qe2pert':
         executable = 'qe2pert'
     else:
         executable = 'perturbo'
-        finput.write('{:20} = \'{}\'\n'.format(' calc_mode',args.calc_mode))
+        finput.write('{:20} = \'{}\'\n'.format(' calc_mode', args.calc_mode))
 
-    write_parameter_to_input(finput,'prefix',executable,args,param_data)
+    write_parameter_to_input(finput, 'prefix', executable, args, param_data)
 
-    for key,value in input_data[args.calc_mode]['mandatory'].items():
+    for key, value in input_data[args.calc_mode]['mandatory'].items():
         if value:
-            finput.write('! '+value+'\n')
+            finput.write('! ' + value + '\n')
 
-        write_parameter_to_input(finput,key,executable,args,param_data)
+        write_parameter_to_input(finput, key, executable, args, param_data)
    
-    # ===========OPTIONAL=================  
+    # ===========OPTIONAL=================
     if 'optional' in input_data[args.calc_mode].keys():
-        finput.write('\n'*2+'! ***Optional parameters***'+'\n')
-        for param,value in input_data[args.calc_mode]['optional'].items():
-            write_parameter_to_input(finput,param,executable,args,param_data,optional=True)
-
-
+        finput.write('\n' * 2 + '! ***Optional parameters***' + '\n')
+        for param, value in input_data[args.calc_mode]['optional'].items():
+            write_parameter_to_input(finput, param, executable, args, param_data, optional=True)
 
     finput.write('/\n')
 
     finput.close()
 
-    print('File '+input_name+' is generated.')
+    print('File ' + input_name + ' is generated.')
