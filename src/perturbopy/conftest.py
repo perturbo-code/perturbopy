@@ -107,10 +107,10 @@ def pytest_generate_tests(metafunc):
         # Get the list of all test folders
         all_test_list, all_dev_test_list = get_all_tests(metafunc.function.__name__, source_folder)
         
-        if metafunc.config.getoption('arch')!='gpu' and metafunc.config.getoption('arch')!='cpu':
+        if metafunc.config.getoption('arch') != 'gpu' and metafunc.config.getoption('arch') != 'cpu':
             raise KeyError("The architecture type must be 'cpu' or 'gpu'")
         
-        if metafunc.config.getoption('arch')=='gpu' and metafunc.config.getoption('run_qe2pert'):
+        if metafunc.config.getoption('arch') == 'gpu' and metafunc.config.getoption('run_qe2pert'):
             raise NotImplementedError("At the moment, the qe2pert implementation is not adapted for gpu, so running tests for it is not possible for "
                                       "this architecture.")
 

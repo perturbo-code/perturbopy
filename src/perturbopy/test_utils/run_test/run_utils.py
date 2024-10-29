@@ -180,7 +180,7 @@ def filter_tests(all_test_list, tags, exclude_tags, epr, test_names, func_name, 
     test_tag_dict, epr_names = read_test_tags(func_name, source_folder)
     
     # sort based on architecture
-    if func_name=='test_perturbo':
+    if func_name == 'test_perturbo':
         for test_name in all_test_list:
             if arch not in test_tag_dict[test_name]:
                 test_list.remove(test_name)
