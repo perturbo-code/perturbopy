@@ -127,7 +127,7 @@ def print_test_info(test_name, input_dict, test_type):
     sys.stdout.flush()
 
 
-def filter_tests(all_test_list, tags, exclude_tags, epr, test_names, func_name, run_qe2pert, source_folder):
+def filter_tests(all_test_list, tags, exclude_tags, epr, test_names, func_name, run_qe2pert, arch, source_folder):
     """
     Return the list of test folders based on command line options
 
@@ -154,6 +154,9 @@ def filter_tests(all_test_list, tags, exclude_tags, epr, test_names, func_name, 
     
     run_qe2pert : bool
         whether perturbo_for_qe2pert tests are conducted or not
+    
+    arch : str
+        type of architecture on which the tests are run - cpu or gpu
 
     source_folder : str
         name of the folder, where should be all the testing supplementary files (reference, input files, etc.)
@@ -174,9 +177,16 @@ def filter_tests(all_test_list, tags, exclude_tags, epr, test_names, func_name, 
        if --test-names contains a name of a test that is not present
     """
     test_list = copy.deepcopy(all_test_list)
+    test_tag_dict, epr_names = read_test_tags(func_name, source_folder)
+    
+    # sort based on architecture
+    if func_name == 'test_perturbo':
+        for test_name in all_test_list:
+            if arch not in test_tag_dict[test_name]:
+                test_list.remove(test_name)
+
     # sort based on tags
     if tags is not None or exclude_tags is not None or epr is not None:
-        test_tag_dict, epr_names = read_test_tags(func_name, source_folder)
         for test_name in all_test_list:
             if tags is not None:
                 
