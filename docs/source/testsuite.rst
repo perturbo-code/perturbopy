@@ -112,12 +112,12 @@ Similarly to ``perturbo.x``-only tests, the user needs to make a new the *config
 
 2. Update the *config_machine.yml*  file for your specific case. By default,  the file has the following structure:
 
-.. code-block:: bash
+.. code-block:: python
 
     PERT_SCRATCH: tmp
 	source_link: https://caltech.box.com/shared/static/3xj9sknmt75aho66eyad1wwa6dat4s0d.zip
     prel_coms:
-        module load perturbo
+        - module load perturbo
     comp_info:
         qe2pert:
             prel_coms:
