@@ -71,7 +71,7 @@ Once, the ``config_machine.yml`` is set up, navigate to the `tests` folder and r
 
 .. code-block:: console
 
-   (perturbopy) $ ./run_tests.py
+	(perturbopy) $ ./run_tests.py
    
 This script will automatically load and run all the tests from the `perturbopy` package.
 
@@ -99,7 +99,7 @@ To enable the tests of ``qe2pert.x``, activate the ``--run_qe2pert`` option:
 
 .. code-block:: console
 
-   (perturbopy) $ ./run_tests.py --run_qe2pert
+	(perturbopy) $ ./run_tests.py --run_qe2pert
 
 Similarly to ``perturbo.x``-only tests, the user needs to make a new the *config_machine/config_machine.yml* file, but this time the file should include more information. As a reference, you can take file  *config_machine_qe2pert.yaml*.
 
@@ -107,17 +107,17 @@ Similarly to ``perturbo.x``-only tests, the user needs to make a new the *config
 
 .. code-block:: bash
  
-    cd config_machine
-    cp config_machine_qe2pert.yml config_machine.yml
+	cd config_machine
+	cp config_machine_qe2pert.yml config_machine.yml
 
 2. Update the *config_machine.yml*  file for your specific case. By default,  the file has the following structure:
 
-.. code-block:: python
+.. code-block:: bash
 
     PERT_SCRATCH: tmp
 	source_link: https://caltech.box.com/shared/static/3xj9sknmt75aho66eyad1wwa6dat4s0d.zip
     prel_coms:
-        - module load perturbo
+        module load perturbo
     comp_info:
         qe2pert:
             prel_coms:
@@ -140,138 +140,57 @@ Using the command-line options and environmental variables, one can parametrize 
    
 .. option:: -s
 
-   Print output of the testing functions.
+	Print output of the testing functions.
    
 .. option:: --durations
 
-   Show times for tests and setup and teardown. If `--durations=0`, show all times, if `--durations=1` - for the slowest one, `--durations=2` - for the two slowest, etc.
+	Show times for tests and setup and teardown. If `--durations=0`, show all times, if `--durations=1` - for the slowest one, `--durations=2` - for the two slowest, etc.
    
 .. option:: --source_folder
 
-   Address of the folder with all reference files for the test performance. By default equal to ``./``.
+	Address of the folder with all reference files for the test performance. By default equal to ``./``.
    
 .. option:: --tags
 
-   List of tests tags to include in this testsuite run.
+	List of tests tags to include in this testsuite run.
    
 .. option:: --exclude-tags
 
-   List of tests tags to exclude from this testsuite run.
+	List of tests tags to exclude from this testsuite run.
    
 .. option:: --epr_tags
 
-   List of tags of the epr files to include in this testsuite run.
+	List of tags of the epr files to include in this testsuite run.
   
 .. option:: --exclude-epr_tags
 
-   List of tags of the epr files to exclude from this testsuite run.
+	List of tags of the epr files to exclude from this testsuite run.
    
 .. option:: --epr
 
-   List of epr files to test. If the option is not specified, all the available epr files will be included in testing.
+	List of epr files to test. If the option is not specified, all the available epr files will be included in testing.
 
 
 .. option:: --test-names
 
-   List of test names to include in this testsuite run, e.g., epr1_bands, etc.
+	List of test names to include in this testsuite run, e.g., epr1_bands, etc.
    
 .. option:: --run_qe2pert
 
-   Include the ``qe2pert.x`` tests. See :ref:`test-complete`.
+	Include the ``qe2pert.x`` tests. See :ref:`test-complete`.
    
    .. _command-line options:
 .. option:: --config_machine
 	
-   Name of file containing the run commands for Perturbo and, in case of ``qe2pert.x`` test, for Quantum Espresso, Wannier90. Should be in the folder `tests/config_machine`. By default equal to `config_machine.yml`.
+	Name of file containing the run commands for Perturbo and, in case of ``qe2pert.x`` test, for Quantum Espresso, Wannier90. Should be in the folder `tests/config_machine`. By default equal to `config_machine.yml`.
 
 .. option:: --keep_perturbo
 
-   Save all the materials related to ``perturbo.x`` tests.
+	Save all the materials related to ``perturbo.x`` tests.
 
 .. option:: --keep_epr
 
-   Save all epr-files from the ``qe2pert.x`` testing.
-
-
-Running testsuite on NERSC
---------------------------
-
-In this section, we provide examples to run the testsuite on `NERSC <https://www.nersc.gov>`_. However, for other supercomputers, the commands are similar. 
-
-.. _Job scripts:
-
-The example scripts and job submission files are in the `test_scripts` folder:
-
-* `env_setup_examples.sh`
-* `nersc_perlmutter_job_example.slurm`
-
-.. note::
-
-   Copy and modify these files to make them consistent with your **paths**, 
-   number of **MPI tasks**, **OpenMP threads**, **job parameters** etc.
-
-Job submission
-~~~~~~~~~~~~~~
-
-#. Navigate to the tests folder:
-
-   .. code-block:: console
-
-      $ cd perturbopy/tests
-
-#. Modify the submission and environment setup :ref:`scripts <Job scripts>`.
-
-#. Submit the job: 
-
-   .. code-block:: console
-
-      $ sbatch test_scripts/nersc_perlmutter_job_example.slurm
-
-#. The testsuite output will be written into the `pytest_output` file.
-
-   .. note::
-	  The job must be submitted from the `tests` folder and the `perturbopy` environment is not activated manually (it is       activated from the submission script).
-
-Interactive mode
-~~~~~~~~~~~~~~~~
-
-Here are the commands to run the Perturbo testsuite on Perlmutter in the `interactive mode <https://docs.nersc.gov/jobs/interactive/>`_.
-
-#. Navigate to the tests folder:
-
-   .. code-block:: console
-
-      $ cd perturbopy/tests
-
-#. Load the ``python`` module:
-
-   .. code-block:: console
-
-      $ module load python
-
-#. Activate the `perturbopy` environment (to create the environment, see :ref:`this page <Conda activate>`)
-
-   .. code-block:: console
-
-      $ conda activate perturbopy
-
-#. Launch the `interactive mode <https://docs.nersc.gov/jobs/interactive/>`_:
-
-   .. code-block:: console
-
-      (perturbopy) $ salloc --nodes 1 --qos interactive --time 01:00:00
-
-#. Run the testsuite:
-
-   .. code-block:: console
-
-      (perturbopy) $ pytest -s
-
-   .. note::
-
-      Don't forget to create configurational file with the set of running commands for your case.
-	  
-	  
+	Save all epr-files from the ``qe2pert.x`` testing.
 
 Making new tests
 ----------------
@@ -294,9 +213,9 @@ Add new test
 
 If you want to add new tests for existing epr files, you need to provide the following information:
 
-1. Test folder in format `eprN-test-name`, where `N` - number of corresponding epr file. This folder should be saved in the directory `tests/tests_perturbo` and contain:
+1. Test folder in format `eprN-test-name`, where `N` - number of corresponding epr file. This folder should be saved in the directory `tests/inputs` and contain:
 
-* Link to the corresponding epr file (all files are saved in the folder `/tests/refs_perturbo/epr_files`);
+* Link to the corresponding epr file (all files are saved in the folder `/tests/refs/epr_files`);
 * Input file `pert.in`;
 * All necessary computational files for this input;
 * File `pert_input.yml`, that has the following structure:
@@ -305,10 +224,6 @@ If you want to add new tests for existing epr files, you need to provide the fol
     test info:
 
         epr: eprN
-
-        tags:
-            - tag1
-            - tag2
 
         desc:
             "Test description"
@@ -347,18 +262,25 @@ The following keys **must be present** in the ``test info`` section of `pert_inp
 
 The following keys **are optional** in the ``test info`` section of `pert_input.yml` file:
 
-* ``tags`` - tags of this test;
 * ``ignore keywords`` - blocks of the YAML-file with this keys would be ignored during the comparison;
 * ``abs tol``, ``rel tol``, ``qe2pert abs tol``, ``qe2pert rel tol`` - values of the tolerance, with which the result can be accepted as correct. The elements are considered different if the following equation does not apply:
 .. math::
 
    |a - b| \leq (abs\_tol + rel\_tol \times |b|)
 
-Same is true for the tolerances with the `qe2pert` label, but these tolerances are applied on the the second run of ``perturbo.x`` tests. If you want to use a special tolerance for some block, specify it in the corresponding tolerances with a corresponding key (``keyword1`` from the example above).
+Same is true for the tolerances with the ``qe2pert`` label, but these tolerances are applied on the the second run of ``perturbo.x`` tests. If you want to use a special tolerance for some block, specify it in the corresponding tolerances with a corresponding key (``keyword1`` from the example above).
 
-2. Reference folder in format `eprN-test-name`, where `N` - number of corresponding epr file. This folder should be saved in the directory `tests/refs_perturbo` and contain all output files, for which comparison should be done.
+2. Reference folder in format `eprN-test-name`, where `N` - number of corresponding epr file. This folder should be saved in the directory `tests/refs` and contain all output files, for which comparison should be done.
 
-3. List the name of the test in the ``epr_info.yml`` file stored in the ``tests/`` folder. The list of tests is specified in the ``tests`` block of each of the epr files. If you do not specify your test name there, that test will not be runned.
+Additionally, you need to update file `test_listing.yml` with the description of all tests. In this file, you need to find the epr-file, which you use in your tests, for example, `eprN`. Next, you need to find the ``tests`` section, which lists all the tests for this epr file. There you need to describe your test in the format:
+
+.. code-block:: python
+
+    test-name:
+        - tag1
+        - tag2
+	...
+
 
 .. note::
 
@@ -395,29 +317,37 @@ If you want to create a new test with a new epr file, you will need to perform t
 
 Here each subfolder corresponds to one of the calculation steps, plus additionally there is a folder with pseudopotentials. ``prefix`` in the file ``prefix.win`` should be the same as specified in the ``scf.in`` file. Pseudopotentials also should be the same as enlisted in the ``scf.in`` file. We need all this information to be able to generate all the auxiliary files for ``qe2pert.x``.
 
-2. Add information about the epr file in the ``epr_info.yml``. Block for each epr file looks in the following way:
+2. Add information about the epr file in the ``test_listing.yml``. Block for each epr file looks in the following way:
 
 .. code-block:: python
 
 	eprN:
-	   prefix: prefix
-	   filename: prefix_epr.h5
-	   SOC: False
-	   polar: False
-	   description: "Description of this epr file"
-	   pseudopotential: Description of the used pseudopotentials
-	   tags:
-	      - tag1
-	      - tag2
-	   tests:
-	      - bands
-	      - phdisp
-	      - ephmat
-	      - test4
+        prefix: prefix
+        filename: prefix_epr.h5
+        SOC: False
+        polar: False
+        description: "Description of this epr file"
+        pseudopotential: Description of the used pseudopotentials
+        tags:
+            - tag1
+            - tag2
+        tests:
+            - bands
+                - tag1
+                - tag2
+            - phdisp
+                - tag1
+                - tag2
+            - ephmat
+                - tag1
+                - tag2
+            - test4
+                - tag1
+                - tag2
 
 In general, the name of each block speaks for itself. Note that the list of tests includes ``bands``, ``phdisp`` and ``ephmat``.  These ``perturbo.x`` calculation mode tests **must** be created for the new epr file. These particular tests are run to verify the operation of ``qe2pert.x``. More tests for a given epr file can be optionally added.
 
-3. Save your epr file in the folder `/tests/refs_perturbo/epr_files`.
+3. Save your epr file in the folder `/tests/refs/epr_files`.
 
 4. Provide the supplementary files, which are used for the ``qe2pert.x`` calculations, to the code developers. We need to add them to the current cloud storage in order to be able to download all of them at once from the one place. 
 
