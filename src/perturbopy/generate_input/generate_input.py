@@ -236,7 +236,7 @@ def input_generation():
     None
 
     """
-    module_dir = os.path.dirname(__file__)  # Папка, где находится модуль
+    module_dir = os.path.dirname(__file__)
     param_qe2pert = os.path.join(module_dir, 'input_parameters_qe2pert.yml')
     param_perturbo = os.path.join(module_dir, 'input_parameters_perturbo.yml')
     input_template = os.path.join(module_dir, 'input_template.yml')
