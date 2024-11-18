@@ -122,7 +122,7 @@ def run_qe2pert(source_folder, work_path, config_machine, prefix, input_name='qe
     
     # link rest files
     wann_files = os.listdir('../pw-ph-wann/wann/')
-    print(f'\n = Link rest files = :\n')
+    print('\n = Link rest files = :\n')
     for wf in wann_files:
         softlink = f'../pw-ph-wann/wann/{wf}'
         print(f'{softlink}; \n')
