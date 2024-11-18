@@ -178,8 +178,7 @@ Using the command-line options and environmental variables, one can parametrize 
 .. option:: --run_qe2pert
 
 	Include the ``qe2pert.x`` tests. See :ref:`test-complete`.
-   
-   .. _command-line options:
+
 .. option:: --config_machine
 	
 	Name of file containing the run commands for Perturbo and, in case of ``qe2pert.x`` test, for Quantum Espresso, Wannier90. Should be in the folder `tests/config_machine`. By default equal to `config_machine.yml`.
@@ -191,6 +190,10 @@ Using the command-line options and environmental variables, one can parametrize 
 .. option:: --keep_epr
 
 	Save all epr-files from the ``qe2pert.x`` testing.
+	
+.. option:: --arch
+
+	Type of architecture on which the tests are run - CPU or GPU. CPU is the default value 
 
 Making new tests
 ----------------
@@ -280,6 +283,10 @@ Additionally, you need to update file `test_listing.yml` with the description of
         - tag1
         - tag2
 	...
+
+.. note::
+
+    Each test should have type of the architecture, on which this test is run. Otherwise, this test will be ignored while the algorithm is running. If the architecture parameter is set for the whole epr-file, there is no need to duplicate it.
 
 
 .. note::
