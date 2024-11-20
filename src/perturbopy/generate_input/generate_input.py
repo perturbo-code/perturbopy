@@ -85,10 +85,17 @@ def create_arg_namespace(param_data, input_data):
     """
     list_calc_mode = input_data.keys()
 
-    help_description = 'Generate an exemplified input file for the PERTURBO code. You can find description of all calculated parameters at the PERTURBO official webpage https://perturbo-code.github.io/'
+    help_description = (
+        "Generate an exemplified input file for the PERTURBO code. You can find "
+        "description of all calculated parameters at the PERTURBO official webpage "
+        "https://perturbo-code.github.io/"
+    )
    
     parser = argparse.ArgumentParser(description=help_description)
-    parser.add_argument('-c', '--calc_mode', metavar='Mode', help=f'Calculation mode. Options: {", ".join(list_calc_mode)}.', choices=list_calc_mode, required=True)
+    parser.add_argument(
+        '-c', '--calc_mode', metavar='Mode', help=f'Calculation mode. Options: {", ".join(list_calc_mode)}.',
+        choices=list_calc_mode, required=True)
+    
     parser.add_argument('-i', '--file_name', metavar='file name', help='Name of the input file.')
 
     # add all perturbo parameters as arguments, expcept calc_mode
