@@ -31,4 +31,5 @@ Contents
    Usage <usage>
    Postprocessing <postproc/index>
    Testsuite <testsuite>
+   Input generation <input_generation>
    API reference <api>
