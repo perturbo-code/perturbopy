@@ -1,0 +1,225 @@
+---
+# This is a yaml file that contains the description of files required for PERTURBO calcation modes.
+
+phdir:
+   type: directory
+   description: Directory where the phonon "save" directory is located.
+   obtained from: DFPT
+
+prefix_centres.xyz:
+   type: text
+   description: Atomic positions and Wannier centres. Please refer to Wannier90 documentation for more details.
+   obtained from: DFT (Wannier90)
+
+prefix_u.mat:
+   type: text
+   description: $$U(\mathbf{k})$$ matrix - a unitary matrix that mixes the Bloch states at each $$\mathbf{k}$$. Please refer to Wannier90 documentation for more details.
+   obtained from: DFT (Wannier90)
+
+prefix_u_dis.mat:
+   type: text
+   description: $$U^{dis}(\mathbf{k})$$ matrix. Please refer to Wannier90 documentation for more details.
+   obtained from: DFT (Wannier90)
+
+prefix_epr.h5:
+   type: HDF5
+   description: Electron-phonon matrix elements on a coarse Brillouin zone grid as well as in the Wannier basis.
+   obtained from: qe2pert
+   format example: mydoc_qe2pert.html#eprh5-file-structure
+
+prefix_band.kpt:
+   type: text
+   description: $$\mathbf{k}$$ point list file.
+   format example: mydoc_interpolation.html#fklist_file
+
+prefix_phdisp.qpt:
+   type: text
+   description: $$\mathbf{q}$$ point list file.
+   format example: mydoc_interpolation.html#fklist_file
+
+prefix.temper:
+   type: text
+   description: List of temperatures, chemical potentials, and carrier concentrations.
+   format example: mydoc_scattering.html#ftemper_file
+   obtained from: setup
+
+prefix_tet.kpt:
+   type: text
+   description: Coordinates (in crystal units) of the irreducible $$\mathbf{k}$$ points in the energy window of interest.
+   obtained from: setup
+
+prefix_tet.h5:
+   type: HDF5
+   description: Contains information on the $$\mathbf{k}$$ points (both in the irreducible wedge and full grid) and the associated $$\mathbf{k}$$ point tetrahedra in the energy window of interest.
+   obtained from: setup
+
+prefix.bands:
+   type: text
+   description: Interpolated band structure. 
+   obtained from: bands
+   format example: mydoc_interpolation.html#bands_file
+   deprecated: True
+
+prefix.phdisp:
+   type: text
+   description: Interpolated phonon dispersion.
+   obtained from: phdisp
+   format example: mydoc_interpolation.html#phdisp_file
+   deprecated: True
+
+prefix.ephmat:
+   type: text
+   description: Absolute values of the electron-phonon matrix elements summed over bands from <a href=mydoc_param_perturbo.html#band_min>band_min</a> to <a href=mydoc_param_perturbo.html#band_max>band_max</a>.
+   obtained from: ephmat
+   format example: mydoc_interpolation.html#ephmat_file
+   deprecated: True
+
+prefix.doping:
+   type: text
+   description: Chemical potentials and carrier concentrations for each tempearture specified in the prefix.temper file.
+   obtained from: setup
+   deprecated: True
+
+prefix.dos:
+   type: text
+   description: Density of states (number of states per eV per unit cell) as a function of energy (eV).
+   obtained from: setup
+   deprecated: True
+
+prefix.imsigma:
+   type: text
+   description: Imaginary part of the electron-phonon self-energy.
+   obtained from: imsigma
+   format example: mydoc_scattering.html#imsigma_file
+   deprecated: True
+
+prefix.imsigma_mode:
+   type: text
+   description: Imaginary part of the electron-phonon self-energy (where phonon modes are numbered for increasing energy values).
+   obtained from: imsigma
+   format example: mydoc_scattering.html#imsigma_file
+   deprecated: True
+
+prefix.mfp:
+   type: text
+   description: Relaxation time and mean free path of each electronic state.
+   obtained from: meanfp
+   format example: mydoc_scattering.html#meanfp_file
+   deprecated: True
+
+prefix.vel:
+   type: text
+   description: Band velocity of each state.
+   obtained from: meanfp
+   format example: mydoc_scattering.html#meanfp_file
+   deprecated: True
+
+prefix.cond:
+   type: text
+   description: Conductivity and mobility tensors as a function of temperature.
+   obtained from: trans
+   format example: mydoc_trans.html#trans_file
+   deprecated: True
+
+prefix.tdf:
+   type: text
+   description: Transport distribution function (TDF) as a function of carrier energy and temperature.
+   obtained from: trans
+   format example: mydoc_trans.html#trans_file
+   deprecated: True
+
+prefix_tdf.h5:
+   type: HDF5
+   description: Includes all information of the transport distribution function (TDF) for each temperature.
+   obtained from: trans
+
+prefix_cdyna.h5:
+   type: HDF5
+   description: Contains all information about a real-time dynamics simulation.
+   obtained from: dynamics-run
+   format example: mydoc_dynamics.html#cdyna_h5_file
+
+prefix_cdyna.dat:
+   type: text
+   description: Number of carriers per unit cell as a function of time.
+   obtained from: dynamics-pp
+   deprecated: True
+
+prefix_popu.h5:
+   type: HDF5
+   description: Contains the carrier population as a function of energy and time.
+   obtained from: dynamics-pp
+   format example: mydoc_dynamics.html#popu_h5_file
+
+prefix.trans_coef:
+   type: text
+   description: Seebeck coefficient.
+   obtained from: trans-pp
+   format example: mydoc_trans.html#trans-pp_file
+   deprecated: True
+
+input file:
+   type: text
+   description: File containing the input parameters. A typical input file  for this calculation mode is given below. 
+
+# YAML output files
+qe2pert_output.yml:
+   type: YAML
+   description: Output of the qe2pert calculation.
+   obtained from: qe2pert
+
+prefix_bands.yml:
+   type: YAML
+   description: Output data from the calculation, including the input parameters and the quantities of interest. The file can be processed by the <a href="https://perturbopy.readthedocs.io/en/latest/postproc/tutorials/bands.html" target="_blank">Perturbopy</a> Python suite.
+   obtained from: bands
+   format example: mydoc_interpolation.html#bands_output_yaml
+
+prefix_phdisp.yml:
+   type: YAML
+   description: Output data from the calculation, including the input parameters and the quantities of interest. The file can be processed by the <a href="https://perturbopy.readthedocs.io/en/latest/postproc/tutorials/phdisp.html" target="_blank">Perturbopy</a> Python suite.
+   obtained from: phdisp
+   format example: mydoc_interpolation.html#phdisp_output_yaml
+
+prefix_ephmat.yml:
+   type: YAML
+   description: Output data from the calculation, including the input parameters and the quantities of interest. The file can be processed by the <a href="https://perturbopy.readthedocs.io/en/latest/postproc/tutorials/ephmat.html" target="_blank">Perturbopy</a> Python suite.
+   obtained from: ephmat
+   format example: mydoc_interpolation.html#ephmat_output_yaml
+
+prefix_imsigma.yml:
+   type: YAML
+   description: Output data from the calculation, including the input parameters and the quantities of interest. The file can be processed by the <a href="https://perturbopy.readthedocs.io/en/latest/postproc/tutorials/imsigma.html#" target="_blank">Perturbopy</a> Python suite.
+   obtained from: imsigma
+   format example: mydoc_scattering.html#imsigma_output_yaml
+
+prefix_setup.yml:
+   type: YAML
+   description: Output data from the calculation, including the input parameters and the quantities of interest. The file can be processed by the <a href="https://perturbopy.readthedocs.io/" target="_blank">Perturbopy</a> Python suite.
+   obtained from: setup
+   format example: mydoc_scattering.html#setup_output_yaml
+
+prefix_meanfp.yml:
+   type: YAML
+   description: Output data from the calculation, including the input parameters and the quantities of interest. The file can be processed by the <a href="https://perturbopy.readthedocs.io/" target="_blank">Perturbopy</a> Python suite.
+   obtained from: meanfp
+   format example: mydoc_scattering.html#meanfp_output_yaml
+
+prefix_trans.yml:
+   type: YAML
+   description: Output data from the calculation, including the input parameters and the quantities of interest. The file can be processed by the <a href="https://perturbopy.readthedocs.io/en/latest/postproc/tutorials/trans.html" target="_blank">Perturbopy</a> Python suite.
+   obtained from: trans
+   format example: mydoc_trans.html#trans_rta_output_yaml
+
+prefix_dynamics-run.yml:
+   type: YAML
+   description: Output data from the calculation, including the input parameters and the quantities of interest. The file can be processed by the <a href="https://perturbopy.readthedocs.io/en/latest/postproc/tutorials/dynamics-run.html" target="_blank">Perturbopy</a> Python suite.
+   obtained from: dynamics-run
+   format example: mydoc_dynamics.html#dynamics-run_output_yaml
+
+prefix_dynamics-pp.yml:
+   type: YAML
+   description: Output data from the calculation, including the input parameters and the quantities of interest. The file can be processed by the <a href="https://perturbopy.readthedocs.io/en/latest/postproc/tutorials/dynamics-pp.html" target="_blank">Perturbopy</a> Python suite.
+   obtained from: dynamics-pp
+   format example: mydoc_dynamics.html#dynamics-pp_output_yaml
+
+...

@@ -1,0 +1,166 @@
+---
+# This is a yaml file that contains the PERTURBO workflow information.
+# It is used to generate the interactive workflow.
+
+DFT:
+ non-interactive: True
+
+DFPT:
+ non-interactive: True
+
+qe2pert:
+ computes: E-ph matrix elements on the coarse $$\mathbf{k}$$ point (determined by the nscf step) and $$\mathbf{q}$$ point (determined by the phonon step) Brillouin zone grids as well as in the Wannier basis.
+ parents:
+   - DFT
+   - DFPT
+ requirements:
+   - phdir
+   - prefix_centres.xyz
+   - prefix_u.mat
+   - prefix_u_dis.mat
+ outputs:
+   - qe2pert_output.yml
+   - prefix_epr.h5
+ tutorial link: mydoc_qe2pert.html
+
+bands:
+ parents:
+   - qe2pert
+ computes: Interpolated electronic band structure given an electronic crystal momentum path.
+ requirements:
+    - prefix_epr.h5
+    - prefix_band.kpt
+ outputs:
+    - prefix_bands.yml
+    - prefix.bands
+ tutorial link: mydoc_interpolation.html#calc_mode_bands
+
+phdisp:
+ parents:
+   - qe2pert
+ computes: Interpolated phonon dispersions along a given crystal momentum path.
+ requirements:
+    - prefix_epr.h5
+    - prefix_phdisp.qpt
+ outputs:
+    - prefix_phdisp.yml
+    - prefix.phdisp
+ tutorial link: mydoc_interpolation.html#calc_mode_phdisp
+
+ephmat:
+ parents:
+   - qe2pert
+ computes: The absolute values of the e-ph matrix elements, summed over the number of electronic bands, given two lists of $$\mathbf{k}$$ and $$\mathbf{q}$$ points. In a typical scenario, one computes the e-ph matrix elements for a chosen $$\mathbf{k}$$ point as a function of $$\mathbf{q}$$ point.
+ requirements:
+    - prefix_epr.h5
+    - prefix_band.kpt
+    - prefix_phdisp.qpt
+ outputs:
+    - prefix_ephmat.yml
+    - prefix.ephmat
+ tutorial link: mydoc_interpolation.html#calc_mode_ephmat
+
+imsigma:
+ parents:
+   - qe2pert
+ optional parents:
+   - setup
+ computes: The imaginary part of the lowest-order (so-called 'Fan') e-ph self-energy, $$\operatorname{Im}\Sigma$$, for states in a range of bands and with crystal momenta $$\mathbf{k}$$ read from a list (this list can be obtained from <code>calc_mode='setup'</code> or created manually). The scattering rates can also be obtained using $${2} \operatorname{Im}\Sigma /{\hbar}$$.
+ requirements:
+    - prefix_epr.h5
+    - prefix_tet.kpt
+    - prefix.temper
+ outputs:
+    - prefix_imsigma.yml
+    - prefix.imsigma
+    - prefix.imsigma_mode
+ tutorial link: mydoc_scattering.html#calc_mode_imsigma
+
+setup:
+ parents:
+   - qe2pert
+ computes: Set up transport property calculations (i.e., electrical conductivity, carrier mobility and Seebeck) by providing $$\mathbf{k}$$ points, $$\mathbf{k}$$ point tetrahedra and (if needed) finding chemical potentials for given carrier concentrations.
+ requirements:
+    - prefix_epr.h5
+    - prefix.temper
+ outputs:
+    - prefix_setup.yml
+    - prefix.doping
+    - prefix_tet.h5
+    - prefix_tet.kpt
+    - prefix.dos
+ tutorial link: mydoc_scattering.html#calc_mode_setup
+
+meanfp:
+ parents:
+   - imsigma
+ computes: The e-ph mean free paths for electronic states in a user-defined $$\mathbf{k}$$ point list and range of bands.
+ requirements:
+    - prefix_epr.h5
+    - prefix_tet.kpt
+    - prefix.temper
+    - prefix.imsigma
+ outputs:
+    - prefix_meanfp.yml
+    - prefix.mfp
+    - prefix.vel
+ tutorial link: mydoc_scattering.html#calc_mode_meanfp
+
+trans:
+ parents:
+   - setup
+ optional parents:
+   - imsigma
+ computes: The phonon-limited conductivity and carrier mobility.
+ requirements:
+    - prefix_epr.h5
+    - prefix.temper
+    - prefix_tet.h5
+ optional files:
+    - prefix.imsigma
+ outputs:
+    - prefix_trans.yml
+    - prefix.cond
+    - prefix.tdf
+    - prefix_tdf.h5
+ tutorial link: mydoc_trans.html#calc_mode_trans
+
+trans-pp:
+ parents:
+   - trans
+ computes: Seebeck coefficient. Note that phonon drag effects are not included in this calculation.
+ requirements:
+    - prefix_epr.h5
+    - prefix.temper
+    - prefix_tet.h5
+    - prefix_tdf.h5
+ outputs:
+    - prefix.trans_coef
+ tutorial link: mydoc_trans.html#calc_mode_trans-pp
+
+dynamics-run:
+ parents:
+   - setup
+ computes: "Ultrafast hot carrier dynamics via the time-dependent Boltzmann transport equation: set an initial carrier distribution and calculate its evolution in time."
+ requirements:
+   - prefix_epr.h5
+   - prefix.temper
+   - prefix_tet.h5
+ outputs:
+   - prefix_dynamics-run.yml
+   - prefix_cdyna.h5
+ tutorial link: mydoc_dynamics.html#calc_mode_dynamics-run
+
+dynamics-pp:
+ parents:
+   - dynamics-run
+ computes: "Postprocessing of the ultrafast dynamics calculations: carrier population as a function of energy and time."
+ requirements:
+   - prefix_epr.h5
+   - prefix_cdyna.h5
+ outputs:
+   - prefix_dynamics-pp.yml
+   - prefix_cdyna.dat
+   - prefix_popu.h5
+ tutorial link: mydoc_dynamics.html#calc_mode_dynamics-pp
+...

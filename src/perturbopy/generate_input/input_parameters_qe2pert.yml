@@ -1,0 +1,177 @@
+---
+# This is a yaml file that contains the information about the input parameters for the qe2pert.x code.
+# From this file, the mydoc_input_parameters_qe2pert.html file is automatically generated
+
+#
+# Description of the input parameters families
+#
+general: 
+   type: family
+   description: General input parameters
+   color_hsl: [0, 0, 50]
+   
+#
+# Input parameters
+#
+prefix:
+   family: general
+   type: string
+   typical: "'prefix'"
+   len: 256 
+   description: Job name prefix. It should be the same as the prefix used in QE.
+   source: qe
+ 
+outdir:
+   family: general
+   type: string
+   typical: "'./tmp'"
+   len: 256
+   description: Name of the directory where the QE nscf output directory prefix.save is located, and where the e-ph matrix elements prefix_elph.h5 will be stored.
+   bcast_name: tmp_dir
+
+phdir:
+   family: general
+   type: string
+   typical: "'phdir'"
+   len: 256
+   attributes: save
+   description: Name of the directory where the phonon "save" directory is located.
+
+dft_band_min:
+   family: general
+   type: integer 
+   default: 1
+   attributes: save
+   description: Lowest band index used in Wannier90.
+
+dft_band_max:
+   family: general
+   type: integer 
+   default: 10000
+   attributes: save
+   description: Highest band index used in Wannier90. Be default, it will be reset to the highest band index in the DFT results.
+
+dis_win_min:
+   family: general
+   type: real
+   default: -9999.0
+   attributes: save
+   description: The 'dis_win_min' used in Wannier90, the lower boundary of the outer windows.
+
+num_wann:
+   family: general
+   type: integer
+   default: 1
+   attributes: save
+   description: Number of Wannier functions.
+
+system_2d:
+   family: general
+   type: logical
+   default: False
+   attributes: save
+   description: Set it to .true. if the system is 2D.
+
+nk1:
+   family: general
+   type: integer
+   typical: 8
+   description: Number of k points along x-axis used in the Wannierization.
+   bcast_name: kdim(1)
+
+nk2:
+   family: general
+   type: integer
+   typical: 8
+   description: Number of k points along y-axis used in the Wannierization.
+   bcast_name: kdim(2)
+
+nk3:
+   family: general
+   type: integer
+   typical: 8
+   description: Number of k points along z-axis used in the Wannierization.
+   bcast_name: kdim(3)
+
+debug:
+   family: general
+   type: logical
+   default: False   
+   attributes: save
+   description: Set to .true. to turn on the debug mode, in which the code stop after g(k,q) (does not compute g in wannier basis)
+
+yaml_fname:
+   family: general
+   type: string
+   default: "'qe2pert_output.yml'"
+   len: 80
+   description: Name of the YAML output file.
+
+lwannier:
+   family: general
+   type: logical 
+   default: True
+   attributes: save
+   description: Set to .true. to rotate the wavefunctions using Wannier unitary matrix before computing e-ph matrix elements.
+
+load_ephmat:
+   family: general
+   type: logical
+   default: False
+   attributes: save
+   description: Set to .true. to load prefix_elph.h5 from the directory specified by the variable outdir.
+
+eig_corr:
+   family: general
+   type: string
+   typical: "'eig_corr'"
+   len: 256
+   default: "''"
+   attributes: save
+   description: File containing the electron eigenvalues on the (nk1, nk2, nk3) grid. The format of this file is the same as the file <code>prefix.eig</code> generated in Wannier90. if present, <code>qe2pert.x</code> will read the eigenvalues from this file, rather than Kohn-Sham eigenvalues from QE-nscf calculation. This is usually used when one wants to use modified eigenvalues (e.g., from GW).
+
+polar_alpha:
+   family: general
+   type: real
+   default: 1.0   
+   attributes: save
+   description: Convergence parameter used in the Ewald sum when computing the polar correction in polar materials. The default value is 1.0.
+
+asr:
+   family: general
+   type: string
+   default: "'crystal'"
+   len: 10
+   attributes: save
+   options:
+      "'no'": no Acoustic Sum Rules imposed
+      "'simple'": 3 translational asr imposed by correction of the diagonal elements of the force constants matrix
+      "'crystal'": 3 translational asr imposed by optimized correction of the force constants (projection)
+   description: Indicates the type of Acoustic Sum Rule imposed.
+
+thickness_2d:
+   family: general
+   type: real
+   default: 6.0
+   units: Å
+   attributes: save
+   description: Thickness of the 2d system, used in the 2D polar e-ph correction. Only needed when system_2d=.true.
+
+spin_component:
+   family: general
+   type: string
+   default: "'none'"
+   len: 4
+   attributes: save
+   options:
+      "'none'": on spin or non-collinear channel.
+      "'up'": LSDA-up channel.
+   description: Flag for LSDA spin polarized calculation.
+
+tdep:
+   family: general
+   type: logical
+   default: False
+   attributes: save
+   description: Flag for TDEP support. 
+...

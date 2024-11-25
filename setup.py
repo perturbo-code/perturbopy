@@ -27,5 +27,10 @@ setup(
     packages=find_packages(
         where='./src'
     ),
-    package_dir={"": "src"}
+    package_dir={"": "src"},
+    entry_points={
+        'console_scripts': [
+            'input_generation=perturbopy.generate_input:input_generation',
+        ],
+    },
 )
