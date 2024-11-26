@@ -12,17 +12,17 @@ class EphmatSpin(CalcMode):
     Attributes
     ----------
     kpt : RecipPtDB
-       Database for the k-points used in the ephmat calculation, containing N points.
+       Database for the k-points used in the ephmat_spin calculation, containing N points.
     
     qpt : RecipPtDB
-       Database for the q-points used in the ephmat calculation, containing M points.
+       Database for the q-points used in the ephmat_spin calculation, containing M points.
     
     phdisp : UnitsDict
-       Database for the phonon energies computed by the ephmat calculation. The keys are
+       Database for the phonon energies computed by the ephmat_spin calculation. The keys are
        the phonon mode, and the values are an array (of length M) containing the energies at each q-point
        with units phdisp.units
     
-    ephmat_spin : UnitsDict
+    ephmat : UnitsDict
        Database for the e-ph spin flip matrix elements computed by the ephmat_spin calculation. The keys are
        the phonon mode, and the values are an array (of length NxM) where element (n, m)
        is the e-ph spin flip matrix element (units ephmat.units) between an electron at k-point n and phonon at q-point m
@@ -41,7 +41,7 @@ class EphmatSpin(CalcMode):
         Parameters
         ----------
         pert_dict : dict
-            Dictionary containing the inputs and outputs from the ephmat calculation.
+            Dictionary containing the inputs and outputs from the ephmat_spin calculation.
 
         """
         super().__init__(pert_dict)

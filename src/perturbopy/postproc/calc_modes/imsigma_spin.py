@@ -12,10 +12,10 @@ class ImsigmaSpin(CalcMode):
     Attributes
     ----------
     kpt : RecipPtDB
-       Database for the k-points used in the imsigma calculation, containing N points.
+       Database for the k-points used in the imsigma_spin calculation, containing N points.
     
     bands : UnitsDict
-       Database for the band energies computed by the imsigma calculation. The keys are
+       Database for the band energies computed by the imsigma_spin calculation. The keys are
        the band index, and the values are an array (of length N) containing the energies at each k-point
        with units bands.units
 
@@ -48,7 +48,7 @@ class ImsigmaSpin(CalcMode):
         Parameters
         ----------
         pert_dict : dict
-            Dictionary containing the inputs and outputs from the imsigma calculation.
+            Dictionary containing the inputs and outputs from the imsigma_spin calculation.
 
         """
         super().__init__(pert_dict)
