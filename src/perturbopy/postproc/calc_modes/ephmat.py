@@ -163,6 +163,7 @@ class Ephmat(CalcMode):
         kpoint_idex : int, optional
             Index of the k-point to plot the e-ph elements for. E-ph elements will be plotted along q-points, at this k-point
             By default, it will be the first k-point.
+        
         energy_window : tuple of int, optional
            The range of band energies to be shown on the y-axis.
 
