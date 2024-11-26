@@ -110,12 +110,10 @@ class Spins(CalcMode):
         values = {}
 
         values = {key: 1 - val for key, val in self.spins.items()}
-        #for key, val in self.spins.items():
-        #    values[key] = self.spins[key][kpoint_idx, :]
 
         ax = plot_vals_on_bands(ax, self.kpt.path, self.bands, self.bands.units, values=values, log=True, label=r'$|<n|Sigma_z|n>|$', **kwargs)
 
         if show_kpoint_labels:
             ax = plot_recip_pt_labels(ax, self.kpt.labels, self.kpt.points, self.kpt.path)
 
-        return ax 
+        return ax

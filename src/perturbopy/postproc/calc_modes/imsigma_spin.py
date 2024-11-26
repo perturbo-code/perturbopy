@@ -75,9 +75,7 @@ class ImsigmaSpin(CalcMode):
         self.imsigma_flip = UnitsDict(units=self._pert_dict['imsigma_spin'].pop('Im(Sigma) units'))
         self.imsigma_flip_mode = UnitsDict(units=self.imsigma_flip.units)
         
-
         for config_idx in config_dat.keys():
-            
             self.imsigma_flip[config_idx] = {}
             self.imsigma_flip_mode[config_idx] = {}
             self.temper[config_idx] = config_dat[config_idx].pop('temperature')
@@ -89,9 +87,7 @@ class ImsigmaSpin(CalcMode):
                 self.imsigma_flip_mode[config_idx][mode] = {}
 
             for band_index in imsigma_dat.keys():
-                
                 self.imsigma_flip[config_idx][band_index] = np.array(imsigma_dat[band_index]['Im(Sigma)']['total'])
 
                 for mode in np.arange(1, num_modes + 1):
                     self.imsigma_flip_mode[config_idx][mode][band_index] = np.array(imsigma_dat[band_index]['Im(Sigma)']['phonon mode (total)'][mode])
-
