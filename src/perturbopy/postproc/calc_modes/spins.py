@@ -1,11 +1,8 @@
 import numpy as np
-from scipy.optimize import curve_fit
 from perturbopy.postproc.calc_modes.calc_mode import CalcMode
-from perturbopy.postproc.utils.constants import energy_conversion_factor, length_conversion_factor
 from perturbopy.postproc.dbs.units_dict import UnitsDict
 from perturbopy.postproc.dbs.recip_pt_db import RecipPtDB
-from perturbopy.postproc.utils.plot_tools import plot_dispersion, plot_recip_pt_labels, plot_vals_on_bands
-from perturbopy.postproc.utils.lattice import reshape_points, cryst2cart
+from perturbopy.postproc.utils.plot_tools import plot_recip_pt_labels, plot_vals_on_bands
 
 
 class Spins(CalcMode):
@@ -54,35 +51,7 @@ class Spins(CalcMode):
         self.bands = UnitsDict.from_dict(energies_dict, energy_units)
         self.spins = UnitsDict.from_dict(spins_dict, spin_units)
 
-    def plot_bands(self, ax, show_kpoint_labels=True, **kwargs):
-        """
-        Method to plot the band structure.
-
-        Parameters
-        ----------
-        ax : matplotlib.axes.Axes
-           Axis on which to plot the bands.
-
-        energy_window : tuple of int, optional
-           The range of band energies to be shown on the y-axis.
-
-        show_kpoint_labels : bool, optional
-           If true, the k-point labels stored in the labels attribute will be shown on the plot. Default true.
-
-        Returns
-        -------
-        ax: matplotlib.axes.Axes
-           Axis with the plotted bands.
-
-        """
-        ax = plot_dispersion(ax, self.kpt.path, self.bands, self.bands.units, **kwargs)
-
-        if show_kpoint_labels:
-            ax = plot_recip_pt_labels(ax, self.kpt.labels, self.kpt.points, self.kpt.path)
-
-        return ax
-
-    def plot_spins(self, ax, kpoint_idx=0, show_kpoint_labels=True, **kwargs):
+    def plot_spins(self, ax, kpoint_idx=0, show_kpoint_labels=True, log=True, **kwargs):
         """
         Method to plot the <n|Sigma_z|n> values over the band structure.
 
@@ -95,11 +64,12 @@ class Spins(CalcMode):
            Index of the k-point to plot the <n|Sigma_z|n> values for. <n|Sigma_z|n> elements will be plotted along k-points, at this k-point
            By default, it will be the first k-point.
 
-        energy_window : tuple of int, optional
-           The range of band energies to be shown on the y-axis.
-
         show_kpoint_labels : bool, optional
            If true, the k-point labels stored in the labels attribute will be shown on the plot. Default true.
+
+        log : bool, optional
+           If true, the plot will normalize values on a log scale. If false, the plot will normalize values linearly.
+           By default, it will be true.
 
         Returns
         -------
@@ -111,7 +81,7 @@ class Spins(CalcMode):
 
         values = {key: 1 - val for key, val in self.spins.items()}
 
-        ax = plot_vals_on_bands(ax, self.kpt.path, self.bands, self.bands.units, values=values, log=True, label=r'$|<n|Sigma_z|n>|$', **kwargs)
+        ax = plot_vals_on_bands(ax, self.kpt.path, self.bands, self.bands.units, values=values, log, label=r'$|<n|\Sigma_z|n>|$', **kwargs)
 
         if show_kpoint_labels:
             ax = plot_recip_pt_labels(ax, self.kpt.labels, self.kpt.points, self.kpt.path)
