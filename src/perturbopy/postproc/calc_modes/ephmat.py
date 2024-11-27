@@ -112,7 +112,7 @@ class Ephmat(CalcMode):
 
     def plot_defpot(self, ax, kpoint_idx=0, show_qpoint_labels=True, **kwargs):
         """
-        Method to plot the phonon dispersion.
+        Method to plot the deformation potential as a colormap overlaid on the phonon dispersion.
 
         Parameters
         ----------
@@ -147,7 +147,7 @@ class Ephmat(CalcMode):
 
     def plot_ephmat(self, ax, kpoint_idx=0, show_qpoint_labels=True, **kwargs):
         """
-        Method to plot the phonon dispersion.
+        Method to plot e-ph matrix elements as a colormap overlaid on the phonon dispersion.
 
         Parameters
         ----------
@@ -157,7 +157,7 @@ class Ephmat(CalcMode):
         kpoint_idx : int, optional
             Index of the k-point to plot the e-ph elements for. E-ph elements will be plotted along q-points, at this k-point
             By default, it will be the first k-point.
-
+        
         show_qpoint_labels : bool, optional
            If true, the q-point labels stored in the labels attribute will be shown on the plot. Default true.
 
