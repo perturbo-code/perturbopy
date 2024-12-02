@@ -76,15 +76,28 @@ def plot_recip_pt_labels(ax, labels, point_array, path_array, label_height="lowe
     elif label_height == "lower":
         label_height = ax.get_ylim()[0] - (ax.get_ylim()[1] - ax.get_ylim()[0]) * 0.1
 
+    # Create lists to store tick positions and labels
+    tick_positions = []
+    tick_labels = []
+
     for label in labels.keys():
         path_to_label = lattice.convert_point2path(labels[label], point_array, path_array)
 
         if path_to_label is None:
             continue
+
+        # Add positions and labels to lists
+        tick_positions.extend(path_to_label)
+        tick_labels.extend([label] * len(path_to_label))
+
         for x in path_to_label:
             if show_line:
                 ax.axvline(x, c="lightgray")
-                ax.text(x=x, y=label_height, s=label)
+                #ax.text(x=x, y=label_height, s=label)
+
+    # Set tick positions and labels on the x-axis
+    ax.set_xticks(tick_positions)
+    ax.set_xticklabels(tick_labels)
 
     return ax
 
@@ -214,7 +227,7 @@ def plot_vals_on_bands(ax, path, energies, energy_units, values, cmap='YlOrRd', 
         vmin = min([min(values[key]) for key in values.keys()])
         vmax = max([max(values[key]) for key in values.keys()])
         norm = plt.Normalize(vmin, vmax)
-    
+
     for n in energies.keys():
 
         x = np.array(path)
