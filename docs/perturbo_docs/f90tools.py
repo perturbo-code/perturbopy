@@ -9,264 +9,287 @@ import datetime
 import collections
 
 from yaml import load, dump
+
 try:
-   from yaml import CLoader as Loader, CDumper as Dumper
+    from yaml import CLoader as Loader, CDumper as Dumper
 except ImportError:
-   from yaml import Loader, Dumper
-
-def fortran_bcast_variable(param_name, fout, processid='meta_ionode_id', commid='world_comm'):
-   """
-   Print a Fortran `mpi broadcast` statement.
-
-   Parameters
-   -----
-      param_name: str
-         Name of the parameter
-
-      processid: str
-         ID of the process which broadcasts the data
-
-      commid:
-         ID of the communicator
-
-      fout: output file
-         Text file of the f90 source code
+    from yaml import Loader, Dumper
 
 
-   Returns
-   -----
-      None
+def fortran_bcast_variable(
+    param_name, fout, processid="meta_ionode_id", commid="world_comm"
+):
+    """
+    Print a Fortran `mpi broadcast` statement.
 
-   """
-   declare_indent = ' ' * 3
-   fout.write( (f'{declare_indent}call mp_bcast({param_name},{processid},{commid})\n') )
+    Parameters
+    -----
+       param_name: str
+          Name of the parameter
 
-def fortran_init_variable(param_name, param_type, param_default_value, fout, dim = ''):
-   """
-   Print a Fortran `variable assignment` statement for automatically generating input variables from yaml file.
+       processid: str
+          ID of the process which broadcasts the data
 
-   Parameters
-   -----
-      param_name: str
-         Name of the parameter
+       commid:
+          ID of the communicator
 
-      param_type: str
-         Fortran type of the parameter
+       fout: output file
+          Text file of the f90 source code
 
-      param_default_value: formatted
-         Default value of the parameter
 
-      fout: output file
-         Text file of the f90 source code
+    Returns
+    -----
+       None
 
-      dim:
-         Dimension of a vector
+    """
+    declare_indent = " " * 3
+    fout.write((f"{declare_indent}call mp_bcast({param_name},{processid},{commid})\n"))
 
-      description:
-         Description of the variable for doxygen
 
-   Returns
-   -----
-      None
+def fortran_init_variable(param_name, param_type, param_default_value, fout, dim=""):
+    """
+    Print a Fortran `variable assignment` statement for automatically generating input variables from yaml file.
 
-   Raises
-   -----
-    ValueError if parameter is unknown
+    Parameters
+    -----
+       param_name: str
+          Name of the parameter
 
-   """
+       param_type: str
+          Fortran type of the parameter
 
-   declare_indent = ' ' * 3
+       param_default_value: formatted
+          Default value of the parameter
 
-   param_default_value_assign = param_default_value
-   if dim is not None and (not dim == ''):
-       # only one-dimensional array are implemented.
-       if type(param_default_value)== str and param_default_value[0] == '(':
-           if param_type == 'logical':
-               param_default_value_assign = param_default_value_assign.replace('(','').replace(')','').strip().split(',')
-               for iva in range(len(default_value)):
-                   param_default_value_assign[iva] = fortran_bool(bool(default_value[iva]))
-               param_default_value_assign = '[' + ','.join(f'{ii}' for ii in default_value) + ']'
-           else:
-               param_default_value_assign = param_default_value_assign.replace('(','[').replace(')',']')
-       elif param_type == 'logical':
-           param_default_value_assign = fortran_bool(param_default_value_assign)
-   else:
-       if param_type == 'logical':
-           param_default_value_assign = fortran_bool(param_default_value_assign)
-       elif param_type == 'real':
-           param_default_value_assign = str(param_default_value_assign) + '_dp'
+       fout: output file
+          Text file of the f90 source code
 
-   fout.write( f"{declare_indent}{param_name} ="
-              f" {param_default_value_assign}\n"
-              )
+       dim:
+          Dimension of a vector
 
-def fortran_declare_variable(param_name, param_type, param_attr, param_len, fout, dim = '', description = ''):
-   """
-   Print a Fortran `variable declaration` statement for automatically generating input variables from yaml file.
+       description:
+          Description of the variable for doxygen
 
-   Parameters
-   -----
-      param_name: str
-         Name of the parameter
+    Returns
+    -----
+       None
 
-      param_type: str
-         Fortran type of the parameter
+    Raises
+    -----
+     ValueError if parameter is unknown
 
-      param_attr: str
-         Fortran attributes for a new variable when declaration
+    """
 
-      param_len: Int
-         Length of the string for Character datetype
+    declare_indent = " " * 3
 
-      fout: output file
-         Text file of the f90 source code
+    param_default_value_assign = param_default_value
+    if dim is not None and (not dim == ""):
+        # only one-dimensional array are implemented.
+        if type(param_default_value) == str and param_default_value[0] == "(":
+            if param_type == "logical":
+                param_default_value_assign = (
+                    param_default_value_assign.replace("(", "")
+                    .replace(")", "")
+                    .strip()
+                    .split(",")
+                )
+                for iva in range(len(default_value)):
+                    param_default_value_assign[iva] = fortran_bool(
+                        bool(default_value[iva])
+                    )
+                param_default_value_assign = (
+                    "[" + ",".join(f"{ii}" for ii in default_value) + "]"
+                )
+            else:
+                param_default_value_assign = param_default_value_assign.replace(
+                    "(", "["
+                ).replace(")", "]")
+        elif param_type == "logical":
+            param_default_value_assign = fortran_bool(param_default_value_assign)
+    else:
+        if param_type == "logical":
+            param_default_value_assign = fortran_bool(param_default_value_assign)
+        elif param_type == "real":
+            param_default_value_assign = str(param_default_value_assign) + "_dp"
 
-      dim:
-         Dimension of a vector
+    fout.write(f"{declare_indent}{param_name} =" f" {param_default_value_assign}\n")
 
-      description:
-         Description of the variable for doxygen
 
-   Returns
-   -----
-      None
+def fortran_declare_variable(
+    param_name, param_type, param_attr, param_len, fout, dim="", description=""
+):
+    """
+    Print a Fortran `variable declaration` statement for automatically generating input variables from yaml file.
 
-   Raises
-   -----
-    ValueError if parameter is unknown
+    Parameters
+    -----
+       param_name: str
+          Name of the parameter
 
-   """
+       param_type: str
+          Fortran type of the parameter
 
-   declare_indent = ' ' * 3
+       param_attr: str
+          Fortran attributes for a new variable when declaration
 
-   if param_type == 'string':
-      declare_type = f'character(len={param_len})'
+       param_len: Int
+          Length of the string for Character datetype
 
-   elif param_type == 'logical':
-      declare_type = 'logical'
+       fout: output file
+          Text file of the f90 source code
 
-   elif param_type == 'integer':
-      declare_type = 'integer'
+       dim:
+          Dimension of a vector
 
-   elif param_type == 'real':
-      declare_type = 'real(dp)'
+       description:
+          Description of the variable for doxygen
 
-   else:
-      raise ValueError(f'Wrong param_type {param_type}')
+    Returns
+    -----
+       None
 
-   if param_attr is not None:
-      fout.write( f"{declare_indent}{declare_type}"
-                 f", {param_attr}"
-                 f" :: {param_name}{dim}"
-                 f" !< {description}\n"
-                 )
-   else :
-      fout.write( f"{declare_indent}{declare_type}"
-                 f" :: {param_name}{dim}"
-                 f" !< {description}\n"
-                 )
+    Raises
+    -----
+     ValueError if parameter is unknown
 
-def fortran_write(param_name, param_type, unit, fout,
-                  dim = None, bcast_name = None):
-   """
-   Print a Fortran `write` statement
+    """
 
-   Parameters
-   -----
-      param_name: str
-         Name of the parameter
+    declare_indent = " " * 3
 
-      param_type: str
-         Fortran type of the parameter
+    if param_type == "string":
+        declare_type = f"character(len={param_len})"
 
-      unit: str
-         Fortran file unit where the write statement will output
+    elif param_type == "logical":
+        declare_type = "logical"
 
-      fout: output file
-         Text file of the f90 source code
+    elif param_type == "integer":
+        declare_type = "integer"
 
-      dim:
-         Dimension of a vector
+    elif param_type == "real":
+        declare_type = "real(dp)"
 
-      bcast_name:
-         Name of a variable in the code (if different from param_name)
+    else:
+        raise ValueError(f"Wrong param_type {param_type}")
 
-   Returns
-   -----
-      None
+    if param_attr is not None:
+        fout.write(
+            f"{declare_indent}{declare_type}"
+            f", {param_attr}"
+            f" :: {param_name}{dim}"
+            f" !< {description}\n"
+        )
+    else:
+        fout.write(
+            f"{declare_indent}{declare_type}"
+            f" :: {param_name}{dim}"
+            f" !< {description}\n"
+        )
 
-   Raises
-   -----
-    ValueError if parameter is unknown
 
-   """
+def fortran_write(param_name, param_type, unit, fout, dim=None, bcast_name=None):
+    """
+    Print a Fortran `write` statement
 
-   print_indent = ' ' * 3
-   write_indent = 6
-   write_space = 10
+    Parameters
+    -----
+       param_name: str
+          Name of the parameter
 
-   write_value = param_name
+       param_type: str
+          Fortran type of the parameter
 
-   if param_type == 'string':
-      write_value = f'trim({param_name})'
-      write_format = 'a'
+       unit: str
+          Fortran file unit where the write statement will output
 
-   elif param_type == 'logical':
-      write_value = f'python_bool({param_name})'
-      write_format = 'a'
+       fout: output file
+          Text file of the f90 source code
 
-   elif param_type == 'integer':
-      write_format = 'i10'
+       dim:
+          Dimension of a vector
 
-   elif param_type == 'real':
-      write_format = 'es23.16'
+       bcast_name:
+          Name of a variable in the code (if different from param_name)
 
-   else:
-      raise ValueError(f'Wrong param_type {param_type}')
+    Returns
+    -----
+       None
 
-   # In the case if the name in the code is different from the name in the
-   # input file, just substitue the param_name with bcast_name
-   if bcast_name is not None:
-      write_value = re.sub(param_name, bcast_name, write_value)
+    Raises
+    -----
+     ValueError if parameter is unknown
 
-   if dim is not None:
-      # only one-dimensional array are implemented.
-      # otherwise, int(...) will raise an Error
-      dim_int = int(dim.replace('(','').replace(')',''))
+    """
 
-      vec_format = '\"[\",'
+    print_indent = " " * 3
+    write_indent = 6
+    write_space = 10
 
-      vec_format += f'{dim_int}({write_format},\",\"2x)'
+    write_value = param_name
 
-      vec_format += ',\"]\"'
+    if param_type == "string":
+        write_value = f"trim({param_name})"
+        write_format = "a"
 
-      write_format = vec_format
+    elif param_type == "logical":
+        write_value = f"python_bool({param_name})"
+        write_format = "a"
 
-   fout.write( f"{print_indent}write("
-               f"{unit},'({write_indent}x, a, {write_space}x, {write_format})')"
-               f" '{param_name}:', {write_value}\n"
-              )
+    elif param_type == "integer":
+        write_format = "i10"
+
+    elif param_type == "real":
+        write_format = "es23.16"
+
+    else:
+        raise ValueError(f"Wrong param_type {param_type}")
+
+    # In the case if the name in the code is different from the name in the
+    # input file, just substitue the param_name with bcast_name
+    if bcast_name is not None:
+        write_value = re.sub(param_name, bcast_name, write_value)
+
+    if dim is not None:
+        # only one-dimensional array are implemented.
+        # otherwise, int(...) will raise an Error
+        dim_int = int(dim.replace("(", "").replace(")", ""))
+
+        vec_format = '"[",'
+
+        vec_format += f'{dim_int}({write_format},","2x)'
+
+        vec_format += ',"]"'
+
+        write_format = vec_format
+
+    fout.write(
+        f"{print_indent}write("
+        f"{unit},'({write_indent}x, a, {write_space}x, {write_format})')"
+        f" '{param_name}:', {write_value}\n"
+    )
+
 
 def print_header(fout):
-   """
-   Print header, information how to properly modify the file
+    """
+    Print header, information how to properly modify the file
 
-   Parameters
-   -----
-      fout : output file
-         file where to print the header
-   """
+    Parameters
+    -----
+       fout : output file
+          file where to print the header
+    """
 
-   fout.write( (f'! This file was automatically generated by the'
-                f' {os.path.basename(__file__)} Python script\n'
-                f'! from the ./utils folder.\n'
-                f'! To do any modifications, please modify the'
-                f' YAML files in the ./docs folder or the script directly.\n'
-                f'! NOTE THAT the modifications will be erased when'
-                f' you run the Python script again.\n'
-                f'! Date: {datetime.datetime.now().strftime("%B %d, %Y %H:%M")}\n\n'
-               )
-             )
+    fout.write(
+        (
+            f"! This file was automatically generated by the"
+            f" {os.path.basename(__file__)} Python script\n"
+            f"! from the ./utils folder.\n"
+            f"! To do any modifications, please modify the"
+            f" YAML files in the ./docs folder or the script directly.\n"
+            f"! NOTE THAT the modifications will be erased when"
+            f" you run the Python script again.\n"
+            f'! Date: {datetime.datetime.now().strftime("%B %d, %Y %H:%M")}\n\n'
+        )
+    )
 
 
 def fortran_bool(trueornot):
@@ -285,294 +308,319 @@ def fortran_bool(trueornot):
     """
 
     if trueornot:
-        return '.true.'
+        return ".true."
     elif not trueornot:
-        return '.false.'
+        return ".false."
     else:
-        raise ValueError(f'Wrong param_type {trueornot}')
+        raise ValueError(f"Wrong param_type {trueornot}")
+
 
 def write_param_to_yaml(folder, input_param_path, code_prefix):
-   """
-   Generate an f90 file to print out all of the input parameters of Perturbo
+    """
+    Generate an f90 file to print out all of the input parameters of Perturbo
 
-   Parameters
-   -----
-      input_param_path: str
-         path to a YAML files with the input parameters
-      code_prefix: str
-         name of the executable (without `.x`). `perturbo` or `qe2pert`
-      folder: str
-         A folder where the f90 file should be placed
+    Parameters
+    -----
+       input_param_path: str
+          path to a YAML files with the input parameters
+       code_prefix: str
+          name of the executable (without `.x`). `perturbo` or `qe2pert`
+       folder: str
+          A folder where the f90 file should be placed
 
-   Returns
-   -----
-      None
-   """
+    Returns
+    -----
+       None
+    """
 
-   with open(input_param_path,'r') as stream:
-      input_param_dict = load(stream,Loader=Loader)
+    with open(input_param_path, "r") as stream:
+        input_param_dict = load(stream, Loader=Loader)
 
-      # sort
-      input_param_dict = collections.OrderedDict(sorted(input_param_dict.items()))
+        # sort
+        input_param_dict = collections.OrderedDict(sorted(input_param_dict.items()))
 
+    f90filename = os.path.join(folder, f"param_to_yaml_{code_prefix}.f90")
 
-   f90filename = os.path.join(folder,f'param_to_yaml_{code_prefix}.f90')
+    unit = "ymlout"
 
-   unit = 'ymlout'
+    with open(f90filename, "w") as f90file:
+        print_header(f90file)
 
-   with open(f90filename, 'w') as f90file:
+        f90file.write((f"module {code_prefix}_autogen_output_yaml\n"))
+        f90file.write((f"   use yaml_utils, only: ymlout, python_bool\n"))
+        if code_prefix == "perturbo":
+            f90file.write((f"   use pert_param\n"))
+        elif code_prefix == "qe2pert":
+            f90file.write((f"   use input_param\n"))
+        else:
+            raise ValueError(
+                f"{code_prefix} can not be recognised and you may need to add an elif branch here!"
+            )
+        f90file.write((f"   implicit none\n"))
+        f90file.write((f"   private\n\n"))
+        f90file.write((f"   public :: auto_output_beforeconv_to_yaml\n"))
+        f90file.write((f"   public :: auto_output_afterconv_to_yaml\n"))
 
-      print_header(f90file)
+        f90file.write((f"\ncontains\n"))
+        f90file.write((f"subroutine auto_output_afterconv_to_yaml()\n"))
+        f90file.write((f"   implicit none\n"))
 
-      f90file.write( (f'module {code_prefix}_autogen_output_yaml\n') )
-      f90file.write( (f'   use yaml_utils, only: ymlout, python_bool\n') )
-      if code_prefix == 'perturbo':
-          f90file.write( (f'   use pert_param\n') )
-      elif code_prefix == 'qe2pert':
-          f90file.write( (f'   use input_param\n') )
-      else:
-          raise ValueError(f'{code_prefix} can not be recognised and you may need to add an elif branch here!')
-      f90file.write( (f'   implicit none\n') )
-      f90file.write( (f'   private\n\n') )
-      f90file.write( (f'   public :: auto_output_beforeconv_to_yaml\n') )
-      f90file.write( (f'   public :: auto_output_afterconv_to_yaml\n') )
+        for param_name, param_dict in input_param_dict.items():
+            if param_dict["type"] == "family":
+                continue
 
-      f90file.write( (f'\ncontains\n') )
-      f90file.write( (f'subroutine auto_output_afterconv_to_yaml()\n') )
-      f90file.write( (f'   implicit none\n') )
+            if "output" in param_dict.keys() and not param_dict["output"]:
+                continue
 
-      for param_name, param_dict in input_param_dict.items():
+            # some names used in the code are not the same as the names read
+            # from input
+            if "bcast_name" in param_dict.keys():
+                bcast_name = param_dict["bcast_name"]
+            else:
+                bcast_name = None
 
-         if param_dict['type'] == 'family':
-            continue
+            param_type = param_dict["type"]
 
-         if 'output' in param_dict.keys() and not param_dict['output']:
-            continue
+            dim = param_dict.get("dimensions", None)
 
-         # some names used in the code are not the same as the names read
-         # from input
-         if 'bcast_name' in param_dict.keys():
-            bcast_name = param_dict['bcast_name']
-         else:
-            bcast_name = None
+            fortran_write(
+                param_name, param_type, unit, f90file, dim=dim, bcast_name=bcast_name
+            )
 
-         param_type = param_dict['type']
+        f90file.write((f"\nend subroutine auto_output_afterconv_to_yaml\n\n"))
 
-         dim = param_dict.get('dimensions', None)
+        # before unit conversion
+        f90file.write(
+            (
+                f'! the "before conversion" variabls has not been broadcast to other nodes, so it can just be used in master (io) node.\n'
+            )
+        )
+        f90file.write((f"subroutine auto_output_beforeconv_to_yaml()\n"))
+        f90file.write((f"   implicit none\n"))
 
-         fortran_write(param_name, param_type, unit, f90file,
-                       dim = dim, bcast_name = bcast_name)
+        for param_name, param_dict in input_param_dict.items():
+            if param_dict["type"] == "family":
+                continue
 
-      f90file.write( (f'\nend subroutine auto_output_afterconv_to_yaml\n\n') )
+            if "output" in param_dict.keys() and not param_dict["output"]:
+                continue
 
-      # before unit conversion
-      f90file.write( (f'! the "before conversion" variabls has not been broadcast to other nodes, so it can just be used in master (io) node.\n') )
-      f90file.write( (f'subroutine auto_output_beforeconv_to_yaml()\n') )
-      f90file.write( (f'   implicit none\n') )
+            # here is different with the "after conversion", we just keep the variables on the master node
+            # also here use a poor-man trick
+            bcast_name = param_name + "_beforeconv"
+            ## some names used in the code are not the same as the names read
+            ## from input
+            # if 'bcast_name' in param_dict.keys():
+            #   bcast_name = param_dict['bcast_name']
+            # else:
+            #   bcast_name = None
 
-      for param_name, param_dict in input_param_dict.items():
+            param_type = param_dict["type"]
 
-         if param_dict['type'] == 'family':
-            continue
+            dim = param_dict.get("dimensions", None)
 
-         if 'output' in param_dict.keys() and not param_dict['output']:
-            continue
+            fortran_write(
+                param_name, param_type, unit, f90file, dim=dim, bcast_name=bcast_name
+            )
 
-         # here is different with the "after conversion", we just keep the variables on the master node
-         # also here use a poor-man trick
-         bcast_name = param_name + '_beforeconv'
-         ## some names used in the code are not the same as the names read
-         ## from input
-         #if 'bcast_name' in param_dict.keys():
-         #   bcast_name = param_dict['bcast_name']
-         #else:
-         #   bcast_name = None
-
-         param_type = param_dict['type']
-
-         dim = param_dict.get('dimensions', None)
-
-         fortran_write(param_name, param_type, unit, f90file,
-                       dim = dim, bcast_name = bcast_name)
-
-      f90file.write( (f'\nend subroutine auto_output_beforeconv_to_yaml\n\n') )
-      # normal keywords for module
-      f90file.write( (f'end module {code_prefix}_autogen_output_yaml\n') )
+        f90file.write((f"\nend subroutine auto_output_beforeconv_to_yaml\n\n"))
+        # normal keywords for module
+        f90file.write((f"end module {code_prefix}_autogen_output_yaml\n"))
 
 
 def autogen_declare_init_bcast_inputvariables(folder, input_param_path, code_prefix):
-   """
-   Generate an f90 file to declare all of the input parameters of Perturbo
+    """
+    Generate an f90 file to declare all of the input parameters of Perturbo
 
-   Parameters
-   -----
-      folder: str
-         A folder where the f90 file should be placed
-      input_param_path: str
-         path to a YAML files with the input parameters
-      code_prefix: str
-         name of the executable (without `.x`). `perturbo` or `qe2pert`
+    Parameters
+    -----
+       folder: str
+          A folder where the f90 file should be placed
+       input_param_path: str
+          path to a YAML files with the input parameters
+       code_prefix: str
+          name of the executable (without `.x`). `perturbo` or `qe2pert`
 
-   Returns
-   -----
-      None
-   """
+    Returns
+    -----
+       None
+    """
 
-   with open(input_param_path,'r') as stream:
-      input_param_dict = load(stream,Loader=Loader)
+    with open(input_param_path, "r") as stream:
+        input_param_dict = load(stream, Loader=Loader)
 
-      # sort
-      input_param_dict = collections.OrderedDict(sorted(input_param_dict.items()))
+        # sort
+        input_param_dict = collections.OrderedDict(sorted(input_param_dict.items()))
 
+    f90filename = os.path.join(folder, f"autogen_param_{code_prefix}.f90")
 
-   f90filename = os.path.join(folder,f'autogen_param_{code_prefix}.f90')
+    with open(f90filename, "w") as f90file:
+        print_header(f90file)
 
-   with open(f90filename, 'w') as f90file:
+        # normal keywords for module
+        f90file.write((f"module {code_prefix}_autogen_param\n"))
+        if code_prefix == "perturbo":
+            f90file.write((f"   use pert_const, only: dp\n"))
+        elif code_prefix == "qe2pert":
+            f90file.write((f"   use kinds, only: dp\n"))
+            f90file.write((f"   use io_files, only: prefix\n"))
+        else:
+            raise ValueError(
+                f"{code_prefix} can not be recognised and you may need to add an elif branch here!"
+            )
+        f90file.write((f"   implicit none\n"))
 
-      print_header(f90file)
+        cnt_param = 0
+        for param_name, param_dict in input_param_dict.items():
+            if param_dict["type"] == "family":
+                continue
+            cnt_param += 1  # do not shift this counting line below if-conditional line for "param_source"
 
-      # normal keywords for module
-      f90file.write( (f'module {code_prefix}_autogen_param\n') )
-      if code_prefix == 'perturbo':
-          f90file.write( (f'   use pert_const, only: dp\n') )
-      elif code_prefix == 'qe2pert':
-          f90file.write( (f'   use kinds, only: dp\n') )
-          f90file.write( (f'   use io_files, only: prefix\n') )
-      else:
-          raise ValueError(f'{code_prefix} can not be recognised and you may need to add an elif branch here!')
-      f90file.write( (f'   implicit none\n') )
+            param_source = param_dict.get("source", None)
 
-      cnt_param = 0
-      for param_name, param_dict in input_param_dict.items():
+            if param_source is not None and param_source != f"{code_prefix}":
+                continue
 
-         if param_dict['type'] == 'family':
-            continue
-         cnt_param += 1 # do not shift this counting line below if-conditional line for "param_source"
+            param_type = param_dict["type"]
 
-         param_source = param_dict.get('source', None)
+            param_attr = param_dict.get("attributes", None)
 
-         if param_source is not None and param_source != f'{code_prefix}':
-            continue
+            param_len = param_dict.get("len", None)
 
-         param_type = param_dict['type']
+            dim = param_dict.get("dimensions", "")
 
-         param_attr = param_dict.get('attributes', None)
+            description = param_dict.get("description", " Not yet")
 
-         param_len = param_dict.get('len', None)
+            fortran_declare_variable(
+                param_name,
+                param_type,
+                param_attr,
+                param_len,
+                f90file,
+                dim=dim,
+                description=description,
+            )
 
-         dim = param_dict.get('dimensions', '')
+        f90file.write("\n")
 
-         description = param_dict.get('description',' Not yet')
+        # before conversion
+        for param_name, param_dict in input_param_dict.items():
+            if param_dict["type"] == "family":
+                continue
 
-         fortran_declare_variable(param_name, param_type, param_attr, param_len, f90file, dim = dim, description=description)
+            param_type = param_dict["type"]
 
-      f90file.write('\n')
+            param_attr = param_dict.get("attributes", None)
 
-      # before conversion
-      for param_name, param_dict in input_param_dict.items():
+            param_len = param_dict.get("len", None)
 
-         if param_dict['type'] == 'family':
-            continue
+            dim = param_dict.get("dimensions", "")
 
-         param_type = param_dict['type']
+            description = param_dict.get("description", " Not yet")
 
-         param_attr = param_dict.get('attributes', None)
+            param_name += "_beforeconv"
+            description += " (before conversion of the unit)"
 
-         param_len = param_dict.get('len', None)
+            fortran_declare_variable(
+                param_name,
+                param_type,
+                param_attr,
+                param_len,
+                f90file,
+                dim=dim,
+                description=description,
+            )
 
-         dim = param_dict.get('dimensions', '')
+        # namelist
+        f90file.write((f"\n   namelist / {code_prefix} / & \n"))
+        cnt = 0
+        for param_name, param_dict in input_param_dict.items():
+            if param_dict["type"] == "family":
+                continue
+            cnt += 1
+            if cnt < cnt_param:
+                f90file.write((f"      {param_name}, & \n"))
+            else:
+                f90file.write((f"      {param_name}\n"))
 
-         description = param_dict.get('description',' Not yet')
+        f90file.write((f"\ncontains\n"))
+        f90file.write((f"subroutine autogen_init_input_param()\n"))
+        f90file.write((f"   implicit none\n"))
 
-         param_name += '_beforeconv'
-         description += " (before conversion of the unit)"
+        for param_name, param_dict in input_param_dict.items():
+            if param_dict["type"] == "family":
+                continue
 
-         fortran_declare_variable(param_name, param_type, param_attr, param_len, f90file, dim = dim, description=description)
+            param_value_default = param_dict.get("default", None)
 
+            if param_value_default is None:
+                continue
 
-      # namelist
-      f90file.write( (f'\n   namelist / {code_prefix} / & \n') )
-      cnt = 0
-      for param_name, param_dict in input_param_dict.items():
+            param_type = param_dict["type"]
 
-         if param_dict['type'] == 'family':
-            continue
-         cnt += 1
-         if cnt < cnt_param :
-             f90file.write( (f'      {param_name}, & \n') )
-         else:
-             f90file.write( (f'      {param_name}\n') )
+            dim = param_dict.get("dimensions", "")
 
+            fortran_init_variable(
+                param_name, param_type, param_value_default, f90file, dim=dim
+            )
 
+        f90file.write((f"\nend subroutine autogen_init_input_param\n\n"))
 
+        # broadcast from the main process
+        f90file.write((f"subroutine autogen_bcast_input_param()\n"))
 
-      f90file.write( (f'\ncontains\n') )
-      f90file.write( (f'subroutine autogen_init_input_param()\n') )
-      f90file.write( (f'   implicit none\n') )
+        if code_prefix == "perturbo":
+            f90file.write(
+                (f"   use qe_mpi_mod, only: meta_ionode_id, world_comm, mp_bcast\n")
+            )
+        elif code_prefix == "qe2pert":
+            f90file.write(
+                (
+                    f"   use io_global, only: ionode_id\n"
+                    f"   use mp_world, only: world_comm\n"
+                    f"   use mp, only: mp_bcast\n"
+                )
+            )
+        else:
+            raise ValueError(
+                f"{code_prefix} can not be recognised and you may need to add an elif branch here!"
+            )
+        f90file.write((f"   implicit none\n\n"))
 
-      for param_name, param_dict in input_param_dict.items():
+        if code_prefix == "perturbo":
+            param_bcast_processid, param_bcast_comm = "meta_ionode_id", "world_comm"
+        elif code_prefix == "qe2pert":
+            param_bcast_processid, param_bcast_comm = "ionode_id", "world_comm"
+        else:
+            raise ValueError(
+                f"{code_prefix} can not be recognised and you may need to add an elif branch here!"
+            )
 
-         if param_dict['type'] == 'family':
-            continue
+        for param_name, param_dict in input_param_dict.items():
+            if param_dict["type"] == "family":
+                continue
 
-         param_value_default = param_dict.get('default', None)
+            fortran_bcast_variable(
+                param_name,
+                f90file,
+                processid=param_bcast_processid,
+                commid=param_bcast_comm,
+            )
 
-         if param_value_default is None:
-             continue
+        f90file.write((f"\nend subroutine autogen_bcast_input_param\n\n"))
 
-         param_type = param_dict['type']
+        # store the data before conversion of the unit.
+        f90file.write((f"subroutine autogen_input_param_beforeconv()\n"))
+        f90file.write((f"   implicit none\n"))
 
-         dim = param_dict.get('dimensions', '')
+        assign_indent = " " * 3
+        for param_name, param_dict in input_param_dict.items():
+            if param_dict["type"] == "family":
+                continue
 
-         fortran_init_variable(param_name, param_type, param_value_default, f90file, dim = dim)
+            f90file.write((f"{assign_indent}{param_name}_beforeconv = {param_name}\n"))
 
-      f90file.write( (f'\nend subroutine autogen_init_input_param\n\n') )
+        f90file.write((f"\nend subroutine autogen_input_param_beforeconv\n\n"))
 
-      # broadcast from the main process
-      f90file.write( (f'subroutine autogen_bcast_input_param()\n') )
-
-
-
-
-      if code_prefix == 'perturbo':
-          f90file.write( (f'   use qe_mpi_mod, only: meta_ionode_id, world_comm, mp_bcast\n') )
-      elif code_prefix == 'qe2pert':
-          f90file.write( (f'   use io_global, only: ionode_id\n'
-                          f'   use mp_world, only: world_comm\n'
-                          f'   use mp, only: mp_bcast\n') )
-      else:
-          raise ValueError(f'{code_prefix} can not be recognised and you may need to add an elif branch here!')
-      f90file.write( (f'   implicit none\n\n') )
-
-      if code_prefix == 'perturbo':
-          param_bcast_processid, param_bcast_comm = 'meta_ionode_id', 'world_comm'
-      elif code_prefix == 'qe2pert':
-          param_bcast_processid, param_bcast_comm = 'ionode_id', 'world_comm'
-      else:
-          raise ValueError(f'{code_prefix} can not be recognised and you may need to add an elif branch here!')
-
-      for param_name, param_dict in input_param_dict.items():
-
-         if param_dict['type'] == 'family':
-            continue
-
-         fortran_bcast_variable(param_name, f90file, processid=param_bcast_processid, commid=param_bcast_comm)
-
-      f90file.write( (f'\nend subroutine autogen_bcast_input_param\n\n') )
-
-      # store the data before conversion of the unit.
-      f90file.write( (f'subroutine autogen_input_param_beforeconv()\n') )
-      f90file.write( (f'   implicit none\n') )
-
-      assign_indent = ' ' * 3
-      for param_name, param_dict in input_param_dict.items():
-
-         if param_dict['type'] == 'family':
-            continue
-
-         f90file.write( (f'{assign_indent}{param_name}_beforeconv = {param_name}\n') )
-
-      f90file.write( (f'\nend subroutine autogen_input_param_beforeconv\n\n') )
-
-      # normal keywords for module
-      f90file.write( (f'end module {code_prefix}_autogen_param\n') )
+        # normal keywords for module
+        f90file.write((f"end module {code_prefix}_autogen_param\n"))
