@@ -425,7 +425,7 @@ def write_param_to_yaml(folder, input_param_path, code_prefix):
 
         f90file.write(("\nend subroutine auto_output_beforeconv_to_yaml\n\n"))
         # normal keywords for module
-        f90file.write(("end module {code_prefix}_autogen_output_yaml\n"))
+        f90file.write((f"end module {code_prefix}_autogen_output_yaml\n"))
 
 
 def autogen_declare_init_bcast_inputvariables(folder, input_param_path, code_prefix):
@@ -452,13 +452,13 @@ def autogen_declare_init_bcast_inputvariables(folder, input_param_path, code_pre
         # sort
         input_param_dict = collections.OrderedDict(sorted(input_param_dict.items()))
 
-    f90filename = os.path.join(folder, "autogen_param_{code_prefix}.f90")
+    f90filename = os.path.join(folder, f"autogen_param_{code_prefix}.f90")
 
     with open(f90filename, "w") as f90file:
         print_header(f90file)
 
         # normal keywords for module
-        f90file.write(("module {code_prefix}_autogen_param\n"))
+        f90file.write((f"module {code_prefix}_autogen_param\n"))
         if code_prefix == "perturbo":
             f90file.write(("   use pert_const, only: dp\n"))
         elif code_prefix == "qe2pert":
