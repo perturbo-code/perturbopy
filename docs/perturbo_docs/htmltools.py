@@ -159,12 +159,12 @@ def lightendarken(color_hsl, percentage):
 
     if p <= 0.0:
         s = s0 * (1 + p)
-        l = l0 - p * (100 - l0)
+        l1 = l0 - p * (100 - l0)
     else:
         s = s0 + p * (100 - s0)
-        l = l0 * (1 - p)
+        l1 = l0 * (1 - p)
 
-    return "hsl(" + str(h0) + "," + str(s) + "%," + str(l) + "%)"
+    return "hsl(" + str(h0) + "," + str(s) + "%," + str(l1) + "%)"
 
 
 def print_value(value):
@@ -391,7 +391,8 @@ def print_inputs_to_html(fout, id_prefix, calc_mode_list):
             '<p style="font-size:140%; text-decoration: underline">Input File:\n'
         )
         fout.write(
-            '<button id="copy_button" style="float: right;" onclick="CopyToClipboard_from_id(\'{}\')" title="Click to copy input file to clipboard" ><i class="fa fa-copy"></i></button>\n'.format(
+            '<button id="copy_button" style="float: right;" onclick="CopyToClipboard_from_id(\'{}\')"'
+            ' title="Click to copy input file to clipboard" ><i class="fa fa-copy"></i></button>\n'.format(
                 calc_mode
             )
         )
@@ -423,7 +424,7 @@ def print_inputs_to_html(fout, id_prefix, calc_mode_list):
                 param = line.split("=")[0].strip("!").strip()
 
                 # when applied, transfrom param(1) to param
-                param = re.sub("\(.*\)", "", param)
+                param = re.sub(r"\(.*\)", "", param)
                 line = re.sub(
                     param, lpath + param + "_end1_" + param + "_end2", line, 1
                 )
@@ -471,7 +472,6 @@ def print_select_button_header(fout_name, yaml_dict):
         fex.write('  <option value="' + calc_mode + '">' + calc_mode + "</option>\n")
     fex.write("</select>\n")
     # copy to clipboard button
-    # fex.write('<button id="copy_button" style="display: none; float: right;" onclick="CopyToClipboard_from_id()" title="Click to copy input file to clipboard" class="hid_button"><i class="fa fa-copy fa-lg"></i></button>\n')
     fex.write("</p>\n")
 
     # fex.write('</br>'*2+'\n'*2)
