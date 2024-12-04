@@ -176,6 +176,7 @@ def filter_tests(all_test_list, tags, exclude_tags, epr, test_names, func_name, 
     ValueError
        if --test-names contains a name of a test that is not present
     """
+
     test_list = copy.deepcopy(all_test_list)
     test_tag_dict, epr_names = read_test_tags(func_name, source_folder)
     
@@ -187,11 +188,12 @@ def filter_tests(all_test_list, tags, exclude_tags, epr, test_names, func_name, 
 
     # sort based on tags
     if tags is not None or exclude_tags is not None or epr is not None:
+
         for test_name in all_test_list:
             if tags is not None:
-                
+
                 keep_test = np.intersect1d(np.array(test_tag_dict[test_name]), np.array(tags))
-                if keep_test.size == 0:
+                if keep_test.size == 0 and test_name in test_list:
                     test_list.remove(test_name)
 
             # exclude tags from command line
