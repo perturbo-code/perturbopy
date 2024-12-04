@@ -147,6 +147,8 @@ dynamics-run:
       boltz_acc_thr:
       boltz_nstep_min:
       ph_mode_exclude_ranges:
+      pump_pulse:
+      pump_pulse_fname:
 
 dynamics-pp:
    mandatory:

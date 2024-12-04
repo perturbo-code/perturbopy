@@ -93,7 +93,7 @@ def plot_recip_pt_labels(ax, labels, point_array, path_array, label_height="lowe
         for x in path_to_label:
             if show_line:
                 ax.axvline(x, c="lightgray")
-                #ax.text(x=x, y=label_height, s=label)
+                # ax.text(x=x, y=label_height, s=label)
 
     # Set tick positions and labels on the x-axis
     ax.set_xticks(tick_positions)

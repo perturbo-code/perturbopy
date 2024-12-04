@@ -292,6 +292,22 @@ boltz_init_dist:
    attributes: save
    description: Initial electron distribution at time zero.
 
+pump_pulse:
+   family: dynamics
+   type: logical
+   typical: False
+   default: False
+   attributes: save
+   description: "During first <code>pulse_num_steps</code> of dynamics, add extra occupations (hence the name, 'pump'). A file <code>pump_pulse.h5</code> (or specified name with <code>pump_pulse_fname</code>) must be present in the directory and it must have the following datasets: <code>pulse_num_steps</code>, <code>pulse_snap_t_[...]</code>, <code>time_step</code>."
+
+pump_pulse_fname:
+   family: dynamics
+   type: string
+   default: "'pump_pulse.h5'"
+   len: 80
+   attributes: save
+   description: Name of HDF5 file containing pump pulse information, refer to <code><a href=#pump_pulse>pump_pulse</a></code>.
+
 boltz_init_e0:
    family: dynamics
    type: real
