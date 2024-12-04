@@ -23,7 +23,7 @@ def main():
 
     html_path = "./"
 
-    input_template = "../../src/perturbopy/generate_input/input_template.yml"
+    input_template = "../../src/perturbopy/yml_files/input_template.yml"
     with open(input_template, "r") as stream:
         input_data = load(stream, Loader=Loader)
 
@@ -33,7 +33,7 @@ def main():
     # name of the html page
     fout_name = "./mydoc_param_qe2pert.html"
     # name of the yaml file that contains the info about the input parameters
-    yaml_dict = "../../src/perturbopy/generate_input/input_parameters_qe2pert.yml"
+    yaml_dict = "../../src/perturbopy/yml_files/input_parameters_qe2pert.yml"
     # title of the html page
     title = "Quantum Espresso to PERTURBO input parameters"
 
@@ -52,7 +52,7 @@ def main():
     # Parameters for perturbo.x
     #
     fout_name = "./mydoc_param_perturbo.html"
-    yaml_dict = "../../src/perturbopy/generate_input/input_parameters_perturbo.yml"
+    yaml_dict = "../../src/perturbopy/yml_files/input_parameters_perturbo.yml"
     title = "PERTURBO input parameters"
 
     print("Generating " + fout_name + " ...")
@@ -74,7 +74,7 @@ def main():
     # For perturo.x: output
     print("param_to_yaml_perturbo.f90")
     input_param_path = (
-        "../../src/perturbopy/generate_input/input_parameters_perturbo.yml"
+        "../../src/perturbopy/yml_files/input_parameters_perturbo.yml"
     )
     f90tools.write_param_to_yaml("./", input_param_path, "perturbo")
 
@@ -87,7 +87,7 @@ def main():
     # For qe2pert.x
     print("param_to_yaml_qe2pert.f90")
     input_param_path = (
-        "../../src/perturbopy/generate_input/input_parameters_qe2pert.yml"
+        "../../src/perturbopy/yml_files/input_parameters_qe2pert.yml"
     )
     f90tools.write_param_to_yaml("./", input_param_path, "qe2pert")
 

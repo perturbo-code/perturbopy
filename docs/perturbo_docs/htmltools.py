@@ -447,7 +447,7 @@ def print_select_button_header(fout_name, yaml_dict):
     """
 
     with open(
-        "../../src/perturbopy/generate_input/input_parameters_perturbo.yml", "r"
+        "../../src/perturbopy/yml_files/input_parameters_perturbo.yml", "r"
     ) as stream:
         param_data_perturbo = load(stream, Loader=Loader)
 

@@ -77,7 +77,7 @@ def create_graph_dict(data_dict):
 #
 # Load the files description files
 #
-workflow_filename = "files_description.yml"
+workflow_filename = "../../src/perturbopy/yml_files/files_description.yml"
 
 with open(workflow_filename, "r") as stream:
     files_desc_dict = load(stream, Loader=Loader)
@@ -85,7 +85,7 @@ with open(workflow_filename, "r") as stream:
 #
 # Load the workflow.yml file
 #
-workflow_filename = "workflow.yml"
+workflow_filename = "../../src/perturbopy/yml_files/workflow.yml"
 
 with open(workflow_filename, "r") as stream:
     workflow_dict = load(stream, Loader=Loader)
