@@ -151,6 +151,10 @@ prefix_popu.h5:
    obtained from: dynamics-pp
    format example: mydoc_dynamics.html#popu_h5_file
 
+pump_pulse.h5:
+   type: HDF5
+   description: "[OPTIONAL] HDF5 file containing the pump pulse information, used if <code>pump_pulse=.true.</code>"
+
 prefix.trans_coef:
    type: text
    description: Seebeck coefficient.

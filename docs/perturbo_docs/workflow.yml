@@ -146,6 +146,7 @@ dynamics-run:
    - prefix_epr.h5
    - prefix.temper
    - prefix_tet.h5
+   - pump_pulse.h5  
  outputs:
    - prefix_dynamics-run.yml
    - prefix_cdyna.h5
