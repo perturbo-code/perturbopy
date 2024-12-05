@@ -89,6 +89,7 @@ trans:
    mandatory:
       boltz_kdim:
       ftemper:
+      scat_impl:
 
    optional:
       boltz_qdim:
@@ -127,6 +128,7 @@ dynamics-run:
       output_nstep:
       time_step:
       boltz_init_dist:
+      scat_impl:
 
    optional:
       solver:

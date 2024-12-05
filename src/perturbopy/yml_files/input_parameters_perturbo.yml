@@ -267,11 +267,12 @@ scat_impl:
    family: job_control
    type: string
    options:
-      "'std'": data structure for CPU scenario.
-      "'tgt'": data structure for GPU scenario.
+      "'std'": Standard CPU-friendly carrier dynamics implementation; reduced memory usage requirements
+      "'tgt'": \"Target-oriented\" GPU-friendly carrier dynamics implementation; increased memory usage requirements
    default: "'std'"
+   len: 10
    attributes: save
-   description: "The data structure for transport and dynamics"
+   description: "Specify which carrier-dynamics implementation to use, either 'std' for the standard CPU-friendly implementation, or 'tgt' for the GPU-friendly target-oriented implementation."
 
 nsamples:
    family: job_control
@@ -380,17 +381,6 @@ ph_mode_exclude_ranges:
    default: -1
    attributes: save
    description: "Specify the phonon modes to exclude in rt-BTE: the g2 factor will be set to zero for these modes. The modes to exclude are specified with ranges, e.g. to exclude modes from 2 to 5, write in the input file: <code>ph_mode_exclude_ranges(1,:)=2,5 </code>. To add another range to exclude, specify <code>ph_mode_exclude_ranges(2,:)=7,10 </code>. One can use up to 30 ranges. To exclude one mode, set first and second number to the phonon mode index. The indices of the phonon modes to exclude must be smaller than the total number of modes in a system."
-
-cdyn_impl:
-   family: dynamics
-   type: string
-   options:
-      "'std'": Standard CPU-friendly carrier dynamics implementation; reduced memory usage requirements
-      "'tgt'": \"Target-oriented\" GPU-friendly carrier dynamics implementation; increased memory usage requirements
-   default: "'std'"
-   len: 3
-   attributes: save
-   description: "Specify which carrier-dynamics implementation to use, either 'std' for the standard CPU-friendly implementation, or 'tgt' for the GPU-friendly target-oriented implementation."
 
 use_mem:
    family: job_control
