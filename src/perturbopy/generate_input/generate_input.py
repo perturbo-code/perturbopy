@@ -199,7 +199,7 @@ def write_parameter_to_input(finput, param, executable, args, param_data, option
             if args.__dict__['prefix'] is not None:
                 param_value = re.sub('prefix', args.__dict__['prefix'], param_value)
             # finput.write('{:20} = \'{}\'\n'.format(str_key,param_value))
-            finput.write('{:20} = {}\n'.format(str_key, param_value))
+            finput.write('{:20} = \'{}\'\n'.format(str_key, param_value))
    
     elif param_type == 'logical':
         true_false = param_value
