@@ -5,27 +5,27 @@ from perturbopy.postproc.dbs.recip_pt_db import RecipPtDB
 from perturbopy.postproc.utils.plot_tools import plot_dispersion, plot_recip_pt_labels, plot_vals_on_bands
 
 
-class Ephmat(CalcMode):
+class EphmatSpin(CalcMode):
     """
-    Class representation of a Perturbo ephmat calculation.
+    Class representation of a Perturbo ephmat_spin calculation.
 
     Attributes
     ----------
     kpt : RecipPtDB
-       Database for the k-points used in the ephmat calculation, containing N points.
+       Database for the k-points used in the ephmat_spin calculation, containing N points.
     
     qpt : RecipPtDB
-       Database for the q-points used in the ephmat calculation, containing M points.
+       Database for the q-points used in the ephmat_spin calculation, containing M points.
     
     phdisp : UnitsDict
-       Database for the phonon energies computed by the ephmat calculation. The keys are
+       Database for the phonon energies computed by the ephmat_spin calculation. The keys are
        the phonon mode, and the values are an array (of length M) containing the energies at each q-point
        with units phdisp.units
     
     ephmat : UnitsDict
-       Database for the e-ph matrix elements computed by the ephmat calculation. The keys are
+       Database for the e-ph spin flip matrix elements computed by the ephmat_spin calculation. The keys are
        the phonon mode, and the values are an array (of length NxM) where element (n, m)
-       is the e-ph matrix element (units ephmat.units) between an electron at k-point n and phonon at q-point m
+       is the e-ph spin flip matrix element (units ephmat.units) between an electron at k-point n and phonon at q-point m
     
     defpot : UnitsDict
        Database for the deformation potentials computed by the phdisp calculation. The keys are
@@ -41,30 +41,30 @@ class Ephmat(CalcMode):
         Parameters
         ----------
         pert_dict : dict
-            Dictionary containing the inputs and outputs from the ephmat calculation.
+            Dictionary containing the inputs and outputs from the ephmat_spin calculation.
 
         """
         super().__init__(pert_dict)
 
-        if self.calc_mode != 'ephmat':
-            raise ValueError('Calculation mode for a Ephmat object should be "ephmat"')
+        if self.calc_mode != 'ephmat_spin':
+            raise ValueError('Calculation mode for a EphmatSpin object should be "ephmat_spin"')
 
-        phdisp_units = self._pert_dict['ephmat'].pop('phonon energy units')
-        defpot_units = self._pert_dict['ephmat'].pop('deformation potential units')
-        ephmat_units = self._pert_dict['ephmat'].pop('e-ph matrix elements units')
-        nmode = self._pert_dict['ephmat'].pop('number of phonon modes')
+        phdisp_units = self._pert_dict['ephmat_spin'].pop('phonon energy units')
+        defpot_units = self._pert_dict['ephmat_spin'].pop('deformation potential units')
+        ephmat_units = self._pert_dict['ephmat_spin'].pop('e-ph matrix elements units')
+        nmode = self._pert_dict['ephmat_spin'].pop('number of phonon modes')
 
-        kpath_units = self._pert_dict['ephmat'].pop('k-path coordinate units')
-        kpath = np.array(self._pert_dict['ephmat'].pop('k-path coordinates'))
-        kpoint_units = self._pert_dict['ephmat'].pop('k-point coordinate units')
-        kpoint = np.array(self._pert_dict['ephmat'].pop('k-point coordinates'))
+        kpath_units = self._pert_dict['ephmat_spin'].pop('k-path coordinate units')
+        kpath = np.array(self._pert_dict['ephmat_spin'].pop('k-path coordinates'))
+        kpoint_units = self._pert_dict['ephmat_spin'].pop('k-point coordinate units')
+        kpoint = np.array(self._pert_dict['ephmat_spin'].pop('k-point coordinates'))
         
-        qpath_units = self._pert_dict['ephmat'].pop('q-path coordinate units')
-        qpath = np.array(self._pert_dict['ephmat'].pop('q-path coordinates'))
-        qpoint_units = self._pert_dict['ephmat'].pop('q-point coordinate units')
-        qpoint = np.array(self._pert_dict['ephmat'].pop('q-point coordinates'))
+        qpath_units = self._pert_dict['ephmat_spin'].pop('q-path coordinate units')
+        qpath = np.array(self._pert_dict['ephmat_spin'].pop('q-path coordinates'))
+        qpoint_units = self._pert_dict['ephmat_spin'].pop('q-point coordinate units')
+        qpoint = np.array(self._pert_dict['ephmat_spin'].pop('q-point coordinates'))
 
-        ephmat_dat = self._pert_dict['ephmat'].pop('phonon mode')
+        ephmat_dat = self._pert_dict['ephmat_spin'].pop('phonon mode')
         
         self.kpt = RecipPtDB.from_lattice(kpoint, kpoint_units, self.lat, self.recip_lat, kpath, kpath_units)
         self.qpt = RecipPtDB.from_lattice(qpoint, qpoint_units, self.lat, self.recip_lat, qpath, qpath_units)
@@ -93,7 +93,7 @@ class Ephmat(CalcMode):
         ----------
         ax : matplotlib.axes.Axes
            Axis on which to plot the phdisp.
-        
+
         show_qpoint_labels : bool, optional
            If true, the q-point labels stored in the labels attribute will be shown on the plot. Default true.
 
@@ -147,7 +147,7 @@ class Ephmat(CalcMode):
 
     def plot_ephmat(self, ax, kpoint_idx=0, show_qpoint_labels=True, **kwargs):
         """
-        Method to plot e-ph matrix elements as a colormap overlaid on the phonon dispersion.
+        Method to plot the e-ph spin-flip matrix elements as a colormap overlaid on the phonon dispersion.
 
         Parameters
         ----------
@@ -157,7 +157,7 @@ class Ephmat(CalcMode):
         kpoint_idx : int, optional
             Index of the k-point to plot the e-ph elements for. E-ph elements will be plotted along q-points, at this k-point
             By default, it will be the first k-point.
-        
+
         show_qpoint_labels : bool, optional
            If true, the q-point labels stored in the labels attribute will be shown on the plot. Default true.
 
@@ -173,7 +173,7 @@ class Ephmat(CalcMode):
         for key, val in self.ephmat.items():
             values[key] = self.ephmat[key][kpoint_idx, :]
 
-        ax = plot_vals_on_bands(ax, self.qpt.path, self.phdisp, self.phdisp.units, values=values, label=r'$|g|$', **kwargs)
+        ax = plot_vals_on_bands(ax, self.qpt.path, self.phdisp, self.phdisp.units, values=values, label=r'$|g flip|$', **kwargs)
 
         if show_qpoint_labels:
             ax = plot_recip_pt_labels(ax, self.qpt.labels, self.qpt.points, self.qpt.path)
