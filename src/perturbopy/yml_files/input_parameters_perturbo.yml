@@ -204,6 +204,7 @@ delta_smear:
 full_ite:
    family: bte
    type: logical
+#  default: False
    default: True
    attributes: save
    description: Solve BTE with both E- and T-fields iteratively.
@@ -223,6 +224,13 @@ trans_thr:
    default: 0.002
    attributes: save
    description: Threshold for the iterative procedure.
+
+lmagsym:
+   family: bte
+   type: logical
+   default: False
+   attributes: save
+   description: Use magnetic symmetry with axis along z.
 
 polar_split:
    family: polar_correction
@@ -254,6 +262,16 @@ cauchy_scale:
    default: 0.05
    attributes: save
    description: Scale parameter gamma for the Cauchy distribution; used when <code><a href="#sampling">sampling</a>='cauchy'</code>. 
+
+scat_impl:
+   family: job_control
+   type: string
+   options:
+      "'std'": data structure for CPU scenario.
+      "'tgt'": data structure for GPU scenario.
+   default: "'std'"
+   attributes: save
+   description: "The data structure for transport and dynamics"
 
 nsamples:
    family: job_control
@@ -363,6 +381,17 @@ ph_mode_exclude_ranges:
    attributes: save
    description: "Specify the phonon modes to exclude in rt-BTE: the g2 factor will be set to zero for these modes. The modes to exclude are specified with ranges, e.g. to exclude modes from 2 to 5, write in the input file: <code>ph_mode_exclude_ranges(1,:)=2,5 </code>. To add another range to exclude, specify <code>ph_mode_exclude_ranges(2,:)=7,10 </code>. One can use up to 30 ranges. To exclude one mode, set first and second number to the phonon mode index. The indices of the phonon modes to exclude must be smaller than the total number of modes in a system."
 
+cdyn_impl:
+   family: dynamics
+   type: string
+   options:
+      "'std'": Standard CPU-friendly carrier dynamics implementation; reduced memory usage requirements
+      "'tgt'": \"Target-oriented\" GPU-friendly carrier dynamics implementation; increased memory usage requirements
+   default: "'std'"
+   len: 3
+   attributes: save
+   description: "Specify which carrier-dynamics implementation to use, either 'std' for the standard CPU-friendly implementation, or 'tgt' for the GPU-friendly target-oriented implementation."
+
 use_mem:
    family: job_control
    type: logical 
@@ -378,4 +407,100 @@ find_efermi:
    typical: False
    attributes: save 
    description: Flag to indicate whether to find the Fermi energy, which means fix the Fermi energy or occupancy.
+
+cum_inner_emin:
+   family: job_control
+   type: real
+   default: -0.1
+   typical: -0.1
+   attributes: save
+   description: Lower boundry for inner window when do cumulant calculation
+
+cum_inner_emax:
+   family: job_control
+   type: real
+   default: 0.1
+   typical: 0.1
+   attributes: save
+   description: Upper boundry for inner window when do cumulant calculation
+
+cum_outer_emin:
+   family: job_control
+   type: real
+   default: -0.1 
+   typical: -0.1
+   attributes: save
+   description: Lower boundry for outer window when do cumulant calculation
+
+cum_outer_emax:
+   family: job_control
+   type: real
+   default: 0.1
+   typical: 0.1
+   attributes: save
+   description: Upper boundry for outer window when do cumulant calculation
+
+cum_de:
+   family: job_control
+   type: real
+   default: 0.1
+   typical: 0.1
+   attributes: save
+   description: "Energy difference. Decide output spectral energy step with spectral : cum_de / spectral_np"
+
+spectral_emin:
+   family: job_control
+   type: real
+   default: -0.1
+   typical: -0.1
+   attributes: save
+   description: lower boundry of spectral energy scale
+
+spectral_emax:
+   family: job_control
+   type: real
+   default: 0.1
+   typical: 0.1
+   attributes: save
+   description: upper boundry of spectral energy scale
+
+cum_outer_np:
+   family: job_control
+   type: integer
+   default: 1
+   typical: 1
+   attributes: save 
+   description: Number of points of outer window 
+
+spectral_np:
+   family: job_control
+   type: integer
+   default: 1
+   typical: 1
+   attributes: save
+   description: "Number of points in the energy window. Decide output spectral energy step with cum_de: cum_de / spectral_np"
+
+GPU_iter:
+   family: job_control
+   type: integer
+   typical: 50
+   default: 1
+   attributes: save
+   description: "Number of iterations for better timing Statistics of GPU implementation (target method). The RTA and ITA will run 'GPU_iter' times to make sure that the runtime of GPU code is stable, especially for transport converged in several iterations. "
+
+CPU_iter:
+   family: job_control
+   type: integer
+   typical: 20
+   default: 1
+   attributes: save
+   description: "Number of iterations for better timing Statistics of CPU implementation (standard method). The RTA and ITA will run 'CPU_iter' times to make sure that the runtime of CPU code is stable, especially for transport converged in several iterations. "
+
+tgt_size_seq:
+   family: job_control
+   type: integer
+   typical: 256
+   default: 256
+   attributes: save
+   description: "Size of the target used for tradeoff between speedup and overload when using 'tgt' as the data structure for GPU specifically. The summation over the elements of targets above `tgt_size_seq` will done by OpenACC reduciton parallelly, while that below 'tgt_size_seq' will done serially."
 ...
