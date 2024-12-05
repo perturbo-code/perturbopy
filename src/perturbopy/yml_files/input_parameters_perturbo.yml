@@ -95,7 +95,7 @@ debug:
 yaml_fname:
    family: job_control
    type: string
-   default: "'pert_output.yml'"
+   default: "'.yml'"
    len: 80
    attributes: save
    description: Name of the YAML output file. If the parameter (<code>yaml_fname</code>) is not changed by the user, the output name of the YAML file will be {prefix}_{calc_mode}.yml. For example, for Si bands calculation, the YAML file would be called si_bands.yml.
