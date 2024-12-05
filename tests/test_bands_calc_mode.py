@@ -94,3 +94,25 @@ def test_effective_mass(gaas_bands, n, kpoint, max_distance, direction, expected
     print(gaas_bands.bands)
     m = gaas_bands.effective_mass(n, kpoint, max_distance, direction)
     assert(np.isclose(expected_m, m))
+
+@pytest.mark.parametrize("show_kpoint_labels", [
+                        (False), (True)
+])
+def test_plot_bands(gaas_bands, plt, show_kpoint_labels, with_plt):
+    """
+    Method to test bands.plot_bands function.
+
+    Method to plot the band structure.
+
+    Parameters
+    ----------
+    show_kpoint_labels : bool, optional
+        If true, the k-point labels stored in the labels attribute will be shown on the plot. Default true.
+
+    """
+    
+    if not with_plt:
+        pytest.skip("Test requires pytest-plt")
+
+    fig, ax = plt.subplots()
+    ppy.Bands.plot_bands(gaas_bands, ax, show_kpoint_labels)

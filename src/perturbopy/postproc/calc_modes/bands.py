@@ -229,9 +229,6 @@ class Bands(CalcMode):
         ax : matplotlib.axes.Axes
            Axis on which to plot the bands.
 
-        energy_window : tuple of int, optional
-           The range of band energies to be shown on the y-axis.
-
         show_kpoint_labels : bool, optional
            If true, the k-point labels stored in the labels attribute will be shown on the plot. Default true.
 

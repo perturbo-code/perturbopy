@@ -104,7 +104,7 @@ def plot_recip_pt_labels(ax, labels, point_array, path_array, label_height="lowe
 
 def set_energy_window(ax, energy_window):
     """"
-    Method to add reciprocal point labels to the plot
+    Method to set the energy window (y-axis) of the plot
 
     Parameters
     ----------
@@ -178,7 +178,7 @@ def plot_dispersion(ax, path, energies, energy_units, c="k", ls='-', energy_wind
 
 def plot_vals_on_bands(ax, path, energies, energy_units, values, cmap='YlOrRd', label='values', log=False, energy_window=None):
     """
-    Method to plot the dispersion (phonon dispersion or band structure).
+    Method to plot normalized colormap overlaid on the dispersion (phonon dispersion or band structure).
 
     Parameters
     ----------
@@ -198,6 +198,13 @@ def plot_vals_on_bands(ax, path, energies, energy_units, values, cmap='YlOrRd', 
 
     cmap : str
        Matplotlib cmap for plotting values.
+
+    label : str
+       Label for the values mapped on the colormap
+
+    log : bool, optional
+       If true, values will be normalized using log scale. If false, values will be normalized using linear scale.
+       By default, true.
 
     energy_window : tuple, optional
        Tuple with the lower and upper bound of the chosen energy window

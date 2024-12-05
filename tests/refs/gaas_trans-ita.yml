@@ -1,0 +1,893 @@
+---
+program: perturbo
+
+start date and time:
+   date: 12 November 2024
+   time: "14:44:28"
+
+parallelization:
+   type: MPI+OpenMP
+   number of MPI tasks:  16
+   number of OpenMP threads:   8
+   number of nodes:   2
+
+input parameters:
+   before conversion (before reading from epr file):
+      band_max:                  10
+      band_min:                   9
+      boltz_acc_thr:           0.0000000000000000E+00
+      boltz_de:           1.0000000000000000E+00
+      boltz_efield:          [ 0.0000000000000000E+00,   0.0000000000000000E+00,   0.0000000000000000E+00,  ]
+      boltz_emax:           1.0000000000000000E+01
+      boltz_emin:           9.5000000000000000E+00
+      boltz_init_dist:          
+      boltz_init_e0:          -9.9990000000000000E+03
+      boltz_init_smear:           2.0000000000000000E+01
+      boltz_kdim:          [        80,          80,          80,  ]
+      boltz_norm_dist:          False
+      boltz_nstep:                  50
+      boltz_nstep_min:                   1
+      boltz_qdim:          [        80,          80,          80,  ]
+      calc_mode:          trans-ita
+      cauchy_scale:           5.0000000000000003E-02
+      cdyn_impl:          std
+      cum_de:           1.0000000000000001E-01
+      cum_inner_emax:           1.0000000000000001E-01
+      cum_inner_emin:          -1.0000000000000001E-01
+      cum_outer_emax:           1.0000000000000001E-01
+      cum_outer_emin:          -1.0000000000000001E-01
+      cum_outer_np:                   1
+      debug:          False
+      delta_smear:           8.0000000000000000E+00
+      find_efermi:          False
+      fklist:          
+      fqlist:          
+      ftemper:          gaas.temper
+      full_ite:          True 
+      hole:          False
+      lmagsym:          False
+      load_scatter_eph:          False
+      nsamples:              100000
+      output_nstep:                   1
+      phfreq_cutoff:           2.0000000000000000E+00
+      polar_split:          
+      prefix:          gaas
+      sampling:          uniform
+      solver:          rk4
+      spectral_emax:           1.0000000000000001E-01
+      spectral_emin:          -1.0000000000000001E-01
+      spectral_np:                   1
+      time_step:           1.0000000000000000E+00
+      tmp_dir:          ./tmp/
+      trans_thr:           2.0000000000000000E-03
+      use_mem:          True 
+      yaml_fname:          pert_output.yml
+   after conversion:
+      band_max:                  10
+      band_min:                   9
+      boltz_acc_thr:           0.0000000000000000E+00
+      boltz_de:           7.3498617648950546E-05
+      boltz_efield:          [ 0.0000000000000000E+00,   0.0000000000000000E+00,   0.0000000000000000E+00,  ]
+      boltz_emax:           7.3498617648950548E-01
+      boltz_emin:           6.9823686766503024E-01
+      boltz_init_dist:          
+      boltz_init_e0:          -7.3491267787185654E+02
+      boltz_init_smear:           1.4699723529790110E-03
+      boltz_kdim:          [        80,          80,          80,  ]
+      boltz_norm_dist:          False
+      boltz_nstep:                  50
+      boltz_nstep_min:                   1
+      boltz_qdim:          [        80,          80,          80,  ]
+      calc_mode:          trans-ita
+      cauchy_scale:           5.0000000000000003E-02
+      cdyn_impl:          std
+      cum_de:           7.3498617648950550E-06
+      cum_inner_emax:           7.3498617648950553E-03
+      cum_inner_emin:          -7.3498617648950553E-03
+      cum_outer_emax:           7.3498617648950553E-03
+      cum_outer_emin:          -7.3498617648950553E-03
+      cum_outer_np:                   1
+      debug:          False
+      delta_smear:           5.8798894119160437E-04
+      find_efermi:          False
+      fklist:          
+      fqlist:          
+      ftemper:          gaas.temper
+      full_ite:          True 
+      hole:          False
+      lmagsym:          False
+      load_scatter_eph:          False
+      nsamples:              100000
+      output_nstep:                   1
+      phfreq_cutoff:           1.4699723529790109E-04
+      polar_split:          
+      prefix:          gaas
+      sampling:          uniform
+      solver:          rk4
+      spectral_emax:           7.3498617648950553E-03
+      spectral_emin:          -7.3498617648950553E-03
+      spectral_np:                   1
+      time_step:           2.0670686467503085E+01
+      tmp_dir:          ./tmp/
+      trans_thr:           2.0000000000000000E-03
+      use_mem:          True 
+      yaml_fname:          gaas_trans-ita.yml
+
+
+basic data:
+   alat:          10.5700000000
+   alat units:       bohr
+   # a vector is a row
+   lattice vectors:
+         - [  -0.50000,     0.00000,     0.50000,  ]
+         - [   0.00000,     0.50000,     0.50000,  ]
+         - [  -0.50000,     0.50000,     0.00000,  ]
+   lattice vectors units:       alat
+   reciprocal lattice vectors:
+   # a vector is a row
+         - [  -1.00000,    -1.00000,     1.00000,  ]
+         - [   1.00000,     1.00000,     1.00000,  ]
+         - [  -1.00000,     1.00000,    -1.00000,  ]
+   reciprocal lattice vectors units:       2pi/alat
+   number of atoms in unit cell:                2
+   atomic positions:
+   # a vector is a row
+         - [   0.25000,     0.25000,     0.25000,  ]
+         - [   0.00000,     0.00000,     0.00000,  ]
+   atomic positions units:       alat
+   volume:         295.2330482500
+   volume units:       bohr^3
+   number of symmetry operations:               24
+   symop:
+      1:
+         - [    1,      0,      0,  ]
+         - [    0,      1,      0,  ]
+         - [    0,      0,      1,  ]
+      2:
+         - [    0,      1,      0,  ]
+         - [    1,      0,      0,  ]
+         - [   -1,     -1,     -1,  ]
+      3:
+         - [   -1,     -1,     -1,  ]
+         - [    0,      0,      1,  ]
+         - [    0,      1,      0,  ]
+      4:
+         - [    0,      0,      1,  ]
+         - [   -1,     -1,     -1,  ]
+         - [    1,      0,      0,  ]
+      5:
+         - [   -1,     -1,     -1,  ]
+         - [    0,      1,      0,  ]
+         - [    1,      0,      0,  ]
+      6:
+         - [    0,      0,      1,  ]
+         - [    1,      0,      0,  ]
+         - [    0,      1,      0,  ]
+      7:
+         - [    1,      0,      0,  ]
+         - [    0,      0,      1,  ]
+         - [   -1,     -1,     -1,  ]
+      8:
+         - [    0,      1,      0,  ]
+         - [   -1,     -1,     -1,  ]
+         - [    0,      0,      1,  ]
+      9:
+         - [    0,      0,      1,  ]
+         - [    0,      1,      0,  ]
+         - [   -1,     -1,     -1,  ]
+      10:
+         - [   -1,     -1,     -1,  ]
+         - [    1,      0,      0,  ]
+         - [    0,      0,      1,  ]
+      11:
+         - [    0,      1,      0,  ]
+         - [    0,      0,      1,  ]
+         - [    1,      0,      0,  ]
+      12:
+         - [    1,      0,      0,  ]
+         - [   -1,     -1,     -1,  ]
+         - [    0,      1,      0,  ]
+      13:
+         - [    0,      1,      0,  ]
+         - [    1,      0,      0,  ]
+         - [    0,      0,      1,  ]
+      14:
+         - [    1,      0,      0,  ]
+         - [    0,      1,      0,  ]
+         - [   -1,     -1,     -1,  ]
+      15:
+         - [    0,      0,      1,  ]
+         - [   -1,     -1,     -1,  ]
+         - [    0,      1,      0,  ]
+      16:
+         - [   -1,     -1,     -1,  ]
+         - [    0,      0,      1,  ]
+         - [    1,      0,      0,  ]
+      17:
+         - [    1,      0,      0,  ]
+         - [    0,      0,      1,  ]
+         - [    0,      1,      0,  ]
+      18:
+         - [   -1,     -1,     -1,  ]
+         - [    0,      1,      0,  ]
+         - [    0,      0,      1,  ]
+      19:
+         - [    0,      1,      0,  ]
+         - [   -1,     -1,     -1,  ]
+         - [    1,      0,      0,  ]
+      20:
+         - [    0,      0,      1,  ]
+         - [    1,      0,      0,  ]
+         - [   -1,     -1,     -1,  ]
+      21:
+         - [    1,      0,      0,  ]
+         - [   -1,     -1,     -1,  ]
+         - [    0,      0,      1,  ]
+      22:
+         - [    0,      0,      1,  ]
+         - [    0,      1,      0,  ]
+         - [    1,      0,      0,  ]
+      23:
+         - [    0,      1,      0,  ]
+         - [    0,      0,      1,  ]
+         - [   -1,     -1,     -1,  ]
+      24:
+         - [   -1,     -1,     -1,  ]
+         - [    1,      0,      0,  ]
+         - [    0,      1,      0,  ]
+   kc dimensions:
+         - [      2,        2,        2,  ]
+   spinor:       True 
+   polar_alpha:           1.0000000000
+   epsil:
+   # a vector is a row
+         - [     59.47524622,        0.00000000,        0.00000000,  ]
+         - [      0.00000000,       59.47524622,        0.00000000,  ]
+         - [      0.00000000,        0.00000000,       59.47524622,  ]
+   qc dimensions:
+         - [      2,        2,        2,  ]
+   mass:
+      -       68287.22558219
+      -       63548.62696226
+   mass units:       atomic
+   zstar:
+      1:
+         - [  -2.45173,     0.00000,     0.00000,  ]
+         - [   0.00000,    -2.45173,     0.00000,  ]
+         - [   0.00000,     0.00000,    -2.45173,  ]
+      2:
+         - [   2.45173,    -0.00000,    -0.00000,  ]
+         - [   0.00000,     2.45173,    -0.00000,  ]
+         - [   0.00000,    -0.00000,     2.45173,  ]
+   system_2d:       False
+   number of Wannier functions:               16
+   wannier_center:
+   # a vector is a row
+         - [   0.31925,     0.31925,     0.31925,  ]
+         - [   0.31925,     0.31925,     0.31925,  ]
+         - [   0.31925,     0.18075,     0.18075,  ]
+         - [   0.31925,     0.18075,     0.18075,  ]
+         - [   0.18075,     0.31925,     0.18075,  ]
+         - [   0.18075,     0.31925,     0.18075,  ]
+         - [   0.18075,     0.18075,     0.31925,  ]
+         - [   0.18075,     0.18075,     0.31925,  ]
+         - [   0.04586,     0.04586,     0.04586,  ]
+         - [   0.04586,     0.04586,     0.04586,  ]
+         - [   0.04586,    -0.04586,    -0.04586,  ]
+         - [   0.04586,    -0.04586,    -0.04586,  ]
+         - [  -0.04586,     0.04586,    -0.04586,  ]
+         - [  -0.04586,     0.04586,    -0.04586,  ]
+         - [  -0.04586,    -0.04586,     0.04586,  ]
+         - [  -0.04586,    -0.04586,     0.04586,  ]
+   wannier_center units: cartesian
+   wannier_center_cryst:
+   # a vector is a row
+         - [  -0.31925,     0.95776,    -0.31925,  ]
+         - [  -0.31925,     0.95776,    -0.31925,  ]
+         - [  -0.31925,     0.68075,    -0.31925,  ]
+         - [  -0.31925,     0.68075,    -0.31925,  ]
+         - [  -0.31925,     0.68075,    -0.04224,  ]
+         - [  -0.31925,     0.68075,    -0.04224,  ]
+         - [  -0.04224,     0.68075,    -0.31925,  ]
+         - [  -0.04224,     0.68075,    -0.31925,  ]
+         - [  -0.04586,     0.13759,    -0.04586,  ]
+         - [  -0.04586,     0.13759,    -0.04586,  ]
+         - [  -0.04586,    -0.04586,    -0.04586,  ]
+         - [  -0.04586,    -0.04586,    -0.04586,  ]
+         - [  -0.04586,    -0.04586,     0.13759,  ]
+         - [  -0.04586,    -0.04586,     0.13759,  ]
+         - [   0.13759,    -0.04586,    -0.04586,  ]
+         - [   0.13759,    -0.04586,    -0.04586,  ]
+   wannier_center_cryst units: crystal
+
+k-grid:
+   number of  tetrahedra selected:       2184
+   number of reducible k-points:        531
+   number of irreducible k-points:         43
+
+
+scatter parallelization:
+
+   total number of q-points:                  21189
+   total number of (k,q) pairs:               57872
+
+   MPI task index:
+
+      1:
+         number of q-points:            1257
+         number of (k,q) pairs:            3327
+
+      2:
+         number of q-points:            1303
+         number of (k,q) pairs:            3185
+
+      3:
+         number of q-points:            1251
+         number of (k,q) pairs:            3366
+
+      4:
+         number of q-points:            1289
+         number of (k,q) pairs:            3718
+
+      5:
+         number of q-points:            1374
+         number of (k,q) pairs:            3564
+
+      6:
+         number of q-points:            1382
+         number of (k,q) pairs:            3922
+
+      7:
+         number of q-points:            1371
+         number of (k,q) pairs:            4115
+
+      8:
+         number of q-points:            1388
+         number of (k,q) pairs:            3674
+
+      9:
+         number of q-points:            1319
+         number of (k,q) pairs:            3315
+
+      10:
+         number of q-points:            1277
+         number of (k,q) pairs:            3507
+
+      11:
+         number of q-points:            1347
+         number of (k,q) pairs:            3443
+
+      12:
+         number of q-points:            1263
+         number of (k,q) pairs:            3510
+
+      13:
+         number of q-points:            1259
+         number of (k,q) pairs:            3575
+
+      14:
+         number of q-points:            1378
+         number of (k,q) pairs:            3901
+
+      15:
+         number of q-points:            1407
+         number of (k,q) pairs:            3983
+
+      16:
+         number of q-points:            1324
+         number of (k,q) pairs:            3767
+
+boltz_scatter memory:
+   kq_pair [intermediate]:
+      bytes per entry:   224
+      entries:           34
+      total bytes allocated:        47540
+      allocations:          103
+
+   scatter:
+      bytes per entry:    12
+      entries:         3327
+      total bytes allocated:        39924
+      allocations:     1
+
+   scatter_channels:
+      bytes per entry:    16
+      entries:        35244
+      total bytes allocated:       563904
+      allocations:     1
+
+
+trans:
+
+   temperature units: K
+
+   chemical potential units: eV
+
+   concentration units: cm-3
+
+   conductivity units: 1/Ohm/m
+
+   mobility units: cm2/V/s
+
+   Seebeck coefficient units: mV/K
+
+   # Electronic contribution
+   # Not well tested, use with caution
+   thermal conductivity units: W/m/K
+
+   # Configuration means one line in the temper file:
+   # temperature efermi concentration
+   number of configurations:   2
+
+   configuration index:
+
+      1:
+
+         temperature: 100.00000
+
+         chemical potential:   9.8000000000
+
+         concentration:  0.1492171E+19
+
+         conductivity:
+
+            components:
+               xx:   0.55079807E+08
+               xy:   0.99044803E+05
+               yy:   0.55079400E+08
+               xz:   0.99528714E+05
+               yz:   0.98205526E+05
+               zz:   0.55078630E+08
+               yx:   0.99044803E+05
+               zx:   0.99528714E+05
+               zy:   0.98205526E+05
+
+
+            tensor:
+               - [    0.55079807E+08,    0.99044803E+05,    0.99528714E+05,  ]
+               - [    0.99044803E+05,    0.55079400E+08,    0.98205526E+05,  ]
+               - [    0.99528714E+05,    0.98205526E+05,    0.55078630E+08,  ]
+
+         mobility:
+
+            components:
+               xx:   0.23038974E+07
+               xy:   0.41428806E+04
+               yy:   0.23038804E+07
+               xz:   0.41631218E+04
+               yz:   0.41077751E+04
+               zz:   0.23038482E+07
+               yx:   0.41428806E+04
+               zx:   0.41631218E+04
+               zy:   0.41077751E+04
+
+
+            tensor:
+               - [    0.23038974E+07,    0.41428806E+04,    0.41631218E+04,  ]
+               - [    0.41428806E+04,    0.23038804E+07,    0.41077751E+04,  ]
+               - [    0.41631218E+04,    0.41077751E+04,    0.23038482E+07,  ]
+
+         Seebeck coefficient:
+
+            components:
+               xx:   0.28350133E+00
+               xy:  -0.46568190E-03
+               yy:   0.28349912E+00
+               xz:  -0.46402396E-03
+               yz:  -0.45501921E-03
+               zz:   0.28351204E+00
+               yx:  -0.46568190E-03
+               zx:  -0.46402396E-03
+               zy:  -0.45501921E-03
+
+
+            tensor:
+               - [    0.28350133E+00,   -0.46568190E-03,   -0.46402396E-03,  ]
+               - [   -0.46568190E-03,    0.28349912E+00,   -0.45501921E-03,  ]
+               - [   -0.46402396E-03,   -0.45501921E-03,    0.28351204E+00,  ]
+
+            # Thermal conductivity: not well tested, use with caution
+
+         thermal conductivity:
+
+            components:
+               xx:   0.76502987E+02
+               xy:   0.25195570E+00
+               yy:   0.76504592E+02
+               xz:   0.24944412E+00
+               yz:   0.24493052E+00
+               zz:   0.76494395E+02
+               yx:   0.25195570E+00
+               zx:   0.24944412E+00
+               zy:   0.24493052E+00
+
+
+            tensor:
+               - [    0.76502987E+02,    0.25195570E+00,    0.24944412E+00,  ]
+               - [    0.25195570E+00,    0.76504592E+02,    0.24493052E+00,  ]
+               - [    0.24944412E+00,    0.24493052E+00,    0.76494395E+02,  ]
+
+         number of iterations:    5
+
+         iteration:
+
+            1:
+
+               conductivity:
+
+                  components:
+                     xx:   0.48144724E+08
+                     xy:   0.29057627E+05
+                     yy:   0.48144906E+08
+                     xz:   0.28891712E+05
+                     yz:   0.28581844E+05
+                     zz:   0.48145389E+08
+                     yx:   0.29057627E+05
+                     zx:   0.28891712E+05
+                     zy:   0.28581844E+05
+
+
+                  tensor:
+                     - [    0.48144724E+08,    0.29057627E+05,    0.28891712E+05,  ]
+                     - [    0.29057627E+05,    0.48144906E+08,    0.28581844E+05,  ]
+                     - [    0.28891712E+05,    0.28581844E+05,    0.48145389E+08,  ]
+
+            2:
+
+               conductivity:
+
+                  components:
+                     xx:   0.53582512E+08
+                     xy:   0.61620183E+05
+                     yy:   0.53582612E+08
+                     xz:   0.61630208E+05
+                     yz:   0.61000904E+05
+                     zz:   0.53582481E+08
+                     yx:   0.61620183E+05
+                     zx:   0.61630208E+05
+                     zy:   0.61000904E+05
+
+
+                  tensor:
+                     - [    0.53582512E+08,    0.61620183E+05,    0.61630208E+05,  ]
+                     - [    0.61620183E+05,    0.53582612E+08,    0.61000904E+05,  ]
+                     - [    0.61630208E+05,    0.61000904E+05,    0.53582481E+08,  ]
+
+            3:
+
+               conductivity:
+
+                  components:
+                     xx:   0.54319409E+08
+                     xy:   0.85224095E+05
+                     yy:   0.54320608E+08
+                     xz:   0.85752764E+05
+                     yz:   0.84267905E+05
+                     zz:   0.54319981E+08
+                     yx:   0.85224095E+05
+                     zx:   0.85752764E+05
+                     zy:   0.84267905E+05
+
+
+                  tensor:
+                     - [    0.54319409E+08,    0.85224095E+05,    0.85752764E+05,  ]
+                     - [    0.85224095E+05,    0.54320608E+08,    0.84267905E+05,  ]
+                     - [    0.85752764E+05,    0.84267905E+05,    0.54319981E+08,  ]
+
+            4:
+
+               conductivity:
+
+                  components:
+                     xx:   0.55103007E+08
+                     xy:   0.91913998E+05
+                     yy:   0.55102428E+08
+                     xz:   0.92323660E+05
+                     yz:   0.91157141E+05
+                     zz:   0.55101753E+08
+                     yx:   0.91913998E+05
+                     zx:   0.92323660E+05
+                     zy:   0.91157141E+05
+
+
+                  tensor:
+                     - [    0.55103007E+08,    0.91913998E+05,    0.92323660E+05,  ]
+                     - [    0.91913998E+05,    0.55102428E+08,    0.91157141E+05,  ]
+                     - [    0.92323660E+05,    0.91157141E+05,    0.55101753E+08,  ]
+
+            5:
+
+               conductivity:
+
+                  components:
+                     xx:   0.55079807E+08
+                     xy:   0.99044803E+05
+                     yy:   0.55079400E+08
+                     xz:   0.99528714E+05
+                     yz:   0.98205526E+05
+                     zz:   0.55078630E+08
+                     yx:   0.99044803E+05
+                     zx:   0.99528714E+05
+                     zy:   0.98205526E+05
+
+
+                  tensor:
+                     - [    0.55079807E+08,    0.99044803E+05,    0.99528714E+05,  ]
+                     - [    0.99044803E+05,    0.55079400E+08,    0.98205526E+05,  ]
+                     - [    0.99528714E+05,    0.98205526E+05,    0.55078630E+08,  ]
+
+      2:
+
+         temperature: 300.00000
+
+         chemical potential:   9.8000000000
+
+         concentration:  0.1902820E+19
+
+         conductivity:
+
+            components:
+               xx:   0.54408761E+07
+               xy:   0.91503546E+04
+               yy:   0.54410114E+07
+               xz:   0.91005074E+04
+               yz:   0.89526203E+04
+               zz:   0.54401032E+07
+               yx:   0.91503546E+04
+               zx:   0.91005074E+04
+               zy:   0.89526203E+04
+
+
+            tensor:
+               - [    0.54408761E+07,    0.91503546E+04,    0.91005074E+04,  ]
+               - [    0.91503546E+04,    0.54410114E+07,    0.89526203E+04,  ]
+               - [    0.91005074E+04,    0.89526203E+04,    0.54401032E+07,  ]
+
+         mobility:
+
+            components:
+               xx:   0.17846804E+06
+               xy:   0.30014391E+03
+               yy:   0.17847248E+06
+               xz:   0.29850886E+03
+               yz:   0.29365796E+03
+               zz:   0.17844268E+06
+               yx:   0.30014391E+03
+               zx:   0.29850886E+03
+               zy:   0.29365796E+03
+
+
+            tensor:
+               - [    0.17846804E+06,    0.30014391E+03,    0.29850886E+03,  ]
+               - [    0.30014391E+03,    0.17847248E+06,    0.29365796E+03,  ]
+               - [    0.29850886E+03,    0.29365796E+03,    0.17844268E+06,  ]
+
+         Seebeck coefficient:
+
+            components:
+               xx:  -0.31305972E-01
+               xy:  -0.12171817E-03
+               yy:  -0.31302698E-01
+               xz:  -0.11191970E-03
+               yz:  -0.11395157E-03
+               zz:  -0.31277939E-01
+               yx:  -0.12171817E-03
+               zx:  -0.11191970E-03
+               zy:  -0.11395157E-03
+
+
+            tensor:
+               - [   -0.31305972E-01,   -0.12171817E-03,   -0.11191970E-03,  ]
+               - [   -0.12171817E-03,   -0.31302698E-01,   -0.11395157E-03,  ]
+               - [   -0.11191970E-03,   -0.11395157E-03,   -0.31277939E-01,  ]
+
+            # Thermal conductivity: not well tested, use with caution
+
+         thermal conductivity:
+
+            components:
+               xx:   0.34561662E+02
+               xy:   0.58285485E-01
+               yy:   0.34559697E+02
+               xz:   0.56294160E-01
+               yz:   0.57275765E-01
+               zz:   0.34553558E+02
+               yx:   0.58285485E-01
+               zx:   0.56294160E-01
+               zy:   0.57275765E-01
+
+
+            tensor:
+               - [    0.34561662E+02,    0.58285485E-01,    0.56294160E-01,  ]
+               - [    0.58285485E-01,    0.34559697E+02,    0.57275765E-01,  ]
+               - [    0.56294160E-01,    0.57275765E-01,    0.34553558E+02,  ]
+
+         number of iterations:    7
+
+         iteration:
+
+            1:
+
+               conductivity:
+
+                  components:
+                     xx:   0.42494481E+07
+                     xy:   0.23323675E+04
+                     yy:   0.42494954E+07
+                     xz:   0.23241747E+04
+                     yz:   0.22766080E+04
+                     zz:   0.42493529E+07
+                     yx:   0.23323675E+04
+                     zx:   0.23241747E+04
+                     zy:   0.22766080E+04
+
+
+                  tensor:
+                     - [    0.42494481E+07,    0.23323675E+04,    0.23241747E+04,  ]
+                     - [    0.23323675E+04,    0.42494954E+07,    0.22766080E+04,  ]
+                     - [    0.23241747E+04,    0.22766080E+04,    0.42493529E+07,  ]
+
+            2:
+
+               conductivity:
+
+                  components:
+                     xx:   0.49141325E+07
+                     xy:   0.50891182E+04
+                     yy:   0.49144328E+07
+                     xz:   0.50512492E+04
+                     yz:   0.49741183E+04
+                     zz:   0.49139619E+07
+                     yx:   0.50891182E+04
+                     zx:   0.50512492E+04
+                     zy:   0.49741183E+04
+
+
+                  tensor:
+                     - [    0.49141325E+07,    0.50891182E+04,    0.50512492E+04,  ]
+                     - [    0.50891182E+04,    0.49144328E+07,    0.49741183E+04,  ]
+                     - [    0.50512492E+04,    0.49741183E+04,    0.49139619E+07,  ]
+
+            3:
+
+               conductivity:
+
+                  components:
+                     xx:   0.52558887E+07
+                     xy:   0.69202910E+04
+                     yy:   0.52562007E+07
+                     xz:   0.69036997E+04
+                     yz:   0.67716826E+04
+                     zz:   0.52555349E+07
+                     yx:   0.69202910E+04
+                     zx:   0.69036997E+04
+                     zy:   0.67716826E+04
+
+
+                  tensor:
+                     - [    0.52558887E+07,    0.69202910E+04,    0.69036997E+04,  ]
+                     - [    0.69202910E+04,    0.52562007E+07,    0.67716826E+04,  ]
+                     - [    0.69036997E+04,    0.67716826E+04,    0.52555349E+07,  ]
+
+            4:
+
+               conductivity:
+
+                  components:
+                     xx:   0.53587864E+07
+                     xy:   0.78824471E+04
+                     yy:   0.53590354E+07
+                     xz:   0.78513310E+04
+                     yz:   0.77140823E+04
+                     zz:   0.53582369E+07
+                     yx:   0.78824471E+04
+                     zx:   0.78513310E+04
+                     zy:   0.77140823E+04
+
+
+                  tensor:
+                     - [    0.53587864E+07,    0.78824471E+04,    0.78513310E+04,  ]
+                     - [    0.78824471E+04,    0.53590354E+07,    0.77140823E+04,  ]
+                     - [    0.78513310E+04,    0.77140823E+04,    0.53582369E+07,  ]
+
+            5:
+
+               conductivity:
+
+                  components:
+                     xx:   0.54154402E+07
+                     xy:   0.85936349E+04
+                     yy:   0.54156122E+07
+                     xz:   0.85526770E+04
+                     yz:   0.84069643E+04
+                     zz:   0.54147533E+07
+                     yx:   0.85936349E+04
+                     zx:   0.85526770E+04
+                     zy:   0.84069643E+04
+
+
+                  tensor:
+                     - [    0.54154402E+07,    0.85936349E+04,    0.85526770E+04,  ]
+                     - [    0.85936349E+04,    0.54156122E+07,    0.84069643E+04,  ]
+                     - [    0.85526770E+04,    0.84069643E+04,    0.54147533E+07,  ]
+
+            6:
+
+               conductivity:
+
+                  components:
+                     xx:   0.54311103E+07
+                     xy:   0.88394223E+04
+                     yy:   0.54312683E+07
+                     xz:   0.87923884E+04
+                     yz:   0.86448432E+04
+                     zz:   0.54303729E+07
+                     yx:   0.88394223E+04
+                     zx:   0.87923884E+04
+                     zy:   0.86448432E+04
+
+
+                  tensor:
+                     - [    0.54311103E+07,    0.88394223E+04,    0.87923884E+04,  ]
+                     - [    0.88394223E+04,    0.54312683E+07,    0.86448432E+04,  ]
+                     - [    0.87923884E+04,    0.86448432E+04,    0.54303729E+07,  ]
+
+            7:
+
+               conductivity:
+
+                  components:
+                     xx:   0.54408761E+07
+                     xy:   0.91503546E+04
+                     yy:   0.54410114E+07
+                     xz:   0.91005074E+04
+                     yz:   0.89526203E+04
+                     zz:   0.54401032E+07
+                     yx:   0.91503546E+04
+                     zx:   0.91005074E+04
+                     zy:   0.89526203E+04
+
+
+                  tensor:
+                     - [    0.54408761E+07,    0.91503546E+04,    0.91005074E+04,  ]
+                     - [    0.91503546E+04,    0.54410114E+07,    0.89526203E+04,  ]
+                     - [    0.91005074E+04,    0.89526203E+04,    0.54401032E+07,  ]
+
+memory:
+   physical: 527776732 kB                                                                    
+   max rss: 148716 kB                                                                       
+
+timings:
+
+   time units: s
+
+   PERTURBO:
+      cpu:         4.94031400
+      wall:        0.83110499
+      calls:         1
+
+   set_kq_pair:
+      cpu:         0.70708400
+      wall:        0.08862615
+      calls:         1
+
+   init_eph_wan:
+      cpu:         1.07970100
+      wall:        0.15364909
+      calls:         1
+
+   compute_g2:
+      cpu:         1.40502400
+      wall:        0.18258190
+      calls:         1
+
+   scat_setup:
+      cpu:         0.11403600
+      wall:        0.01587009
+      calls:         1
+
+   load_eph_g2:
+      cpu:         0.11191600
+      wall:        0.01555896
+      calls:         1
+...
