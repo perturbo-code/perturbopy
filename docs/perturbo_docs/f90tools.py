@@ -93,12 +93,12 @@ def fortran_init_variable(param_name, param_type, param_default_value, fout, dim
                     .strip()
                     .split(",")
                 )
-                for iva in range(len(default_value)):
+                for iva in range(len(param_default_value)):
                     param_default_value_assign[iva] = fortran_bool(
-                        bool(default_value[iva])
+                        bool(param_default_value[iva])
                     )
                 param_default_value_assign = (
-                    "[" + ",".join(f"{ii}" for ii in default_value) + "]"
+                    "[" + ",".join(f"{ii}" for ii in param_default_value) + "]"
                 )
             else:
                 param_default_value_assign = param_default_value_assign.replace(
@@ -347,23 +347,23 @@ def write_param_to_yaml(folder, input_param_path, code_prefix):
         print_header(f90file)
 
         f90file.write((f"module {code_prefix}_autogen_output_yaml\n"))
-        f90file.write((f"   use yaml_utils, only: ymlout, python_bool\n"))
+        f90file.write(("   use yaml_utils, only: ymlout, python_bool\n"))
         if code_prefix == "perturbo":
-            f90file.write((f"   use pert_param\n"))
+            f90file.write(("   use pert_param\n"))
         elif code_prefix == "qe2pert":
-            f90file.write((f"   use input_param\n"))
+            f90file.write(("   use input_param\n"))
         else:
             raise ValueError(
                 f"{code_prefix} can not be recognised and you may need to add an elif branch here!"
             )
-        f90file.write((f"   implicit none\n"))
-        f90file.write((f"   private\n\n"))
-        f90file.write((f"   public :: auto_output_beforeconv_to_yaml\n"))
-        f90file.write((f"   public :: auto_output_afterconv_to_yaml\n"))
+        f90file.write(("   implicit none\n"))
+        f90file.write(("   private\n\n"))
+        f90file.write(("   public :: auto_output_beforeconv_to_yaml\n"))
+        f90file.write(("   public :: auto_output_afterconv_to_yaml\n"))
 
-        f90file.write((f"\ncontains\n"))
-        f90file.write((f"subroutine auto_output_afterconv_to_yaml()\n"))
-        f90file.write((f"   implicit none\n"))
+        f90file.write(("\ncontains\n"))
+        f90file.write(("subroutine auto_output_afterconv_to_yaml()\n"))
+        f90file.write(("   implicit none\n"))
 
         for param_name, param_dict in input_param_dict.items():
             if param_dict["type"] == "family":
@@ -387,16 +387,16 @@ def write_param_to_yaml(folder, input_param_path, code_prefix):
                 param_name, param_type, unit, f90file, dim=dim, bcast_name=bcast_name
             )
 
-        f90file.write((f"\nend subroutine auto_output_afterconv_to_yaml\n\n"))
+        f90file.write(("\nend subroutine auto_output_afterconv_to_yaml\n\n"))
 
         # before unit conversion
         f90file.write(
             (
-                f'! the "before conversion" variabls has not been broadcast to other nodes, so it can just be used in master (io) node.\n'
+                '! the "before conversion" variabls has not been broadcast to other nodes, so it can just be used in master (io) node.\n'
             )
         )
-        f90file.write((f"subroutine auto_output_beforeconv_to_yaml()\n"))
-        f90file.write((f"   implicit none\n"))
+        f90file.write(("subroutine auto_output_beforeconv_to_yaml()\n"))
+        f90file.write(("   implicit none\n"))
 
         for param_name, param_dict in input_param_dict.items():
             if param_dict["type"] == "family":
@@ -408,8 +408,8 @@ def write_param_to_yaml(folder, input_param_path, code_prefix):
             # here is different with the "after conversion", we just keep the variables on the master node
             # also here use a poor-man trick
             bcast_name = param_name + "_beforeconv"
-            ## some names used in the code are not the same as the names read
-            ## from input
+            # some names used in the code are not the same as the names read
+            # from input
             # if 'bcast_name' in param_dict.keys():
             #   bcast_name = param_dict['bcast_name']
             # else:
@@ -423,7 +423,7 @@ def write_param_to_yaml(folder, input_param_path, code_prefix):
                 param_name, param_type, unit, f90file, dim=dim, bcast_name=bcast_name
             )
 
-        f90file.write((f"\nend subroutine auto_output_beforeconv_to_yaml\n\n"))
+        f90file.write(("\nend subroutine auto_output_beforeconv_to_yaml\n\n"))
         # normal keywords for module
         f90file.write((f"end module {code_prefix}_autogen_output_yaml\n"))
 
@@ -460,15 +460,15 @@ def autogen_declare_init_bcast_inputvariables(folder, input_param_path, code_pre
         # normal keywords for module
         f90file.write((f"module {code_prefix}_autogen_param\n"))
         if code_prefix == "perturbo":
-            f90file.write((f"   use pert_const, only: dp\n"))
+            f90file.write(("   use pert_const, only: dp\n"))
         elif code_prefix == "qe2pert":
-            f90file.write((f"   use kinds, only: dp\n"))
-            f90file.write((f"   use io_files, only: prefix\n"))
+            f90file.write(("   use kinds, only: dp\n"))
+            f90file.write(("   use io_files, only: prefix\n"))
         else:
             raise ValueError(
                 f"{code_prefix} can not be recognised and you may need to add an elif branch here!"
             )
-        f90file.write((f"   implicit none\n"))
+        f90file.write(("   implicit none\n"))
 
         cnt_param = 0
         for param_name, param_dict in input_param_dict.items():
@@ -543,9 +543,9 @@ def autogen_declare_init_bcast_inputvariables(folder, input_param_path, code_pre
             else:
                 f90file.write((f"      {param_name}\n"))
 
-        f90file.write((f"\ncontains\n"))
-        f90file.write((f"subroutine autogen_init_input_param()\n"))
-        f90file.write((f"   implicit none\n"))
+        f90file.write(("\ncontains\n"))
+        f90file.write(("subroutine autogen_init_input_param()\n"))
+        f90file.write(("   implicit none\n"))
 
         for param_name, param_dict in input_param_dict.items():
             if param_dict["type"] == "family":
@@ -564,28 +564,28 @@ def autogen_declare_init_bcast_inputvariables(folder, input_param_path, code_pre
                 param_name, param_type, param_value_default, f90file, dim=dim
             )
 
-        f90file.write((f"\nend subroutine autogen_init_input_param\n\n"))
+        f90file.write(("\nend subroutine autogen_init_input_param\n\n"))
 
         # broadcast from the main process
-        f90file.write((f"subroutine autogen_bcast_input_param()\n"))
+        f90file.write(("subroutine autogen_bcast_input_param()\n"))
 
         if code_prefix == "perturbo":
             f90file.write(
-                (f"   use qe_mpi_mod, only: meta_ionode_id, world_comm, mp_bcast\n")
+                ("   use qe_mpi_mod, only: meta_ionode_id, world_comm, mp_bcast\n")
             )
         elif code_prefix == "qe2pert":
             f90file.write(
                 (
-                    f"   use io_global, only: ionode_id\n"
-                    f"   use mp_world, only: world_comm\n"
-                    f"   use mp, only: mp_bcast\n"
+                    "   use io_global, only: ionode_id\n"
+                    "   use mp_world, only: world_comm\n"
+                    "   use mp, only: mp_bcast\n"
                 )
             )
         else:
             raise ValueError(
                 f"{code_prefix} can not be recognised and you may need to add an elif branch here!"
             )
-        f90file.write((f"   implicit none\n\n"))
+        f90file.write(("   implicit none\n\n"))
 
         if code_prefix == "perturbo":
             param_bcast_processid, param_bcast_comm = "meta_ionode_id", "world_comm"
@@ -607,11 +607,11 @@ def autogen_declare_init_bcast_inputvariables(folder, input_param_path, code_pre
                 commid=param_bcast_comm,
             )
 
-        f90file.write((f"\nend subroutine autogen_bcast_input_param\n\n"))
+        f90file.write(("\nend subroutine autogen_bcast_input_param\n\n"))
 
         # store the data before conversion of the unit.
-        f90file.write((f"subroutine autogen_input_param_beforeconv()\n"))
-        f90file.write((f"   implicit none\n"))
+        f90file.write(("subroutine autogen_input_param_beforeconv()\n"))
+        f90file.write(("   implicit none\n"))
 
         assign_indent = " " * 3
         for param_name, param_dict in input_param_dict.items():
@@ -620,7 +620,7 @@ def autogen_declare_init_bcast_inputvariables(folder, input_param_path, code_pre
 
             f90file.write((f"{assign_indent}{param_name}_beforeconv = {param_name}\n"))
 
-        f90file.write((f"\nend subroutine autogen_input_param_beforeconv\n\n"))
+        f90file.write(("\nend subroutine autogen_input_param_beforeconv\n\n"))
 
         # normal keywords for module
         f90file.write((f"end module {code_prefix}_autogen_param\n"))

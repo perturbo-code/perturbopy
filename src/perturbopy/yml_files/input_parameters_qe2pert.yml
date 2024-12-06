@@ -114,6 +114,20 @@ lwannier:
    attributes: save
    description: Set to .true. to rotate the wavefunctions using Wannier unitary matrix before computing e-ph matrix elements.
 
+lspinmat:
+   family: general
+   type: logical 
+   default: False
+   attributes: save
+   description: Set to .true. to generate and save the spin matrices in Wannier basis.
+
+spn_formatted:
+   family: general
+   type: logical 
+   default: False
+   attributes: save
+   description: Set to .true. if the "{prefix}.spn" file is formatted.
+
 load_ephmat:
    family: general
    type: logical
@@ -174,4 +188,11 @@ tdep:
    default: False
    attributes: save
    description: Flag for TDEP support. 
+
+symmborn:
+   family: general
+   type: logical
+   default: True
+   attributes: save
+   description: Flag for not imposing Hermiticity on born effective charges for TDEP, only useful with tdep = true
 ...

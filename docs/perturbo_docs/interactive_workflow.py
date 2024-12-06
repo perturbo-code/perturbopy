@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-This script reads the PERTURBO workflow information from the ../docs/workflow.yml file and 
+This script reads the PERTURBO workflow information from the ../docs/workflow.yml file and
 generates the interactive html page.
 To run the script a user should first install Graphviz and then pygraphviz.
 Installation for Mac:
@@ -25,7 +25,10 @@ cp graph.svg ~/github/perturbo-code.github.io/images
 
 """
 
-import os, re, sys, datetime
+import os
+import re
+import sys
+import datetime
 import pygraphviz as pgv
 
 from htmltools import print_inputs_to_html
@@ -59,7 +62,7 @@ def create_graph_dict(data_dict):
                 d_tmp[par] = None
 
         if "non-interactive" in dd.keys():
-            if dd["non-interactive"] == True:
+            if dd["non-interactive"] is True:
                 non_interactive_nodes.append(calc_mode)
             else:
                 interactive_nodes.append(calc_mode)
@@ -77,7 +80,7 @@ def create_graph_dict(data_dict):
 #
 # Load the files description files
 #
-workflow_filename = "files_description.yml"
+workflow_filename = "../../src/perturbopy/yml_files/files_description.yml"
 
 with open(workflow_filename, "r") as stream:
     files_desc_dict = load(stream, Loader=Loader)
@@ -85,7 +88,7 @@ with open(workflow_filename, "r") as stream:
 #
 # Load the workflow.yml file
 #
-workflow_filename = "workflow.yml"
+workflow_filename = "../../src/perturbopy/yml_files/workflow.yml"
 
 with open(workflow_filename, "r") as stream:
     workflow_dict = load(stream, Loader=Loader)
@@ -212,7 +215,12 @@ html.write("last_updated: {}\n".format(datetime.date.today().strftime("%B %d, %Y
 html.write("permalink: {}\n".format(html_filename))
 html.write("folder: mydoc\n")
 html.write(
-    "summary: PERTURBO package provides computation of different material properties, such as interpolated band structure or phonon dispersion, carrier mobility, imaginary part of e-ph self-energy, etc. Different types of calculations are called calculation modes. Generation of the <em>prefix_epr.h5</em> file that contains the e-ph elements in Wannier basis is done using the <code>qe2pert.x</code> executable. All the rest of the calculation modes are performed with <code>perturbo.x</code>. Each calculation mode requires a different set of input files and provides different outputs. \n"
+    "summary: PERTURBO package provides computation of different material properties, such as interpolated "
+    "band structure or phonon dispersion, carrier mobility, imaginary part of e-ph self-energy, etc."
+    " Different types of calculations are called calculation modes. Generation of the <em>prefix_epr.h5</em> "
+    "file that contains the e-ph elements in Wannier basis is done using the <code>qe2pert.x</code> "
+    "executable. All the rest of the calculation modes are performed with <code>perturbo.x</code>. "
+    "Each calculation mode requires a different set of input files and provides different outputs. \n"
 )
 html.write("toc: false\n")
 html.write("---\n")
@@ -278,7 +286,8 @@ html.write("<body>\n\n")
 # Header text of the page
 #
 html.write(
-    "<p>To get the calculation mode requirements, outputs, and the input file, click on a calculation mode name in the graph below or select the calculation mode from the list (recommended for mobile devices): \n\n"
+    "<p>To get the calculation mode requirements, outputs, and the input file, "
+    "click on a calculation mode name in the graph below or select the calculation mode from the list (recommended for mobile devices): \n\n"
 )
 html.write(
     '<select id="CalcModeSelect" onchange="ShowBlockInteractive(this.options[this.selectedIndex].value)">\n'
@@ -358,7 +367,8 @@ for node in interactive_nodes:
 
     html.write("<!--{}-->\n".format(node))
     html.write(
-        '<div id="hide_computes_block_{}" markdown="span" class="alert alert-success" style="display:none" role="alert"><i class="fa fa-server fa"></i> <b> Computes:&nbsp;</b>'.format(
+        '<div id="hide_computes_block_{}" markdown="span" class="alert alert-success" '
+        'style="display:none" role="alert"><i class="fa fa-server fa"></i> <b> Computes:&nbsp;</b>'.format(
             node
         )
     )
@@ -394,7 +404,7 @@ for node in interactive_nodes:
         '    <p style="font-size:80%;text-align:center; margin-top:4%">(click on a filename to get its description)</p>\n'
     )
     html.write(
-        '    <ul style="list-style-type:none;padding-left: 0">\n'.format(node)
+        '    <ul style="list-style-type:none;padding-left: 0">\n'
     )  # Start list
 
     file_req_list = workflow_dict[node]["requirements"] + ["input file"]
@@ -467,7 +477,7 @@ for node in interactive_nodes:
         '    <p style="font-size:80%;text-align:center; margin-top:4%">(click on a filename to get its description)</p>\n'
     )
     html.write(
-        '    <ul style="list-style-type:none;padding-left: 0">\n'.format(node)
+        '    <ul style="list-style-type:none;padding-left: 0">\n'
     )  # Start list
 
     for i, file_out in enumerate(workflow_dict[node]["outputs"]):
@@ -514,9 +524,7 @@ html.write("<br>\n")
 html.write("\n<!-- ===Files description div blocks=== -->\n\n")
 
 html.write(
-    '<div id="hide_file_desc_block" class="req_img_out_wrapper" style="display:none;margin-top:0%">\n\n'.format(
-        node
-    )
+    '<div id="hide_file_desc_block" class="req_img_out_wrapper" style="display:none;margin-top:0%">\n\n'
 )  # Start hide_file_desc_block
 
 
@@ -690,7 +698,7 @@ html.write("</div>\n\n")  # End container (place holder)
 
 html.write('<br style="clear: left;" />\n')
 
-html.write("</div>\n\n".format(node))  # End hide_file_desc_block
+html.write("</div>\n\n")  # End hide_file_desc_block
 
 #
 # =======================================================================================
