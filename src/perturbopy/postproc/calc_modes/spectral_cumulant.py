@@ -50,8 +50,7 @@ class SpectralCumulant(CalcMode):
         temperature index (it), and band index (ib).
 
         Parameters:
-        - ax : matplotlib.axes.Axes
-           Axis on which to plot the bands.
+        - ax : Axis on which to plot the bands.
         - ik (int): Index of the k-point in the grid.
         - it (int): Index of the temperature in the temperature array.
         - ib (int): Index of the band.
@@ -88,3 +87,5 @@ class SpectralCumulant(CalcMode):
         plt_loc.yticks(fontsize=20)
         plt_loc.tight_layout()
         return ax
+    
+    

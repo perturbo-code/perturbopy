@@ -1,7 +1,6 @@
 import numpy as np
 import pytest
 import os
-
 import perturbopy.postproc as ppy
 
 
@@ -10,7 +9,7 @@ def sto_spectral_cum():
     """
     Method to generate the spectral_cum object corresponding to spectralhdf5.
 
-    Returns
+    Returns 
     -------
     phdisp : ppy.PhdispCalcMode
 
@@ -37,4 +36,3 @@ def test_plot_spectral_cum(sto_spectral_cum, plt, with_plt):
         
     fig, ax = plt.subplots()
     ppy.SpectralCumulant.plot_Aw_(sto_spectral_cum, plt, ax)
- 
