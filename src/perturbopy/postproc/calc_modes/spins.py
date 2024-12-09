@@ -81,7 +81,7 @@ class Spins(CalcMode):
 
         values = {key: 1 - val for key, val in self.spins.items()}
 
-        ax = plot_vals_on_bands(ax, self.kpt.path, self.bands, self.bands.units, values=values, log=log, label=r'$|\langle n | \sigma_z | n \rangle |$', **kwargs)
+        ax = plot_vals_on_bands(ax, self.kpt.path, self.bands, self.bands.units, values=values, log=log, label=r'$|\langle n|\sigma_z|n\rangle |$', **kwargs)
 
         if show_kpoint_labels:
             ax = plot_recip_pt_labels(ax, self.kpt.labels, self.kpt.points, self.kpt.path)
