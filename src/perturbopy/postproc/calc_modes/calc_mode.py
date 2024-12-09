@@ -47,6 +47,7 @@ class CalcMode():
 
         # Extract calculation mode name from pert_dict
         self.calc_mode = pert_dict['input parameters']['after conversion'].pop('calc_mode')
+        self.prefix = pert_dict['input parameters']['after conversion'].pop('prefix')
 
         # Extract basic data from pert_dict
         self.alat = pert_dict['basic data']['alat']

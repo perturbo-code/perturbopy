@@ -15,9 +15,9 @@ def sto_spectral_cum():
     phdisp : ppy.PhdispCalcMode
 
     """
-    prefix = 'refs/sto'
-    return ppy.SpectralCumulant(prefix)
-
+    yml_path = os.path.join("refs", "sto_spectral-cum.yml")
+    spectral_path = os.path.join("refs", "sto_spectral_cumulant.h5")
+    return ppy.SpectralCumulant.from_hdf5_yaml(spectral_path, yml_path)
 
 def test_plot_spectral_cum(sto_spectral_cum, plt, with_plt):
     """
@@ -36,4 +36,4 @@ def test_plot_spectral_cum(sto_spectral_cum, plt, with_plt):
         pytest.skip("Test requires pytest-plt")
 
     fig, ax = plt.subplots()
-    ppy.SpectralCumulant.plot_Aw_(sto_spectral_cum, plt, ax)
+    ppy.SpectralCumulant.plot_Aw(sto_spectral_cum, plt, ax)
