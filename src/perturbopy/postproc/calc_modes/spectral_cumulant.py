@@ -29,7 +29,7 @@ class SpectralCumulant(CalcMode):
     def __init__(self, spectral_file, pert_dict):
         super().__init__(pert_dict)
         if self.calc_mode != 'spectral-cum':
-            raise ValueError('Calculation mode for a BandsCalcMode object should be "spectral-cum"')
+            raise ValueError('Calculation mode for a SpectralCumulantCalcMode object should be "spectral-cum"')
 
         Akw = spectral_file['spectral_functions']
         w_lower = np.asarray(spectral_file['w_lower_index'])
