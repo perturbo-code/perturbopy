@@ -8,7 +8,7 @@ import os
 
 class SpectralCumulant(CalcMode):
     """
-    A class to handle and analyze spectral functions computed using the cumulant expansion approach.
+    Class representation of a Perturbo cumulant calculation
 
     Parameters
     ----------
