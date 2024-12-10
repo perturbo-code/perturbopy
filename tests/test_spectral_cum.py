@@ -36,4 +36,4 @@ def test_plot_spectral_cum(sto_spectral_cum, plt, with_plt):
         pytest.skip("Test requires pytest-plt")
 
     fig, ax = plt.subplots()
-    ppy.SpectralCumulant.plot_Aw(sto_spectral_cum, plt, ax)
+    ppy.SpectralCumulant.plot_Aw(sto_spectral_cum, ax)
