@@ -1,3 +1,5 @@
+.. _ephmat_tutorial:
+
 Ephmat tutorial
 ===============
 
