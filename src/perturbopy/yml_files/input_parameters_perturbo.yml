@@ -345,6 +345,15 @@ boltz_init_smear:
    attributes: save
    description: The broadening or width of the initial distribution for <code><a href=#boltz_init_dist>boltz_init_dist</a>='lorentz'</code> or <code>'gaussian'</code>, or temperature (in meV) for <code>'fermi'</code>.
 
+boltz_init_ampl:
+   family: dynamics
+   type: real
+   typical: 0.1
+   units: arbitrary
+   default: 0.1
+   attributes: save
+   description: Amplitude of the initial distribution, currently implemented for <code><a href=#boltz_init_dist>boltz_init_dist</a>='gaussian'</code>.
+
 solver:
    family: dynamics
    type: string

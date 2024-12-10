@@ -134,6 +134,7 @@ dynamics-run:
       solver:
       boltz_init_e0:
       boltz_init_smear:
+      boltz_init_ampl:
       delta_smear:
       phfreq_cutoff:
       boltz_qdim:

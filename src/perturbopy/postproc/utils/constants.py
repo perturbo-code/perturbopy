@@ -14,7 +14,7 @@ energy_units_names = {'eV': ['ev', 'electron-volt', 'electronvolt', 'electronvol
                       'J': ['j', 'joule', 'joules'],
                       'Ry': ['ry', 'rydberg', 'rydbergs']}
 
-energy_units_vals = {'eV': (2.7211396132, 1), 'Ha': (1, 0), 'J': (4.359748199, -18), 'Ry': (0.5, 0)}
+energy_units_vals = {'eV': (2.7211396132, 1), 'Ha': (1, 0), 'J': (4.359748199, -18), 'Ry': (2.0, 0)}
 
 length_units_names = {'bohr': ['bohr', 'a.u', 'atomic units', 'au'], 'angstrom': ['angstrom, a'], 'm': ['m', 'meter']}
 
@@ -215,7 +215,7 @@ def conversion_factor(init_units, final_units, units_names, units_vals):
         >>> conversion_factor('a.u', 'angstrom', {'bohr': ['bohr', 'a.u'], 'angstrom': ['angstrom, a']},
                                                  {'bohr': (1, 0), 'angstrom': (0.529177249, 0)})
         0.529177249
-         
+
     """
 
     init_prefix, init_units = find_prefix_and_base_units(init_units, units_names)
@@ -256,7 +256,7 @@ def energy_conversion_factor(init_units, final_units):
     3.674930882447527e-05
     >>> energy_conversion_factor('Ry', 'Ha')
     2.0
-       
+
     """
 
     return conversion_factor(init_units, final_units, energy_units_names, energy_units_vals)

@@ -16,4 +16,15 @@ from .calc_modes.dyna_pp import DynaPP
 from .dbs.units_dict import UnitsDict
 from .dbs.recip_pt_db import RecipPtDB
 
-from .utils import constants, plot_tools, lattice
+from .utils import constants, plot_tools, lattice, spectra, timing
+
+import warnings
+
+
+# Define a custom format for warnings
+def custom_formatwarning(message, category, filename, lineno, line=None):
+    return f"{category.__name__}: {message}\n"
+
+
+# Apply the custom format
+warnings.formatwarning = custom_formatwarning

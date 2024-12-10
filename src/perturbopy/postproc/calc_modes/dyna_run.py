@@ -34,7 +34,7 @@ class DynaRun(CalcMode):
             Dictionary containing the inputs and outputs from the dynamics-run calculation.
 
         """
-        
+
         self.timings = TimingGroup("dynamics-run")
 
         super().__init__(pert_dict)
@@ -45,11 +45,14 @@ class DynaRun(CalcMode):
         kpoint = np.array(tet_file['kpts_all_crys_coord'][()])
 
         self.kpt = RecipPtDB.from_lattice(kpoint, "crystal", self.lat, self.recip_lat)
-        self.bands = UnitsDict.from_dict
 
         energies = np.array(cdyna_file['band_structure_ryd'][()])
         energies_dict = {i + 1: np.array(energies[:, i]) for i in range(0, energies.shape[1])}
         self.bands = UnitsDict.from_dict(energies_dict, 'Ry')
+
+        # Raw arrays
+        self._kpoints = kpoint
+        self._energies = energies
 
         self._data = {}
 
@@ -175,7 +178,7 @@ class DynaRun(CalcMode):
             raise FileNotFoundError(f'File {dyna_pp_yaml_path} not found')
 
         dyna_pp_dict = open_yaml(dyna_pp_yaml_path)
-        
+
         vels = dyna_pp_dict['dynamics-pp']['velocity']
         concs = dyna_pp_dict['dynamics-pp']['concentration']
 
@@ -185,9 +188,9 @@ class DynaRun(CalcMode):
         steady_conc = []
 
         for irun, dynamics_run in self._data.items():
-            
+
             step_number += dynamics_run.num_steps
-            
+
             if np.allclose(dynamics_run.efield, np.array([0.0, 0.0, 0.0])):
                 steady_drift_vel.append(None)
                 steady_conc.append(concs[step_number])
