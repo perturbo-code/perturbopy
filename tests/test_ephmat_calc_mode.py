@@ -18,6 +18,7 @@ def gaas_ephmat():
     yml_path = os.path.join("refs", "gaas_ephmat.yml")
     return ppy.Ephmat.from_yaml(yml_path)
 
+
 @pytest.mark.parametrize("show_qpoint_labels", [
                         (False), (True)
 ])
@@ -39,6 +40,7 @@ def test_plot_phdisp(gaas_ephmat, plt, show_qpoint_labels, with_plt):
 
     fig, ax = plt.subplots()
     ppy.Ephmat.plot_phdisp(gaas_ephmat, ax, show_qpoint_labels)
+
 
 @pytest.mark.parametrize("kpoint_idx, show_qpoint_labels", [
                         (0, False),
@@ -64,6 +66,7 @@ def test_plot_defpot(gaas_ephmat, plt, kpoint_idx, show_qpoint_labels, with_plt)
 
     fig, ax = plt.subplots()
     ppy.Ephmat.plot_defpot(gaas_ephmat, ax, kpoint_idx, show_qpoint_labels)
+
 
 @pytest.mark.parametrize("kpoint_idx, show_qpoint_labels", [
                         (0, False),

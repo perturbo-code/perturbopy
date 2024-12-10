@@ -22,7 +22,7 @@ setup(
         'scipy'
     ],
     extras_require={
-        'interactive': ['jupyter', 'pytest-plots'],
+        'interactive': ['jupyter', 'pytest-plt'],
     },
     packages=find_packages(
         where='./src'
