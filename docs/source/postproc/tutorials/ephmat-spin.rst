@@ -11,7 +11,7 @@ Next, we create the :py:class:`.EphmatSpin` object using the YAML file as an inp
 
     import perturbopy.postproc as ppy
 
-    # Example using the ephmat_spin calculation mode
+    # Example using the ephmat_spin calculation mode.
     diam_ephmat_spin = ppy.EphmatSpin.from_yaml('diam_ephmat_spin.yml')
 
 Accessing the data
@@ -21,7 +21,8 @@ The attributes in an :py:class:`.EphmatSpin` object have the same name and forma
 
 .. code-block :: python
     
-    # Access the k-point coordinates. There is only one in this calculation. The units are in crystal coordinates.
+    # Access the k-point coordinates. There is only one in this calculation.
+    # The units are in crystal coordinates.
     diam_ephmat_spin.kpt.points
     >> array([[0.],
               [0.],
@@ -30,7 +31,8 @@ The attributes in an :py:class:`.EphmatSpin` object have the same name and forma
     diam_ephmat_spin.kpt.units
     >> 'crystal'
 
-    # There are 196 q-point coordinates (we display the first two below). The units are in crystal coordinates.
+    # There are 196 q-point coordinates (we display the first two below).
+    # The units are in crystal coordinates.
     diam_ephmat_spin.qpt.points.shape
     >> (3, 196)
 
@@ -42,11 +44,12 @@ The attributes in an :py:class:`.EphmatSpin` object have the same name and forma
     diam_ephmat_spin.qpt.units
     >> 'crystal'
 
-    # Access the phonon energies, which are a UnitsDict. There are 6 modes, which are the keys of the dictionary.
+    # Access the phonon energies, which are a UnitsDict.
+    # There are 6 modes, which are the keys of the dictionary.
     diam_ephmat_spin.phdisp.keys()
     >> dict_keys([1, 2, 3, 4, 5, 6])
 
-    # Phonon energies of the first 2 q-points in phonon mode 3
+    # Phonon energies of the first 2 q-points in phonon mode 3.
     diam_ephmat_spin.phdisp[3][:2]
     >> array([130.41105408, 130.31173133])
 
@@ -59,7 +62,7 @@ The ``'ephmat_spin'`` calculation interpolates the deformation potentials and e-
 
 .. code-block :: python
 
-    # There are 6 keys, one for each mode
+    # There are 6 keys, one for each mode.
     diam_ephmat_spin.ephmat.keys()
     >> dict_keys([1, 2, 3, 4, 5, 6])
 
@@ -67,18 +70,20 @@ The ``'ephmat_spin'`` calculation interpolates the deformation potentials and e-
     diam_ephmat_spin.ephmat[1].shape
     >> (1, 196)
 
-    # The e-ph spin-flip matrix elements corresponding to the first phonon mode, first (and only) k-point, and first two q-points
+    # The e-ph spin-flip matrix elements corresponding to the first
+    # phonon mode, first (and only) k-point, and first two q-points.
     diam_ephmat_spin.ephmat[1][0, :2]
     >> array([[5.37973306e-06, 2.51372197e+00]])
 
-    # Units are in meV
+    # Units for the e-ph spin-flip matrix elements are in meV.
     diam_ephmat_spin.ephmat.units
     >> 'meV'
 
-    # We can extract analogous information from the deformation potential
+    # We can extract analogous information from the deformation potential.
     diam_ephmat_spin.defpot[1].shape
     >> (1, 196)
 
+    # Units for the deformation potential are in eV/A.
     diam_ephmat_spin.defpot.units
     >> 'eV/A'
 

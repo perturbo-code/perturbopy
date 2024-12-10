@@ -1,5 +1,5 @@
 ImsigmaSpin tutorial
-================
+====================
 
 In this section, we describe how to use Perturbopy to process a Perturbo ``'imsigma_spin'`` calculation.
 
@@ -11,7 +11,7 @@ Next, we create the :py:class:`.ImsigmaSpin` object using the YAML file as an in
 
     import perturbopy.postproc as ppy
 
-    # Example using the imsigma_spin calculation mode
+    # Example using the imsigma_spin calculation mode.
     diam_imsigma_spin = ppy.ImsigmaSpin.from_yaml('diam_imsigma_spin.yml')
 
 
@@ -33,11 +33,11 @@ The k-points used for the ``'ephmat_spin'`` calculation are stored in the :py:at
 
 .. code-block :: python
   
-    # The first k-point (points are stored column-oriented)
+    # The first k-point (points are stored column-oriented).
     diam_imsigma_spin.kpt.points[:, 0]
     >> array([0.    , 0.25  , 0.2625])
 
-    # The points are in crystal coordinates
+    # The points are in crystal coordinates.
     diam_imsigma_spin.kpt.units
     >> 'crystal'
 
@@ -47,11 +47,11 @@ The  band energies are stored in the :py:attr:`.ImsigmaSpin.bands` attribute, wh
 
 .. code-block :: python
 
-    # There are two bands used in this calculation
+    # There are two bands used in this calculation.
     diam_imsigma_spin.bands.keys()
     >> dict_keys([1, 2])
 
-    # Band energies of the first band corresponding to the first 10 k-points
+    # Band energies of the first band corresponding to the first 10 k-points.
     diam_imsigma_spin.bands[1][:10]
     >> array([17.84019125, 17.75059409, 17.78470674, 17.69665692, 17.81793713,
               17.76517492, 17.67960317, 17.83014117, 17.7809763 , 17.69861557])
@@ -72,11 +72,11 @@ For example, let's look at the temperatures.
 
 .. code-block :: python
 
-    # Keys are configuration number, values are temperatures
+    # Keys are configuration number, values are temperatures.
     diam_imsigma_spin.temper
     >> {1: 25.85203}
     
-    # Units are in meV
+    # Units are in meV.
     diam_imsigma_spin.temper.units
     >> 'meV'
 
@@ -89,25 +89,27 @@ The e-ph self energies are stored in the :py:attr:`.ImsigmaSpin.imsigma` object,
 
 .. code-block :: python
 
-    # The first key is the configuration number. Here we have one configuration.
+    # The first key is the configuration number.
+    # Here we have one configuration.
     diam_imsigma_spin.imsigma.keys()
     >> dict_keys([1])
 
     # The second key is the band index. Here we are looking at configuration 1,
-    # and we have 2 bands (matching the si_imsigma.bands attribute)
+    # and we have 2 bands (matching the diam_imsigma_spin.bands attribute).
     diam_imsigma_spin.imsigma[1].keys()
     >> dict_keys([1, 2])
 
-    # The e-ph spin-flip self energy array for configuration 1 and band index 2.
-    # There are 815 values in the array because we have 815 k-points.
+    # The e-ph spin-flip self-energy array for configuration 1 and
+    # band index 2. The array size matches the number of k-points.
     diam_imsigma_spin.imsigma[1][2].shape
     >> (815,)
 
-    # The e-ph spin-flip self energies for configuration 1, band index 2, and the first 5 k-points
-    diam_imsigma_spin.imsigma[1][2][:5]
-    >> array([1.29425589e-05, 7.97155145e-06, 1.06093255e-05, 8.78246442e-06, 1.11712233e-05])
+    # The e-ph spin-flip self-energies for configuration 1, band index 2,
+    # and the first 4 k-points.
+    diam_imsigma_spin.imsigma[1][2][:4]
+    >> array([1.29425589e-05, 7.97155145e-06, 1.06093255e-05, 8.78246442e-06])
 
-    # The units are meV
+    # The units are meV.
     diam_imsigma_spin.imsigma.units
     >> 'meV'
 
@@ -115,7 +117,7 @@ We can also get the e-ph spin-flip self energies for each phonon mode through th
 
 .. code-block :: python
 
-    # The first key is the configuration number
+    # The first key is the configuration number.
     diam_imsigma_spin.imsigma_mode.keys()
     >> dict_keys([1])
     
@@ -123,20 +125,22 @@ We can also get the e-ph spin-flip self energies for each phonon mode through th
     diam_imsigma_spin.imsigma_mode[1].keys()
     >> dict_keys([1, 2, 3, 4, 5, 6])
 
-    # The third key is the band index. Here we are looking at configuration 1, phonon mode 3, and we see
-    # we have 2 bands (matching the diam_imsigma_spin.bands attribute)
+    # The third key is the band index. Here we are looking at configuration 1,
+    # phonon mode 3, and we see we have 2 bands. Note that this matches
+    # the diam_imsigma_spin.bands attribute.
     diam_imsigma_spin.imsigma_mode[1][3].keys()
     >> dict_keys([1, 2])
 
-    # The e-ph spin-flip self energy array for configuration 1, phonon mode 3, and band index 2.
-    # There are 2445 values in the array because we have 2445 k-points.
+    # The e-ph spin-flip self-energy array for configuration 1, phonon mode 3,
+    # and band index 2. The array size matches the number of k-points.
     diam_imsigma_spin.imsigma_mode[1][3][2].shape
     >> (2445,)
 
-    # The e-ph spin-flip self energies for configuration 1, phonon mode 3, band index 2, and the first 5 k-points
-    diam_imsigma_spin.imsigma_mode[1][3][2][:5]
-    >> array([2.71039146e-06, 0.00000000e+00, 0.00000000e+00, 1.83641809e-06, 0.00000000e+00])
+    # The e-ph spin-flip self-energies for configuration 1, phonon mode 3,
+    # band index 2, and the first 4 k-points.
+    diam_imsigma_spin.imsigma_mode[1][3][2][:4]
+    >> array([2.71039146e-06, 0.00000000e+00, 0.00000000e+00, 1.83641809e-06])
 
-    # The units are meV
+    # The units are meV.
     diam_imsigma_spin.imsigma_mode.units
     >> 'meV'

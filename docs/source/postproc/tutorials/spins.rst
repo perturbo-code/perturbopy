@@ -95,10 +95,8 @@ We can quickly visualize the spin texture by plotting them as a colormap overlai
     plt.show()
 
 .. image:: figures/diam_spins.png
-    :width: 450
+    :width: 600
     :align: center
-
-.. code-block :: python
 
 
 We can choose whether or not we want to normalize the spin texture values on a log scale. For example, let's plot results on a linear scale. By default, the plot will normalize the values logarithmically.
@@ -113,7 +111,7 @@ We can choose whether or not we want to normalize the spin texture values on a l
     plt.show()
 
 .. image:: figures/diam_spins_linear.png
-    :width: 450
+    :width: 600
     :align: center
 
 Note that k-point labels can be removed from the plot by setting the ``show_kpoint_labels`` input to False.
