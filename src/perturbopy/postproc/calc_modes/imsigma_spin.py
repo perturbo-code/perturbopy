@@ -90,4 +90,4 @@ class ImsigmaSpin(CalcMode):
                 self.imsigma[config_idx][band_index] = np.array(imsigma_dat[band_index]['Im(Sigma)']['total'])
 
                 for mode in np.arange(1, num_modes + 1):
-                    self.imsigma_mode[config_idx][mode][band_index] = np.array(imsigma_dat[band_index]['Im(Sigma)']['phonon mode (total)'][mode])
+                    self.imsigma_mode[config_idx][mode][band_index] = np.array(imsigma_dat[band_index]['Im(Sigma)']['phonon mode'][mode])
