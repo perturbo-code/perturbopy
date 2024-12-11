@@ -37,3 +37,19 @@ def test_plot_spectral_cum(sto_spectral_cum, plt, with_plt):
 
     fig, ax = plt.subplots()
     ppy.SpectralCumulant.plot_Aw(sto_spectral_cum, ax)
+
+def test_spectral_cum():
+    """
+    Method to test SpectralCumulant.plot_Aw function array shape
+
+    Parameters
+    ----------
+
+    """
+
+    yml_path = os.path.join("refs", "sto_spectral-cum.yml")
+    spectral_path = os.path.join("refs", "sto_spectral_cumulant.h5")
+    model = ppy.SpectralCumulant.from_hdf5_yaml(spectral_path, yml_path)
+    np.testing.assert_equal(model.Akw.shape, (1, 3, 2, 3001))
+    np.testing.assert_equal(model.freq_array.shape, (3001,))
+
