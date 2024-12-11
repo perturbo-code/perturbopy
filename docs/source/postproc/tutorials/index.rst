@@ -11,10 +11,13 @@ Below, we give general information on how to use Perturbopy. We also provide tut
     bands
     phdisp
     ephmat
+    ephmat-spin
     trans
     imsigma
+    imsigma-spin
     dynamics-run
     dynamics-pp
+    spins
 
 
 General information
