@@ -25,6 +25,8 @@ qe2pert:
       polar_alpha: convergence parameter used in the Ewald sum, only used for polar correction. 
       thickness_2d: for 2D polar e-ph correction. Only needed when system_2d=.true.
       eig_corr: usually used when one wants to use modified eigenvalues (e.g., from GW)
+      tdep: when =.true., read force constants from TDEP outputs, infile.forceconstant and infile.ucposcar
+      symmborn: Symmetrize Born effective charges read from TDEP files for polar materials. Only needed when tdep = .true. and the material is polar.
 
 
 bands:
