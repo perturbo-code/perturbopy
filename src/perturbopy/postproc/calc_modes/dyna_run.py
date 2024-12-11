@@ -34,7 +34,7 @@ class DynaRun(CalcMode):
             Dictionary containing the inputs and outputs from the dynamics-run calculation.
 
         """
-        
+
         self.timings = TimingGroup("dynamics-run")
 
         super().__init__(pert_dict)
@@ -175,7 +175,7 @@ class DynaRun(CalcMode):
             raise FileNotFoundError(f'File {dyna_pp_yaml_path} not found')
 
         dyna_pp_dict = open_yaml(dyna_pp_yaml_path)
-        
+
         vels = dyna_pp_dict['dynamics-pp']['velocity']
         concs = dyna_pp_dict['dynamics-pp']['concentration']
 
@@ -185,9 +185,9 @@ class DynaRun(CalcMode):
         steady_conc = []
 
         for irun, dynamics_run in self._data.items():
-            
+
             step_number += dynamics_run.num_steps
-            
+
             if np.allclose(dynamics_run.efield, np.array([0.0, 0.0, 0.0])):
                 steady_drift_vel.append(None)
                 steady_conc.append(concs[step_number])
