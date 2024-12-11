@@ -19,11 +19,13 @@ from .dbs.recip_pt_db import RecipPtDB
 from .utils import constants, plot_tools, lattice, spectra, timing
 
 import warnings
+import os
 
 
 # Define a custom format for warnings
 def custom_formatwarning(message, category, filename, lineno, line=None):
-    return f"{category.__name__}: {message}\n"
+    basename = os.path.basename(filename)
+    return f"{category.__name__} in {basename} at line {lineno}: {message}\n"
 
 
 # Apply the custom format

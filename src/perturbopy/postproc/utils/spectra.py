@@ -49,7 +49,7 @@ def delta_occs_pulse_coef(t, dt, tw, sigma):
     return 0.5 * numer / denom
 
 
-def gaussian_excitation(pump_pulse_file, occs_amplitude, time_window, pulse_fwhm, time_step, hole=False, finite_width=True):
+def gaussian_excitation(pump_file, occs_amplitude, time_grid, time_window, pulse_fwhm, time_step, hole=False, finite_width=True):
     """
     The Gaussian pulse excitation for the Perturbo dynamics.
     Pump pulses for electrons and holes must be dumped into separate HDF5 files.
@@ -93,37 +93,29 @@ def gaussian_excitation(pump_pulse_file, occs_amplitude, time_window, pulse_fwhm
     t_dataset = TimingGroup('dataset')
     t_dataset.add('total', level=3).start()
 
-    pump_pulse_file.create_group('pump_pulse')
-
-    # Time grid for the pulse
-    t_grid = np.arange(0, time_window + time_step, time_step)
-
-    num_steps = t_grid.shape[0]
+    # Number of time steps
+    num_steps = time_grid.shape[0]
 
     # Compute the Gaussian sigma from the full width at half maximum (FWHM)
     sigma = sigma_from_fwhm(pulse_fwhm)
 
+    # Number of k-points and bands
     num_k, num_bands = occs_amplitude.shape
 
+    # Additional occupatons for each step due to the pulse
     delta_occs_array = np.zeros((num_bands, num_steps, num_k))
 
-    # t - time, j - band, k - k-point
-    delta_occs_array[:, :, :] = np.einsum('t,jk->ktj',
-                                          delta_occs_pulse_coef(
-                                              t_grid[:], time_step, time_window, sigma),
-                                          occs_amplitude[:, :])
+    # A pre-factor for the pump pulse, num_steps steps
+    pulse_coef = delta_occs_pulse_coef(time_grid[:], time_step, time_window, sigma)
 
+    # t - time, j - band, k - k-point
+    delta_occs_array[:, :, :] = np.einsum('t,jk->ktj', pulse_coef[:], occs_amplitude[:, :])
+
+    # Print the size of the array since it can be large: num_bands * num_steps * num_k
     get_size(delta_occs_array, 'delta(fnk(t))', dump=True)
 
-    # Dump also the static occupations
-    if 'pump_pulse' in pump_pulse_file:
-        print('Warning: overwriting the pump_pulse group')
-        del pump_pulse_file['pump_pulse']
-
-    pulse_group = pump_pulse_file.create_group('pump_pulse')
-
-    pulse_group.create_dataset('pulse_num_steps', data=num_steps - 1)
-    pulse_group.create_dataset('time_step', data=time_step)
+    # Get the pump_pulse group
+    pump_group = pump_file['pump_pulse_snaps']
 
     if not hole:
         sign = 1
@@ -131,8 +123,10 @@ def gaussian_excitation(pump_pulse_file, occs_amplitude, time_window, pulse_fwhm
         sign = -1
 
     for itime in range(num_steps):
-        pulse_group.create_dataset(f'pulse_snap_t_{itime}',
+        pump_group.create_dataset(f'pulse_snap_t_{itime}',
                                    data=sign * delta_occs_array[:, itime, :].T)
+
+    exit()
 
     if 'static_occupations' in pump_pulse_file:
         print('Warning: overwriting the static_occupations group')
@@ -176,7 +170,8 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
                      pump_fwhm=20.0,
                      pump_energy_broadening=0.040,
                      pump_time_window=50.0,
-                     gaussian_pulse=True):
+                     finite_width=True,
+                     ):
     """
     Setup the Gaussian pump pulse excitation for electrons and holes.
     Write into the pump_pulse.h5 HDF5 file.
@@ -219,18 +214,19 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
         The number of the snapshots in the pump_pulse.h5 file will be
         equal to pump_time_window / pump_time_step.
 
-    gaussian_pulse : bool, optional
-        If True, the Gaussian pulse will be generated.
-        If False, the pulse will be a step function.
+    finite_width : bool, optional
+        If True, the pulse is finite in time. If False, the pulse is a step function
+        and occs_amplitude will be set as initial occupation.
     """
 
     print(f"{'PUMP PULSE PARAMETERS':*^70}")
     print(f"{'Pump pulse energy (eV):':>40} {pump_energy:.3f}")
-    print(f"{'Pump pulse time step (fs):':>40} {pump_time_step:.3f}")
-    print(f"{'Pump pulse FWHM (fs):':>40} {pump_fwhm:.3f}")
     print(f"{'Pump pulse energy broadening (eV):':>40} {pump_energy_broadening:.4f}")
-    print(f"{'Pump pulse time window (fs):':>40} {pump_time_window:.3f}")
-    print(f"{'Setup Gaussian pulse:':>40} {gaussian_pulse}")
+    print(f"{'Finite width:':>40} {finite_width}")
+    if finite_width:
+        print(f"{'Pump pulse time step (fs):':>40} {pump_time_step:.3f}")
+        print(f"{'Pump pulse FWHM (fs):':>40} {pump_fwhm:.3f}")
+        print(f"{'Pump pulse time window (fs):':>40} {pump_time_window:.3f}")
     print("")
 
     # Check electron and hole time steps
@@ -240,12 +236,12 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
     if np.abs(elec_dyna_time_step - pump_time_step) > 1e-6:
         warnings.warn(f'Electron dynamics time step ({elec_dyna_time_step:.3f} fs) '
                       f'is different from the pump pulse time step ({pump_time_step:.3f} fs).',
-                      UserWarning)
+                      RuntimeWarning)
 
     if np.abs(hole_dyna_time_step - pump_time_step) > 1e-6:
         warnings.warn(f'Hole dynamics time step ({hole_dyna_time_step:.3f} fs) '
                       f'is different from the pump pulse time step ({pump_time_step:.3f} fs).',
-                      UserWarning)
+                      RuntimeWarning)
 
     # Raw energy and kpoint arrays for electrons and holes
     elec_energy_array = elec_dyna_run._energies
@@ -260,17 +256,18 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
 
     VBM = max(hole_energy_array[:, -1])
     CBM = min(elec_energy_array[:, -1])
+    bandgap = CBM - VBM
 
-    bandgap = CBM - VBM        # band gap (eV)
+    elec_nband = len(elec_dyna_run.bands)
+    hole_nband = len(hole_dyna_run.bands)
 
     print(f"{'BAND STRUCTURE PARAMETERS':*^70}")
+    print(f"{'Num. of electron bands:':>40} {elec_nband}")
+    print(f"{'Num. of hole bands:':>40} {hole_nband}")
     print(f"{'Valence band minimum (VBM) (eV):':>40} {VBM:.4f}")
     print(f"{'Conduction band maximum (CBM) (eV):':>40} {CBM:.4f}")
     print(f"{'Band gap (Eg) (eV):':>40} {bandgap:.4f}")
     print("")
-
-    elec_nband = len(elec_dyna_run.bands)
-    hole_nband = len(hole_dyna_run.bands)
 
     elec_occs_amplitude = np.zeros_like(elec_energy_array)
     hole_occs_amplitude = np.zeros_like(hole_energy_array)
@@ -314,8 +311,6 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
 
     print(f"{'OCCUPATION SETUP':*^70}")
     print(f"{'Occupations setup time:':>40} {t_occs.timings['total'].t_delta:.4f} s")
-    print(f"{'Electron bands:':>40} {elec_nband}")
-    print(f"{'Hole bands:':>40} {hole_nband}")
     print(f"{'Max Electron Occupancy:':>40} {max(elec_occs_amplitude.ravel()):.4f}")
     print(f"{'Max Hole Occupancy:':>40} {max(hole_occs_amplitude.ravel()):.4f}")
     print(f"{'Electron concentration (a.u.):':>40} {sum(elec_occs_amplitude.ravel()):.4f}")
@@ -326,18 +321,48 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
     # Write to HDF5 file, replacing snap_t_1
     # Electron
     if os.path.exists(elec_pump_pulse_path):
-        warnings.warn(f'Overwriting the pump_pulse file {elec_pump_pulse_path}.', UserWarning)
+        warnings.warn(f'Overwriting the pump_pulse file {elec_pump_pulse_path}.', RuntimeWarning)
     if os.path.exists(hole_pump_pulse_path):
-        warnings.warn(f'Overwriting the pump_pulse file {hole_pump_pulse_path}.', UserWarning)
+        warnings.warn(f'Overwriting the pump_pulse file {hole_pump_pulse_path}.', RuntimeWarning)
+
+    time_grid = np.arange(0, pump_time_window + pump_time_step, pump_time_step)
+    num_steps = time_grid.shape[0]
 
     elec_pump_pulse_file = open_hdf5(elec_pump_pulse_path, mode='w')
     hole_pump_pulse_file = open_hdf5(hole_pump_pulse_path, mode='w')
 
+    for h5f in [elec_pump_pulse_file, hole_pump_pulse_file]:
+        h5f.create_group('pump_pulse_snaps')
 
-    #gaussian_excitation(cdyna_file_elec, elec_occs_amplitude,
-    #                    exit_time_window, pulse_fwhm, time_step)
+        h5f.create_dataset('pump_energy', data=pump_energy)
+        h5f['pump_energy'].attrs['units'] = 'eV'
 
+        h5f.create_dataset('pump_energy_broadening', data=pump_energy_broadening)
+        h5f['pump_energy_broadening'].attrs['units'] = 'eV'
 
+        h5f.create_dataset('pump_time_step', data=pump_time_step)
+        h5f['pump_time_step'].attrs['units'] = 'fs'
+
+        h5f.create_dataset('pump_num_steps', data=num_steps)
+
+        h5f.create_dataset('pump_time_grid', data=time_grid)
+        h5f['pump_time_grid'].attrs['units'] = 'fs'
+
+        h5f.create_dataset('finite_width', data=finite_width)
+        if finite_width:
+            h5f.create_dataset('pump_fwhm', data=pump_fwhm)
+            h5f.create_dataset('pump_time_window', data=pump_time_window)
+        else:
+            h5f.create_dataset('pump_fwhm', data=0.0)
+            h5f.create_dataset('pump_time_window', data=0.0)
+
+        h5f['pump_fwhm'].attrs['units'] = 'fs'
+        h5f['pump_time_window'].attrs['units'] = 'fs'
+
+    gaussian_excitation(elec_pump_pulse_file, elec_occs_amplitude,
+                        time_grid,
+                        pump_time_window, pump_fwhm, pump_time_step,
+                        hole=False, finite_width=finite_width)
 
     # Close
     close_hdf5(elec_pump_pulse_file)
