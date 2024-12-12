@@ -1,0 +1,405 @@
+---
+program: perturbo
+
+start date and time:
+   date:  6 December 2024
+   time: "14:23:16"
+
+parallelization:
+   type: MPI+OpenMP
+   number of MPI tasks:   1
+   number of OpenMP threads:  12
+   number of nodes:   1
+
+input parameters:
+   before conversion (before reading from epr file):
+      band_max:                   3
+      band_min:                   1
+      boltz_acc_thr:           0.0000000000000000E+00
+      boltz_de:           1.0000000000000000E+00
+      boltz_efield:          [ 0.0000000000000000E+00,   0.0000000000000000E+00,   0.0000000000000000E+00,  ]
+      boltz_emax:           9.9990000000000000E+03
+      boltz_emin:          -9.9990000000000000E+03
+      boltz_init_dist:          
+      boltz_init_e0:          -9.9990000000000000E+03
+      boltz_init_smear:           2.0000000000000000E+01
+      boltz_kdim:          [         1,           1,           1,  ]
+      boltz_norm_dist:          False
+      boltz_nstep:                   0
+      boltz_nstep_min:                   1
+      boltz_qdim:          [         1,           1,           1,  ]
+      calc_mode:          spectral-cum
+      cauchy_scale:           5.0000000000000003E-02
+      scat_impl:          std
+      cum_de:           4.0000000000000002E-01
+      cum_inner_emax:           2.0000000000000001E-01
+      cum_inner_emin:          -2.0000000000000001E-01
+      cum_outer_emax:           5.9999999999999998E-01
+      cum_outer_emin:          -5.9999999999999998E-01
+      cum_outer_np:                   4
+      debug:          False
+      delta_smear:           1.0000000000000000E+01
+      find_efermi:          False
+      fklist:          band.kpt
+      fqlist:          
+      ftemper:          sto.temper
+      full_ite:          True 
+      hole:          False
+      lmagsym:          False
+      load_scatter_eph:          False
+      nsamples:              100000
+      output_nstep:                   1
+      phfreq_cutoff:           1.0000000000000000E+00
+      polar_split:          
+      prefix:          sto
+      sampling:          uniform
+      solver:          rk4
+      spectral_emax:           5.9999999999999998E-01
+      spectral_emin:          -5.9999999999999998E-01
+      spectral_np:                   1
+      time_step:           1.0000000000000000E+00
+      tmp_dir:          ./
+      trans_thr:           2.0000000000000000E-03
+      scat_impl:          std
+      use_mem:          True 
+      yaml_fname:          pert_output.yml
+   after conversion:
+      band_max:                   3
+      band_min:                   1
+      boltz_acc_thr:           0.0000000000000000E+00
+      boltz_de:           7.3498617648950546E-05
+      boltz_efield:          [ 0.0000000000000000E+00,   0.0000000000000000E+00,   0.0000000000000000E+00,  ]
+      boltz_emax:           7.3491267787185654E+02
+      boltz_emin:          -7.3491267787185654E+02
+      boltz_init_dist:          
+      boltz_init_e0:          -7.3491267787185654E+02
+      boltz_init_smear:           1.4699723529790110E-03
+      boltz_kdim:          [         1,           1,           1,  ]
+      boltz_norm_dist:          False
+      boltz_nstep:                   0
+      boltz_nstep_min:                   1
+      boltz_qdim:          [         1,           1,           1,  ]
+      calc_mode:          spectral-cum
+      cauchy_scale:           5.0000000000000003E-02
+      scat_impl:          std
+      cum_de:           2.9399447059580220E-05
+      cum_inner_emax:           1.4699723529790111E-02
+      cum_inner_emin:          -1.4699723529790111E-02
+      cum_outer_emax:           4.4099170589370330E-02
+      cum_outer_emin:          -4.4099170589370330E-02
+      cum_outer_np:                   4
+      debug:          False
+      delta_smear:           7.3498617648950549E-04
+      find_efermi:          False
+      fklist:          band.kpt
+      fqlist:          
+      ftemper:          sto.temper
+      full_ite:          True 
+      hole:          False
+      lmagsym:          False
+      load_scatter_eph:          False
+      nsamples:              100000
+      output_nstep:                   1
+      phfreq_cutoff:           7.3498617648950546E-05
+      polar_split:          
+      prefix:          sto
+      sampling:          uniform
+      solver:          rk4
+      spectral_emax:           4.4099170589370330E-02
+      spectral_emin:          -4.4099170589370330E-02
+      spectral_np:                   1
+      time_step:           2.0670686467503085E+01
+      tmp_dir:          ./
+      trans_thr:           2.0000000000000000E-03
+      scat_impl:          std
+      use_mem:          True 
+      yaml_fname:          sto_spectral-cum.yml
+
+
+basic data:
+   alat:           7.3699300000
+   alat units:       bohr
+   # a vector is a row
+   lattice vectors:
+         - [   1.00000,     0.00000,     0.00000,  ]
+         - [   0.00000,     1.00000,     0.00000,  ]
+         - [   0.00000,     0.00000,     1.00000,  ]
+   lattice vectors units:       alat
+   reciprocal lattice vectors:
+   # a vector is a row
+         - [   1.00000,     0.00000,     0.00000,  ]
+         - [   0.00000,     1.00000,     0.00000,  ]
+         - [   0.00000,     0.00000,     1.00000,  ]
+   reciprocal lattice vectors units:       2pi/alat
+   number of atoms in unit cell:                5
+   atomic positions:
+   # a vector is a row
+         - [   0.00000,     0.00000,     0.00000,  ]
+         - [   0.50000,     0.50000,     0.50000,  ]
+         - [   0.00000,     0.50000,     0.50000,  ]
+         - [   0.50000,     0.00000,     0.50000,  ]
+         - [   0.50000,     0.50000,     0.00000,  ]
+   atomic positions units:       alat
+   volume:         400.3041465593
+   volume units:       bohr^3
+   number of symmetry operations:               48
+   symop:
+      1:
+         - [    1,      0,      0,  ]
+         - [    0,      1,      0,  ]
+         - [    0,      0,      1,  ]
+      2:
+         - [   -1,      0,      0,  ]
+         - [    0,     -1,      0,  ]
+         - [    0,      0,      1,  ]
+      3:
+         - [   -1,      0,      0,  ]
+         - [    0,      1,      0,  ]
+         - [    0,      0,     -1,  ]
+      4:
+         - [    1,      0,      0,  ]
+         - [    0,     -1,      0,  ]
+         - [    0,      0,     -1,  ]
+      5:
+         - [    0,      1,      0,  ]
+         - [    1,      0,      0,  ]
+         - [    0,      0,     -1,  ]
+      6:
+         - [    0,     -1,      0,  ]
+         - [   -1,      0,      0,  ]
+         - [    0,      0,     -1,  ]
+      7:
+         - [    0,      1,      0,  ]
+         - [   -1,      0,      0,  ]
+         - [    0,      0,      1,  ]
+      8:
+         - [    0,     -1,      0,  ]
+         - [    1,      0,      0,  ]
+         - [    0,      0,      1,  ]
+      9:
+         - [    0,      0,      1,  ]
+         - [    0,     -1,      0,  ]
+         - [    1,      0,      0,  ]
+      10:
+         - [    0,      0,     -1,  ]
+         - [    0,     -1,      0,  ]
+         - [   -1,      0,      0,  ]
+      11:
+         - [    0,      0,      1,  ]
+         - [    0,      1,      0,  ]
+         - [   -1,      0,      0,  ]
+      12:
+         - [    0,      0,     -1,  ]
+         - [    0,      1,      0,  ]
+         - [    1,      0,      0,  ]
+      13:
+         - [   -1,      0,      0,  ]
+         - [    0,      0,      1,  ]
+         - [    0,      1,      0,  ]
+      14:
+         - [   -1,      0,      0,  ]
+         - [    0,      0,     -1,  ]
+         - [    0,     -1,      0,  ]
+      15:
+         - [    1,      0,      0,  ]
+         - [    0,      0,      1,  ]
+         - [    0,     -1,      0,  ]
+      16:
+         - [    1,      0,      0,  ]
+         - [    0,      0,     -1,  ]
+         - [    0,      1,      0,  ]
+      17:
+         - [    0,      1,      0,  ]
+         - [    0,      0,      1,  ]
+         - [    1,      0,      0,  ]
+      18:
+         - [    0,     -1,      0,  ]
+         - [    0,      0,      1,  ]
+         - [   -1,      0,      0,  ]
+      19:
+         - [    0,      1,      0,  ]
+         - [    0,      0,     -1,  ]
+         - [   -1,      0,      0,  ]
+      20:
+         - [    0,     -1,      0,  ]
+         - [    0,      0,     -1,  ]
+         - [    1,      0,      0,  ]
+      21:
+         - [    0,      0,      1,  ]
+         - [    1,      0,      0,  ]
+         - [    0,      1,      0,  ]
+      22:
+         - [    0,      0,      1,  ]
+         - [   -1,      0,      0,  ]
+         - [    0,     -1,      0,  ]
+      23:
+         - [    0,      0,     -1,  ]
+         - [   -1,      0,      0,  ]
+         - [    0,      1,      0,  ]
+      24:
+         - [    0,      0,     -1,  ]
+         - [    1,      0,      0,  ]
+         - [    0,     -1,      0,  ]
+      25:
+         - [   -1,      0,      0,  ]
+         - [    0,     -1,      0,  ]
+         - [    0,      0,     -1,  ]
+      26:
+         - [    1,      0,      0,  ]
+         - [    0,      1,      0,  ]
+         - [    0,      0,     -1,  ]
+      27:
+         - [    1,      0,      0,  ]
+         - [    0,     -1,      0,  ]
+         - [    0,      0,      1,  ]
+      28:
+         - [   -1,      0,      0,  ]
+         - [    0,      1,      0,  ]
+         - [    0,      0,      1,  ]
+      29:
+         - [    0,     -1,      0,  ]
+         - [   -1,      0,      0,  ]
+         - [    0,      0,      1,  ]
+      30:
+         - [    0,      1,      0,  ]
+         - [    1,      0,      0,  ]
+         - [    0,      0,      1,  ]
+      31:
+         - [    0,     -1,      0,  ]
+         - [    1,      0,      0,  ]
+         - [    0,      0,     -1,  ]
+      32:
+         - [    0,      1,      0,  ]
+         - [   -1,      0,      0,  ]
+         - [    0,      0,     -1,  ]
+      33:
+         - [    0,      0,     -1,  ]
+         - [    0,      1,      0,  ]
+         - [   -1,      0,      0,  ]
+      34:
+         - [    0,      0,      1,  ]
+         - [    0,      1,      0,  ]
+         - [    1,      0,      0,  ]
+      35:
+         - [    0,      0,     -1,  ]
+         - [    0,     -1,      0,  ]
+         - [    1,      0,      0,  ]
+      36:
+         - [    0,      0,      1,  ]
+         - [    0,     -1,      0,  ]
+         - [   -1,      0,      0,  ]
+      37:
+         - [    1,      0,      0,  ]
+         - [    0,      0,     -1,  ]
+         - [    0,     -1,      0,  ]
+      38:
+         - [    1,      0,      0,  ]
+         - [    0,      0,      1,  ]
+         - [    0,      1,      0,  ]
+      39:
+         - [   -1,      0,      0,  ]
+         - [    0,      0,     -1,  ]
+         - [    0,      1,      0,  ]
+      40:
+         - [   -1,      0,      0,  ]
+         - [    0,      0,      1,  ]
+         - [    0,     -1,      0,  ]
+      41:
+         - [    0,     -1,      0,  ]
+         - [    0,      0,     -1,  ]
+         - [   -1,      0,      0,  ]
+      42:
+         - [    0,      1,      0,  ]
+         - [    0,      0,     -1,  ]
+         - [    1,      0,      0,  ]
+      43:
+         - [    0,     -1,      0,  ]
+         - [    0,      0,      1,  ]
+         - [    1,      0,      0,  ]
+      44:
+         - [    0,      1,      0,  ]
+         - [    0,      0,      1,  ]
+         - [   -1,      0,      0,  ]
+      45:
+         - [    0,      0,     -1,  ]
+         - [   -1,      0,      0,  ]
+         - [    0,     -1,      0,  ]
+      46:
+         - [    0,      0,     -1,  ]
+         - [    1,      0,      0,  ]
+         - [    0,      1,      0,  ]
+      47:
+         - [    0,      0,      1,  ]
+         - [    1,      0,      0,  ]
+         - [    0,     -1,      0,  ]
+      48:
+         - [    0,      0,      1,  ]
+         - [   -1,      0,      0,  ]
+         - [    0,      1,      0,  ]
+   kc dimensions:
+         - [      4,        4,        4,  ]
+   spinor:       False
+   polar_alpha:           1.0000000000
+   epsil:
+   # a vector is a row
+         - [      6.25856984,        0.00000000,        0.00000000,  ]
+         - [      0.00000000,        6.25856984,        0.00000000,  ]
+         - [      0.00000000,        0.00000000,        6.25856984,  ]
+   qc dimensions:
+         - [      2,        2,        2,  ]
+   mass:
+      -       79860.74458118
+      -       43628.10158488
+      -       14582.19644550
+      -       14582.19644550
+      -       14582.19644550
+   mass units:       atomic
+   zstar:
+      1:
+         - [   2.55389,     0.00000,     0.00000,  ]
+         - [   0.00000,     2.55389,     0.00000,  ]
+         - [   0.00000,     0.00000,     2.55389,  ]
+      2:
+         - [   7.28719,     0.00000,     0.00000,  ]
+         - [   0.00000,     7.28719,     0.00000,  ]
+         - [   0.00000,     0.00000,     7.28719,  ]
+      3:
+         - [  -5.77445,     0.00000,     0.00000,  ]
+         - [   0.00000,    -2.03331,     0.00000,  ]
+         - [   0.00000,     0.00000,    -2.03331,  ]
+      4:
+         - [  -2.03331,     0.00000,     0.00000,  ]
+         - [   0.00000,    -5.77445,     0.00000,  ]
+         - [   0.00000,     0.00000,    -2.03331,  ]
+      5:
+         - [  -2.03331,     0.00000,     0.00000,  ]
+         - [   0.00000,    -2.03331,     0.00000,  ]
+         - [   0.00000,     0.00000,    -5.77445,  ]
+   system_2d:       False
+   number of Wannier functions:                3
+   wannier_center:
+   # a vector is a row
+         - [   0.50000,     0.50000,     0.50000,  ]
+         - [   0.50000,     0.50000,     0.50000,  ]
+         - [   0.50000,     0.50000,     0.50000,  ]
+   wannier_center units: cartesian
+   wannier_center_cryst:
+   # a vector is a row
+         - [   0.50000,     0.50000,     0.50000,  ]
+         - [   0.50000,     0.50000,     0.50000,  ]
+         - [   0.50000,     0.50000,     0.50000,  ]
+   wannier_center_cryst units: crystal
+
+memory:
+   physical: 65737300 kB                                                                     
+   max rss: 54812 kB                                                                        
+
+timings:
+
+   time units: s
+
+   PERTURBO:
+      cpu:         3.10515600
+      wall:        0.35491920
+      calls:         1
+...
