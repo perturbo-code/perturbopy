@@ -72,7 +72,7 @@ class DynaRun(CalcMode):
                 snap_t = np.zeros((numb, numk, num_steps), dtype=np.float64)
 
                 for itime in range(num_steps):
-                    snap_t[:, :, itime] = cdyna_file[dyn_str][f'snap_t_{itime+1}'][()].T
+                    snap_t[:, :, itime] = cdyna_file[dyn_str][f'snap_t_{itime + 1}'][()].T
 
                 # Get E-field, which is only present if nonzero
                 if "efield" in cdyna_file[dyn_str].keys():

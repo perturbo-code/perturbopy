@@ -19,6 +19,7 @@ from .constants import energy_conversion_factor
 from .plot_tools import plotparams
 plt.rcParams.update(plotparams)
 
+
 def gaussian(x, mu, sig, hole_nband, elec_nband):
     """
     Gaussian function normalized to unity max occupation
@@ -156,11 +157,10 @@ def plot_occ_ampl(e_occs, elec_kpoint_array, elec_energy_array,
                     alpha=0.5)
 
     fsize = 16
-    ax.set_title(f'Occupation amplitude for pump energy {pump_energy:.3f} eV')#, fontsize=fsize)
-    ax.set_xlabel('Electron Momentum $k_x$')#, fontsize=fsize)
-    ax.set_ylabel('Energy (eV)')#, fontsize=fsize)
+    ax.set_title(f'Occupation amplitude for pump energy {pump_energy:.3f} eV')
+    ax.set_xlabel('Electron Momentum $k_x$')
+    ax.set_ylabel('Energy (eV)')
 
-    #plt.savefig('2D_{:5.3f}.png'.format(pump_energy))
     plt.show()
 
 
