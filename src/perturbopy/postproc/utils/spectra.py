@@ -15,6 +15,9 @@ from .memory import get_size
 from .timing import TimingGroup
 from .constants import energy_conversion_factor
 
+# Plotting parameters
+from .plot_tools import plotparams
+plt.rcParams.update(plotparams)
 
 def gaussian(x, mu, sig, hole_nband, elec_nband):
     """
@@ -53,13 +56,10 @@ def gaussian_excitation(pump_file, occs_amplitude, time_grid, time_window, pulse
     """
     The Gaussian pulse excitation for the Perturbo dynamics.
     Pump pulses for electrons and holes must be dumped into separate HDF5 files.
-    In Perturbop, set `pump_pulse = .true.` and `pump_pulse_fname = ...` in pert.in.
+    In Perturbo, set `pump_pulse = .true.` and `pump_pulse_fname = ...` in pert.in.
 
-    TODO: if gaussian_pulse is False, create only one snap in this function
-    TODO: change the name of the function, pass the gaussian_pulse var
-
-    TODO FORTRAN:
-    Warning if norm dist is turned on with pump pulse
+    In Perturbo, step_0 will be initialized with `init_boltz_dist` parameter,
+    the pump pulse will be applied starting from step_1.
 
     Parameters
     ----------
@@ -112,54 +112,55 @@ def gaussian_excitation(pump_file, occs_amplitude, time_grid, time_window, pulse
     delta_occs_array[:, :, :] = np.einsum('t,jk->ktj', pulse_coef[:], occs_amplitude[:, :])
 
     # Print the size of the array since it can be large: num_bands * num_steps * num_k
-    get_size(delta_occs_array, 'delta(fnk(t))', dump=True)
+    carrier = 'holes' if hole else 'electrons'
+    get_size(delta_occs_array, f'delta(fnk(t)) {carrier}', dump=True)
 
     # Get the pump_pulse group
     pump_group = pump_file['pump_pulse_snaps']
 
-    if not hole:
-        sign = 1
+    # 1 for electrons, -1 for holes
+    sign = 1 if not hole else -1
+
+    if finite_width:
+        # Apply pump pulse starting from pulse_snap_t_1
+        for itime in range(num_steps):
+            pump_group.create_dataset(f'pulse_snap_t_{itime + 1}',
+                                      data=sign * delta_occs_array[:, itime, :].T)
+
     else:
-        sign = -1
-
-    for itime in range(num_steps):
-        pump_group.create_dataset(f'pulse_snap_t_{itime}',
-                                   data=sign * delta_occs_array[:, itime, :].T)
-
-    exit()
-
-    if 'static_occupations' in pump_pulse_file:
-        print('Warning: overwriting the static_occupations group')
-        del pump_pulse_file['static_occupations']
-
-    static_group = pump_pulse_file.create_group('static_occupations')
-
-    if not hole:
-        static_group.create_dataset('static_snap', data=occs_amplitude)
-    else:
-        static_group.create_dataset('static_snap', data=1.0 - occs_amplitude)
+        pump_group.create_dataset('pulse_snap_t_1', data=sign * occs_amplitude)
 
     t_dataset.timings['total'].stop()
-    print(t_dataset)
+
+    print(f'---Pump pulse HDF5 writings time {carrier}: {t_dataset.timings["total"].t_delta:.4f} s---\n')
 
 
-def plot_static_occ(e_occs, elec_kpoint_array, elec_energy_array, h_occs, hole_kpoint_array, hole_energy_array, pump_energy):
+def plot_occ_ampl(e_occs, elec_kpoint_array, elec_energy_array,
+                  h_occs, hole_kpoint_array, hole_energy_array, pump_energy):
     """
-    Plot occupation on bands
+    Plot occupation amplitude. Currently hardcoded to the section kz = 0.
     """
+
     # find where kz == 0
     idx = np.where((elec_kpoint_array[:, 1] == 0) & (elec_kpoint_array[:, 0] == 0))
-    fig = plt.figure()
+
+    fig, ax = plt.subplots(1, 1, figsize=(9, 6))
     plt.scatter(elec_kpoint_array[idx, 2], elec_energy_array[idx], s=0.5, c='black', alpha=0.5)
     plt.scatter(elec_kpoint_array[idx, 2], elec_energy_array[idx], s=e_occs[idx]
                 * 1000 + 1e-10, c='red', alpha=0.5)
+
     idx = np.where((hole_kpoint_array[:, 1] == 0) & (hole_kpoint_array[:, 0] == 0))
     for i in range(np.size(hole_energy_array, axis=1)):
         plt.scatter(hole_kpoint_array[idx, 2], hole_energy_array[idx, i], s=0.5, c='black', alpha=0.5)
         plt.scatter(hole_kpoint_array[idx, 2], hole_energy_array[idx, i], s=h_occs[idx, i][0] * 1000 + 1e-10, c='red',
                     alpha=0.5)
 
-    plt.savefig('2D_{:5.3f}.png'.format(pump_energy))
+    fsize = 16
+    ax.set_title(f'Occupation amplitude for pump energy {pump_energy:.3f} eV')#, fontsize=fsize)
+    ax.set_xlabel('Electron Momentum $k_x$')#, fontsize=fsize)
+    ax.set_ylabel('Energy (eV)')#, fontsize=fsize)
+
+    #plt.savefig('2D_{:5.3f}.png'.format(pump_energy))
     plt.show()
 
 
@@ -233,12 +234,12 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
     elec_dyna_time_step = elec_dyna_run[1].time_step
     hole_dyna_time_step = hole_dyna_run[1].time_step
 
-    if np.abs(elec_dyna_time_step - pump_time_step) > 1e-6:
+    if np.abs(elec_dyna_time_step - pump_time_step) > 1e-6 and finite_width:
         warnings.warn(f'Electron dynamics time step ({elec_dyna_time_step:.3f} fs) '
                       f'is different from the pump pulse time step ({pump_time_step:.3f} fs).',
                       RuntimeWarning)
 
-    if np.abs(hole_dyna_time_step - pump_time_step) > 1e-6:
+    if np.abs(hole_dyna_time_step - pump_time_step) > 1e-6 and finite_width:
         warnings.warn(f'Hole dynamics time step ({hole_dyna_time_step:.3f} fs) '
                       f'is different from the pump pulse time step ({pump_time_step:.3f} fs).',
                       RuntimeWarning)
@@ -289,11 +290,6 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
         hole_kpoint_array.view('float64,float64,float64').reshape(-1),
         return_indices=True)[1:]
 
-    num_kpoints = ekidx.shape[0]
-
-    print(f'\n---Intersect k-points: {num_kpoints} (among {elec_kpoint_array.shape[0]}'
-          f' elec and {hole_kpoint_array.shape[0]} hole k-points)---\n')
-
     # Iteratre over electron and hole bands
     # Even though, the for loops are inefficient in Python,
     # the number of bands is rarely more than 10, therefore
@@ -304,6 +300,8 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
             delta = pump_factor * \
                 gaussian(elec_energy_array[ekidx, iband] - hole_energy_array[hkidx, jband],
                          pump_energy, pump_energy_broadening, hole_nband, elec_nband)
+
+            # Only for the intersected k points, we add the delta occupation
             elec_occs_amplitude[ekidx, iband] += delta
             hole_occs_amplitude[hkidx, jband] += delta
 
@@ -311,6 +309,7 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
 
     print(f"{'OCCUPATION SETUP':*^70}")
     print(f"{'Occupations setup time:':>40} {t_occs.timings['total'].t_delta:.4f} s")
+    print(f"{'Intersect k-points:':>40} {ekidx.shape[0]} (total: {elec_kpoint_array.shape[0]} elec; {hole_kpoint_array.shape[0]} hole)")
     print(f"{'Max Electron Occupancy:':>40} {max(elec_occs_amplitude.ravel()):.4f}")
     print(f"{'Max Hole Occupancy:':>40} {max(hole_occs_amplitude.ravel()):.4f}")
     print(f"{'Electron concentration (a.u.):':>40} {sum(elec_occs_amplitude.ravel()):.4f}")
@@ -340,75 +339,41 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
         h5f.create_dataset('pump_energy_broadening', data=pump_energy_broadening)
         h5f['pump_energy_broadening'].attrs['units'] = 'eV'
 
-        h5f.create_dataset('pump_time_step', data=pump_time_step)
-        h5f['pump_time_step'].attrs['units'] = 'fs'
-
-        h5f.create_dataset('pump_num_steps', data=num_steps)
-
-        h5f.create_dataset('pump_time_grid', data=time_grid)
-        h5f['pump_time_grid'].attrs['units'] = 'fs'
-
         h5f.create_dataset('finite_width', data=finite_width)
         if finite_width:
             h5f.create_dataset('pump_fwhm', data=pump_fwhm)
             h5f.create_dataset('pump_time_window', data=pump_time_window)
+            h5f.create_dataset('pump_num_steps', data=num_steps)
+            h5f.create_dataset('pump_time_step', data=pump_time_step)
+            h5f.create_dataset('pump_time_grid', data=time_grid)
+
         else:
             h5f.create_dataset('pump_fwhm', data=0.0)
             h5f.create_dataset('pump_time_window', data=0.0)
+            h5f.create_dataset('pump_num_steps', data=0)
+            h5f.create_dataset('pump_time_step', data=0.0)
+            h5f.create_dataset('pump_time_grid', data=np.array([0.0]))
 
         h5f['pump_fwhm'].attrs['units'] = 'fs'
         h5f['pump_time_window'].attrs['units'] = 'fs'
+        h5f['pump_time_step'].attrs['units'] = 'fs'
+        h5f['pump_time_grid'].attrs['units'] = 'fs'
 
     gaussian_excitation(elec_pump_pulse_file, elec_occs_amplitude,
                         time_grid,
                         pump_time_window, pump_fwhm, pump_time_step,
                         hole=False, finite_width=finite_width)
 
+    gaussian_excitation(hole_pump_pulse_file, hole_occs_amplitude,
+                        time_grid,
+                        pump_time_window, pump_fwhm, pump_time_step,
+                        hole=True, finite_width=finite_width)
+
     # Close
     close_hdf5(elec_pump_pulse_file)
     close_hdf5(hole_pump_pulse_file)
 
-    exit()
-
-    # TODO: check that time_step from gaas_cdyna.h5/dynamics_run_1/time_step_fs
-    # is the same as time_step
-    data = cdyna_file_elec['dynamics_run_1/snap_t_1']
-
-    if gaussian_pulse:
-        # for the Gaussian pulse, the initial step, which is snap_t_1 is zero
-        data[...] = np.zeros_like(elec_occs_amplitude)
-        gaussian_excitation(cdyna_file_elec, elec_occs_amplitude,
-                            exit_time_window, pulse_fwhm, time_step)
-
-    else:
-        data[...] = elec_occs_amplitude
-
-    exit()
-
-    cdyna_file_elec.close()
-
-    # Hole (need to write 1-f since Perturbo treats holes and electrons the same)
-    cdyna_file_hole = h5py.File(os.path.join(
-        cdyna_hole_path, prefix + '_cdyna.h5'), 'r+')
-
-    # TODO: check that time_step from gaas_cdyna.h5/dynamics_run_1/time_step_fs
-    # is the same as time_step
-    data = cdyna_file_hole['dynamics_run_1/snap_t_1']
-
-    print('\nVALUES:')
-    print(np.max(np.ravel(elec_occs_amplitude)))
-    print(np.max(np.ravel(hole_occs_amplitude)))
-    if gaussian_pulse:
-        data[...] = np.ones_like(hole_occs_amplitude)
-        gaussian_excitation(cdyna_file_hole, hole_occs_amplitude,
-                            exit_time_window, pulse_fwhm, time_step, hole=True)
-
-    else:
-        data[...] = 1.0 - hole_occs_amplitude
-
-    cdyna_file_hole.close()
-
     print('\nPlotting...')
-    plot_static_occ(elec_occs_amplitude, elec_kpoint_array, elec_energy_array, hole_occs_amplitude, hole_kpoint_array, hole_energy_array, pump_energy)
-
-
+    plot_occ_ampl(elec_occs_amplitude, elec_kpoint_array, elec_energy_array,
+                    hole_occs_amplitude, hole_kpoint_array,
+                    hole_energy_array, pump_energy)
