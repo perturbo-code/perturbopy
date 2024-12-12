@@ -11,6 +11,8 @@ from scipy import special
 
 from perturbopy.io_utils.io import open_hdf5, close_hdf5
 
+from matplotlib.animation import FuncAnimation
+
 from .memory import get_size
 from .timing import TimingGroup
 from .constants import energy_conversion_factor
@@ -134,6 +136,7 @@ def gaussian_excitation(pump_file, occs_amplitude, time_grid, time_window, pulse
     t_dataset.timings['total'].stop()
 
     print(f'---Pump pulse HDF5 writings time {carrier}: {t_dataset.timings["total"].t_delta:.4f} s---\n')
+    return delta_occs_array
 
 
 def plot_occ_ampl(e_occs, elec_kpoint_array, elec_energy_array,
@@ -143,17 +146,21 @@ def plot_occ_ampl(e_occs, elec_kpoint_array, elec_energy_array,
     """
 
     # find where kz == 0
-    idx = np.where((elec_kpoint_array[:, 1] == 0) & (elec_kpoint_array[:, 0] == 0))
 
     fig, ax = plt.subplots(1, 1, figsize=(9, 6))
-    plt.scatter(elec_kpoint_array[idx, 2], elec_energy_array[idx], s=0.5, c='black', alpha=0.5)
-    plt.scatter(elec_kpoint_array[idx, 2], elec_energy_array[idx], s=e_occs[idx]
-                * 1000 + 1e-10, c='red', alpha=0.5)
 
+    # Plot electron occupations
+    idx = np.where((elec_kpoint_array[:, 1] == 0) & (elec_kpoint_array[:, 0] == 0))
+    for i in range(np.size(elec_energy_array, axis=1)):
+        ax.scatter(elec_kpoint_array[idx, 2], elec_energy_array[idx], s=0.5, c='black', alpha=0.5)
+        ax.scatter(elec_kpoint_array[idx, 2], elec_energy_array[idx], s=e_occs[idx]
+                    * 1000 + 1e-10, c='red', alpha=0.5)
+
+    # Plot hole occupations
     idx = np.where((hole_kpoint_array[:, 1] == 0) & (hole_kpoint_array[:, 0] == 0))
     for i in range(np.size(hole_energy_array, axis=1)):
-        plt.scatter(hole_kpoint_array[idx, 2], hole_energy_array[idx, i], s=0.5, c='black', alpha=0.5)
-        plt.scatter(hole_kpoint_array[idx, 2], hole_energy_array[idx, i], s=h_occs[idx, i][0] * 1000 + 1e-10, c='red',
+        ax.scatter(hole_kpoint_array[idx, 2], hole_energy_array[idx, i], s=0.5, c='black', alpha=0.5)
+        ax.scatter(hole_kpoint_array[idx, 2], hole_energy_array[idx, i], s=h_occs[idx, i][0] * 1000 + 1e-10, c='red',
                     alpha=0.5)
 
     fsize = 16
@@ -164,6 +171,77 @@ def plot_occ_ampl(e_occs, elec_kpoint_array, elec_energy_array,
     plt.show()
 
 
+def animate_pump_pulse(elec_delta_occs_array, elec_kpoint_array, elec_energy_array,
+                       hole_delta_occs_array, hole_kpoint_array, hole_energy_array,
+                       pump_energy):
+    """
+    Animate the pump pulse excitation for electrons and holes.
+    """
+
+    fig, ax = plt.subplots(1, 1, figsize=(9, 6))
+
+    idx_elec = np.where((elec_kpoint_array[:, 1] == 0) & (elec_kpoint_array[:, 0] == 0))
+    idx_hole = np.where((hole_kpoint_array[:, 1] == 0) & (hole_kpoint_array[:, 0] == 0))
+
+    # Plot electron occupations
+    elec_scat_list = []
+    for i in range(np.size(elec_energy_array, axis=1)):
+        ax.scatter(elec_kpoint_array[idx_elec, 2], elec_energy_array[idx_elec], s=0.5, c='black', alpha=0.5)
+        scat_obj = ax.scatter(elec_kpoint_array[idx_elec, 2], elec_energy_array[idx_elec], s=0.0, c='red', alpha=0.5)
+        elec_scat_list.append(scat_obj)
+
+    # Plot hole occupations
+    hole_scat_list = []
+    for i in range(np.size(hole_energy_array, axis=1)):
+        ax.scatter(hole_kpoint_array[idx_hole, 2], hole_energy_array[idx_hole, i], s=0.5, c='black', alpha=0.5)
+        obj = ax.scatter(hole_kpoint_array[idx_hole, 2], hole_energy_array[idx_hole, i], s=0, c='red', alpha=0.5)
+        hole_scat_list.append(obj)
+
+    fsize = 16
+    ax.set_title(f'Occupation amplitude for pump energy {pump_energy:.3f} eV')
+    ax.set_xlabel('Electron Momentum $k_x$')
+    ax.set_ylabel('Energy (eV)')
+
+    ani = FuncAnimation(fig, update_scatter, frames=elec_delta_occs_array.shape[1],
+                        fargs=(idx_elec, idx_hole,
+                               elec_scat_list, hole_scat_list,
+                               elec_delta_occs_array, elec_kpoint_array, elec_energy_array,
+                               hole_delta_occs_array, hole_kpoint_array, hole_energy_array),
+                        interval=100, repeat=False)
+
+    # Save the animation to gif
+    ani.save('pump_pulse.gif', writer='imagemagick')
+
+    plt.show()
+
+
+def update_scatter(anim_time, idx_elec, idx_hole,
+                   elec_scat_list, hole_scat_list,
+                   elec_delta_occs_array, elec_kpoint_array, elec_energy_array,
+                   hole_delta_occs_array, hole_kpoint_array, hole_energy_array):
+    """
+    Animate the pump pulse excitation for electrons and holes.
+
+    Parameters
+    ----------
+
+    anim_time : float
+        Animation time.
+
+    ax : matplotlib.axes.Axes
+        Axis for plotting the pump pulse excitation.
+    """
+
+    elec_num_bands = elec_delta_occs_array.shape[0]
+    hole_num_bands = hole_delta_occs_array.shape[0]
+
+    for i in range(elec_num_bands):
+        elec_scat_list[i].set_sizes(elec_delta_occs_array[i, anim_time, idx_elec].flatten() * 2e4 + 1e-10)
+
+    for i in range(hole_num_bands):
+        hole_scat_list[i].set_sizes(hole_delta_occs_array[i, anim_time, idx_hole].flatten() * 2e4 + 1e-10)
+
+
 def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
                      elec_dyna_run, hole_dyna_run,
                      pump_energy,
@@ -172,6 +250,7 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
                      pump_energy_broadening=0.040,
                      pump_time_window=50.0,
                      finite_width=True,
+                     animate=True
                      ):
     """
     Setup the Gaussian pump pulse excitation for electrons and holes.
@@ -341,33 +420,41 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
 
         h5f.create_dataset('finite_width', data=finite_width)
         if finite_width:
-            h5f.create_dataset('pump_fwhm', data=pump_fwhm)
-            h5f.create_dataset('pump_time_window', data=pump_time_window)
-            h5f.create_dataset('pump_num_steps', data=num_steps)
-            h5f.create_dataset('pump_time_step', data=pump_time_step)
-            h5f.create_dataset('pump_time_grid', data=time_grid)
+            h5f.create_dataset('fwhm', data=pump_fwhm)
+            h5f.create_dataset('time_window', data=pump_time_window)
+            h5f.create_dataset('num_steps', data=num_steps)
+            h5f.create_dataset('time_step', data=pump_time_step)
+            h5f.create_dataset('time_grid', data=time_grid)
 
         else:
-            h5f.create_dataset('pump_fwhm', data=0.0)
-            h5f.create_dataset('pump_time_window', data=0.0)
-            h5f.create_dataset('pump_num_steps', data=0)
-            h5f.create_dataset('pump_time_step', data=0.0)
-            h5f.create_dataset('pump_time_grid', data=np.array([0.0]))
+            h5f.create_dataset('fwhm', data=0.0)
+            h5f.create_dataset('time_window', data=0.0)
+            h5f.create_dataset('num_steps', data=0)
+            h5f.create_dataset('time_step_fs', data=0.0)
+            h5f.create_dataset('time_grid', data=np.array([0.0]))
 
-        h5f['pump_fwhm'].attrs['units'] = 'fs'
-        h5f['pump_time_window'].attrs['units'] = 'fs'
-        h5f['pump_time_step'].attrs['units'] = 'fs'
-        h5f['pump_time_grid'].attrs['units'] = 'fs'
+        h5f['fwhm'].attrs['units'] = 'fs'
+        h5f['time_window'].attrs['units'] = 'fs'
+        h5f['time_step'].attrs['units'] = 'fs'
+        h5f['time_grid'].attrs['units'] = 'fs'
 
-    gaussian_excitation(elec_pump_pulse_file, elec_occs_amplitude,
-                        time_grid,
-                        pump_time_window, pump_fwhm, pump_time_step,
-                        hole=False, finite_width=finite_width)
+    elec_pump_pulse_file.create_dataset('num_bands', data=elec_nband)
+    hole_pump_pulse_file.create_dataset('num_bands', data=hole_nband)
+    elec_pump_pulse_file.create_dataset('num_kpoints', data=elec_kpoint_array.shape[0])
+    hole_pump_pulse_file.create_dataset('num_kpoints', data=hole_kpoint_array.shape[0])
 
-    gaussian_excitation(hole_pump_pulse_file, hole_occs_amplitude,
-                        time_grid,
-                        pump_time_window, pump_fwhm, pump_time_step,
-                        hole=True, finite_width=finite_width)
+    # We save the delta_occs_array for animation. If it takes too much space, remove it.
+    elec_delta_occs_array = \
+        gaussian_excitation(elec_pump_pulse_file, elec_occs_amplitude,
+                            time_grid,
+                            pump_time_window, pump_fwhm, pump_time_step,
+                            hole=False, finite_width=finite_width)
+
+    hole_delta_occs_array = \
+        gaussian_excitation(hole_pump_pulse_file, hole_occs_amplitude,
+                            time_grid,
+                            pump_time_window, pump_fwhm, pump_time_step,
+                            hole=True, finite_width=finite_width)
 
     # Close
     close_hdf5(elec_pump_pulse_file)
@@ -377,3 +464,9 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
     plot_occ_ampl(elec_occs_amplitude, elec_kpoint_array, elec_energy_array,
                     hole_occs_amplitude, hole_kpoint_array,
                     hole_energy_array, pump_energy)
+
+    if animate:
+        print('\nAnimating...')
+        animate_pump_pulse(elec_delta_occs_array, elec_kpoint_array, elec_energy_array,
+                           hole_delta_occs_array, hole_kpoint_array, hole_energy_array,
+                           pump_energy)
