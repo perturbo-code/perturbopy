@@ -28,12 +28,12 @@ class ImsigmaSpin(CalcMode):
         give the configuration number, and the values are floats giving the
         chemical potential (with units chem_pot.units)
     
-    imsigma_flip : UnitsDict
+    imsigma : UnitsDict
         Dictionary of spin flip imaginary self-energies computed for each configuration. The top level keys are the
         configuration number, and the second level keys are the band index. The values are arrays of length N giving the
         imaginary self-energies along all the k-points at that band index for the configuration. Units are in imsigma.units.
 
-    imsigma_flip_mode : UnitsDict
+    imsigma_mode : UnitsDict
         Dictionary of spin flip imaginary self-energies resolved by phonon mode computed. The top level keys are the
         configuration number, and the second level keys are the band index. The third level keys are
         the phonon mode. Finally,the values are arrays of length N giving the imaginary self-energies along all the k-points
@@ -72,22 +72,22 @@ class ImsigmaSpin(CalcMode):
 
         self.temper = UnitsDict(units=self._pert_dict['imsigma_spin'].pop('temperature units'))
         self.chem_pot = UnitsDict(units=self._pert_dict['imsigma_spin'].pop('chemical potential units'))
-        self.imsigma_flip = UnitsDict(units=self._pert_dict['imsigma_spin'].pop('Im(Sigma) units'))
-        self.imsigma_flip_mode = UnitsDict(units=self.imsigma_flip.units)
+        self.imsigma = UnitsDict(units=self._pert_dict['imsigma_spin'].pop('Im(Sigma) units'))
+        self.imsigma_mode = UnitsDict(units=self.imsigma.units)
         
         for config_idx in config_dat.keys():
-            self.imsigma_flip[config_idx] = {}
-            self.imsigma_flip_mode[config_idx] = {}
+            self.imsigma[config_idx] = {}
+            self.imsigma_mode[config_idx] = {}
             self.temper[config_idx] = config_dat[config_idx].pop('temperature')
             self.chem_pot[config_idx] = config_dat[config_idx].pop('chemical potential')
             
             imsigma_dat = config_dat[config_idx].pop('band index')
 
             for mode in np.arange(1, num_modes + 1):
-                self.imsigma_flip_mode[config_idx][mode] = {}
+                self.imsigma_mode[config_idx][mode] = {}
 
             for band_index in imsigma_dat.keys():
-                self.imsigma_flip[config_idx][band_index] = np.array(imsigma_dat[band_index]['Im(Sigma)']['total'])
+                self.imsigma[config_idx][band_index] = np.array(imsigma_dat[band_index]['Im(Sigma)']['total'])
 
                 for mode in np.arange(1, num_modes + 1):
-                    self.imsigma_flip_mode[config_idx][mode][band_index] = np.array(imsigma_dat[band_index]['Im(Sigma)']['phonon mode (total)'][mode])
+                    self.imsigma_mode[config_idx][mode][band_index] = np.array(imsigma_dat[band_index]['Im(Sigma)']['phonon mode'][mode])

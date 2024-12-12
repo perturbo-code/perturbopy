@@ -1,9 +1,11 @@
+.. _imsigma_tutorial:
+
 Imsigma tutorial
 ================
 
-In this section, we describe how to use Perturbopy to process a Perturbo imsigma calculation.
+In this section, we describe how to use Perturbopy to process a Perturbo ``'imsigma'`` calculation.
 
-The imsigma calculation mode computes the e-ph self-energy for a list of electronic crystal momenta. We first run the Perturbo calculation following the instructions on the Perturbo website and obtain the YAML file, *'si_imsigma.yml'*. For more information, please refer to the `Perturbo website <https://perturbo-code.github.io/mydoc_scattering.html#imaginary-part-of-e-ph-self-energycalc_mode--imsigma>`_.
+The ``'imsigma'`` calculation mode computes the e-ph self-energy for a list of electronic crystal momenta. We first run the Perturbo calculation following the instructions on the Perturbo website and obtain the YAML file, *'si_imsigma.yml'*. For more information, please refer to the `Perturbo website <https://perturbo-code.github.io/mydoc_scattering.html#imaginary-part-of-e-ph-self-energycalc_mode--imsigma>`_.
 
 Next, we create the :py:class:`.Imsigma` object using the YAML file as an input. This object contains all of the information from the YAML file.
 
@@ -20,7 +22,7 @@ Accessing the data
 
 The main results of the results are categorized below: 
 
-* the k-points for which the e-ph self energies are computed and the corresponding band energies
+* The k-points for which the e-ph self energies are computed and the corresponding band energies
 * Configuration information (temperature, chemical potential, carrier concentration)
 * The e-ph self energies for each electronic state, given both in total and by phonon mode
 
