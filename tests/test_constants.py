@@ -104,7 +104,7 @@ def test_length_conversion_factor(test_units1, test_units2, expected_factor):
 
 
 @pytest.mark.parametrize("test_units1, test_units2, expected_factor", [
-                        ('meV', 'Ha', 3.674930882447527e-05), ('Ry', 'Ha', 2.0)
+                        ('meV', 'Ha', 3.674930882447527e-05), ('Ry', 'Ha', 0.5)
 ])
 def test_energy_conversion_factor(test_units1, test_units2, expected_factor):
     """
