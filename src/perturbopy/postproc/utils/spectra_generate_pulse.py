@@ -17,9 +17,7 @@ from .memory import get_size
 from .timing import TimingGroup
 from .constants import energy_conversion_factor
 
-# Plotting parameters
-from .plot_tools import plotparams
-plt.rcParams.update(plotparams)
+from . import spectra_plots
 
 
 def gaussian(x, mu, sig, hole_nband, elec_nband):
@@ -55,7 +53,8 @@ def delta_occs_pulse_coef(t, dt, tw, sigma):
     return 0.5 * numer / denom
 
 
-def gaussian_excitation(pump_file, occs_amplitude, time_grid, time_window, pulse_fwhm, time_step, hole=False, finite_width=True):
+def gaussian_excitation(pump_file, occs_amplitude, time_grid, time_window, pulse_fwhm, time_step,
+                        hole=False, finite_width=True):
     """
     The Gaussian pulse excitation for the Perturbo dynamics.
     Pump pulses for electrons and holes must be dumped into separate HDF5 files.
@@ -96,6 +95,8 @@ def gaussian_excitation(pump_file, occs_amplitude, time_grid, time_window, pulse
     t_dataset = TimingGroup('dataset')
     t_dataset.add('total', level=3).start()
 
+    carrier = 'holes' if hole else 'electrons'
+
     # Number of time steps
     num_steps = time_grid.shape[0]
 
@@ -105,19 +106,6 @@ def gaussian_excitation(pump_file, occs_amplitude, time_grid, time_window, pulse
     # Number of k-points and bands
     num_k, num_bands = occs_amplitude.shape
 
-    # Additional occupatons for each step due to the pulse
-    delta_occs_array = np.zeros((num_bands, num_steps, num_k))
-
-    # A pre-factor for the pump pulse, num_steps steps
-    pulse_coef = delta_occs_pulse_coef(time_grid[:], time_step, time_window, sigma)
-
-    # t - time, j - band, k - k-point
-    delta_occs_array[:, :, :] = np.einsum('t,jk->ktj', pulse_coef[:], occs_amplitude[:, :])
-
-    # Print the size of the array since it can be large: num_bands * num_steps * num_k
-    carrier = 'holes' if hole else 'electrons'
-    get_size(delta_occs_array, f'delta(fnk(t)) {carrier}', dump=True)
-
     # Get the pump_pulse group
     pump_group = pump_file['pump_pulse_snaps']
 
@@ -125,121 +113,34 @@ def gaussian_excitation(pump_file, occs_amplitude, time_grid, time_window, pulse
     sign = 1 if not hole else -1
 
     if finite_width:
+        # Additional occupatons for each step due to the pulse
+        delta_occs_array = np.zeros((num_bands, num_steps, num_k))
+
+        # A pre-factor for the pump pulse, num_steps steps
+        pulse_coef = delta_occs_pulse_coef(time_grid[:], time_step, time_window, sigma)
+
+        # t - time, j - band, k - k-point
+        delta_occs_array[:, :, :] = np.einsum('t,jk->ktj', pulse_coef[:], occs_amplitude[:, :])
+
+        # Print the size of the array since it can be large: num_bands * num_steps * num_k
+        get_size(delta_occs_array, f'delta(fnk(t)) {carrier}', dump=True)
+
         # Apply pump pulse starting from pulse_snap_t_1
         for itime in range(num_steps):
             pump_group.create_dataset(f'pulse_snap_t_{itime + 1}',
                                       data=sign * delta_occs_array[:, itime, :].T)
 
     else:
-        pump_group.create_dataset('pulse_snap_t_1', data=sign * occs_amplitude)
+        pump_group.create_dataset('pulse_snap_t_1', data=sign * occs_amplitude.T)
 
     t_dataset.timings['total'].stop()
 
     print(f'---Pump pulse HDF5 writings time {carrier}: {t_dataset.timings["total"].t_delta:.4f} s---\n')
-    return delta_occs_array
 
-
-def plot_occ_ampl(e_occs, elec_kpoint_array, elec_energy_array,
-                  h_occs, hole_kpoint_array, hole_energy_array, pump_energy):
-    """
-    Plot occupation amplitude. Currently hardcoded to the section kz = 0.
-    """
-
-    # find where kz == 0
-
-    fig, ax = plt.subplots(1, 1, figsize=(9, 6))
-
-    # Plot electron occupations
-    idx = np.where((elec_kpoint_array[:, 1] == 0) & (elec_kpoint_array[:, 0] == 0))
-    for i in range(np.size(elec_energy_array, axis=1)):
-        ax.scatter(elec_kpoint_array[idx, 2], elec_energy_array[idx], s=0.5, c='black', alpha=0.5)
-        ax.scatter(elec_kpoint_array[idx, 2], elec_energy_array[idx], s=e_occs[idx]
-                    * 1000 + 1e-10, c='red', alpha=0.5)
-
-    # Plot hole occupations
-    idx = np.where((hole_kpoint_array[:, 1] == 0) & (hole_kpoint_array[:, 0] == 0))
-    for i in range(np.size(hole_energy_array, axis=1)):
-        ax.scatter(hole_kpoint_array[idx, 2], hole_energy_array[idx, i], s=0.5, c='black', alpha=0.5)
-        ax.scatter(hole_kpoint_array[idx, 2], hole_energy_array[idx, i], s=h_occs[idx, i][0] * 1000 + 1e-10, c='red',
-                    alpha=0.5)
-
-    fsize = 16
-    ax.set_title(f'Occupation amplitude for pump energy {pump_energy:.3f} eV')
-    ax.set_xlabel('Electron Momentum $k_x$')
-    ax.set_ylabel('Energy (eV)')
-
-    plt.show()
-
-
-def animate_pump_pulse(elec_delta_occs_array, elec_kpoint_array, elec_energy_array,
-                       hole_delta_occs_array, hole_kpoint_array, hole_energy_array,
-                       pump_energy):
-    """
-    Animate the pump pulse excitation for electrons and holes.
-    """
-
-    fig, ax = plt.subplots(1, 1, figsize=(9, 6))
-
-    idx_elec = np.where((elec_kpoint_array[:, 1] == 0) & (elec_kpoint_array[:, 0] == 0))
-    idx_hole = np.where((hole_kpoint_array[:, 1] == 0) & (hole_kpoint_array[:, 0] == 0))
-
-    # Plot electron occupations
-    elec_scat_list = []
-    for i in range(np.size(elec_energy_array, axis=1)):
-        ax.scatter(elec_kpoint_array[idx_elec, 2], elec_energy_array[idx_elec], s=0.5, c='black', alpha=0.5)
-        scat_obj = ax.scatter(elec_kpoint_array[idx_elec, 2], elec_energy_array[idx_elec], s=0.0, c='red', alpha=0.5)
-        elec_scat_list.append(scat_obj)
-
-    # Plot hole occupations
-    hole_scat_list = []
-    for i in range(np.size(hole_energy_array, axis=1)):
-        ax.scatter(hole_kpoint_array[idx_hole, 2], hole_energy_array[idx_hole, i], s=0.5, c='black', alpha=0.5)
-        obj = ax.scatter(hole_kpoint_array[idx_hole, 2], hole_energy_array[idx_hole, i], s=0, c='red', alpha=0.5)
-        hole_scat_list.append(obj)
-
-    fsize = 16
-    ax.set_title(f'Occupation amplitude for pump energy {pump_energy:.3f} eV')
-    ax.set_xlabel('Electron Momentum $k_x$')
-    ax.set_ylabel('Energy (eV)')
-
-    ani = FuncAnimation(fig, update_scatter, frames=elec_delta_occs_array.shape[1],
-                        fargs=(idx_elec, idx_hole,
-                               elec_scat_list, hole_scat_list,
-                               elec_delta_occs_array, elec_kpoint_array, elec_energy_array,
-                               hole_delta_occs_array, hole_kpoint_array, hole_energy_array),
-                        interval=100, repeat=False)
-
-    # Save the animation to gif
-    ani.save('pump_pulse.gif', writer='imagemagick')
-
-    plt.show()
-
-
-def update_scatter(anim_time, idx_elec, idx_hole,
-                   elec_scat_list, hole_scat_list,
-                   elec_delta_occs_array, elec_kpoint_array, elec_energy_array,
-                   hole_delta_occs_array, hole_kpoint_array, hole_energy_array):
-    """
-    Animate the pump pulse excitation for electrons and holes.
-
-    Parameters
-    ----------
-
-    anim_time : float
-        Animation time.
-
-    ax : matplotlib.axes.Axes
-        Axis for plotting the pump pulse excitation.
-    """
-
-    elec_num_bands = elec_delta_occs_array.shape[0]
-    hole_num_bands = hole_delta_occs_array.shape[0]
-
-    for i in range(elec_num_bands):
-        elec_scat_list[i].set_sizes(elec_delta_occs_array[i, anim_time, idx_elec].flatten() * 2e4 + 1e-10)
-
-    for i in range(hole_num_bands):
-        hole_scat_list[i].set_sizes(hole_delta_occs_array[i, anim_time, idx_hole].flatten() * 2e4 + 1e-10)
+    if finite_width:
+        return delta_occs_array
+    else:
+        return None
 
 
 def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
@@ -312,6 +213,11 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
     # Check electron and hole time steps
     elec_dyna_time_step = elec_dyna_run[1].time_step
     hole_dyna_time_step = hole_dyna_run[1].time_step
+
+    if elec_dyna_time_step != hole_dyna_time_step:
+        warnings.warn(f'Electron dynamics time step ({elec_dyna_time_step:.3f} fs) '
+                      f'is different from the hole dynamics time step ({hole_dyna_time_step:.3f} fs).',
+                      RuntimeWarning)
 
     if np.abs(elec_dyna_time_step - pump_time_step) > 1e-6 and finite_width:
         warnings.warn(f'Electron dynamics time step ({elec_dyna_time_step:.3f} fs) '
@@ -420,23 +326,17 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
 
         h5f.create_dataset('finite_width', data=finite_width)
         if finite_width:
-            h5f.create_dataset('fwhm', data=pump_fwhm)
             h5f.create_dataset('time_window', data=pump_time_window)
             h5f.create_dataset('num_steps', data=num_steps)
             h5f.create_dataset('time_step', data=pump_time_step)
-            h5f.create_dataset('time_grid', data=time_grid)
 
         else:
-            h5f.create_dataset('fwhm', data=0.0)
-            h5f.create_dataset('time_window', data=0.0)
-            h5f.create_dataset('num_steps', data=0)
-            h5f.create_dataset('time_step_fs', data=0.0)
-            h5f.create_dataset('time_grid', data=np.array([0.0]))
+            h5f.create_dataset('time_window', data=elec_dyna_time_step)
+            h5f.create_dataset('num_steps', data=1)
+            h5f.create_dataset('time_step', data=elec_dyna_time_step)
 
-        h5f['fwhm'].attrs['units'] = 'fs'
         h5f['time_window'].attrs['units'] = 'fs'
         h5f['time_step'].attrs['units'] = 'fs'
-        h5f['time_grid'].attrs['units'] = 'fs'
 
     elec_pump_pulse_file.create_dataset('num_bands', data=elec_nband)
     hole_pump_pulse_file.create_dataset('num_bands', data=hole_nband)
@@ -461,12 +361,13 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
     close_hdf5(hole_pump_pulse_file)
 
     print('\nPlotting...')
-    plot_occ_ampl(elec_occs_amplitude, elec_kpoint_array, elec_energy_array,
-                    hole_occs_amplitude, hole_kpoint_array,
-                    hole_energy_array, pump_energy)
+    spectra_plots.plot_occ_ampl(elec_occs_amplitude, elec_kpoint_array, elec_energy_array,
+                                hole_occs_amplitude, hole_kpoint_array,
+                                hole_energy_array, pump_energy)
 
-    if animate:
+    if animate and finite_width:
         print('\nAnimating...')
-        animate_pump_pulse(elec_delta_occs_array, elec_kpoint_array, elec_energy_array,
-                           hole_delta_occs_array, hole_kpoint_array, hole_energy_array,
-                           pump_energy)
+        spectra_plots.animate_pump_pulse(pump_time_step,
+                                         elec_delta_occs_array, elec_kpoint_array, elec_energy_array,
+                                         hole_delta_occs_array, hole_kpoint_array, hole_energy_array,
+                                         pump_energy)
