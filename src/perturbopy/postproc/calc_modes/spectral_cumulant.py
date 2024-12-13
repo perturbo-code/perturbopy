@@ -121,7 +121,7 @@ class SpectralCumulant(CalcMode):
         # normalize
         A0w = A0w / (np.sum(A0w) * freq_step)
         # plot
-        ax.plot(freq_array, A0w, lw=2, label=f'T={ int(self.temp_array[it])} K')
+        ax.plot(freq_array, A0w, lw=2, label=f'T={int(self.temp_array[it])} K')
         ax.legend(fontsize=18)
         plt.ylim([0, np.max(A0w) * 1.1])
         plt.xlabel(r'$\omega-\epsilon_{nk}$ (eV)', fontsize=20)
