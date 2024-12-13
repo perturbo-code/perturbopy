@@ -35,16 +35,15 @@ def plot_occ_ampl(e_occs, elec_kpoint_array, elec_energy_array,
     # Plot electron occupations
     idx = np.where((elec_kpoint_array[:, 1] == 0) & (elec_kpoint_array[:, 0] == 0))
     for i in range(np.size(elec_energy_array, axis=1)):
-        ax.scatter(elec_kpoint_array[idx, 2], elec_energy_array[idx], s=0.5, c='black', alpha=0.5)
-        ax.scatter(elec_kpoint_array[idx, 2], elec_energy_array[idx], s=e_occs[idx]
-                    * 1000 + 1e-10, c='red', alpha=0.5)
+        ax.scatter(elec_kpoint_array[idx, 2], elec_energy_array[idx, i], s=0.5, c='black', alpha=0.5)
+        ax.scatter(elec_kpoint_array[idx, 2], elec_energy_array[idx, i], s=e_occs[idx, i][0] * 1000 + 1e-10, c='red', alpha=0.5)
 
     # Plot hole occupations
     idx = np.where((hole_kpoint_array[:, 1] == 0) & (hole_kpoint_array[:, 0] == 0))
     for i in range(np.size(hole_energy_array, axis=1)):
         ax.scatter(hole_kpoint_array[idx, 2], hole_energy_array[idx, i], s=0.5, c='black', alpha=0.5)
         ax.scatter(hole_kpoint_array[idx, 2], hole_energy_array[idx, i], s=h_occs[idx, i][0] * 1000 + 1e-10, c='red',
-                    alpha=0.5)
+                   alpha=0.5)
 
     fsize = 16
     ax.set_title(f'Occupation amplitude for pump energy {pump_energy:.3f} eV')
@@ -70,8 +69,8 @@ def animate_pump_pulse(time_step,
     # Plot electron occupations
     elec_scat_list = []
     for i in range(np.size(elec_energy_array, axis=1)):
-        ax.scatter(elec_kpoint_array[idx_elec, 2], elec_energy_array[idx_elec], s=0.5, c='black', alpha=0.5)
-        scat_obj = ax.scatter(elec_kpoint_array[idx_elec, 2], elec_energy_array[idx_elec], s=0.0, c='red', alpha=0.5)
+        ax.scatter(elec_kpoint_array[idx_elec, 2], elec_energy_array[idx_elec, i], s=0.5, c='black', alpha=0.5)
+        scat_obj = ax.scatter(elec_kpoint_array[idx_elec, 2], elec_energy_array[idx_elec, i], s=0.0, c='red', alpha=0.5)
         elec_scat_list.append(scat_obj)
 
     # Plot hole occupations

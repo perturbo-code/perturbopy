@@ -250,8 +250,8 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
     print(f"{'BAND STRUCTURE PARAMETERS':*^70}")
     print(f"{'Num. of electron bands:':>40} {elec_nband}")
     print(f"{'Num. of hole bands:':>40} {hole_nband}")
-    print(f"{'Valence band minimum (VBM) (eV):':>40} {VBM:.4f}")
-    print(f"{'Conduction band maximum (CBM) (eV):':>40} {CBM:.4f}")
+    print(f"{'Valence band maximum (VBM) (eV):':>40} {VBM:.4f}")
+    print(f"{'Conduction band minimum (CBM) (eV):':>40} {CBM:.4f}")
     print(f"{'Band gap (Eg) (eV):':>40} {bandgap:.4f}")
     print("")
 
