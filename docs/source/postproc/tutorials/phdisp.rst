@@ -11,12 +11,13 @@ Next, we create the :py:class:`.Phdisp` object using the YAML file as an input. 
 
     import perturbopy.postproc as ppy
 
+    # Example using the phdisp calculation mode
     si_phdisp = ppy.Phdisp.from_yaml('si_phdisp.yml')
 
 Accessing the data
 ------------------
 
-The main results of the results are stored in two objects: 
+The main results are stored in two objects: 
 
 * :py:attr:`.Phdisp.qpt` stores the q-points used in the calculation
 * :py:attr:`.Phdisp.phdisp` stores the interpolated phonon energies computed

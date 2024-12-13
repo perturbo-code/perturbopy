@@ -1,5 +1,5 @@
 EphmatSpin tutorial
-===============
+===================
 
 In this section, we describe how to use Perturbopy to process a Perturbo ``'ephmat_spin'`` calculation. 
 
@@ -15,7 +15,7 @@ Next, we create the :py:class:`.EphmatSpin` object using the YAML file as an inp
     diam_ephmat_spin = ppy.EphmatSpin.from_yaml('diam_ephmat_spin.yml')
 
 Accessing the data
-~~~~~~~~~~~~~~~~~~
+------------------
 
 The attributes in an :py:class:`.EphmatSpin` object have the same name and format as an object from the :py:class:`.Ephmat`. The k-points are stored in :py:attr:`.EphmatSpin.kpt`, which is a :py:class:`RecipPtDB` object. The data for the phonons is stored analogously in :py:attr:`.EphmatSpin.qpt` (another :py:class:`RecipPtDB` object) and :py:attr:`EphmatSpin.phdisp`, a :py:class:`UnitsDict` object where the keys are the phonon mode and the values are the phonon energies computed across the q-points.
 
