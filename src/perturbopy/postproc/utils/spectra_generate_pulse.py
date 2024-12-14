@@ -30,7 +30,9 @@ def gaussian(x, mu, sig, hole_nband, elec_nband):
 
 def sigma_from_fwhm(fwhm):
     """
-    Gaussian sigma: f(t) = A / ( sigma * sqrt(2pi)) exp(-(t-t0)^2 / (2sigma^2))
+    Comupte Gaussian sigma from the Full Width at Half Maximum (FWHM) parameter:
+    .. math::
+        f(t) = A / ( sigma * sqrt(2pi)) exp(-(t-t0)^2 / (2sigma^2))
     """
 
     sigma = 1.0 / (2.0 * np.sqrt(2.0 * np.log(2.0))) * fwhm
@@ -43,6 +45,25 @@ def delta_occs_pulse_coef(t, dt, tw, sigma):
     Additional occupation due to the pulse excitation.
     Assuming the Gaussian pulse shape, the occupation is increasing in
     time according to the error function.
+
+    Parameters
+    ----------
+    t : array-like
+        Time of pump pulse.
+
+    dt : float
+        Time step. Must be the same as using in Perturbo simulation.
+
+    tw : float
+        Time window during which the pump pulse will be applied.
+
+    sigma : float
+        Gaussian sigma broadening.
+
+    Returns
+    -------
+    array-like
+        Multiplier for the pump pulse for each occupation for the provided time.
     """
 
     numer = special.erf((t - tw / 2) / (np.sqrt(2) * sigma)) - \
@@ -65,7 +86,6 @@ def gaussian_excitation(pump_file, occs_amplitude, time_grid, time_window, pulse
 
     Parameters
     ----------
-
     pump_pulse_file : h5py.File
         The HDF5 file for the pump pulse excitation. Typically, `pump_pulse_Epump_...h5`.
 
@@ -89,6 +109,12 @@ def gaussian_excitation(pump_file, occs_amplitude, time_grid, time_window, pulse
     finite_width : bool, optional
         If True, the pulse is finite in time. If False, the pulse is a step function
         and occs_amplitude will be set as initial occupation.
+
+    Returns
+    -------
+    array-like or None
+        Return additional occupations array in time, if `finite_widt` is True,
+        else, return None.
     """
 
     print('\nCreating the pulse dataset...')
@@ -161,7 +187,6 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
 
     Parameters
     ----------
-
     elec_pump_pulse_path : str
         Path to the HDF5 file for the pump pulse excitation for electrons.
 

@@ -26,6 +26,29 @@ def plot_occ_ampl(e_occs, elec_kpoint_array, elec_energy_array,
                   h_occs, hole_kpoint_array, hole_energy_array, pump_energy):
     """
     Plot occupation amplitude. Currently hardcoded to the section kz = 0.
+
+    Parameters
+    ----------
+    e_occ : numpy.ndarray
+        Electron occupations.
+
+    elec_kpoint_array : numpy.ndarray
+        Array of electron k-points.
+
+    elec_energy_array : numpy.ndarray
+        Array of electron energies.
+
+    h_occs : numpy.ndarray
+        Hole occupations.
+
+    hole_kpoint_array : numpy.ndarray
+        Array of hole k-points.
+
+    hole_energy_array : numpy.ndarray
+        Array of hole energies.
+
+    pump_energy: float
+        Pump energy in eV.
     """
 
     # find where kz == 0
@@ -59,6 +82,34 @@ def animate_pump_pulse(time_step,
                        pump_energy):
     """
     Animate the pump pulse excitation for electrons and holes.
+    Defines fig and ax, initializes scatter objects for electron and hole occupations, and calls update_scatter.
+
+    Parameters
+    ----------
+
+    time_step : float
+        Time step for the simulation. Only used for the title.
+
+    elec_delta_occs_array : numpy.ndarray
+        Array of electron occupation changes.
+
+    elec_kpoint_array : numpy.ndarray
+        Array of electron k-points.
+
+    elec_energy_array : numpy.ndarray
+        Array of electron energies.
+
+    hole_delta_occs_array : numpy.ndarray
+        Array of hole occupation changes.
+
+    hole_kpoint_array : numpy.ndarray
+        Array of hole k-points.
+
+    hole_energy_array : numpy.ndarray
+        Array of hole energies.
+
+    pump_energy: float
+        Pump energy in eV, used only in title.
     """
 
     fig, ax = plt.subplots(1, 1, figsize=(9, 6))
@@ -100,8 +151,7 @@ def animate_pump_pulse(time_step,
 
 def update_scatter(anim_time, ax, time_step, idx_elec, idx_hole,
                    elec_scat_list, hole_scat_list,
-                   elec_delta_occs_array, elec_kpoint_array, elec_energy_array,
-                   hole_delta_occs_array, hole_kpoint_array, hole_energy_array):
+                   elec_delta_occs_array, hole_delta_occs_array):
     """
     Animate the pump pulse excitation for electrons and holes.
 
@@ -113,6 +163,27 @@ def update_scatter(anim_time, ax, time_step, idx_elec, idx_hole,
 
     ax : matplotlib.axes.Axes
         Axis for plotting the pump pulse excitation.
+
+    time_step: float
+        Time step for the simulation. Only used for the title.
+
+    idx_elec : numpy.ndarray
+        Index for the electron k-points to plot.
+
+    idx_hole : numpy.ndarray
+        Index for the hole k-points to plot.
+
+    elec_scat_list : list
+        List of scatter objects for the electron occupations.
+
+    hole_scat_list : list
+        List of scatter objects for the hole occupations.
+
+    elec_delta_occs_array : numpy.ndarray
+        Array of electron occupation changes. Sizes of the scatter objects are set based on this array.
+
+    hole_delta_occs_array : numpy.ndarray
+        Array of hole occupation changes, similar to elec_delta_occs_array.
     """
 
     elec_num_bands = elec_delta_occs_array.shape[0]
