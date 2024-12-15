@@ -249,6 +249,35 @@ class DynaRun(CalcMode):
 class PumpPulse():
     """
     Class for pump pulse excitation.
+
+    Attributes
+    ----------
+
+    pump_energy : float
+        Energy of the pump pulse excitation in eV.
+
+    energy_broadening : float
+        Energy broadening of the pump pulse excitation in eV.
+
+    num_steps : int
+        Number of steps in the pump pulse excitation.
+
+    time_step : float
+        Time step of the pump pulse excitation in fs.
+
+    num_kpoints : int
+        Number of k-points in the pump pulse excitation. Tailored for the Perturbo dynamics-run calculation.
+
+    carrier_number_array : np.ndarray
+        Additional carrier number array for the pump pulse excitation.
+
+    optional_params : dict
+        Optional parameters for the pump pulse excitation.
+        Specific to the pulse shape. 10 parameters allocated.
+
+    hole : bool
+        Flag to indicate if the pump pulse excitation is for the hole.
+        Must be the same as in the ultrafast simulation.
     """
 
     def __init__(self, pump_dict):
@@ -283,6 +312,12 @@ class PumpPulse():
             np.array(pump_dict['pump pulse carrier number'])
         self.carrier_number_units = pump_dict['carrier_number units']
 
+        # Optional parameters are specific to the pump pulse excitation
+        # 10 parameters allocated
+        self.optional_params = pump_dict['optional_params']
+
+        self.hole = pump_dict['hole']
+
     def __str__(self):
         """
         Method to print the pump pulse excitation parameters.
@@ -293,5 +328,6 @@ class PumpPulse():
         text += f"{'Energy broadening':>30}: {self.energy_broadening} {self.energy_broadening_units}\n"
         text += f"{'Number of steps':>30}: {self.num_steps}\n"
         text += f"{'Time step':>30}: {self.time_step} {self.time_step_units}\n"
+        text += f"{'Hole':>30}: {self.hole}\n"
 
         return text

@@ -340,6 +340,13 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
     elec_pump_pulse_file = open_hdf5(elec_pump_pulse_path, mode='w')
     hole_pump_pulse_file = open_hdf5(hole_pump_pulse_path, mode='w')
 
+    # Optional pump pulse parameters specific to a given shape of pulse
+    optional_params = np.zeros(10, dtype=float)
+    optional_params[0] = pump_factor
+
+    if finite_width:
+        optional_params[1] = pump_fwhm
+
     for h5f in [elec_pump_pulse_file, hole_pump_pulse_file]:
         h5f.create_group('pump_pulse_snaps')
 
@@ -348,6 +355,8 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
 
         h5f.create_dataset('pump_energy_broadening', data=pump_energy_broadening)
         h5f['pump_energy_broadening'].attrs['units'] = 'eV'
+
+        h5f['optional_params'] = optional_params
 
         h5f.create_dataset('finite_width', data=finite_width)
         if finite_width:
@@ -370,6 +379,9 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
     hole_pump_pulse_file.create_dataset('num_bands', data=hole_nband)
     elec_pump_pulse_file.create_dataset('num_kpoints', data=elec_kpoint_array.shape[0])
     hole_pump_pulse_file.create_dataset('num_kpoints', data=hole_kpoint_array.shape[0])
+
+    elec_pump_pulse_file.create_dataset('hole', data=0)
+    hole_pump_pulse_file.create_dataset('hole', data=1)
 
     # Add carrier attribute to the pump_pulse_snaps group
     elec_pump_pulse_file.create_dataset('carrier', data='electrons')
