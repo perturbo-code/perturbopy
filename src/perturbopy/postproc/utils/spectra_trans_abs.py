@@ -31,9 +31,11 @@ def compute_trans_abs(elec_dyna_run,
                       hole_dyna_run,
                       de_grid=0.02,
                       eta=0.02,
+                      save_npy=True,
                       ):
     """
     Compute the transient absorption spectrum from the electron and hole dynamics simulations.
+    The data is saved in the current directory as numpy binary files (.npy).
 
     Parameters
     ----------
@@ -49,6 +51,24 @@ def compute_trans_abs(elec_dyna_run,
 
     eta : float
         Broadening parameter for the Gaussian delta functions applied to the energy grid.
+
+    save_npy : bool
+        Save the data as numpy binary files (.npy).
+
+    Returns
+    -------
+
+    time_grid : np.ndarray
+        Time grid for the transient absorption spectrum.
+
+    trans_abs_energy_grid : np.ndarray
+        Energy grid for the transient absorption spectrum.
+
+    dA_elec : np.ndarray
+        Electron contribution to the transient absorption spectrum. Shape (num_steps, num_energy_points).
+
+    dA_hole : np.ndarray
+        Hole contribution to the transient absorption spectrum. Shape (num_steps, num_energy_points).
     """
 
     trun = TimingGroup('trans. abs.')
@@ -130,7 +150,7 @@ def compute_trans_abs(elec_dyna_run,
                     # Factor of two from spin.
                     # TODO: add transient dipoles here
                     ALL_DELTAS[iband, jband, :, ienergy] = 2.0 * \
-                        gaussian_delta(elec_energy_array[ekidx, iband] - \
+                        gaussian_delta(elec_energy_array[ekidx, iband] -
                                        hole_energy_array[hkidx, jband],
                                        trans_abs_energy_grid[ienergy], eta)
 
@@ -207,4 +227,4 @@ def compute_trans_abs(elec_dyna_run,
     trun.timings['total'].stop()
     print(trun)
 
-    return None
+    return time_grid, trans_abs_energy_grid, dA_elec, dA_hole
