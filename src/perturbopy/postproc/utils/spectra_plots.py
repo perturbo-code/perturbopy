@@ -139,8 +139,7 @@ def animate_pump_pulse(time_step,
     ani = FuncAnimation(fig, update_scatter, frames=elec_delta_occs_array.shape[1],
                         fargs=(ax, time_step, idx_elec, idx_hole,
                                elec_scat_list, hole_scat_list,
-                               elec_delta_occs_array, elec_kpoint_array, elec_energy_array,
-                               hole_delta_occs_array, hole_kpoint_array, hole_energy_array),
+                               elec_delta_occs_array, hole_delta_occs_array),
                         interval=100, repeat=False)
 
     # Save the animation to gif

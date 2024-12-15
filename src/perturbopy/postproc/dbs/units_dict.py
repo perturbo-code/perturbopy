@@ -10,6 +10,7 @@ class UnitsDict(dict):
     Attributes
     ----------
     data : dict
+       TODO: UnitsDict DOES NOT HAVE A data ATTRIBUTE
        Dictionary of floats or array_like types of physical quantities
     units : str {}
        The units of the physical quantities
@@ -45,5 +46,5 @@ class UnitsDict(dict):
         input_dict = convert_lists_to_numpy(input_dict)
         units_dict = cls(units)
         units_dict.update(input_dict)
-        
+
         return units_dict

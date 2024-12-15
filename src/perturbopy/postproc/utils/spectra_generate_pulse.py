@@ -1,5 +1,5 @@
 """
-Utils for ultrafast spectroscopy: pump pulse generation and post-processing
+Utils for ultrafast spectroscopy: pump pulse generation.
 """
 
 import os
@@ -265,8 +265,8 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
     elec_energy_array *= energy_conversion_factor('Ry', 'eV')
     hole_energy_array *= energy_conversion_factor('Ry', 'eV')
 
-    VBM = max(hole_energy_array[:, -1])
-    CBM = min(elec_energy_array[:, -1])
+    VBM = np.max(hole_energy_array.ravel())
+    CBM = np.min(elec_energy_array.ravel())
     bandgap = CBM - VBM
 
     elec_nband = len(elec_dyna_run.bands)
@@ -354,11 +354,14 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
             h5f.create_dataset('time_window', data=pump_time_window)
             h5f.create_dataset('num_steps', data=num_steps)
             h5f.create_dataset('time_step', data=pump_time_step)
+            h5f.create_dataset('pulse_type', data=f'gaussian; FWHM: {pump_fwhm:.3f} fs; '
+                                                    f'pump_factor: {pump_factor:.3f}')
 
         else:
             h5f.create_dataset('time_window', data=elec_dyna_time_step)
             h5f.create_dataset('num_steps', data=1)
             h5f.create_dataset('time_step', data=elec_dyna_time_step)
+            h5f.create_dataset('pulse_type', data='step')
 
         h5f['time_window'].attrs['units'] = 'fs'
         h5f['time_step'].attrs['units'] = 'fs'
@@ -367,6 +370,10 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
     hole_pump_pulse_file.create_dataset('num_bands', data=hole_nband)
     elec_pump_pulse_file.create_dataset('num_kpoints', data=elec_kpoint_array.shape[0])
     hole_pump_pulse_file.create_dataset('num_kpoints', data=hole_kpoint_array.shape[0])
+
+    # Add carrier attribute to the pump_pulse_snaps group
+    elec_pump_pulse_file.create_dataset('carrier', data='electrons')
+    hole_pump_pulse_file.create_dataset('carrier', data='holes')
 
     # We save the delta_occs_array for animation. If it takes too much space, remove it.
     elec_delta_occs_array = \

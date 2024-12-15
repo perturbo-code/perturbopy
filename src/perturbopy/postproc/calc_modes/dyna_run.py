@@ -20,6 +20,15 @@ class DynaRun(CalcMode):
        Database for the band energies computed by the bands calculation.
     num_runs : int
         Number of separate simulations performed
+    _cdyna_file : h5py.File
+        HDF5 file containing the results of the dynamics-run calculation.
+        We cannot store in RAM the whole file, so we will access the data as needed.
+    _tet_file : h5py.File
+        HDF5 file containing the results of the setup calculation required before the dynamics-run calculation.
+    _kpoints : array
+        Raw array of k-points. Shape (num_kpoints, 3)
+    _energies : array
+        Raw array of band energies. Shape (num_kpoints, num_bands)
     _dat : dict
         Python dictionary of DynaIndivRun objects containing results from each simulation
     """
@@ -42,6 +51,19 @@ class DynaRun(CalcMode):
         if self.calc_mode != 'dynamics-run':
             raise ValueError('Calculation mode for a DynamicsRunCalcMode object should be "dynamics-run"')
 
+        self._cdyna_file = cdyna_file
+        self._tet_file = tet_file
+
+        self.pump_pulse = self._pert_dict['input parameters']['after conversion']['pump_pulse']
+
+        if self.pump_pulse:
+            if 'pump pulse' not in self._pert_dict['dynamics-run'].keys():
+                raise ValueError('pump_pulse was set to .true. but no "pump pulse" key'
+                                 ' was found in the dynamics-run section of the YAML file')
+
+            pump_dict = self._pert_dict['dynamics-run']['pump pulse']
+            self.pump_pulse = PumpPulse(pump_dict)
+
         kpoint = np.array(tet_file['kpts_all_crys_coord'][()])
 
         self.kpt = RecipPtDB.from_lattice(kpoint, "crystal", self.lat, self.recip_lat)
@@ -49,6 +71,10 @@ class DynaRun(CalcMode):
         energies = np.array(cdyna_file['band_structure_ryd'][()])
         energies_dict = {i + 1: np.array(energies[:, i]) for i in range(0, energies.shape[1])}
         self.bands = UnitsDict.from_dict(energies_dict, 'Ry')
+
+        # k- and q-point grids
+        self.boltz_kdim = np.array(self._pert_dict['input parameters']['after conversion']['boltz_kdim'])
+        self.boltz_qdim = np.array(self._pert_dict['input parameters']['after conversion']['boltz_qdim'])
 
         # Raw arrays
         self._kpoints = kpoint
@@ -117,6 +143,23 @@ class DynaRun(CalcMode):
 
         return cls(cdyna_file, tet_file, yaml_dict)
 
+    def close_hdf5_files(self):
+        """
+        Method to close the HDF5 files: _cdyna_file and _tet_file.
+        After the DynaRun object is created, the HDF5 files are kept open.
+        One has to close them manually.
+        """
+
+        # Check if cdyan_file is open
+        if self._cdyna_file:
+            print(f'Closing {self._cdyna_file.filename}')
+            close_hdf5(self._cdyna_file)
+
+        # Check if tet_file is open
+        if self._tet_file:
+            print(f'Closing {self._tet_file.filename}')
+            close_hdf5(self._tet_file)
+
     def __getitem__(self, index):
         """
         Method to index the DynamicsRunCalcMode object
@@ -149,20 +192,22 @@ class DynaRun(CalcMode):
 
         return self.num_runs
 
-    def get_info(self):
+    def __str__(self):
         """
-        Method to get overall information on dynamics runs
+        Method to print the dynamics run information
         """
 
-        print(f"\nThis simulation has {self.num_runs} runs")
+        title = f'dynamics-run: {self.prefix}'
+        text = f"{title:*^60}\n"
+        text += f"This simulation has {self.num_runs} runs\n"
 
         for irun, dynamics_run in self._data.items():
+            text += f"{'Dynamics run':>30}: {irun}\n"
+            text += f"{'Number of steps':>30}: {dynamics_run.num_steps}\n"
+            text += f"{'Time step (fs)':>30}: {dynamics_run.time_step}\n"
+            text += f"{'Electric field (V/cm)':>30}: {dynamics_run.efield}\n\n"
 
-            print(f"{'Dynamics run':>30}: {irun}")
-            print(f"{'Number of steps':>30}: {dynamics_run.num_steps}")
-            print(f"{'Time step (fs)':>30}: {dynamics_run.time_step}")
-            print(f"{'Electric field (V/cm)':>30}: {dynamics_run.efield}")
-            print("")
+        return text
 
     def extract_steady_drift_vel(self, dyna_pp_yaml_path):
         """
@@ -199,3 +244,54 @@ class DynaRun(CalcMode):
                 steady_conc.append(concs[step_number])
 
         return steady_drift_vel, steady_conc
+
+
+class PumpPulse():
+    """
+    Class for pump pulse excitation.
+    """
+
+    def __init__(self, pump_dict):
+        """
+        Constructor method
+
+        Parameters
+        ----------
+        pump_dict : dict
+            Dictionary containing the pump pulse excitation parameters.
+        """
+
+        # TODO: use UnitsDict for entries in pump_dict
+        # CURRENTLY, UnitsDict seems to be ill-suited for floats with units
+        # input_dict = {'pump_energy': pump_dict['pump_energy']}
+        # self.pump_energy = UnitsDict.from_dict(input_dict, units='eV')
+
+        self.pump_energy = pump_dict['pump_energy']
+        self.pump_energy_units = pump_dict['pump_energy units']
+
+        self.energy_broadening = pump_dict['energy_broadening']
+        self.energy_broadening_units = pump_dict['energy_broadening units']
+
+        self.num_steps = pump_dict['num_steps']
+
+        self.time_step = pump_dict['time_step']
+        self.time_step_units = pump_dict['time_step units']
+
+        self.num_kpoints = pump_dict['num_kpoints']
+
+        self.carrier_number_array = \
+            np.array(pump_dict['pump pulse carrier number'])
+        self.carrier_number_units = pump_dict['carrier_number units']
+
+    def __str__(self):
+        """
+        Method to print the pump pulse excitation parameters.
+        """
+
+        text = 'Pump pulse excitation parameters:\n'
+        text += f"{'Pump energy':>30}: {self.pump_energy} {self.pump_energy_units}\n"
+        text += f"{'Energy broadening':>30}: {self.energy_broadening} {self.energy_broadening_units}\n"
+        text += f"{'Number of steps':>30}: {self.num_steps}\n"
+        text += f"{'Time step':>30}: {self.time_step} {self.time_step_units}\n"
+
+        return text
