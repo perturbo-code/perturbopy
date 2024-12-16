@@ -210,6 +210,36 @@ def plot_trans_abs_map(ax, time_grid, energy_grid, trans_abs,
 
     Parameters
     ----------
+
+    ax : matplotlib.axes.Axes
+        Axis for plotting the transient absorption map.
+
+    time_grid : numpy.ndarray
+        Time grid for the transient absorption in fs.
+
+    energy_grid : numpy.ndarray
+        Energy grid for the transient absorption in eV.
+
+    trans_abs : numpy.ndarray
+        Transient absorption 2D array. Shape: (len(enery_grid), len(time_grid)).
+        Can be full, electron, or hole contributions.
+
+    num_contours : int
+        Number of contours to plot.
+
+    cmap : matplotlib.colors.Colormap
+        Colormap for the plot.
+
+    vmin : float
+        Minimum value for the transient absorption.
+
+    vmax : float
+        Maximum value for the transient absorption.
+
+    Returns
+    -------
+    ax : matplotlib.axes.Axes
+        Axis for plotting the transient absorption map.
     """
 
     time_mesh, energy_mesh = np.meshgrid(time_grid, energy_grid)

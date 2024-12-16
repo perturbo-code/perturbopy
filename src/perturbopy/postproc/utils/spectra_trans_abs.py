@@ -65,10 +65,10 @@ def compute_trans_abs(elec_dyna_run,
         Energy grid for the transient absorption spectrum.
 
     dA_elec : np.ndarray
-        Electron contribution to the transient absorption spectrum. Shape (num_steps, num_energy_points).
+        Electron contribution to the transient absorption spectrum. Shape (num_energy_points, num_steps).
 
     dA_hole : np.ndarray
-        Hole contribution to the transient absorption spectrum. Shape (num_steps, num_energy_points).
+        Hole contribution to the transient absorption spectrum. Shape (num_energy_points, num_steps).
     """
 
     trun = TimingGroup('trans. abs.')
@@ -192,8 +192,8 @@ def compute_trans_abs(elec_dyna_run,
         print('')
 
         # Compute the transient absorption spectrum
-        dA_elec = np.zeros((num_energy_points, num_steps), order='C')
-        dA_hole = np.zeros((num_energy_points, num_steps), order='C')
+        dA_elec = np.zeros((num_energy_points, num_steps))
+        dA_hole = np.zeros((num_energy_points, num_steps))
         for iband in range(elec_nband):
             for jband in range(hole_nband):
 

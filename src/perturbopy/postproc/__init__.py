@@ -18,7 +18,7 @@ from .dbs.units_dict import UnitsDict
 from .dbs.recip_pt_db import RecipPtDB
 
 from .utils import constants, plot_tools, lattice, spectra_generate_pulse, \
-                   timing, spectra_trans_abs, spectra_plots
+    timing, spectra_trans_abs, spectra_plots
 
 import warnings
 import os
