@@ -12,6 +12,9 @@ from scipy import special
 from perturbopy.io_utils.io import open_hdf5, close_hdf5
 
 from matplotlib.animation import FuncAnimation
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+from matplotlib.cm import ScalarMappable
+from matplotlib.colors import Normalize
 
 from .memory import get_size
 from .timing import TimingGroup
@@ -139,8 +142,7 @@ def animate_pump_pulse(time_step,
     ani = FuncAnimation(fig, update_scatter, frames=elec_delta_occs_array.shape[1],
                         fargs=(ax, time_step, idx_elec, idx_hole,
                                elec_scat_list, hole_scat_list,
-                               elec_delta_occs_array, elec_kpoint_array, elec_energy_array,
-                               hole_delta_occs_array, hole_kpoint_array, hole_energy_array),
+                               elec_delta_occs_array, hole_delta_occs_array),
                         interval=100, repeat=False)
 
     # Save the animation to gif
@@ -197,3 +199,68 @@ def update_scatter(anim_time, ax, time_step, idx_elec, idx_hole,
 
     suffix = ax.get_title().split(';')[0]
     ax.set_title(f'{suffix}; Time: {anim_time * time_step:.2f} fs')
+
+
+def plot_trans_abs_map(ax, time_grid, energy_grid, trans_abs,
+                       num_contours=500, cmap=plt.cm.RdGy,
+                       vmin=None, vmax=None):
+    """
+    Plot the transient absorption map as a function of time (x-axis) and energy (y-axis).
+    Color represents the absorption intensity.
+
+    Parameters
+    ----------
+
+    ax : matplotlib.axes.Axes
+        Axis for plotting the transient absorption map.
+
+    time_grid : numpy.ndarray
+        Time grid for the transient absorption in fs.
+
+    energy_grid : numpy.ndarray
+        Energy grid for the transient absorption in eV.
+
+    trans_abs : numpy.ndarray
+        Transient absorption 2D array. Shape: (len(enery_grid), len(time_grid)).
+        Can be full, electron, or hole contributions.
+
+    num_contours : int
+        Number of contours to plot.
+
+    cmap : matplotlib.colors.Colormap
+        Colormap for the plot.
+
+    vmin : float
+        Minimum value for the transient absorption.
+
+    vmax : float
+        Maximum value for the transient absorption.
+
+    Returns
+    -------
+    ax : matplotlib.axes.Axes
+        Axis for plotting the transient absorption map.
+    """
+
+    time_mesh, energy_mesh = np.meshgrid(time_grid, energy_grid)
+
+    # Min and max values for plot
+    if vmin is None:
+        vmin = np.min(trans_abs)
+    if vmax is None:
+        vmax = np.max(trans_abs)
+
+    ax.contourf(time_mesh, energy_mesh, trans_abs, num_contours, cmap=cmap, vmin=vmin, vmax=vmax)
+
+    fsize = 24
+    ax.set_xlabel('Time delay (fs)', fontsize=fsize)
+    ax.set_ylabel('Energy (eV)', fontsize=fsize)
+
+    # Add colorbar as a separate axis
+    norm = Normalize(vmin=vmin, vmax=vmax)
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes('right', size='5%', pad=0.08)
+    cbar = plt.colorbar(ScalarMappable(cmap=cmap, norm=norm), cax=cax, orientation='vertical', format='%.1f')
+    cbar.set_label(r'$\Delta A$ (arb. units)', fontsize=fsize)
+
+    return ax
