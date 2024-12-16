@@ -15,7 +15,7 @@ Next, we create the :py:class:`.Spins` object using the YAML file as an input. T
     diam_spins = ppy.Spins.from_yaml('diam_spins.yml')
 
 Accessing the data
-~~~~~~~~~~~~~~~~~~
+------------------
 
 The outputs of the calculation are stored in three objects:
 * :py:attr:`.Spins.kpt` stores the k-points used in the calculation
@@ -79,7 +79,7 @@ The spin texture values computed by the spins calculation are stored in the :py:
 Please see the section :ref:`physical_quantities` for details on accessing the spin texture values and their units.
 
 Plotting the data
------------------
+~~~~~~~~~~~~~~~~~
 
 We can quickly visualize the spin texture by plotting them as a colormap overlaid on the band structure. Below, we plot the spin texture along the k-point path.
 

@@ -12,7 +12,8 @@ As described in the :ref:`introduction <perturbo_calculation>` we start by creat
 .. code-block :: python
 
     import perturbopy.postproc as ppy
-
+    
+    # Example using the bands calculation mode
     si_bands = ppy.Bands.from_yaml('si_bands.yml')
 
 The rest of this section is organized as follows. :ref:`First <Accessing the bands data>`, we explain how the data can be accessed from ``si_bands``. :ref:`Then <Calculations>`, we explain how to perform calculations such as computing the direct bandgap, indirect bandgap, and effective mass. :ref:`Finally <Plotting the band structure>`, we explain how to plot the bands. 

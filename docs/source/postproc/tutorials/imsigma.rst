@@ -18,7 +18,7 @@ Next, we create the :py:class:`.Imsigma` object using the YAML file as an input.
 
 
 Accessing the data
-------------------
+~~~~~~~~~~~~~~~~~~
 
 The main results of the results are categorized below: 
 
@@ -29,7 +29,7 @@ The main results of the results are categorized below:
 See :ref:`exporting_data` to learn how to access data from ``si_imsigma`` that is general for all calculation modes, such as input parameters and the material's crystal structure.
 
 Bands data
-~~~~~~~~~~
+----------
 
 The k-points used for the ``'ephmat'`` calculation are stored in the :py:attr:`.Imsigma.kpt` attribute, which is of type :py:class:`.RecipPtDB`. For example, to access the k-point coordinates and their units,
 
@@ -92,12 +92,12 @@ The e-ph self energies are stored in the :py:attr:`.Imsigma.imsigma` object, whi
 
 .. code-block :: python
 
-    # The first key is the configuration number. Here we have one configuration.
+    # The first key is the configuration number. We have one configuration.
     si_imsigma.imsigma.keys()
     >> dict_keys([1])
 
-    # The second key is the band index. Here we are looking at configuration 1,
-    # and we have 2 bands (matching the si_imsigma.bands attribute)
+    # The second key is the band index. Here we are looking at configuration 1
+    # and we have 2 bands (matching the si_imsigma.bands attribute).
     si_imsigma.imsigma[1].keys()
     >> dict_keys([1, 2])
 
@@ -106,11 +106,12 @@ The e-ph self energies are stored in the :py:attr:`.Imsigma.imsigma` object, whi
     si_imsigma.imsigma[1][1].shape
     >> (450,)
 
-    # The e-ph self energies for configuration 1, band index 2, and the first 5 k-points
+    # The e-ph self energies for configuration 1, band index 2,
+    # and the first 5 k-points.
     si_imsigma.imsigma[1][1][:5]
     >> array([12.37084914, 11.40051791, 12.08165333, 11.20097615, 12.26688231])
 
-    # The units are meV
+    # The units are meV.
     si_imsigma.imsigma.units
     >> 'meV'
 
@@ -126,20 +127,22 @@ We can also get the e-ph self energies for each phonon mode through the :py:attr
     si_imsigma.imsigma_mode[1].keys()
     >> dict_keys([1, 2, 3, 4, 5, 6])
 
-    # The third key is the band index. Here we are looking at configuration 1, phonon mode 3, and we see
-    # we have 2 bands (matching the si_imsigma.bands attribute)
+    # The third key is the band index. Here we are looking at configuration 1
+    # and phonon mode 3. There are 2 bands, which matches the si_imsigma.bands
+    # attribute.
     si_imsigma.imsigma_mode[1][3].keys()
     >> dict_keys([1, 2])
 
-    # The e-ph self energy array for configuration 1, phonon mode 3, and band index 2.
-    # There are 450 values in the array because we have 450 k-points.
+    # The e-ph self energy array for configuration 1, phonon mode 3, and
+    # band index 2. The array size follows the number of k-points.
     si_imsigma.imsigma_mode[1][3][2].shape
     >> (450,)
 
-    # The e-ph self energies for configuration 1, phonon mode 3, band index 2, and the first 5 k-points
+    # The e-ph self energies for configuration 1, phonon mode 3, band index 2,
+    # and the first 5 k-points.
     si_imsigma.imsigma_mode[1][3][2][:5]
     >> array([18.14712596, 20.83056571, 20.4743665 , 21.94419049, 20.38251006])
 
-    # The units are meV
+    # The units are meV.
     si_imsigma.imsigma_mode.units
     >> 'meV'

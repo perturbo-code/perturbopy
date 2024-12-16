@@ -18,7 +18,7 @@ Below, we give general information on how to use Perturbopy. We also provide tut
     dynamics-run
     dynamics-pp
     spins
-
+    spectral-cumulant
 
 General information
 -------------------
