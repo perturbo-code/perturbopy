@@ -191,13 +191,9 @@ def compute_trans_abs(elec_dyna_run,
         get_size(h_occs_time_array, 'h_occs_time_array', dump=True)
         print('')
 
-        # Compute the transient absorption spectrum:
-        # dA =
-
-        # Many more energy points, therefore the energy index is the last one
-        # C-order in memory (row-major)
-        dA_elec = np.zeros((num_steps, num_energy_points), order='C').T
-        dA_hole = np.zeros((num_steps, num_energy_points), order='C').T
+        # Compute the transient absorption spectrum
+        dA_elec = np.zeros((num_energy_points, num_steps), order='C')
+        dA_hole = np.zeros((num_energy_points, num_steps), order='C')
         for iband in range(elec_nband):
             for jband in range(hole_nband):
 
