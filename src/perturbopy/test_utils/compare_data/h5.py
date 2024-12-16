@@ -51,16 +51,16 @@ def equal_scalar(scalar1, scalar2, key, ig_n_tol):
 
     if np.abs(scalar1) > 1e-10:
         rdiff = np.abs((scalar2 - scalar1) / scalar1)
-        diff_str = f'{diff:.1e}, {rdiff*100:.1e}%, {scalar1 = }, {scalar2 = }'
+        diff_str = f'{diff:.1e}, {rdiff * 100:.1e}%, {scalar1 = }, {scalar2 = }'
 
     else:
         diff_str = f'{diff:.1e}'
-        
+
     output_res_val = diff_str
 
     return equal_value, diff_str, output_res_val
-    
-    
+
+
 def format_string(val1, val2):
     """
     Supplementary function for the equal_ndarray function.
@@ -72,7 +72,7 @@ def format_string(val1, val2):
     else:
         rel_diff = abs(val2 - val1) / val2
 
-    return f"value here: {val1:.2e}, reference:({val2:.2e}), abs_diff={abs(val2-val1):.2e}, rel_diff={rel_diff:.2e}"
+    return f"value here: {val1:.2e}, reference:({val2:.2e}), abs_diff={abs(val2 - val1):.2e}, rel_diff={rel_diff:.2e}"
 
 
 def equal_ndarray(ndarray1, ndarray2, key, ig_n_tol):
@@ -134,7 +134,7 @@ def equal_ndarray(ndarray1, ndarray2, key, ig_n_tol):
         v2 = ndarray2[idxmax]
 
         rdiff = np.abs((v2 - v1) / v1)
-        diff_str = (f'{diff:.1e}, {rdiff*100:.1e}%, v1={v1:.1e}, v2={v2:.1e},'
+        diff_str = (f'{diff:.1e}, {rdiff * 100:.1e}%, v1={v1:.1e}, v2={v2:.1e},'
                     f'atol={atol:.1e}, rtol={rtol:.1e},')
         where_error = np.isclose(ndarray1,
                                       ndarray2,
@@ -144,13 +144,13 @@ def equal_ndarray(ndarray1, ndarray2, key, ig_n_tol):
 
     else:
         diff_str = f'{diff:.1e}'
-        
+
     where_error = ~np.isclose(ndarray1,
                               ndarray2,
                               atol=atol,
                               rtol=rtol,
                               equal_nan=True)
-                              
+
     vectorized_format = np.vectorize(format_string)
     output_arr = np.where(where_error, vectorized_format(ndarray2, ndarray1), ndarray2.astype(str))
 
@@ -282,11 +282,11 @@ def hdf5_to_dict(file_path):
             elif isinstance(node, h5py.Group):
                 for key in node.keys():
                     traverse_datasets(f"{name}/{key}", node[key])
-        
+
         # Start traversing the file, starting with the root group
         for key in file.keys():
             traverse_datasets(key, file[key])
-    
+
     return hdf5_dict
 
 
@@ -297,7 +297,7 @@ def save_dict_to_hdf5(group, dictionary):
     ----------
     group : HDF5 file
         file, where the dictionary will be saved
-    
+
     dictionary: dict
         dictionary with the information which will be saved
 
@@ -362,9 +362,9 @@ def equal_values(file1, file2, ig_n_tol):
         errmsg = ('no entries left in dict after applying \'test keywords\'')
         assert len(h51_dict) > 0, errmsg
         assert len(h52_dict) > 0, errmsg
-        
+
     equal_values, diff, output_res_dict = equal_dict(h51_dict, h52_dict, ig_n_tol, 'top of h5')
-    
+
 #    if not equal_values:
     errors_file_name = f"{file2[:file2.find('.h5')]}_errors_file.h5"
     with h5py.File(errors_file_name, 'w') as f:

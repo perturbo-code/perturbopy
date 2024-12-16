@@ -51,7 +51,7 @@ def equal_scalar(scalar1, scalar2, key, ig_n_tol):
 
     if np.abs(scalar1) > 1e-10:
         rdiff = np.abs((scalar2 - scalar1) / scalar1)
-        diff_str = f'{diff:.1e}, {rdiff*100:.1e}%, reference={scalar1}, computed={scalar2}'
+        diff_str = f'{diff:.1e}, {rdiff * 100:.1e}%, reference={scalar1}, computed={scalar2}'
 
     else:
         diff_str = f'{diff:.1e}'
@@ -164,7 +164,7 @@ def equal_list(list1, list2, key, ig_n_tol, path):
         diff = f'among {nitems} elements, {nitems - ncompared} failed comparison'
 
     return equal_values, diff, output_res_list
-    
+
 
 def equal_dict(dict1, dict2, ig_n_tol, path):
     """
@@ -299,7 +299,7 @@ def equal_values(file1, file2, ig_n_tol):
     diff : str
         string which contains the information about the number of
         failed tests
-    
+
     .. note::
         Also, the file {name_of_file}_errors_file.yml will be generated in case of the fail
         of some comparisons.

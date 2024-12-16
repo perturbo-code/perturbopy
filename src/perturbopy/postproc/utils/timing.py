@@ -181,23 +181,23 @@ class TimingGroup:
         width = 60
 
         output = ''
-        output += f"{'='*width}\n"
+        output += f"{'=' * width}\n"
 
-        line = f"{'='*20} {'Timing Summary'.upper()}"
+        line = f"{'=' * 20} {'Timing Summary'.upper()}"
         if self.name is None:
-            end = f' {"="*(width - len(line)-1)}'
+            end = f' {"=" * (width - len(line) - 1)}'
         else:
-            end = f': {self.name} {"="*(width - len(line)-3-len(self.name))}'
+            end = f': {self.name} {"=" * (width - len(line) - 3 - len(self.name))}'
 
         output += f'{line}{end}\n'
-        output += f"{'='*width}\n"
+        output += f"{'=' * width}\n"
         output += f'{"Tag":>30}  {"Time (s)":<12} {"Calls":<10}\n'
-        output += f"{'-'*width}\n"
+        output += f"{'-' * width}\n"
 
         for tag, timing_obj in self.timings.items():
             output += f'{timing_obj}\n'
 
-        output += f"{'='*width}\n\n"
+        output += f"{'=' * width}\n\n"
 
         return output
 

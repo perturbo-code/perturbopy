@@ -45,11 +45,14 @@ class DynaRun(CalcMode):
         kpoint = np.array(tet_file['kpts_all_crys_coord'][()])
 
         self.kpt = RecipPtDB.from_lattice(kpoint, "crystal", self.lat, self.recip_lat)
-        self.bands = UnitsDict.from_dict
 
         energies = np.array(cdyna_file['band_structure_ryd'][()])
         energies_dict = {i + 1: np.array(energies[:, i]) for i in range(0, energies.shape[1])}
         self.bands = UnitsDict.from_dict(energies_dict, 'Ry')
+
+        # Raw arrays
+        self._kpoints = kpoint
+        self._energies = energies
 
         self._data = {}
 
@@ -69,7 +72,7 @@ class DynaRun(CalcMode):
                 snap_t = np.zeros((numb, numk, num_steps), dtype=np.float64)
 
                 for itime in range(num_steps):
-                    snap_t[:, :, itime] = cdyna_file[dyn_str][f'snap_t_{itime+1}'][()].T
+                    snap_t[:, :, itime] = cdyna_file[dyn_str][f'snap_t_{itime + 1}'][()].T
 
                 # Get E-field, which is only present if nonzero
                 if "efield" in cdyna_file[dyn_str].keys():

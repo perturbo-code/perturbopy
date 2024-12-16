@@ -37,6 +37,16 @@ def main():
     # title of the html page
     title = "Quantum Espresso to PERTURBO input parameters"
 
+    print("THE input_examples.html FILE HAS TO BE COPIED TO THE PERTURBO WEBSITE DIRECTORY:")
+    print("<repo path>/perturbo-code.github.io/_includes/\n")
+
+    print("OTHER HTML FILES HAVE TO BE COPIED MANUALLY TO THE PERTURBO WEBSITE DIRECTORY:")
+    print("<repo path>/perturbo-code.github.io/pages/mydoc/\n")
+
+    print("F90 FILES HAVE TO BE COPIED MANUALLY TO THE PERTURBO SOURCE CODE DIRECTORY:")
+    print("<repo path>/perturbo/pert-src/ and")
+    print("<repo path>/perturbo/qe2pert/\n")
+
     print("Generating " + fout_name + " ...")
     htmltools.create_html_file(
         yaml_dict, input_data, html_path, fout_name, title, "qe2pert"

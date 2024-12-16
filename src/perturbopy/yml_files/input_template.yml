@@ -136,6 +136,7 @@ dynamics-run:
       solver:
       boltz_init_e0:
       boltz_init_smear:
+      boltz_init_ampl:
       delta_smear:
       phfreq_cutoff:
       boltz_qdim:
@@ -151,6 +152,8 @@ dynamics-run:
       boltz_acc_thr:
       boltz_nstep_min:
       ph_mode_exclude_ranges:
+      pump_pulse:
+      pump_pulse_fname:
 
 dynamics-pp:
    mandatory:
