@@ -13,6 +13,7 @@ Next, we create the :py:class:`.Ephmat` object using the YAML file as an input. 
 
     import perturbopy.postproc as ppy
 
+    # Example using the ephmat calculation mode
     si_ephmat = ppy.Ephmat.from_yaml('si_ephmat.yml')
 
 Accessing the data
@@ -22,15 +23,18 @@ The k-points are stored in :py:attr:`Ephmat.kpt`, which is a :py:class:`RecipPtD
 
 .. code-block :: python
     
-    # Access the k-point coordinates. There is only one in this calculation. The units are in crystal coordinates.
+    # Access the k-point coordinates. There is only one in this calculation.
+    # The units are in crystal coordinates.
     si_ephmat.kpt.points
     >> array([[0.],
               [0.],
               [0.]])
+    
     si_ephmat.kpt.units
     >> 'crystal'
 
-    # There are 206 q-point coordinates (we display the first two below). The units are in crystal coordinates.
+    # There are 206 q-point coordinates (we display the first two below).
+    # The units are in crystal coordinates.
     si_ephmat.qpt.points.shape
     >> (3, 206)
 
@@ -42,7 +46,8 @@ The k-points are stored in :py:attr:`Ephmat.kpt`, which is a :py:class:`RecipPtD
     si_ephmat.qpt.units
     >> 'crystal'
 
-    # Access the phonon energies, which are a UnitsDict. There are 6 modes, which are the keys of the dictionary.
+    # Access the phonon energies, which are a UnitsDict.
+    # There are 6 modes, which are the keys of the dictionary.
     si_ephmat.phdisp.keys()
     >> dict_keys([1, 2, 3, 4, 5, 6])
 
@@ -59,7 +64,7 @@ The ephmat calculation interpolates the deformation potentials and e-ph elements
 
 .. code-block :: python
 
-    # There are 6 keys, one for each mode
+    # There are 6 keys, one for each mode.
     si_ephmat.ephmat.keys()
     >> dict_keys([1, 2, 3, 4, 5, 6])
 
@@ -67,15 +72,16 @@ The ephmat calculation interpolates the deformation potentials and e-ph elements
     si_ephmat.ephmat[1].shape
     >> (1, 206)
 
-    # The e-ph matrix elements corresponding to the first phonon mode, first (and only) k-point, and first two q-points
+    # The e-ph matrix elements corresponding to the first phonon mode,
+    # first (and only) k-point, and first two q-points.
     si_ephmat.ephmat[1][0, :2]
     >> array([[11.80265941, 11.92405409]])
 
-    # units are in meV
+    # The units are in meV.
     si_ephmat.ephmat.units
     >> 'meV'
 
-    # We can extract analogous information from the deformation potential
+    # We can extract analogous information from the deformation potential.
     si_ephmat.defpot[1].shape
     >> (1, 206)
 
@@ -101,8 +107,6 @@ We can quickly visualize the e-ph elements by plotting them as a colormap overla
 .. image:: figures/si_ephmat.png
     :width: 450
     :align: center
-
-.. code-block :: python
 
 We can also plot the deformation potential instead.
 

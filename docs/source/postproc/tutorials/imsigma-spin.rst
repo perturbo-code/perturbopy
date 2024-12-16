@@ -107,7 +107,7 @@ The e-ph self energies are stored in the :py:attr:`.ImsigmaSpin.imsigma` object,
     # The e-ph spin-flip self-energies for configuration 1, band index 2,
     # and the first 4 k-points.
     diam_imsigma_spin.imsigma[1][2][:4]
-    >> array([1.29425589e-05, 7.97155145e-06, 1.06093255e-05, 8.78246442e-06])
+    >> array([1.37938929e-05, 1.04751193e-05, 1.03614082e-05, 8.36874944e-06])
 
     # The units are meV.
     diam_imsigma_spin.imsigma.units
@@ -134,12 +134,12 @@ We can also get the e-ph spin-flip self energies for each phonon mode through th
     # The e-ph spin-flip self-energy array for configuration 1, phonon mode 3,
     # and band index 2. The array size matches the number of k-points.
     diam_imsigma_spin.imsigma_mode[1][3][2].shape
-    >> (2445,)
+    >> (815,)
 
     # The e-ph spin-flip self-energies for configuration 1, phonon mode 3,
     # band index 2, and the first 4 k-points.
     diam_imsigma_spin.imsigma_mode[1][3][2][:4]
-    >> array([2.71039146e-06, 0.00000000e+00, 0.00000000e+00, 1.83641809e-06])
+    >> array([3.24982487e-06, 2.51737225e-06, 2.67450210e-06, 2.19172743e-06])
 
     # The units are meV.
     diam_imsigma_spin.imsigma_mode.units
