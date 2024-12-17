@@ -43,16 +43,26 @@ calc_mode:
    family: job_control
    type: string 
    options:
-      "'bands'": interpolated electronic band structure (<a href="mydoc_perturbo.html#calc_mode_bands">see in the section</a>)
-      "'phdisp'": interpolated phonon dispersions along a given crystal momentum path (<a href="mydoc_perturbo.html#calc_mode_phdisp">see in the section</a>)
-      "'ephmat'": absolute values of the e-ph matrix elements (<a href="mydoc_perturbo.html#calc_mode_ephmat">see in the section</a>) 
-      "'setup'": set up transport property calculations (<a href="mydoc_perturbo.html#calc_mode_setup">see in the section</a>)
-      "'imsigma'": imaginary part of the lowest-order e-ph self-energy (<a href="mydoc_perturbo.html#calc_mode_imsigma">see in the section</a>)
-      "'meanfp'": e-ph mean free paths for electronic states (<a href="mydoc_perturbo.html#calc_mode_meanfp">see in the section</a>)
-      "'trans'": electrical conductivity and carrier mobility tensors (<a href="mydoc_perturbo.html#calc_mode_trans">see in the section</a>)
-      "'trans-pp'": computes Seebeck coefficient (<a href="mydoc_perturbo.html#calc_mode_trans-pp">see in the section</a>)
-      "'dynamics-run'": ultrafast hot carrier dynamics (<a href="mydoc_perturbo.html#calc_mode_dynamics-run">see in the section</a>)
+      "'bands'": interpolated electronic band structure (<a href="mydoc_interpolation.html#calc_mode_bands">see in the section</a>)
+      "'phdisp'": interpolated phonon dispersions along a given crystal momentum path (<a href="mydoc_interpolation.html#calc_mode_phdisp">see in the section</a>)
+      "'ephmat'": absolute values of the e-ph matrix elements (<a href="mydoc_interpolation.html#calc_mode_ephmat">see in the section</a>) 
+      "'setup'": set up transport property calculations (<a href="mydoc_scattering.html#calc_mode_setup">see in the section</a>)
+      "'imsigma'": imaginary part of the lowest-order e-ph self-energy (<a href="mydoc_scattering.html#calc_mode_imsigma">see in the section</a>)
+      "'meanfp'": e-ph mean free paths for electronic states (<a href="mydoc_scattering.html#calc_mode_meanfp">see in the section</a>)
+      "'trans-rta'": electrical conductivity and carrier mobility tensors using relaxation time approximation (<a href="mydoc_trans.html#calc_mode_trans_rta">see in the section</a>)
+      "'trans-ita'": electrical conductivity and carrier mobility tensors using iterative method (<a href="mydoc_trans.html#calc_mode_trans_ita">see in the section</a>)
+      "'trans-mag-rta'": phonon-limited conductivity and carrier mobility using relaxation time approximation in finite magnetic field (<a href="mydoc_trans.html#calc_mode_trans_mag_rta">see in the section</a>)
+      "'trans-mag-ita'": phonon-limited conductivity and carrier mobility using full Boltzmann equation in a finite magnetic field (<a href="mydoc_trans.html#calc_mode_trans_mag_ita">see in the section</a>)
+      "'trans-pp'": computes Seebeck coefficient (<a href="mydoc_trans.html#calc_mode_trans-pp">see in the section</a>)
+      "'dynamics-run'": ultrafast hot carrier dynamics (<a href="mydoc_dynamics.html#calc_mode_dynamics-run">see in the section</a>)
       "'dynamics-pp'": computes the energy-dependent carrier population as a function of time (<a href="mydoc_perturbo.html#calc_mode_dynamics-pp">see in the section</a>)
+      "'ephmat_spin'": absolute values of the e-ph spin-flip matrix elements (<a href="mydoc_spin.html#calc_mode_ephmat_spin">see in the section</a>)
+      "'spins'": interpolated spin texture (<a href="mydoc_spin.html#calc_mode_spins">see in the section</a>)
+      "'imsigma_spin'": imaginary part of the lowest-order e-ph spin-flip self-energy (<a href="mydoc_spin.html#calc_mode_imsigma_spin">see in the section</a>)
+      "'spinlifetime'": spin relaxation times (<a href="mydoc_spin.html#calc_mode_spinlifetime">see in the section</a>)
+      "'spectral-re'": on-shell real-part of the Fan-Migdal self-energy (<a href="mydoc_cumulant.html#calc_mode_spectral_re">see in the section</a>)
+      "'spectral-se'": frequency-dependent imaginary part of the Fan-Migdal self-energy (<a href="mydoc_cumulant.html#calc_mode_spectral_se">see in the section</a>)
+      "'spectral-cum'": cumulant spectral function (<a href="mydoc_cumulant.html#calc_mode_spectral_cum">see in the section</a>)
    default: "''"
    len: 80
    attributes: save
@@ -494,28 +504,4 @@ spectral_np:
    typical: 1
    attributes: save
    description: "Number of points in the energy window. Decide output spectral energy step with cum_de: cum_de / spectral_np"
-
-GPU_iter:
-   family: job_control
-   type: integer
-   typical: 50
-   default: 1
-   attributes: save
-   description: "Number of iterations for better timing Statistics of GPU implementation (target method). The RTA and ITA will run 'GPU_iter' times to make sure that the runtime of GPU code is stable, especially for transport converged in several iterations. "
-
-CPU_iter:
-   family: job_control
-   type: integer
-   typical: 20
-   default: 1
-   attributes: save
-   description: "Number of iterations for better timing Statistics of CPU implementation (standard method). The RTA and ITA will run 'CPU_iter' times to make sure that the runtime of CPU code is stable, especially for transport converged in several iterations. "
-
-tgt_size_seq:
-   family: job_control
-   type: integer
-   typical: 256
-   default: 256
-   attributes: save
-   description: "Size of the target used for tradeoff between speedup and overload when using 'tgt' as the data structure for GPU specifically. The summation over the elements of targets above `tgt_size_seq` will done by OpenACC reduciton parallelly, while that below 'tgt_size_seq' will done serially."
 ...
