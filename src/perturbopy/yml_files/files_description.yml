@@ -1,5 +1,5 @@
 ---
-# This is a yaml file that contains the description of files required for PERTURBO calcation modes.
+# This is a yaml file that contains the description of files required for PERTURBO calculation modes.
 
 phdir:
    type: directory
@@ -19,6 +19,11 @@ prefix_u.mat:
 prefix_u_dis.mat:
    type: text
    description: $$U^{dis}(\mathbf{k})$$ matrix. Please refer to Wannier90 documentation for more details.
+   obtained from: DFT (Wannier90)
+
+prefix.spn:
+   type: text
+   description: Matrix elements of S between Bloch states. Please refer to Wannier90 documentation for more details.
    obtained from: DFT (Wannier90)
 
 prefix_epr.h5:
@@ -162,9 +167,59 @@ prefix.trans_coef:
    format example: mydoc_trans.html#trans-pp_file
    deprecated: True
 
+prefix.ephmat_flip:
+   type: text
+   description: Absolute values of the electron-phonon spin-flip matrix elements summed over bands from <a href=mydoc_param_perturbo.html#band_min>band_min</a> to <a href=mydoc_param_perturbo.html#band_max>band_max</a>.
+   obtained from: ephmat_spin
+   deprecated: True
+
+prefix.spins:
+   type: text
+   description: Interpolated spin texture.
+   obtained from: spins
+   deprecated: True
+
+prefix.imsigma_flip:
+   type: text
+   description: Imaginary part of the electron-phonon spin-flip self-energy.
+   obtained from: imsigma_spin
+
+prefix.imsigma_flip_mode:
+   type: text
+   description: Imaginary part of the electron-phonon spin-flip self-energy (where phonon modes are numbered for increasing energy values).
+   obtained from: imsigma_spin
+   deprecated: True
+
+prefix.spin:
+   type: text
+   description: Spin relaxation times.
+   obtained from: spinlifetime
+   deprecated: True
+
+prefix.resigma:
+   type: text
+   description: On-shell real-part of the self-energy of each electron states.
+   obtained from: spectral-re
+
+prefix.resigma_mode:
+   type: text
+   description: On-shell real-part of the self-energy of each electron states, resolved by phonon mode.
+   obtained from: spectral-re
+   deprecated: True
+
+prefix_selfenergy.h5:
+   type: HDF5
+   description: Frequency-dependent imaginary part of the self-energy of each electron states.
+   obtained from: spectral-se
+
+prefix_spectral_cumulant.h5:
+   type: HDF5
+   description: Cumulant spectral function.
+   obtained from: spectral-cum
+
 input file:
    type: text
-   description: File containing the input parameters. A typical input file  for this calculation mode is given below. 
+   description: File containing the input parameters. A typical input file for this calculation mode is given below. 
 
 # YAML output files
 qe2pert_output.yml:
@@ -208,11 +263,29 @@ prefix_meanfp.yml:
    obtained from: meanfp
    format example: mydoc_scattering.html#meanfp_output_yaml
 
-prefix_trans.yml:
+prefix_trans-rta.yml:
    type: YAML
    description: Output data from the calculation, including the input parameters and the quantities of interest. The file can be processed by the <a href="https://perturbopy.readthedocs.io/en/latest/postproc/tutorials/trans.html" target="_blank">Perturbopy</a> Python suite.
-   obtained from: trans
+   obtained from: trans-rta
    format example: mydoc_trans.html#trans_rta_output_yaml
+
+prefix_trans-ita.yml:
+   type: YAML
+   description: Output data from the calculation, including the input parameters and the quantities of interest. The file can be processed by the <a href="https://perturbopy.readthedocs.io/en/latest/postproc/tutorials/trans.html" target="_blank">Perturbopy</a> Python suite.
+   obtained from: trans-ita
+   format example: mydoc_trans.html#trans_ita_output_yaml
+
+prefix_trans-mag-rta.yml:
+   type: YAML
+   description: Output data from the calculation, including the input parameters and the quantities of interest. The file can be processed by the <a href="https://perturbopy.readthedocs.io/en/latest/postproc/tutorials/trans.html" target="_blank">Perturbopy</a> Python suite.
+   obtained from: trans-mag-rta
+   format example: mydoc_trans.html#trans_mag_rta_output_yaml
+
+prefix_trans-mag-ita.yml:
+   type: YAML
+   description: Output data from the calculation, including the input parameters and the quantities of interest. The file can be processed by the <a href="https://perturbopy.readthedocs.io/en/latest/postproc/tutorials/trans.html" target="_blank">Perturbopy</a> Python suite.
+   obtained from: trans-mag-ita
+   format example: mydoc_trans.html#trans_mag_ita_output_yaml
 
 prefix_dynamics-run.yml:
    type: YAML
@@ -226,4 +299,45 @@ prefix_dynamics-pp.yml:
    obtained from: dynamics-pp
    format example: mydoc_dynamics.html#dynamics-pp_output_yaml
 
+prefix_ephmat_spin.yml:
+   type: YAML
+   description: Output data from the calculation, including the input parameters and the quantities of interest. The file can be processed by the <a href="https://perturbopy.readthedocs.io/en/latest/postproc/tutorials/ephmat-spin.html" target="_blank">Perturbopy</a> Python suite.
+   obtained from: ephmat_spin
+   format example: mydoc_interpolation.html#ephmat_output_yaml
+
+prefix_spins.yml:
+   type: YAML
+   description: Output data from the calculation, including the input parameters and the quantities of interest. The file can be processed by the <a href="https://perturbopy.readthedocs.io/en/latest/postproc/tutorials/spins.html" target="_blank">Perturbopy</a> Python suite.
+   obtained from: spins
+   format example: mydoc_spin.html#spins_output_yaml
+
+prefix_imsigma_spin.yml:
+   type: YAML
+   description: Output data from the calculation, including the input parameters and the quantities of interest. The file can be processed by the <a href="https://perturbopy.readthedocs.io/en/latest/postproc/tutorials/imsigma-spin.html#" target="_blank">Perturbopy</a> Python suite.
+   obtained from: imsigma_spin
+   format example: mydoc_scattering.html#imsigma_output_yaml
+
+prefix_spinlifetime.yml:
+   type: YAML
+   description: Output data from the calculation, including the input parameters and the quantities of interest. The file can be processed by the <a href="https://perturbopy.readthedocs.io/" target="_blank">Perturbopy</a> Python suite.
+   obtained from: spinlifetime
+   format example: mydoc_spin.html#spinlifetime_output_yaml
+
+prefix_spectral-re.yml:
+   type: YAML
+   description: Output data from the calculation, including the input parameters and the quantities of interest. The file can be processed by the <a href="https://perturbopy.readthedocs.io/" target="_blank">Perturbopy</a> Python suite.
+   obtained from: spectral-re
+   format example: mydoc_cumulant.html
+
+prefix_spectral-se.yml:
+   type: YAML
+   description: Output data from the calculation, including the input parameters and the quantities of interest. The file can be processed by the <a href="https://perturbopy.readthedocs.io/" target="_blank">Perturbopy</a> Python suite.
+   obtained from: spectral-se
+   format example: mydoc_cumulant.html
+
+prefix_spectral-cum.yml:
+   type: YAML
+   description: Output data from the calculation, including the input parameters and the quantities of interest. The file can be processed by the <a href="https://perturbopy.readthedocs.io/tutorials/spectral-cumulant" target="_blank">Perturbopy</a> Python suite.
+   obtained from: spectral-cum
+   format example: mydoc_cumulant.html
 ...

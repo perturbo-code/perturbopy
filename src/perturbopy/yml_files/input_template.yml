@@ -18,13 +18,16 @@ qe2pert:
       dft_band_max: highest band index used in Wannier90.
       dis_win_min: the same as 'dis_win_min' used in Wannier90.
       system_2d: set it to .true. for 2D systems
-      lwannier: compute g(k,q) using wavefunctions in wannier gauge directly.
-      debug: debug mode, stop after g(k,q) (does not compute g in wannier basis)
+      debug: debug mode, stop after g(k,q) (does not compute g in Wannier basis)
+      lwannier: compute g(k,q) using wavefunctions in Wannier gauge directly.
+      lspinmat: generate and save spin matrices in Wannier basis 
+      spn_formatted: same as 'spn_formatted' used in Wannier90. Set to .true. if prefix.spn is formatted.
       load_ephmat: load prefix_elph.h5
-      asr: acoustic sum rules
-      polar_alpha: convergence parameter used in the Ewald sum, only used for polar correction. 
-      thickness_2d: for 2D polar e-ph correction. Only needed when system_2d=.true.
       eig_corr: usually used when one wants to use modified eigenvalues (e.g., from GW)
+      polar_alpha: convergence parameter used in the Ewald sum, only used for polar correction. 
+      asr: acoustic sum rules
+      thickness_2d: for 2D polar e-ph correction. Only needed when system_2d=.true.
+      spin_component: for LSDA spin polarized calculation
       tdep: when =.true., read force constants from TDEP outputs, infile.forceconstant and infile.ucposcar
       symmborn: Symmetrize Born effective charges read from TDEP files for polar materials. Only needed when tdep = .true. and the material is polar.
 
@@ -87,11 +90,10 @@ meanfp:
       band_min:
       band_max:
 
-trans:
+trans-rta:
    mandatory:
       boltz_kdim:
       ftemper:
-      scat_impl:
 
    optional:
       boltz_qdim:
@@ -109,6 +111,72 @@ trans:
       tmp_dir:
       full_ite:
       
+trans-ita:
+   mandatory:
+      boltz_kdim:
+      ftemper:
+      scat_impl:
+      boltz_nstep:
+
+   optional:
+      boltz_qdim:
+      band_min:
+      band_max:
+      boltz_emin:
+      boltz_emax:
+      delta_smear:
+      phfreq_cutoff:
+      boltz_de:
+      trans_thr:
+      hole:
+      load_scatter_eph:
+      tmp_dir:
+      full_ite:
+
+trans-mag-rta:
+   mandatory:
+      boltz_kdim:
+      ftemper:
+      scat_impl:
+      boltz_nstep:
+
+   optional:
+      boltz_qdim:
+      band_min:
+      band_max:
+      boltz_emin:
+      boltz_emax:
+      delta_smear:
+      phfreq_cutoff:
+      boltz_de:
+      trans_thr:
+      hole:
+      load_scatter_eph:
+      tmp_dir:
+      full_ite:
+
+trans-mag-ita:
+   mandatory:
+      boltz_kdim:
+      ftemper:
+      scat_impl:
+      boltz_nstep:
+
+   optional:
+      boltz_qdim:
+      band_min:
+      band_max:
+      boltz_emin:
+      boltz_emax:
+      delta_smear:
+      phfreq_cutoff:
+      boltz_de:
+      trans_thr:
+      hole:
+      load_scatter_eph:
+      tmp_dir:
+      full_ite:
+
 trans-pp:
    mandatory:
       boltz_kdim:
@@ -168,4 +236,101 @@ dynamics-pp:
       boltz_emin:
       boltz_emax:
       boltz_efield:
+
+ephmat_spin:
+   mandatory:
+      fklist:
+      fqlist:
+
+   optional:
+      band_min:
+      band_max:
+      phfreq_cutoff: Phonons with energy smaller than phfreq_cutoff will be excluded.
+
+spins:
+   mandatory:
+      fklist:
+
+imsigma_spin:
+   mandatory:
+      ftemper:
+      fklist:
+
+   optional:
+      band_min:
+      band_max:
+      delta_smear:
+      phfreq_cutoff:
+      polar_split:
+      fqlist:
+      sampling:
+      cauchy_scale:
+      nsamples:
+        
+spinlifetime:
+   mandatory:
+      boltz_kdim:
+      ftemper:
+      band_min:
+      band_max:
+
+   optional:
+      boltz_emin:
+      boltz_emax:
+
+spectral-re:
+   mandatory:
+      fklist:
+      ftemper:
+      band_min:
+      band_max:
+
+   optional:
+      phfreq_cutoff:
+      delta_smear:
+      sampling:
+      cauchy_scale:
+      nsamples:
+
+spectral-se:
+   mandatory:
+      fklist:
+      ftemper:
+      band_min:
+      band_max:
+      cum_inner_emin:
+      cum_inner_emax:
+      cum_outer_emin:
+      cum_outer_emax:
+
+   optional:
+      phfreq_cutoff:
+      delta_smear:
+      sampling:
+      cauchy_scale:
+      nsamples:
+      cum_de:
+      cum_outer_np:
+   
+spectral-cum:
+   mandatory:
+      fklist:
+      ftemper:
+      band_min:
+      band_max:
+      cum_inner_emin:
+      cum_inner_emax:
+      cum_outer_emin:
+      cum_outer_emax:
+      spectral_emin:
+      spectral_emax:
+
+   optional:
+      phfreq_cutoff:
+      delta_smear:
+      sampling:
+      cauchy_scale:
+      nsamples:
+      cum_de:
+      cum_outer_np:
 ...

@@ -106,12 +106,12 @@ meanfp:
     - prefix.vel
  tutorial link: mydoc_scattering.html#calc_mode_meanfp
 
-trans:
+trans-rta:
  parents:
    - setup
  optional parents:
    - imsigma
- computes: The phonon-limited conductivity and carrier mobility.
+ computes: The phonon-limited conductivity and carrier mobility using relaxation time approximation.
  requirements:
     - prefix_epr.h5
     - prefix.temper
@@ -119,15 +119,73 @@ trans:
  optional files:
     - prefix.imsigma
  outputs:
-    - prefix_trans.yml
+    - prefix_trans-rta.yml
     - prefix.cond
     - prefix.tdf
     - prefix_tdf.h5
- tutorial link: mydoc_trans.html#calc_mode_trans
+ tutorial link: mydoc_trans.html#calc_mode_trans_rta
+
+trans-ita:
+ parents:
+   - setup
+ optional parents:
+   - imsigma
+ computes: The phonon-limited conductivity and carrier mobility using iterative method.
+ requirements:
+    - prefix_epr.h5
+    - prefix.temper
+    - prefix_tet.h5
+ optional files:
+    - prefix.imsigma
+ outputs:
+    - prefix_trans-ita.yml
+    - prefix.cond
+    - prefix.tdf
+    - prefix_tdf.h5
+ tutorial link: mydoc_trans.html#calc_mode_trans_ita
+
+trans-mag-rta:
+ parents:
+   - setup
+ optional parents:
+   - imsigma
+ computes: The phonon-limited conductivity and carrier mobility using relaxation time approximation with finite magnetic field.
+ requirements:
+    - prefix_epr.h5
+    - prefix.temper
+    - prefix_tet.h5
+ optional files:
+    - prefix.imsigma
+ outputs:
+    - prefix_trans-mag-rta.yml
+    - prefix.cond
+    - prefix.tdf
+    - prefix_tdf.h5
+ tutorial link: mydoc_trans.html#calc_mode_trans_mag_rta
+
+trans-mag-ita:
+ parents:
+   - setup
+ optional parents:
+   - imsigma
+ computes: The phonon-limited conductivity and carrier mobility using full Boltzmann equation with finite magnetic field.
+ requirements:
+    - prefix_epr.h5
+    - prefix.temper
+    - prefix_tet.h5
+ optional files:
+    - prefix.imsigma
+ outputs:
+    - prefix_trans-mag-ita.yml
+    - prefix.cond
+    - prefix.tdf
+    - prefix_tdf.h5
+ tutorial link: mydoc_trans.html#calc_mode_trans_mag_ita
 
 trans-pp:
  parents:
-   - trans
+   - trans-rta
+   - trans-ita
  computes: Seebeck coefficient. Note that phonon drag effects are not included in this calculation.
  requirements:
     - prefix_epr.h5
@@ -164,4 +222,103 @@ dynamics-pp:
    - prefix_cdyna.dat
    - prefix_popu.h5
  tutorial link: mydoc_dynamics.html#calc_mode_dynamics-pp
+
+ephmat_spin:
+ parents:
+   - qe2pert
+ computes: The absolute values of the e-ph spin-flip matrix elements, summed over the number of electronic bands, given two lists of $$\mathbf{k}$$ and $$\mathbf{q}$$ points. In a typical scenario, one computes the e-ph matrix elements for a chosen $$\mathbf{k}$$ point as a function of $$\mathbf{q}$$ point.
+ requirements:
+    - prefix_epr.h5
+    - prefix_band.kpt
+    - prefix_phdisp.qpt
+ outputs:
+    - prefix_ephmat_spin.yml
+    - prefix.ephmat_flip
+ tutorial link: mydoc_spin.html#calc_mode_ephmat_spin
+
+spins:
+ parents:
+   - qe2pert
+ computes: Interpolated spin texture given an electronic crystal momentum path.
+ requirements:
+    - prefix_epr.h5
+    - prefix_band.kpt
+ outputs:
+    - prefix_spins.yml
+    - prefix.spins
+ tutorial link: mydoc_interpolation.html#calc_mode_spins
+
+imsigma_spin:
+ parents:
+   - setup
+ computes: The imaginary part of the lowest-order (so-called 'Fan') e-ph spin-flip self-energy, $$\operatorname{Im}\Sigma$$, for states in a range of bands and with crystal momenta $$\mathbf{k}$$ read from a list (this list can be obtained from <code>calc_mode='setup'</code> or created manually). The scattering rates can also be obtained using $${2} \operatorname{Im}\Sigma /{\hbar}$$.
+ requirements:
+    - prefix_epr.h5
+    - prefix_tet.kpt
+    - prefix.temper
+ outputs:
+    - prefix_imsigma_spin.yml
+    - prefix.imsigma
+    - prefix.imsigma_mode
+    - prefix.imsigma_flip
+    - prefix.imsigma_flip_mode
+ tutorial link: mydoc_spin.html#calc_mode_imsigma_spin
+
+spinlifetime:
+ parents:
+   - imsigma_spin
+ computes: Spin relaxation times.
+ requirements:
+    - prefix_epr.h5
+    - prefix.temper
+    - prefix_tet.h5
+    - prefix.imsigma_flip
+ outputs:
+    - prefix_spinlifetime.yml
+    - prefix.spin
+ tutorial link: mydoc_spin.html#calc_mode_spinlifetime
+
+spectral-re:
+ parents:
+   - setup
+ computes: The on-shell real-part of the Fan-Migdal self-energy.
+ requirements:
+    - prefix_epr.h5
+    - prefix.temper
+    - prefix_band.kpt
+ outputs:
+    - prefix_spectral-re.yml
+    - prefix.resigma
+    - prefix.resigma_mode
+ tutorial link: mydoc_cumulant.html#calc_mode_spectral_re
+
+spectral-se:
+ parents:
+   - setup
+ computes: The frequency-dependent imaginary part of the Fan-Migdal self-energy.
+ requirements:
+    - prefix_epr.h5
+    - prefix.temper
+    - prefix_band.kpt
+ outputs:
+    - prefix_spectral-se.yml
+    - prefix_selfenergy.h5
+ tutorial link: mydoc_cumulant.html#calc_mode_spectral_se
+
+spectral-cum:
+ parents:
+   - spectral-re
+   - spectral-se
+ computes: The cumulant spectral function.
+ requirements:
+    - prefix_epr.h5
+    - prefix.temper
+    - prefix_band.kpt
+    - prefix.resigma
+    - prefix_selfenergy.h5
+ outputs:
+    - prefix_spectral-cum.yml
+    - prefix_spectral_cumulant.h5
+ tutorial link: mydoc_cumulant.html#calc_mode_spectral_cum
+
 ...
