@@ -20,14 +20,6 @@ from .constants import energy_conversion_factor
 from . import spectra_plots
 
 
-def gaussian(x, mu, sig, hole_nband, elec_nband):
-    """
-    Gaussian function normalized to unity max occupation
-    """
-
-    return np.exp(-0.5 * ((x - mu) / sig)**2) / (hole_nband * elec_nband)
-
-
 def sigma_from_fwhm(fwhm):
     """
     Comupte Gaussian sigma from the Full Width at Half Maximum (FWHM) parameter:
@@ -308,8 +300,8 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
         for jband in range(hole_nband):
             # diff. between elec and hole for a given elec branch iband and hole branch jband
             delta = pump_factor * \
-                gaussian(elec_energy_array[ekidx, iband] - hole_energy_array[hkidx, jband],
-                         pump_energy, pump_energy_broadening, hole_nband, elec_nband)
+                spectra_plots.gaussian(elec_energy_array[ekidx, iband] - hole_energy_array[hkidx, jband],
+                                       pump_energy, pump_energy_broadening, hole_nband, elec_nband)
 
             # Only for the intersected k points, we add the delta occupation
             elec_occs_amplitude[ekidx, iband] += delta
