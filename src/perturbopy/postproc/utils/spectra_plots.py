@@ -22,7 +22,16 @@ from .constants import energy_conversion_factor
 
 # Plotting parameters
 from .plot_tools import plotparams
+
 plt.rcParams.update(plotparams)
+
+
+def gaussian(x, mu, sig, hole_nband, elec_nband):
+    """
+    Gaussian function normalized to unity max occupation
+    """
+
+    return np.exp(-0.5 * ((x - mu) / sig)**2) / (hole_nband * elec_nband)
 
 
 def plot_occ_ampl(e_occs, elec_kpoint_array, elec_energy_array,
@@ -262,5 +271,63 @@ def plot_trans_abs_map(ax, time_grid, energy_grid, trans_abs,
     cax = divider.append_axes('right', size='5%', pad=0.08)
     cbar = plt.colorbar(ScalarMappable(cmap=cmap, norm=norm), cax=cax, orientation='vertical', format='%.1f')
     cbar.set_label(r'$\Delta A$ (arb. units)', fontsize=fsize)
+
+    return ax
+
+
+def plot_occs_on_bands(ax, kpath, bands, first_el_band_idx,
+                       pump_energy, pump_energy_broadening,
+                       scale=0.2):
+    """
+    Plot the occupations created by a pump pulse on the bands.
+    """
+
+
+    # Total number of bands
+    nband = len(bands)
+
+    # Total number of k-points
+    npoint = len(bands[1])
+
+    # Occupation amplitude for each bands
+    occs_amplitude_bands = np.zeros((nband, npoint))
+
+    elec_band_list = list(range(first_el_band_idx, nband))
+    hole_band_list = list(range(1, first_el_band_idx))
+
+    elec_nband = len(elec_band_list)
+    hole_nband = len(hole_band_list)
+
+    # First, compute the occupations for every valence-conduction pair
+    for i_elec_band in elec_band_list:
+        for i_hole_band in hole_band_list:
+            elec_band = bands[i_elec_band]
+            hole_band = bands[i_hole_band]
+
+            occ = gaussian(elec_band - hole_band,
+                           pump_energy, pump_energy_broadening, hole_nband, elec_nband)
+
+            occs_amplitude_bands[i_elec_band - 1, :] += occ
+            occs_amplitude_bands[i_hole_band - 1, :] += occ
+
+    max_occ = np.max(occs_amplitude_bands.ravel())
+    factor = scale / max_occ
+    occs_amplitude_bands *= factor
+
+    # Plot the occupations on bands with fill_between
+    # use kpath
+    for iband in range(1, nband):
+
+        band = bands[iband]
+
+        occ_top = band + occs_amplitude_bands[iband - 1, :]
+        occ_bottom = band - occs_amplitude_bands[iband - 1, :]
+
+        if iband >= first_el_band_idx:
+            color = 'red'
+        else:
+            color = 'blue'
+
+        ax.fill_between(kpath, occ_top, occ_bottom, color=color)
 
     return ax
