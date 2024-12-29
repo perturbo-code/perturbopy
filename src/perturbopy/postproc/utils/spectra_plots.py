@@ -280,6 +280,38 @@ def plot_occs_on_bands(ax, kpath, bands, first_el_band_idx,
                        scale=0.2):
     """
     Plot the occupations created by a pump pulse on the bands.
+    Takes ax with the bands plotted and fills the bands with the occupations.
+    Occupations are set up with a Gaussian for each valence-conduction pair.
+
+    Parameters
+    ----------
+
+    ax : matplotlib.axes.Axes
+        Axis for plotting the bands with occupations.
+
+    kpath : numpy.ndarray
+        K-path for the bands, same as the one used for plotting the bands.
+
+    bands : numpy.ndarray
+        Bands for the material. Shape: (num_bands, num_kpoints). Same as the one used for plotting the bands.
+
+    first_el_band_idx : int
+        Index of the first electron (conduction) band.
+
+    pump_energy : float
+        Pump energy in eV.
+
+    pump_energy_broadening : float
+        Pump energy broadening in eV.
+
+    scale : float
+        Scale factor for the occupation amplitude. For plotting purposes.
+
+    Returns
+    -------
+
+    ax : matplotlib.axes.Axes
+        Axis with the bands filled with the occupations.
     """
 
 
