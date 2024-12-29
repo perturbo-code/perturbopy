@@ -350,19 +350,15 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
 
         h5f['optional_params'] = optional_params
 
-        h5f.create_dataset('finite_width', data=finite_width)
         if finite_width:
             h5f.create_dataset('time_window', data=pump_time_window)
             h5f.create_dataset('num_steps', data=num_steps)
             h5f.create_dataset('time_step', data=pump_time_step)
-            h5f.create_dataset('pulse_type', data=f'gaussian; FWHM: {pump_fwhm:.3f} fs; '
-                                                    f'pump_factor: {pump_factor:.3f}')
 
         else:
             h5f.create_dataset('time_window', data=elec_dyna_time_step)
             h5f.create_dataset('num_steps', data=1)
             h5f.create_dataset('time_step', data=elec_dyna_time_step)
-            h5f.create_dataset('pulse_type', data='step')
 
         h5f['time_window'].attrs['units'] = 'fs'
         h5f['time_step'].attrs['units'] = 'fs'
@@ -374,10 +370,6 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
 
     elec_pump_pulse_file.create_dataset('hole', data=0)
     hole_pump_pulse_file.create_dataset('hole', data=1)
-
-    # Add carrier attribute to the pump_pulse_snaps group
-    elec_pump_pulse_file.create_dataset('carrier', data='electrons')
-    hole_pump_pulse_file.create_dataset('carrier', data='holes')
 
     # We save the delta_occs_array for animation. If it takes too much space, remove it.
     elec_delta_occs_array = \
