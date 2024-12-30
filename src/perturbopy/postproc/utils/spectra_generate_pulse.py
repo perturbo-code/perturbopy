@@ -25,6 +25,8 @@ def sigma_from_fwhm(fwhm):
     Comupte Gaussian sigma from the Full Width at Half Maximum (FWHM) parameter:
     .. math::
         f(t) = A / ( sigma * sqrt(2pi)) exp(-(t-t0)^2 / (2sigma^2))
+
+    For fwhm = 1, sigma = 0.42466.
     """
 
     sigma = 1.0 / (2.0 * np.sqrt(2.0 * np.log(2.0))) * fwhm
@@ -35,8 +37,9 @@ def sigma_from_fwhm(fwhm):
 def delta_occs_pulse_coef(t, dt, tw, sigma):
     """
     Additional occupation due to the pulse excitation.
-    Assuming the Gaussian pulse shape, the occupation is increasing in
-    time according to the error function.
+    To compute precisely the additional occupation for dt,
+    we use the integral of the Gaussian function from t - dt to t,
+    which is the difference of two error functions.
 
     Parameters
     ----------
@@ -50,7 +53,7 @@ def delta_occs_pulse_coef(t, dt, tw, sigma):
         Time window during which the pump pulse will be applied.
 
     sigma : float
-        Gaussian sigma broadening.
+        Gaussian sigma for pulse duration.
 
     Returns
     -------
@@ -166,7 +169,7 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
                      pump_energy,
                      pump_time_step=1.0,
                      pump_fwhm=20.0,
-                     pump_energy_broadening=0.040,
+                     pump_energy_broadening=0.090,
                      pump_time_window=50.0,
                      finite_width=True,
                      animate=True
@@ -176,6 +179,10 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
     Write into the pump_pulse.h5 HDF5 file.
     We use raw k-point and energy arrays as read from the HDF5 files for efficiency.
     All energies in eV, k points in crystal coordinates.
+
+    Pulse duration and energy broadening FWHM are related, typically,
+    pump_energy_broadening = 1.8 / pump_fwhm.
+    However, here, we leave the possibility to set them independently.
 
     Parameters
     ----------
@@ -204,7 +211,7 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
         The full width at half maximum of the pump pulse (fs).
 
     pump_energy_broadening : float, optional
-        Energy broadening of the pump pulse (eV).
+        Energy broadening FWHM of the pump pulse (eV).
 
     pump_time_window : float, optional
         The time window for the pump pulse (fs).
@@ -291,6 +298,9 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
         elec_kpoint_array.view('float64,float64,float64').reshape(-1),
         hole_kpoint_array.view('float64,float64,float64').reshape(-1),
         return_indices=True)[1:]
+
+    # Convert the pump energy FWHM to sigma
+    pump_energy_broadening_sigma = sigma_from_fwhm(pump_energy_broadening)
 
     # Iteratre over electron and hole bands
     # Even though, the for loops are inefficient in Python,
