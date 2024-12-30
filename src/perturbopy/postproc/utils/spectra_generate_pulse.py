@@ -168,8 +168,8 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
                      elec_dyna_run, hole_dyna_run,
                      pump_energy,
                      pump_time_step=1.0,
-                     pump_fwhm=20.0,
-                     pump_energy_broadening=0.090,
+                     pump_duration_fwhm=20.0,
+                     pump_spectral_width_fwhm=0.090,
                      pump_time_window=50.0,
                      finite_width=True,
                      animate=True
@@ -181,7 +181,7 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
     All energies in eV, k points in crystal coordinates.
 
     Pulse duration and energy broadening FWHM are related, typically,
-    pump_energy_broadening = 1.8 / pump_fwhm.
+    pump_spectral_width_fwhm = 1.8 / pump_duration_fwhm.
     However, here, we leave the possibility to set them independently.
 
     Parameters
@@ -207,10 +207,10 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
         Time step in fs for the pump pulse generation.
         Note: the pump_time_step MUST match the one used in the dynamics run in Perturbo!
 
-    pump_fwhm : float, optional
+    pump_duration_fwhm : float, optional
         The full width at half maximum of the pump pulse (fs).
 
-    pump_energy_broadening : float, optional
+    pump_spectral_width_fwhm : float, optional
         Energy broadening FWHM of the pump pulse (eV).
 
     pump_time_window : float, optional
@@ -226,11 +226,11 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
 
     print(f"{'PUMP PULSE PARAMETERS':*^70}")
     print(f"{'Pump pulse energy (eV):':>40} {pump_energy:.3f}")
-    print(f"{'Pump pulse energy broadening (eV):':>40} {pump_energy_broadening:.4f}")
+    print(f"{'Pump pulse energy broadening (eV):':>40} {pump_spectral_width_fwhm:.4f}")
     print(f"{'Finite width:':>40} {finite_width}")
     if finite_width:
         print(f"{'Pump pulse time step (fs):':>40} {pump_time_step:.3f}")
-        print(f"{'Pump pulse FWHM (fs):':>40} {pump_fwhm:.3f}")
+        print(f"{'Pump pulse FWHM (fs):':>40} {pump_duration_fwhm:.3f}")
         print(f"{'Pump pulse time window (fs):':>40} {pump_time_window:.3f}")
     print("")
 
@@ -300,7 +300,7 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
         return_indices=True)[1:]
 
     # Convert the pump energy FWHM to sigma
-    pump_energy_broadening_sigma = sigma_from_fwhm(pump_energy_broadening)
+    pump_energy_broadening_sigma = sigma_from_fwhm(pump_spectral_width_fwhm)
 
     # Iteratre over electron and hole bands
     # Even though, the for loops are inefficient in Python,
@@ -311,7 +311,7 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
             # diff. between elec and hole for a given elec branch iband and hole branch jband
             delta = pump_factor * \
                 spectra_plots.gaussian(elec_energy_array[ekidx, iband] - hole_energy_array[hkidx, jband],
-                                       pump_energy, pump_energy_broadening, hole_nband, elec_nband)
+                                       pump_energy, pump_spectral_width_fwhm, hole_nband, elec_nband)
 
             # Only for the intersected k points, we add the delta occupation
             elec_occs_amplitude[ekidx, iband] += delta
@@ -347,7 +347,7 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
     optional_params[0] = pump_factor
 
     if finite_width:
-        optional_params[1] = pump_fwhm
+        optional_params[1] = pump_duration_fwhm
 
     for h5f in [elec_pump_pulse_file, hole_pump_pulse_file]:
         h5f.create_group('pump_pulse_snaps')
@@ -355,8 +355,8 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
         h5f.create_dataset('pump_energy', data=pump_energy)
         h5f['pump_energy'].attrs['units'] = 'eV'
 
-        h5f.create_dataset('pump_energy_broadening', data=pump_energy_broadening)
-        h5f['pump_energy_broadening'].attrs['units'] = 'eV'
+        h5f.create_dataset('pump_spectral_width_fwhm', data=pump_spectral_width_fwhm)
+        h5f['pump_spectral_width_fwhm'].attrs['units'] = 'eV'
 
         h5f['optional_params'] = optional_params
 
@@ -385,13 +385,13 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
     elec_delta_occs_array = \
         gaussian_excitation(elec_pump_pulse_file, elec_occs_amplitude,
                             time_grid,
-                            pump_time_window, pump_fwhm, pump_time_step,
+                            pump_time_window, pump_duration_fwhm, pump_time_step,
                             hole=False, finite_width=finite_width)
 
     hole_delta_occs_array = \
         gaussian_excitation(hole_pump_pulse_file, hole_occs_amplitude,
                             time_grid,
-                            pump_time_window, pump_fwhm, pump_time_step,
+                            pump_time_window, pump_duration_fwhm, pump_time_step,
                             hole=True, finite_width=finite_width)
 
     # Close
