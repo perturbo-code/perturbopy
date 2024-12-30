@@ -276,7 +276,7 @@ def plot_trans_abs_map(ax, time_grid, energy_grid, trans_abs,
 
 
 def plot_occs_on_bands(ax, kpath, bands, first_el_band_idx,
-                       pump_energy, pump_energy_broadening,
+                       pump_energy, pump_spectral_width_fwhm,
                        scale=0.2):
     """
     Plot the occupations created by a pump pulse on the bands.
@@ -301,7 +301,7 @@ def plot_occs_on_bands(ax, kpath, bands, first_el_band_idx,
     pump_energy : float
         Pump energy in eV.
 
-    pump_energy_broadening : float
+    pump_spectral_width_fwhm : float
         Pump energy broadening in eV.
 
     scale : float
@@ -336,7 +336,7 @@ def plot_occs_on_bands(ax, kpath, bands, first_el_band_idx,
             hole_band = bands[i_hole_band]
 
             occ = gaussian(elec_band - hole_band,
-                           pump_energy, pump_energy_broadening, hole_nband, elec_nband)
+                           pump_energy, pump_spectral_width_fwhm, hole_nband, elec_nband)
 
             occs_amplitude_bands[i_elec_band - 1, :] += occ
             occs_amplitude_bands[i_hole_band - 1, :] += occ
