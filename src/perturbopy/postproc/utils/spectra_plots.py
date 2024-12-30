@@ -314,7 +314,6 @@ def plot_occs_on_bands(ax, kpath, bands, first_el_band_idx,
         Axis with the bands filled with the occupations.
     """
 
-
     # Total number of bands
     nband = len(bands)
 
