@@ -252,6 +252,108 @@ class DynaRun(CalcMode):
 
         return steady_drift_vel, steady_conc
 
+    @staticmethod
+    def to_cdyna_h5(prefix, band_structure_ryd, snap_array, time_step_fs,
+                    path='.', new=True, overwrite=False, num_runs=1):
+        """
+        Write the dynamics data into the prefix_cdyna.h5 HDF5 file.
+        Follows the script format of the Perturbo dynamics-run calculation.
+        Currently implemented as a static method. The idea is that if we need to write an HDF5 cdyna
+        file, it is forcfully different from an existing one, therefore, one or more
+        attributes are different from the original cdyna file.
+
+        Parameters
+        ----------
+
+        prefix : str
+            Prefix of the HDF5 file. Same as prefix in any Perturbo calculation.
+
+        band_structure_ryd : np.ndarray
+            Band structure in Rydberg units. Shape: num_kpoints x num_bands
+
+        snap_array : np.ndarray
+            Array of carrier occupations. Shape: (num_steps, (num_kpoints x num_bands))
+
+        time_step_fs : float or np.ndarray
+            Time step in fs. If float, the same time step is used for all runs.
+            If np.ndarray, the time steps for each run are specified.
+
+        path : str
+            Path to the directory where the HDF5 file is saved. Default is the current directory.
+
+        new : bool
+            Flag to indicate if the file is new. Default is True.
+
+        overwrite : bool
+            Flag to indicate if the file is overwritten. Default is False.
+
+        num_runs : int
+            Number of dynamics_run runs. Default is 1.
+        """
+
+        trun = TimingGroup('write cdyna')
+        trun.add('total', level=3).start()
+
+        if not new:
+            raise NotImplementedError("Only new files are supported")
+        if num_runs != 1:
+            raise NotImplementedError("Only num_runs=1 is supported")
+
+        if isinstance(time_step_fs, (float, np.floating)):
+            time_step_fs = np.array([time_step_fs])
+        if time_step_fs.shape[0] != num_runs:
+            raise ValueError("The number of time steps must be equal to num_runs")
+
+        if path != '.':
+            os.makedirs(path, exist_ok=True)
+
+        new_cdyna_filename = os.path.join(path, f'{prefix}_cdyna.h5')
+
+        if os.path.isfile(new_cdyna_filename):
+            if overwrite:
+                warnings.warn(f'File {new_cdyna_filename} already exists. Overwriting it.')
+            else:
+                raise FileExistsError(f'File {new_cdyna_filename} already exists. Set overwrite=True to overwrite it.')
+
+        new_cdyna_file = open_hdf5(new_cdyna_filename, 'w')
+
+        new_cdyna_file.create_dataset('band_structure_ryd', data=band_structure_ryd)
+        new_cdyna_file['band_structure_ryd'].attrs['ryd2ev'] = 13.605698066
+
+        new_cdyna_file.create_dataset('num_runs', data=num_runs)
+
+        for irun in range(1, num_runs + 1):
+
+            # In Perturbo, in dynamics_run_1, snap_t_ start from 0, where snap_t_0 is the initial state
+            # In dynamics_run_2 and onwards, snap_t_ start from
+            if irun == 1:
+                offset = 0
+
+                if snap_array.shape[0] == 1:
+                    # duplicate the initial state
+                    snap_array = np.vstack((snap_array, snap_array))
+                num_steps = snap_array.shape[0] - 1
+
+            else:
+                offset = 1
+                num_steps = snap_array.shape[0]
+
+            dyn_str = f'dynamics_run_{irun}'
+            new_cdyna_file.create_group(dyn_str)
+
+
+            new_cdyna_file[dyn_str].create_dataset('num_steps', data=num_steps)
+            new_cdyna_file[dyn_str].create_dataset('time_step_fs', data=time_step_fs[irun - 1])
+
+            for itime in range(snap_array.shape[0]):
+                new_cdyna_file[dyn_str].create_dataset(f'snap_t_{itime + offset}', data=snap_array[itime, :, np.newaxis])
+
+        close_hdf5(new_cdyna_file)
+
+        trun.timings['total'].stop()
+        print(f'{"Total time to write cdyna":>30}: {trun.timings["total"].total_runtime} s')
+        print()
+
 
 class PumpPulse():
     """
