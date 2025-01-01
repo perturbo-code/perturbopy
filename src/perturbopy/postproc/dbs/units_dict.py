@@ -4,7 +4,8 @@ from perturbopy.postproc.utils.constants import conversion_factor, standardize_u
 
 class UnitsDict(dict):
     """
-    This is a class representation of a set of physical quantities with units organized in a dictionary.
+    Modified dictionary class to store physical quantities with units.
+    Class representation of a set of physical quantities with units organized in a dictionary.
     The physical quantities may either be arrays or floats.
 
     Attributes

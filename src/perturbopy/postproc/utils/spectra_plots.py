@@ -7,7 +7,8 @@ import time
 import numpy as np
 import matplotlib.pyplot as plt
 import warnings
-from scipy import special
+from scipy.interpolate import Akima1DInterpolator
+from scipy.optimize import brentq
 
 from perturbopy.io_utils.io import open_hdf5, close_hdf5
 
@@ -26,12 +27,77 @@ from .plot_tools import plotparams
 plt.rcParams.update(plotparams)
 
 
-def gaussian(x, mu, sig, hole_nband, elec_nband):
+def gaussian(x, mu, sigma):
     """
-    Gaussian function normalized to unity max occupation
+    Gaussian function. Not normalized.
     """
 
-    return np.exp(-0.5 * ((x - mu) / sig)**2) / (hole_nband * elec_nband)
+    return np.exp(-0.5 * ((x - mu) / sigma)**2)
+
+
+def find_fwhm(x, y, num_interp_points=2000):
+    """
+    Find the Full Width at Half Maximum (FWHM) for a single prominent peak y(x),
+    using an Akima1DInterpolator to create a smooth spline, and root-finding
+    (brentq) for a precise half-max crossing.
+
+    Parameters
+    ----------
+    x : array_like
+        1D array of x-values (assumed sorted in ascending order).
+    y : array_like
+        1D array of y-values corresponding to x.
+    num_interp_points : int, optional
+        Number of points for evaluating the Akima spline; default is 2000.
+
+    Returns
+    -------
+    x_left : float
+        x-value at the left FWHM crossing.
+
+    x_right : float
+        x-value at the right FWHM crossing.
+
+    half_max : float
+        Half-maximum value of the peak.
+    """
+
+    # Create an Akima spline over the original data
+    akima = Akima1DInterpolator(x, y)
+
+    # Evaluate on a fine grid to locate the approximate peak
+    x_fine = np.linspace(x[0], x[-1], num_interp_points)
+    y_fine = akima(x_fine)
+
+    # 1. Find approximate peak index on the fine grid
+    i_max = np.argmax(y_fine)
+    x_max = x_fine[i_max]
+    y_max = y_fine[i_max]
+    half_max = y_max / 2.0
+
+    # f(x) = akima(x) - half_max
+    func = lambda xx: akima(xx) - half_max
+
+    # --- Locate x_left by scanning left from the peak for sign change ---
+    x_left = x[0]  # fallback in case no crossing is found
+    for i in range(i_max, 0, -1):
+        if y_fine[i - 1] - half_max < 0 < y_fine[i] - half_max or \
+           y_fine[i - 1] - half_max > 0 > y_fine[i] - half_max:
+            # We found a bracket where f() changes sign
+            x_left = brentq(func, x_fine[i - 1], x_fine[i])
+            break
+
+    # --- Locate x_right by scanning right from the peak for sign change ---
+    x_right = x[-1]  # fallback in case no crossing is found
+    for i in range(i_max, len(x_fine) - 1):
+        if y_fine[i] - half_max < 0 < y_fine[i + 1] - half_max or \
+           y_fine[i] - half_max > 0 > y_fine[i + 1] - half_max:
+            # We found a bracket where f() changes sign
+            x_right = brentq(func, x_fine[i], x_fine[i + 1])
+            break
+
+    # The y-values at x_left and x_right are both half_max
+    return x_left, x_right, half_max
 
 
 def plot_occ_ampl(e_occs, elec_kpoint_array, elec_energy_array,
