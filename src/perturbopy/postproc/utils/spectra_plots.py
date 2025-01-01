@@ -101,7 +101,7 @@ def find_fwhm(x, y, num_interp_points=2000):
 
 
 def plot_occ_ampl(e_occs, elec_kpoint_array, elec_energy_array,
-                  h_occs, hole_kpoint_array, hole_energy_array, pump_energy):
+                  h_occs, hole_kpoint_array, hole_energy_array, pump_energy, plot_scale=1.0):
     """
     Plot occupation amplitude. Currently hardcoded to the section kz = 0.
 
@@ -127,6 +127,9 @@ def plot_occ_ampl(e_occs, elec_kpoint_array, elec_energy_array,
 
     pump_energy: float
         Pump energy in eV.
+
+    plot_scale : float
+        Scale factor for the scatter object sizes. Default is 1.0.
     """
 
     # find where kz == 0
@@ -137,13 +140,13 @@ def plot_occ_ampl(e_occs, elec_kpoint_array, elec_energy_array,
     idx = np.where((elec_kpoint_array[:, 1] == 0) & (elec_kpoint_array[:, 0] == 0))
     for i in range(np.size(elec_energy_array, axis=1)):
         ax.scatter(elec_kpoint_array[idx, 2], elec_energy_array[idx, i], s=0.5, c='black', alpha=0.5)
-        ax.scatter(elec_kpoint_array[idx, 2], elec_energy_array[idx, i], s=e_occs[idx, i][0] * 1000 + 1e-10, c='red', alpha=0.5)
+        ax.scatter(elec_kpoint_array[idx, 2], elec_energy_array[idx, i], s=e_occs[idx, i][0] * 1e4 * plot_scale + 1e-10, c='red', alpha=0.5)
 
     # Plot hole occupations
     idx = np.where((hole_kpoint_array[:, 1] == 0) & (hole_kpoint_array[:, 0] == 0))
     for i in range(np.size(hole_energy_array, axis=1)):
         ax.scatter(hole_kpoint_array[idx, 2], hole_energy_array[idx, i], s=0.5, c='black', alpha=0.5)
-        ax.scatter(hole_kpoint_array[idx, 2], hole_energy_array[idx, i], s=h_occs[idx, i][0] * 1000 + 1e-10, c='red',
+        ax.scatter(hole_kpoint_array[idx, 2], hole_energy_array[idx, i], s=h_occs[idx, i][0] * 1e4 * plot_scale + 1e-10, c='red',
                    alpha=0.5)
 
     fsize = 16
@@ -157,7 +160,8 @@ def plot_occ_ampl(e_occs, elec_kpoint_array, elec_energy_array,
 def animate_pump_pulse(time_step,
                        elec_delta_occs_array, elec_kpoint_array, elec_energy_array,
                        hole_delta_occs_array, hole_kpoint_array, hole_energy_array,
-                       pump_energy):
+                       pump_energy,
+                       plot_scale=1.0):
     """
     Animate the pump pulse excitation for electrons and holes.
     Defines fig and ax, initializes scatter objects for electron and hole occupations, and calls update_scatter.
@@ -188,6 +192,9 @@ def animate_pump_pulse(time_step,
 
     pump_energy: float
         Pump energy in eV, used only in title.
+
+    plot_scale : float
+        Scale factor for the scatter object sizes. Default is 1.0.
     """
 
     fig, ax = plt.subplots(1, 1, figsize=(9, 6))
@@ -217,7 +224,7 @@ def animate_pump_pulse(time_step,
     ani = FuncAnimation(fig, update_scatter, frames=elec_delta_occs_array.shape[1],
                         fargs=(ax, time_step, idx_elec, idx_hole,
                                elec_scat_list, hole_scat_list,
-                               elec_delta_occs_array, hole_delta_occs_array),
+                               elec_delta_occs_array, hole_delta_occs_array, plot_scale),
                         interval=100, repeat=False)
 
     # Save the animation to gif
@@ -228,7 +235,7 @@ def animate_pump_pulse(time_step,
 
 def update_scatter(anim_time, ax, time_step, idx_elec, idx_hole,
                    elec_scat_list, hole_scat_list,
-                   elec_delta_occs_array, hole_delta_occs_array):
+                   elec_delta_occs_array, hole_delta_occs_array, plot_scale=1.0):
     """
     Animate the pump pulse excitation for electrons and holes.
 
@@ -261,16 +268,19 @@ def update_scatter(anim_time, ax, time_step, idx_elec, idx_hole,
 
     hole_delta_occs_array : numpy.ndarray
         Array of hole occupation changes, similar to elec_delta_occs_array.
+
+    plot_scale : float
+        Scale factor for the scatter object sizes. Default is 1.0.
     """
 
     elec_num_bands = elec_delta_occs_array.shape[0]
     hole_num_bands = hole_delta_occs_array.shape[0]
 
     for i in range(elec_num_bands):
-        elec_scat_list[i].set_sizes(elec_delta_occs_array[i, anim_time, idx_elec].flatten() * 2e4 + 1e-10)
+        elec_scat_list[i].set_sizes(elec_delta_occs_array[i, anim_time, idx_elec].flatten() * 2e4 * plot_scale + 1e-10)
 
     for i in range(hole_num_bands):
-        hole_scat_list[i].set_sizes(hole_delta_occs_array[i, anim_time, idx_hole].flatten() * 2e4 + 1e-10)
+        hole_scat_list[i].set_sizes(hole_delta_occs_array[i, anim_time, idx_hole].flatten() * 2e4 * plot_scale + 1e-10)
 
     suffix = ax.get_title().split(';')[0]
     ax.set_title(f'{suffix}; Time: {anim_time * time_step:.2f} fs')
