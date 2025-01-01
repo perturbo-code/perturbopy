@@ -486,6 +486,7 @@ class PumpPulse():
         ax.set_xlabel('Time (fs)', fontsize=24)
         ax.set_ylabel('Time Gaussian', fontsize=24)
         ax.legend()
+        ax.grid()
 
         return ax
 
@@ -510,5 +511,6 @@ class PumpPulse():
         ax.set_xlabel('Energy (eV)', fontsize=24)
         ax.set_ylabel('Energy Gaussian', fontsize=24)
         ax.legend(loc='upper right')
+        ax.grid()
 
         return ax

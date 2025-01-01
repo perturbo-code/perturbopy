@@ -174,6 +174,7 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
                      pump_factor=0.3,
                      finite_width=True,
                      animate=True,
+                     plot_scale=1.0,
                      cnum_check=True):
     """
     Setup the Gaussian pump pulse excitation for electrons and holes.
@@ -229,6 +230,10 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
 
     animate : bool, optional
         If True, animate the pump pulse excitation.
+
+    plot_scale : float
+        Scale factor for the scatter object sizes for carrier occupations.
+        Default is 1.0.
 
     cnum_check : bool, optional
         If True, create a cnum_check folder with a prefix_cdyna.h5 file with the total
@@ -425,14 +430,14 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
     print('\nPlotting...')
     spectra_plots.plot_occ_ampl(elec_occs_amplitude, elec_kpoint_array, elec_energy_array,
                                 hole_occs_amplitude, hole_kpoint_array,
-                                hole_energy_array, pump_energy)
+                                hole_energy_array, pump_energy, plot_scale=plot_scale)
 
     if animate and finite_width:
         print('\nAnimating...')
         spectra_plots.animate_pump_pulse(pump_time_step,
                                          elec_delta_occs_array, elec_kpoint_array, elec_energy_array,
                                          hole_delta_occs_array, hole_kpoint_array, hole_energy_array,
-                                         pump_energy)
+                                         pump_energy, plot_scale=plot_scale)
 
     # Setup the pump pulse object
     pump_dict = {
