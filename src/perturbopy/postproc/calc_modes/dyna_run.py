@@ -1,11 +1,18 @@
-import numpy as np
 import os
+import numpy as np
+import warnings
 from perturbopy.postproc.calc_modes.calc_mode import CalcMode
 from perturbopy.postproc.dbs.recip_pt_db import RecipPtDB
 from perturbopy.postproc.calc_modes.dyna_indiv_run import DynaIndivRun
 from perturbopy.io_utils.io import open_yaml, open_hdf5, close_hdf5
 from perturbopy.postproc.utils.timing import Timing, TimingGroup
 from perturbopy.postproc.dbs.units_dict import UnitsDict
+
+# for plotting
+import matplotlib.pyplot as plt
+from perturbopy.postproc.utils.spectra_plots import find_fwhm
+from perturbopy.postproc.utils.plot_tools import plotparams
+plt.rcParams.update(plotparams)
 
 
 class DynaRun(CalcMode):
@@ -256,14 +263,23 @@ class PumpPulse():
     pump_energy : float
         Energy of the pump pulse excitation in eV.
 
-    energy_broadening : float
-        Energy broadening of the pump pulse excitation in eV.
+    spectral_width_fwhm : float
+        Energy broadening FWHM of the pump pulse excitation in eV.
+
+    pump_duration_fwhm : float
+        Duration FWHM of the pump pulse excitation in fs.
 
     num_steps : int
         Number of steps in the pump pulse excitation.
 
-    time_step : float
+    pump_factor : float
+        Factor for the pump pulse excitation.
+
+    pump_time_step : float
         Time step of the pump pulse excitation in fs.
+
+    num_bands : int
+        Number of bands in the pump pulse excitation. Tailored for the Perturbo dynamics-run calculation.
 
     num_kpoints : int
         Number of k-points in the pump pulse excitation. Tailored for the Perturbo dynamics-run calculation.
@@ -278,6 +294,12 @@ class PumpPulse():
     hole : bool
         Flag to indicate if the pump pulse excitation is for the hole.
         Must be the same as in the ultrafast simulation.
+
+    time_profile : np.ndarray
+        Array of time profile for the pump pulse excitation. First column is time in fs, second column is the time profile.
+
+    energy_profile : np.ndarray
+        Array of energy profile for the pump pulse excitation. First column is energy in eV, second column is the energy profile
     """
 
     def __init__(self, pump_dict):
@@ -298,14 +320,20 @@ class PumpPulse():
         self.pump_energy = pump_dict['pump_energy']
         self.pump_energy_units = pump_dict['pump_energy units']
 
-        self.energy_broadening = pump_dict['energy_broadening']
-        self.energy_broadening_units = pump_dict['energy_broadening units']
+        self.spectral_width_fwhm = pump_dict['pump_spectral_width_fwhm']
+        self.spectral_width_fwhm_units = pump_dict['pump_spectral_width_fwhm units']
+
+        self.pump_duration_fwhm = pump_dict['pump_duration_fwhm']
+        self.pump_duration_fwhm_units = pump_dict['pump_duration_fwhm units']
 
         self.num_steps = pump_dict['num_steps']
 
-        self.time_step = pump_dict['time_step']
-        self.time_step_units = pump_dict['time_step units']
+        self.pump_factor = pump_dict['pump_factor']
 
+        self.pump_time_step = pump_dict['pump_time_step']
+        self.pump_time_step_units = pump_dict['pump_time_step units']
+
+        self.num_bands = pump_dict['num_bands']
         self.num_kpoints = pump_dict['num_kpoints']
 
         self.carrier_number_array = \
@@ -318,6 +346,10 @@ class PumpPulse():
 
         self.hole = pump_dict['hole']
 
+        # arrays of time and energy profile
+        self.time_profile = np.array(pump_dict['time_profile'])
+        self.energy_profile = np.array(pump_dict['energy_profile'])
+
     def __str__(self):
         """
         Method to print the pump pulse excitation parameters.
@@ -325,9 +357,59 @@ class PumpPulse():
 
         text = 'Pump pulse excitation parameters:\n'
         text += f"{'Pump energy':>30}: {self.pump_energy} {self.pump_energy_units}\n"
-        text += f"{'Energy broadening':>30}: {self.energy_broadening} {self.energy_broadening_units}\n"
+        text += f"{'Pump duration FWHM':>30}: {self.pump_duration_fwhm} {self.pump_duration_fwhm_units}\n"
+        text += f"{'Energy broadening FWHM':>30}: {self.spectral_width_fwhm} {self.spectral_width_fwhm_units}\n"
+        text += f"{'Pump factor':>30}: {self.pump_factor}\n"
         text += f"{'Number of steps':>30}: {self.num_steps}\n"
-        text += f"{'Time step':>30}: {self.time_step} {self.time_step_units}\n"
+        text += f"{'Time step':>30}: {self.pump_time_step} {self.pump_time_step_units}\n"
         text += f"{'Hole':>30}: {self.hole}\n"
 
         return text
+
+    def plot_time_profile(self, ax=None):
+        """
+        Plot the pump pulse time profile.
+        """
+
+        if self.time_profile is None:
+            warnings.warn('No time profile found for the pump pulse')
+            return None
+
+        if ax is None:
+            fig, ax = plt.subplots(1, 1, figsize=(10, 8))
+
+        # Find the FWHM and half-maximum of the time profile
+        time_left_FWHM, time_right_FWHM, time_half_max = find_fwhm(self.time_profile[:, 0], self.time_profile[:, 1])
+
+        ax.plot(self.time_profile[:, 0], self.time_profile[:, 1])
+        ax.plot([time_left_FWHM, time_right_FWHM], [time_half_max, time_half_max], marker='o', color='tab:red', lw=3, label='FWHM')
+        ax.set_xlabel('Time (fs)', fontsize=24)
+        ax.set_ylabel('Time Gaussian', fontsize=24)
+        ax.legend()
+
+        return ax
+
+    def plot_energy_profile(self, ax=None):
+        """
+        Plot the pump pulse energy profile.
+        """
+
+        if self.energy_profile is None:
+            warnings.warn('No energy profile found for the pump pulse')
+            return None
+
+        if ax is None:
+            fig, ax = plt.subplots(1, 1, figsize=(10, 8))
+
+        # Find the FWHM and half-maximum of the energy profile
+        energy_left_FWHM, energy_right_FWHM, energy_half_max = find_fwhm(self.energy_profile[:, 0], self.energy_profile[:, 1])
+
+        ax.plot(self.energy_profile[:, 0], self.energy_profile[:, 1])
+        ax.plot([energy_left_FWHM, energy_right_FWHM], [energy_half_max, energy_half_max], marker='o', color='tab:red', lw=3, label='FWHM')
+        ax.axvline(self.pump_energy, color='gray', lw=3, label='Pump energy')
+        ax.set_xlabel('Energy (eV)', fontsize=24)
+        ax.set_ylabel('Energy Gaussian', fontsize=24)
+        ax.legend(loc='upper right')
+
+        return ax
+

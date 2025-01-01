@@ -13,6 +13,8 @@ from perturbopy.io_utils.io import open_hdf5, close_hdf5
 
 from matplotlib.animation import FuncAnimation
 
+from perturbopy.postproc import PumpPulse
+
 from .memory import get_size
 from .timing import TimingGroup
 from .constants import energy_conversion_factor
@@ -69,7 +71,7 @@ def delta_occs_pulse_coef(t, dt, tw, sigma):
     return 0.5 * numer / denom
 
 
-def gaussian_excitation(pump_file, occs_amplitude, time_grid, time_window, pulse_fwhm, time_step,
+def gaussian_excitation(pump_file, occs_amplitude, time_grid, time_window, pump_duration, time_step,
                         hole=False, finite_width=True):
     """
     The Gaussian pulse excitation for the Perturbo dynamics.
@@ -91,7 +93,7 @@ def gaussian_excitation(pump_file, occs_amplitude, time_grid, time_window, pulse
     time_window : float
         The time window for the pump pulse (fs). During this time window, the pump pulse will be active.
 
-    pulse_fwhm : float
+    pump_duration : float
         The full width at half maximum of the pump pulse (fs).
 
     time_step : float
@@ -122,7 +124,7 @@ def gaussian_excitation(pump_file, occs_amplitude, time_grid, time_window, pulse
     num_steps = time_grid.shape[0]
 
     # Compute the Gaussian sigma from the full width at half maximum (FWHM)
-    sigma = sigma_from_fwhm(pulse_fwhm)
+    sigma = sigma_from_fwhm(pump_duration)
 
     # Number of k-points and bands
     num_k, num_bands = occs_amplitude.shape
@@ -138,10 +140,10 @@ def gaussian_excitation(pump_file, occs_amplitude, time_grid, time_window, pulse
         delta_occs_array = np.zeros((num_bands, num_steps, num_k))
 
         # A pre-factor for the pump pulse, num_steps steps
-        pulse_coef = delta_occs_pulse_coef(time_grid[:], time_step, time_window, sigma)
+        pump_time_profile = delta_occs_pulse_coef(time_grid[:], time_step, time_window, sigma)
 
         # t - time, j - band, k - k-point
-        delta_occs_array[:, :, :] = np.einsum('t,jk->ktj', pulse_coef[:], occs_amplitude[:, :])
+        delta_occs_array[:, :, :] = np.einsum('t,jk->ktj', pump_time_profile[:], occs_amplitude[:, :])
 
         # Print the size of the array since it can be large: num_bands * num_steps * num_k
         get_size(delta_occs_array, f'delta(fnk(t)) {carrier}', dump=True)
@@ -171,9 +173,9 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
                      pump_duration_fwhm=20.0,
                      pump_spectral_width_fwhm=0.090,
                      pump_time_window=50.0,
+                     pump_factor=0.3,
                      finite_width=True,
-                     animate=True
-                     ):
+                     animate=True):
     """
     Setup the Gaussian pump pulse excitation for electrons and holes.
     Write into the pump_pulse.h5 HDF5 file.
@@ -218,6 +220,9 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
         During this time window, the pump pulse will be active.
         The number of the snapshots in the pump_pulse.h5 file will be
         equal to pump_time_window / pump_time_step.
+
+    pump_factor : float, optional
+        The amplitude of the pump pulse. The maximum occupation will be pump_factor.
 
     finite_width : bool, optional
         If True, the pulse is finite in time. If False, the pulse is a step function
@@ -282,9 +287,6 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
     elec_occs_amplitude = np.zeros_like(elec_energy_array)
     hole_occs_amplitude = np.zeros_like(hole_energy_array)
 
-    # A pre-factor for the pump pulse
-    pump_factor = 1.0
-
     print('Computing the optically excited occupations...')
     t_occs = TimingGroup('Setup occupations')
     t_occs.add('total', level=3).start()
@@ -311,7 +313,7 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
             # diff. between elec and hole for a given elec branch iband and hole branch jband
             delta = pump_factor * \
                 spectra_plots.gaussian(elec_energy_array[ekidx, iband] - hole_energy_array[hkidx, jband],
-                                       pump_energy, pump_spectral_width_fwhm, hole_nband, elec_nband)
+                                       pump_energy, pump_energy_broadening_sigma)
 
             # Only for the intersected k points, we add the delta occupation
             elec_occs_amplitude[ekidx, iband] += delta
@@ -329,6 +331,11 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
     print(f"{'Difference:':>40} {sum(elec_occs_amplitude.ravel()) - sum(hole_occs_amplitude.ravel()):.4e}")
     print("")
 
+    # Create the energy profile, only for reference
+    en_grid = np.linspace(pump_energy - 3 * pump_energy_broadening_sigma,
+                          pump_energy + 3 * pump_energy_broadening_sigma, 200)
+    en_profile = spectra_plots.gaussian(en_grid, pump_energy, pump_energy_broadening_sigma)
+
     # Write to HDF5 file, replacing snap_t_1
     # Electron
     if os.path.exists(elec_pump_pulse_path):
@@ -343,11 +350,7 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
     hole_pump_pulse_file = open_hdf5(hole_pump_pulse_path, mode='w')
 
     # Optional pump pulse parameters specific to a given shape of pulse
-    optional_params = np.zeros(10, dtype=float)
-    optional_params[0] = pump_factor
-
-    if finite_width:
-        optional_params[1] = pump_duration_fwhm
+    optional_params = np.ones(10, dtype=float) * (-9999)
 
     for h5f in [elec_pump_pulse_file, hole_pump_pulse_file]:
         h5f.create_group('pump_pulse_snaps')
@@ -358,20 +361,34 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
         h5f.create_dataset('pump_spectral_width_fwhm', data=pump_spectral_width_fwhm)
         h5f['pump_spectral_width_fwhm'].attrs['units'] = 'eV'
 
-        h5f['optional_params'] = optional_params
+        h5f.create_dataset('pump_factor', data=pump_factor)
+        h5f.create_dataset('optional_params', data=optional_params)
 
         if finite_width:
             h5f.create_dataset('time_window', data=pump_time_window)
             h5f.create_dataset('num_steps', data=num_steps)
-            h5f.create_dataset('time_step', data=pump_time_step)
+            h5f.create_dataset('pump_time_step', data=pump_time_step)
+            h5f.create_dataset('pump_duration_fwhm', data=pump_duration_fwhm)
+
+            pump_time_profile = delta_occs_pulse_coef(time_grid[:], pump_time_step,
+                                                      pump_time_window, sigma_from_fwhm(pump_duration_fwhm))
+            h5f.create_dataset('time_profile', data=np.c_[time_grid, pump_time_profile])
 
         else:
+            pump_time_profile = None
             h5f.create_dataset('time_window', data=elec_dyna_time_step)
             h5f.create_dataset('num_steps', data=1)
-            h5f.create_dataset('time_step', data=elec_dyna_time_step)
+            h5f.create_dataset('pump_time_step', data=elec_dyna_time_step)
+            h5f.create_dataset('pump_duration_fwhm', data=elec_dyna_time_step)
+            h5f.create_dataset('time_profile', data=np.c_[0, 1])
 
+        h5f['pump_duration_fwhm'].attrs['units'] = 'fs'
         h5f['time_window'].attrs['units'] = 'fs'
-        h5f['time_step'].attrs['units'] = 'fs'
+        h5f['pump_time_step'].attrs['units'] = 'fs'
+
+        h5f.create_dataset('energy_profile', data=np.c_[en_grid, en_profile])
+        h5f['energy_profile'].attrs['units'] = 'eV'
+        h5f['time_profile'].attrs['units'] = 'fs'
 
     elec_pump_pulse_file.create_dataset('num_bands', data=elec_nband)
     hole_pump_pulse_file.create_dataset('num_bands', data=hole_nband)
@@ -409,3 +426,30 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
                                          elec_delta_occs_array, elec_kpoint_array, elec_energy_array,
                                          hole_delta_occs_array, hole_kpoint_array, hole_energy_array,
                                          pump_energy)
+
+    # Setup the pump pulse object
+    pump_dict = {
+        'pump_energy': pump_energy,
+        'pump_energy units': 'eV',
+        'pump_spectral_width_fwhm': pump_spectral_width_fwhm,
+        'pump_spectral_width_fwhm units': 'eV',
+        'pump_duration_fwhm': pump_duration_fwhm,
+        'pump_duration_fwhm units': 'fs',
+        'num_steps': num_steps,
+        'pump_factor': pump_factor,
+        'pump_time_step': pump_time_step,
+        'pump_time_step units': 'fs',
+        'num_bands': elec_nband,
+        'num_kpoints': elec_kpoint_array.shape[0],
+        'optional_params': optional_params,
+        'hole': None,
+        'time_profile': np.c_[time_grid, pump_time_profile],
+        'energy_profile': np.c_[en_grid, en_profile],
+        # These quantities will be computed at the perturbo.x stage
+        'pump pulse carrier number': None,
+        'carrier_number units': None,
+    }
+
+    pump_pulse = PumpPulse(pump_dict)
+
+    return pump_pulse
