@@ -340,8 +340,6 @@ class DynaRun(CalcMode):
 
             dyn_str = f'dynamics_run_{irun}'
             new_cdyna_file.create_group(dyn_str)
-
-
             new_cdyna_file[dyn_str].create_dataset('num_steps', data=num_steps)
             new_cdyna_file[dyn_str].create_dataset('time_step_fs', data=time_step_fs[irun - 1])
 
@@ -514,4 +512,3 @@ class PumpPulse():
         ax.legend(loc='upper right')
 
         return ax
-
