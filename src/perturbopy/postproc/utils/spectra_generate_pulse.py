@@ -11,8 +11,6 @@ from scipy import special
 
 from perturbopy.io_utils.io import open_hdf5, close_hdf5
 
-from matplotlib.animation import FuncAnimation
-
 from perturbopy.postproc import PumpPulse
 
 from .memory import get_size
@@ -175,7 +173,8 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
                      pump_time_window=50.0,
                      pump_factor=0.3,
                      finite_width=True,
-                     animate=True):
+                     animate=True,
+                     cnum_check=True):
     """
     Setup the Gaussian pump pulse excitation for electrons and holes.
     Write into the pump_pulse.h5 HDF5 file.
@@ -227,6 +226,14 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
     finite_width : bool, optional
         If True, the pulse is finite in time. If False, the pulse is a step function
         and occs_amplitude will be set as initial occupation.
+
+    animate : bool, optional
+        If True, animate the pump pulse excitation.
+
+    cnum_check : bool, optional
+        If True, create a cnum_check folder with a prefix_cdyna.h5 file with the total
+        occupation summed over time steps. Run dynamics-pp with Perturbo to get the accurate
+        total carrier number in the cnum_check folder (do not forget to link the epr file there).
     """
 
     print(f"{'PUMP PULSE PARAMETERS':*^70}")
@@ -451,5 +458,32 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
     }
 
     pump_pulse = PumpPulse(pump_dict)
+
+    # Create the cnum_check folder
+    if cnum_check:
+
+        if finite_width:
+            total_occ_elec = np.sum(elec_delta_occs_array, axis=1)
+            total_occ_hole = np.sum(hole_delta_occs_array, axis=1)
+
+        else:
+            total_occ_elec = elec_occs_amplitude
+            total_occ_hole = hole_occs_amplitude
+
+        elec_cnum_check_path = os.path.join(os.path.dirname(elec_pump_pulse_path), 'cnum_check')
+        hole_cnum_check_path = os.path.join(os.path.dirname(hole_pump_pulse_path), 'cnum_check')
+        elec_dyna_run.to_cdyna_h5(elec_dyna_run.prefix,
+                                  elec_dyna_run._energies,
+                                  total_occ_elec,
+                                  elec_dyna_run[1].time_step,
+                                  path=elec_cnum_check_path,
+                                  overwrite=True)
+
+        hole_dyna_run.to_cdyna_h5(hole_dyna_run.prefix,
+                                  hole_dyna_run._energies,
+                                  total_occ_hole,
+                                  hole_dyna_run[1].time_step,
+                                  path=hole_cnum_check_path,
+                                  overwrite=True)
 
     return pump_pulse
