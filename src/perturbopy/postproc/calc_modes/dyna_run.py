@@ -456,12 +456,12 @@ class PumpPulse():
         """
 
         text = 'Pump pulse excitation parameters:\n'
-        text += f"{'Pump energy':>30}: {self.pump_energy:.4f} {self.pump_energy_units}\n"
-        text += f"{'Pump duration FWHM':>30}: {self.pump_duration_fwhm:.2f} {self.pump_duration_fwhm_units}\n"
-        text += f"{'Energy broadening FWHM':>30}: {self.spectral_width_fwhm:.4f} {self.spectral_width_fwhm_units}\n"
+        text += f"{f'Pump energy ({self.pump_energy_units})':>30}: {self.pump_energy:.4f}\n"
+        text += f"{f'Energy broadening FWHM ({self.spectral_width_fwhm_units})':>30}: {self.spectral_width_fwhm:.4f}\n"
+        text += f"{f'Pulse duration FWHM ({self.pump_duration_fwhm_units})':>30}: {self.pump_duration_fwhm:.4f}\n"
         text += f"{'Pump factor':>30}: {self.pump_factor}\n"
         text += f"{'Number of steps':>30}: {self.num_steps}\n"
-        text += f"{'Time step':>30}: {self.pump_time_step:.3f} {self.pump_time_step_units}\n"
+        text += f"{f'Time step ({self.pump_time_step_units})':>30}: {self.pump_time_step}\n"
         text += f"{'Hole':>30}: {self.hole}\n"
 
         return text
