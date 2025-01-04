@@ -123,7 +123,7 @@ def compute_trans_abs(elec_dyna_run,
     # Energy grid for the transient absorption spectrum, affect the calculation time
     trans_abs_energy_grid = np.arange(bandgap, energy_max - energy_min, de_grid)
     num_energy_points = trans_abs_energy_grid.shape[0]
-    print(f"{'Number of energy points':<30}: {num_energy_points}\n")
+    print(f"{'Number of energy grid points':>30}: {num_energy_points}\n")
 
     # Find the interection between the electron and hole k-points
     print('Finding intersect k-points...')
@@ -208,7 +208,7 @@ def compute_trans_abs(elec_dyna_run,
     print('Saving the data...')
     with trun.add('save data') as t:
         pump_energy = elec_dyna_run.pump_pulse.pump_energy
-        ending = f'_Epump_{pump_energy:.3f}'
+        ending = f'_Epump_{pump_energy:.4f}'
         # Total transient absorption
         np.save(f'trans_abs_dA{ending}', dA_elec + dA_hole)
         # Electron contribution

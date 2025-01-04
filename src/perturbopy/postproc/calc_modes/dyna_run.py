@@ -227,14 +227,22 @@ class DynaRun(CalcMode):
 
         title = f' dynamics-run: {self.prefix} '
         text = f"{title:*^60}\n"
-        text += f"This simulation has {self.num_runs} runs\n"
+
+        text += f"{'Read snaps at init':>30}: {self.read_snaps}\n"
+        text += f"{'Number of k-points':>30}: {self.kpt.points_cart.shape[1]}\n"
+        nband = self._pert_dict['input parameters']['after conversion']['band_max'] - \
+                self._pert_dict['input parameters']['after conversion']['band_min'] + 1
+        text += f"{'Number of bands':>30}: {nband}\n"
+        text += f"{'Hole':>30}: {self._pert_dict['input parameters']['after conversion']['hole']}\n"
+        text += "\n"
+
+        text += f"{'Number of runs':>30}: {self.num_runs}\n"
 
         for irun, dynamics_run in self._data.items():
             text += f"{'Dynamics run':>30}: {irun}\n"
             text += f"{'Number of steps':>30}: {dynamics_run.num_steps}\n"
             text += f"{'Time step (fs)':>30}: {dynamics_run.time_step}\n"
-            text += f"{'Electric field (V/cm)':>30}: {dynamics_run.efield}\n\n"
-            text += f"{'Read snaps at init:':>30}: {self.read_snaps}\n"
+            text += f"{'Electric field (V/cm)':>30}: {dynamics_run.efield}\n"
 
         return text
 
