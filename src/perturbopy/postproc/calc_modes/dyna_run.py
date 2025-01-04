@@ -456,12 +456,12 @@ class PumpPulse():
         """
 
         text = 'Pump pulse excitation parameters:\n'
-        text += f"{'Pump energy':>30}: {self.pump_energy} {self.pump_energy_units}\n"
-        text += f"{'Pump duration FWHM':>30}: {self.pump_duration_fwhm} {self.pump_duration_fwhm_units}\n"
-        text += f"{'Energy broadening FWHM':>30}: {self.spectral_width_fwhm} {self.spectral_width_fwhm_units}\n"
+        text += f"{'Pump energy':>30}: {self.pump_energy:.4f} {self.pump_energy_units}\n"
+        text += f"{'Pump duration FWHM':>30}: {self.pump_duration_fwhm:.2f} {self.pump_duration_fwhm_units}\n"
+        text += f"{'Energy broadening FWHM':>30}: {self.spectral_width_fwhm:.4f} {self.spectral_width_fwhm_units}\n"
         text += f"{'Pump factor':>30}: {self.pump_factor}\n"
         text += f"{'Number of steps':>30}: {self.num_steps}\n"
-        text += f"{'Time step':>30}: {self.pump_time_step} {self.pump_time_step_units}\n"
+        text += f"{'Time step':>30}: {self.pump_time_step:.3f} {self.pump_time_step_units}\n"
         text += f"{'Hole':>30}: {self.hole}\n"
 
         return text
@@ -485,6 +485,7 @@ class PumpPulse():
         ax.plot([time_left_FWHM, time_right_FWHM], [time_half_max, time_half_max], marker='o', color='tab:red', lw=3, label='FWHM')
         ax.set_xlabel('Time (fs)', fontsize=24)
         ax.set_ylabel('Time Gaussian', fontsize=24)
+        ax.set_title(f'Time profile (FWHM = {time_right_FWHM - time_left_FWHM:.4f} fs)')
         ax.legend()
         ax.grid()
 
@@ -510,6 +511,7 @@ class PumpPulse():
         ax.axvline(self.pump_energy, color='gray', lw=3, label='Pump energy')
         ax.set_xlabel('Energy (eV)', fontsize=24)
         ax.set_ylabel('Energy Gaussian', fontsize=24)
+        ax.set_title(f'Energy profile (FWHM = {energy_right_FWHM - energy_left_FWHM:.4f} eV)')
         ax.legend(loc='upper right')
         ax.grid()
 

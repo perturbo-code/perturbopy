@@ -241,16 +241,6 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
         total carrier number in the cnum_check folder (do not forget to link the epr file there).
     """
 
-    print(f"{'PUMP PULSE PARAMETERS':*^70}")
-    print(f"{'Pump pulse energy (eV):':>40} {pump_energy:.3f}")
-    print(f"{'Pump pulse energy broadening (eV):':>40} {pump_spectral_width_fwhm:.4f}")
-    print(f"{'Finite width:':>40} {finite_width}")
-    if finite_width:
-        print(f"{'Pump pulse time step (fs):':>40} {pump_time_step:.3f}")
-        print(f"{'Pump pulse FWHM (fs):':>40} {pump_duration_fwhm:.3f}")
-        print(f"{'Pump pulse time window (fs):':>40} {pump_time_window:.3f}")
-    print("")
-
     # Check electron and hole time steps
     elec_dyna_time_step = elec_dyna_run[1].time_step
     hole_dyna_time_step = hole_dyna_run[1].time_step
