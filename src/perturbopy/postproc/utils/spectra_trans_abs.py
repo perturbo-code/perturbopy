@@ -4,6 +4,7 @@ based on electron-phonon and hole-phonon dynamics simulations.
 """
 
 import numpy as np
+import warnings
 
 from .memory import get_size
 from .timing import TimingGroup
@@ -30,6 +31,7 @@ def gaussian_delta(x, mu, sig):
 def compute_trans_abs(elec_dyna_run,
                       hole_dyna_run,
                       de_grid=0.02,
+                      energy_grid_max=None,
                       eta=0.02,
                       save_npy=True,
                       ):
@@ -48,6 +50,10 @@ def compute_trans_abs(elec_dyna_run,
 
     de_grid : float
         Energy grid spacing for the transient absorption spectrum. Affects the calculation time.
+
+    energy_grid_max : float
+        Maximum probe energy for the spectrum. If None, the maximum band energy difference (condunction-valence) is used.
+        Minimum probe energy is always the bandgap.
 
     eta : float
         Broadening parameter for the Gaussian delta functions applied to the energy grid.
@@ -117,11 +123,18 @@ def compute_trans_abs(elec_dyna_run,
     CBM = np.min(elec_energy_array.ravel())
     bandgap = CBM - VBM
 
-    energy_max = np.max(elec_energy_array.ravel())
-    energy_min = np.min(hole_energy_array.ravel())
+    energy_band_max = np.max(elec_energy_array.ravel())
+    energy_band_min = np.min(hole_energy_array.ravel())
+
+    if energy_grid_max is None:
+        energy_grid_max = energy_band_max - energy_band_min
+    elif energy_grid_max < bandgap:
+        warnings.warn(f'The maximum probe energy specified ({energy_grid_max}) is smaller than the bandgap ({bandgap}).'
+                      f' The maximum probe energy is set to max(cond)-min(val) {energy_band_max - energy_band_min}.')
+        energy_grid_max = energy_band_max - energy_band_min
 
     # Energy grid for the transient absorption spectrum, affect the calculation time
-    trans_abs_energy_grid = np.arange(bandgap, energy_max - energy_min, de_grid)
+    trans_abs_energy_grid = np.arange(bandgap, energy_grid_max, de_grid)
     num_energy_points = trans_abs_energy_grid.shape[0]
     print(f"{'Number of energy grid points':>30}: {num_energy_points}\n")
 
