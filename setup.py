@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
-    
+
 setup(
     name='perturbopy',
     version='0.7.0',
@@ -22,11 +22,9 @@ setup(
         'scipy'
     ],
     extras_require={
-        'interactive': ['jupyter', 'pytest-plots'],
+        'interactive': ['jupyter', 'pytest-plt'],
     },
-    packages=find_packages(
-        where='./src'
-    ),
+    packages=find_packages(where='./src'),
     package_dir={"": "src"},
     entry_points={
         'console_scripts': [

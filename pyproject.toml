@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=64.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "perturbopy"
+version = "0.7.0"
+description = "Suite of Python scripts for Perturbo testing and postprocessing"
+readme = "README.md"
+requires-python = ">=3.7.12"
+dependencies = [
+    "numpy>=1.21.4",
+    "pytest",
+    "pytest-order",
+    "h5py",
+    "PyYAML",
+    "pytest-profiling",
+    "matplotlib>=2.2.0",
+    "scipy",
+]
+
+[project.optional-dependencies]
+interactive = [
+    "jupyter",
+    "pytest-plt",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = ["perturbopy"]
+
+[project.scripts]
+input_generation = "perturbopy.generate_input:input_generation"
