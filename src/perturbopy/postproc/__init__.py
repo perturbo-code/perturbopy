@@ -21,15 +21,15 @@ from .dbs.recip_pt_db import RecipPtDB
 from .utils import constants, plot_tools, lattice, spectra_generate_pulse, \
     timing, spectra_trans_abs, spectra_plots
 
-# import warnings
-# import os
+import warnings
+import os
 
 
-# # Define a custom format for warnings
-# def custom_formatwarning(message, category, filename, lineno, line=None):
-#     basename = os.path.basename(filename)
-#     return f"{category.__name__} in {basename} at line {lineno}: {message}\n"
+# Define a custom format for warnings
+def custom_formatwarning(message, category, filename, lineno, line=None):
+    basename = os.path.basename(filename)
+    return f"{category.__name__} in {basename} at line {lineno}: {message}\n"
 
 
-# # Apply the custom format
-# warnings.formatwarning = custom_formatwarning
+# Apply the custom format
+warnings.formatwarning = custom_formatwarning
