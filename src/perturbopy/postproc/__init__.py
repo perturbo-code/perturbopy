@@ -12,7 +12,7 @@ from .calc_modes.ephmat_spin import EphmatSpin
 from .calc_modes.trans import Trans
 from .calc_modes.imsigma import Imsigma
 from .calc_modes.imsigma_spin import ImsigmaSpin
-from .calc_modes.dyna_run import DynaRun
+from .calc_modes.dyna_run import DynaRun, PumpPulse
 from .calc_modes.dyna_pp import DynaPP
 
 from .dbs.units_dict import UnitsDict
