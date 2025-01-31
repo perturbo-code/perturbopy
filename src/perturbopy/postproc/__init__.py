@@ -1,6 +1,6 @@
-# """
-# Suite of Python scripts for the Perturbo code testing and postprocessing.
-# """
+"""
+Suite of Python scripts for the Perturbo code testing and postprocessing.
+"""
 
 from .calc_modes.calc_mode import CalcMode
 from .calc_modes.bands import Bands
