@@ -5,6 +5,9 @@ sphinx-autodoc-typehints
 
 numpy
 scipy
+matplotlib
 pytest
+pytest-order
+pytest-profiling
 h5py
 PyYAML
