@@ -3,35 +3,37 @@ Perturbopy API
 
 Postprocessing
 --------------
-.. autosummary:: perturbopy.postproc.calc_modes
+
+.. autosummary:: 
       :toctree: _autosummary
 
-.. autosummary:: perturbopy.postproc.dbs
-      :toctree: _autosummary
-
-.. autosummary:: perturbopy.postproc.utils
-      :toctree: _autosummary
-
+      perturbopy.postproc.calc_modes
+      perturbopy.postproc.dbs
+      perturbopy.postproc.utils
+ 
 Generate input files
 --------------------
 
-.. autosummary:: perturbopy.generate_input
+.. autosummary::
       :toctree: _autosummary
+
+      perturbopy.generate_input
 
 Tests
 -----
 
-.. autosummary:: perturbopy.test_utils
+.. autosummary:: 
       :toctree: _autosummary
+      :recursive:
 
-.. autosummary:: perturbopy.testing_code
-      :toctree: _autosummary
-
-.. autosummary:: perturbopy.conftest
-      :toctree: _autosummary
+      perturbopy.test_utils
+      perturbopy.testing_code
+      perturbopy.conftest
 
 I/O utils
 ---------
 
-.. autosummary:: perturbopy.io_utils
+.. autosummary::
       :toctree: _autosummary
+
+      perturbopy.io_utils
