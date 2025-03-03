@@ -22,7 +22,20 @@ Here is an example to create and activate this environment with `anaconda`:
 Installation
 ------------
 
-To use perturbopy, first clone it from the GitHub repository:
+To use perturbopy, you can chose on the following ways: 
+
+1. From PyPI (default option)
+
+You can install perturbopy from PyPI using pip:
+
+.. code-block:: console
+
+   (perturbopy) $ pip install perturbopy
+
+
+2. From the source code
+
+First clone it from the GitHub repository:
 
 .. code-block:: console
 
