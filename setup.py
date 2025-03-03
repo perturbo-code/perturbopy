@@ -29,6 +29,7 @@ setup(
     entry_points={
         'console_scripts': [
             'input_generation=perturbopy.generate_input:input_generation',
+            'run-tests=perturbopy.tests_use:main',
         ],
     },
 )
