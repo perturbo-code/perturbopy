@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "perturbopy"
-version = "0.7.0"
+version = "0.7.1"
 description = "Suite of Python scripts for Perturbo testing and postprocessing"
 readme = "README.md"
 requires-python = ">=3.7.12"
