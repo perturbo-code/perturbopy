@@ -1,17 +1,14 @@
 # Legacy code, it may be possible to use it again in the future, so don't delete it yet.
 # from test_driver.py
 
-import numpy as np
 import os
 import sys
-import shlex
-import shutil
 import subprocess
+import argparse
 from perturbopy.io_utils.io import open_yaml
 from perturbopy.test_utils.run_test.env_utils import run_from_config_machine
-from perturbopy.test_utils.run_test.env_utils import perturbo_scratch_dir_config, move_qe2pert_files
-from perturbopy.test_utils.run_test.run_utils import print_test_info, setup_default_tol
 from perturbopy.test_utils.run_test.run_utils import ph_collection, define_nq_num
+from perturbopy.auto_pipeline.ap_utils import make_computational_folder
 
 
 def preliminary_commands(config_machine, step):
@@ -288,7 +285,7 @@ def run_qe2pert(source_folder, work_path, config_machine, prefix, input_name='qe
     os.chdir(source_folder)
 
 
-def run_epr_calculation(epr_name, config_machine, source_folder):
+def run_epr_calculation():
     """
     Run one test:
         #. Run scf calculation
@@ -299,8 +296,6 @@ def run_epr_calculation(epr_name, config_machine, source_folder):
 
     Parameters
     ----------
-    epr_name : str
-        name of computed epr_name file
     config_machine : str
         name of file with computational information, which we'll use in this set of computations.
         Should be in folder {source_folder}/config_machine.
@@ -311,23 +306,21 @@ def run_epr_calculation(epr_name, config_machine, source_folder):
     -----
     None
     """
+    parser  = argparse.ArgumentParser()
+    parser.add_argument('--config_machine', type=str, help='config_machine file', default='config_machine.yml', required=False)
+    parser.add_argument('--source_folder', type=str, help='source folder', required=True)
+    args = parser.parse_args()
+    config_machine = args.config_machine
+    source_folder = args.source_folder
+    source_folder = os.path.abspath(source_folder)
     # suffixes of paths needed to find driver/utils/references
-    inputs_path_suffix = f'epr_computation/{epr_name}'
     config_machine = open_yaml(os.path.join(source_folder, f'config_machine/{config_machine}'))
 
     # determine needed paths
-    inputs_dir_path = os.path.join(source_folder, inputs_path_suffix)
-    work_path = perturbo_scratch_dir_config(source_folder, inputs_dir_path, epr_name, config_machine, test_case='epr_calculation')
+    inputs_dir_path = source_folder
+    work_path = make_computational_folder(inputs_dir_path, config_machine)
 
-    # open input yaml-files with supplementary info
-    # and computational commands
-    input_yaml = open_yaml(os.path.join(source_folder, 'test_listing.yml'))
-
-    # print the test information before the run
-    print_test_info(epr_name, input_yaml, test_type='qe2pert')
-
-    # define the prefix - we'll need to have it in the later computations
-    prefix = input_yaml[epr_name]['prefix']
+    prefix = config_machine['prefix']
 
     # run scf
     run_scf(source_folder, work_path, config_machine)
@@ -343,5 +336,3 @@ def run_epr_calculation(epr_name, config_machine, source_folder):
 
     # run qe2pert
     run_qe2pert(source_folder, work_path, config_machine, prefix)
-
-    return

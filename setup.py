@@ -29,6 +29,7 @@ setup(
     entry_points={
         'console_scripts': [
             'input_generation=perturbopy.generate_input:input_generation',
+            'auto_pipeline = perturbopy.auto_pipeline.auto_pipeline:run_epr_calculation',
         ],
     },
 )

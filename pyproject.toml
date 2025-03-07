@@ -27,7 +27,10 @@ interactive = [
 
 [tool.setuptools]
 package-dir = {"" = "src"}
-packages = ["perturbopy"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [project.scripts]
 input_generation = "perturbopy.generate_input:input_generation"
+auto_pipeline = "perturbopy.auto_pipeline.auto_pipeline:run_epr_calculation"
