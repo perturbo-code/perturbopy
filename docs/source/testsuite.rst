@@ -71,13 +71,13 @@ Once, the ``config_machine.yml`` is set up, navigate to the `tests` folder and r
 
 .. code-block:: console
 
-	(perturbopy) $ ./run_tests.py
+	(perturbopy) $ run-tests
    
-This script will automatically load and run all the tests from the `perturbopy` package.
+This command will automatically load and run all the tests from the `perturbopy` package.
 
 By default, in the case of successful run of all tests one will see **<n> passed** as the final line of the output, where <n> is the number of tests. You will also see that some tests have been skipped. This is fine, because the tests for ``qe2pert.x`` are skipped if it's not specified.
 
-If all tests are passed, the `PERT_SCRATCH/perturbo` directory will be empty after the ``./run_tests.py`` execution. In the case of a failure of one or more tests, the corresponding test folder(s) kept in the ``PERT_SCRATH/perturbo`` directory.
+If all tests are passed, the `PERT_SCRATCH/perturbo` directory will be empty after the ``run-tests`` command execution. In the case of a failure of one or more tests, the corresponding test folder(s) kept in the ``PERT_SCRATH/perturbo`` directory.
 
 .. _test-complete:
 
@@ -99,7 +99,7 @@ To enable the tests of ``qe2pert.x``, activate the ``--run_qe2pert`` option:
 
 .. code-block:: console
 
-	(perturbopy) $ ./run_tests.py --run_qe2pert
+	(perturbopy) $ run-tests --run_qe2pert
 
 Similarly to ``perturbo.x``-only tests, the user needs to make a new the *config_machine/config_machine.yml* file, but this time the file should include more information. As a reference, you can take file  *config_machine_qe2pert.yaml*.
 
