@@ -263,18 +263,14 @@ def run_qe2pert(source_folder, work_path, config_machine, prefix, input_name='qe
     os.symlink(softlink, f'tmp/{prefix}.save')
     
     # link rest files
-    softlink = f'../pw-ph-wann/wann/{prefix}_u.mat'
     print(f'\n = Link rest files = :\n {softlink};')
     sys.stdout.flush()
-    os.symlink(softlink, f'{prefix}_u.mat')
-    softlink = f'../pw-ph-wann/wann/{prefix}_u_dis.mat'
-    print(f'\n {softlink};')
-    sys.stdout.flush()
-    os.symlink(softlink, f'{prefix}_u_dis.mat')
-    softlink = f'../pw-ph-wann/wann/{prefix}_centres.xyz'
-    print(f'\n {softlink};')
-    sys.stdout.flush()
-    os.symlink(softlink, f'{prefix}_centres.xyz')
+    for file in os.listdir(f'{work_path}/pw-ph-wann/wann/'):
+        if file.startswith(prefix):
+            softlink = f'../pw-ph-wann/wann/{file}'
+            print(f'\n {softlink};')
+            sys.stdout.flush()
+            os.symlink(softlink, file)
 
     # run qe2pert
     print(f' = Running qe2pert = :\n {run}')
