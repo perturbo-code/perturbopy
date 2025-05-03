@@ -34,6 +34,16 @@ def sigma_from_fwhm(fwhm):
     return sigma
 
 
+def fwhm_from_sigma(sigma):
+    """
+    Comupte FWHM from Gaussian sigma.
+    """
+
+    fwhm = 2.0 * np.sqrt(2.0 * np.log(2.0)) * sigma
+
+    return fwhm
+
+
 def delta_occs_pulse_coef(t, dt, tw, sigma):
     """
     Additional occupation due to the pulse excitation.
