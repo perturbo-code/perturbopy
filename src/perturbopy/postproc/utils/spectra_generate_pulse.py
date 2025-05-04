@@ -176,7 +176,7 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
                      animate=True,
                      plot_scale=1.0,
                      cnum_check=True,
-                     tr_dipoles=None):
+                     tr_dipoles_sqr=None):
     """
     Setup the Gaussian pump pulse excitation for electrons and holes.
     Write into the pump_pulse.h5 HDF5 file.
@@ -241,8 +241,9 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
         occupation summed over time steps. Run dynamics-pp with Perturbo to get the accurate
         total carrier number in the cnum_check folder (do not forget to link the epr file there).
 
-    tr_dipoles: np.ndarray, optional
+    tr_dipoles_sqr: np.ndarray, optional
         Transition dipoles squared, valence-to-conduction for each k-point and band.
+        Currently, the k-grid for dipoles must match the one for electrons.
         Experimental feature.
     """
 
@@ -294,12 +295,12 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
     # Currently, the number of k-points of the transition dipoles
     # must be the same as the number of k-points of the electron energy array
     # In a future development, we will interpolate the transition dipoles on the fly
-    if tr_dipoles is not None:
-        elec_nbard_tr_dip, hole_nband_tr_dip, num_k_tr_dip = tr_dipoles.shape
+    if tr_dipoles_sqr is not None:
+        elec_nbard_tr_dip, hole_nband_tr_dip, num_k_tr_dip = tr_dipoles_sqr.shape
 
         if elec_nbard_tr_dip != elec_nband or hole_nband_tr_dip != hole_nband \
                 or num_k_tr_dip != elec_kpoint_array.shape[0]:
-            raise ValueError(f'Wrong shape of the transition dipoles array: {tr_dipoles.shape}')
+            raise ValueError(f'Wrong shape of the transition dipoles array: {tr_dipoles_sqr.shape}')
 
     elec_occs_amplitude = np.zeros_like(elec_energy_array)
     hole_occs_amplitude = np.zeros_like(hole_energy_array)
@@ -333,8 +334,8 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
                                        pump_energy, pump_energy_broadening_sigma)
 
             # Multiply by the transition dipoles squared if provided
-            if tr_dipoles is not None:
-                delta *= tr_dipoles[iband, jband, :]
+            if tr_dipoles_sqr is not None:
+                delta *= tr_dipoles_sqr[iband, jband, :]
 
             # Only for the intersected k points, we add the delta occupation
             elec_occs_amplitude[ekidx, iband] += delta

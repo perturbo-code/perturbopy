@@ -34,7 +34,7 @@ def compute_trans_abs(elec_dyna_run,
                       energy_grid_max=None,
                       eta=0.02,
                       save_npy=True,
-                      ):
+                      tr_dipoles_sqr=None):
     """
     Compute the transient absorption spectrum from the electron and hole dynamics simulations.
     The data is saved in the current directory as numpy binary files (.npy).
@@ -75,6 +75,11 @@ def compute_trans_abs(elec_dyna_run,
 
     dA_hole : np.ndarray
         Hole contribution to the transient absorption spectrum. Shape (num_energy_points, num_steps).
+
+    tr_dipoles_sqr : np.ndarray
+        Transition dipoles squared, valence-to-conduction for each k-point and band.
+        Currently, the k-grid for dipoles must match the one for electrons.
+        Experimental feature.
     """
 
     trun = TimingGroup('trans. abs.')
@@ -83,7 +88,7 @@ def compute_trans_abs(elec_dyna_run,
     # Check the consistency of the two DynaRun objects
 
     # 1. Check the k-grids. q-grids can be different
-    if not np.alltrue(elec_dyna_run.boltz_kdim == hole_dyna_run.boltz_kdim):
+    if not np.all(elec_dyna_run.boltz_kdim == hole_dyna_run.boltz_kdim):
         raise ValueError('The k-grids of the electron and hole simulations are different.')
 
     # 2. Check the simulation times
@@ -150,6 +155,19 @@ def compute_trans_abs(elec_dyna_run,
 
         num_intersect_kpoints = ekidx.size
 
+    # Currently, the number of k-points of the transition dipoles
+    # must be the same as the number of k-points of the electron energy array
+    # In a future development, we will interpolate the transition dipoles on the fly
+    if tr_dipoles_sqr is not None:
+        elec_nband_tr_dip, hole_nband_tr_dip, num_k_tr_dip = tr_dipoles_sqr.shape
+
+        if elec_nband_tr_dip != elec_nband or hole_nband_tr_dip != hole_nband \
+                or num_k_tr_dip != elec_kpoint_array.shape[0]:
+            raise ValueError(f'Wrong shape of the transition dipoles array: {tr_dipoles_sqr.shape}')
+        else:
+            print('\nTransition dipoles are provided.')
+            print(f"{'Tr. dip. shape (num. elec. bands, num. hole bands, num. k points)':>30}: {tr_dipoles_sqr.shape}\n")
+
     # Compute all the Gaussian deltas on the intersect grid
     print('Computing Gaussian deltas...')
     with trun.add('compute deltas') as t:
@@ -161,11 +179,15 @@ def compute_trans_abs(elec_dyna_run,
             for jband in range(hole_nband):
                 for ienergy in range(num_energy_points):
                     # Factor of two from spin.
-                    # TODO: add transient dipoles here
-                    ALL_DELTAS[iband, jband, :, ienergy] = 2.0 * \
+                    ALL_DELTAS[iband, jband, :, ienergy] = \
                         gaussian_delta(elec_energy_array[ekidx, iband] -
                                        hole_energy_array[hkidx, jband],
                                        trans_abs_energy_grid[ienergy], eta)
+
+                    if tr_dipoles_sqr is not None:
+                        ALL_DELTAS[iband, jband, :, ienergy] *= 0.5 * tr_dipoles_sqr[iband, jband, :]
+                    else:
+                        ALL_DELTAS[iband, jband, :, ienergy] *= 2.0
 
         get_size(ALL_DELTAS, 'ALL_DELTAS', dump=True)
         print('')
