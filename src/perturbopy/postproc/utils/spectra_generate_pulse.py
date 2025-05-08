@@ -248,8 +248,8 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
 
     cnum_check : bool, optional
         If True, create a cnum_check folder with a prefix_cdyna.h5 file with the total
-        occupation summed over time steps. Run dynamics-pp with Perturbo to get the accurate
-        total carrier number in the cnum_check folder (do not forget to link the epr file there).
+        occupation summed over time steps. Run dynamics-pp with Perturbo (without dynamics-run)
+        to get the accurate total carrier number in the cnum_check folder (link the epr file there).
 
     tr_dipoles_sqr: np.ndarray, optional
         Transition dipoles squared, valence-to-conduction for each k-point and band.
@@ -310,7 +310,8 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
 
         if elec_nbard_tr_dip != elec_nband or hole_nband_tr_dip != hole_nband \
                 or num_k_tr_dip != elec_kpoint_array.shape[0]:
-            raise ValueError(f'Wrong shape of the transition dipoles array: {tr_dipoles_sqr.shape}')
+            raise ValueError(f'Wrong shape of the transition dipoles array: {tr_dipoles_sqr.shape}\n'
+                                f'Expected shape: ({elec_nband}, {hole_nband}, {elec_kpoint_array.shape[0]})')
 
     elec_occs_amplitude = np.zeros_like(elec_energy_array)
     hole_occs_amplitude = np.zeros_like(hole_energy_array)
@@ -344,8 +345,10 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
                                        pump_energy, pump_energy_broadening_sigma)
 
             # Multiply by the transition dipoles squared if provided
+            # Transition dipoles are assumed to be on the same k-point grid
+            # as the electron energy array
             if tr_dipoles_sqr is not None:
-                delta *= tr_dipoles_sqr[iband, jband, :]
+                delta *= tr_dipoles_sqr[iband, jband, ekidx]
 
             # Only for the intersected k points, we add the delta occupation
             elec_occs_amplitude[ekidx, iband] += delta
@@ -497,16 +500,26 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
 
         elec_cnum_check_path = os.path.join(os.path.dirname(elec_pump_pulse_path), 'cnum_check')
         hole_cnum_check_path = os.path.join(os.path.dirname(hole_pump_pulse_path), 'cnum_check')
+
+        # Format the occupations for cdyna.h5 writing
+        total_occ_elec_write = total_occ_elec.copy()
+        # Transpose: num_band, num_k -> num_k, num_band
+        total_occ_elec_write = total_occ_elec_write.T
+        # Add the dummy time axis: 1, num_k, num_band
+        total_occ_elec_write = np.expand_dims(total_occ_elec_write, axis=0)
         elec_dyna_run.to_cdyna_h5(elec_dyna_run.prefix,
                                   elec_dyna_run._energies,
-                                  total_occ_elec,
+                                  total_occ_elec_write,
                                   elec_dyna_run[1].time_step,
                                   path=elec_cnum_check_path,
                                   overwrite=True)
 
+        total_occ_hole_write = total_occ_hole.copy()
+        total_occ_hole_write = total_occ_hole_write.T
+        total_occ_hole_write = np.expand_dims(total_occ_hole_write, axis=0)
         hole_dyna_run.to_cdyna_h5(hole_dyna_run.prefix,
                                   hole_dyna_run._energies,
-                                  total_occ_hole,
+                                  total_occ_hole_write,
                                   hole_dyna_run[1].time_step,
                                   path=hole_cnum_check_path,
                                   overwrite=True)

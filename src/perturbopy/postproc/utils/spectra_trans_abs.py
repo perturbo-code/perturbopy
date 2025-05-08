@@ -185,7 +185,7 @@ def compute_trans_abs(elec_dyna_run,
                                        trans_abs_energy_grid[ienergy], eta)
 
                     if tr_dipoles_sqr is not None:
-                        ALL_DELTAS[iband, jband, :, ienergy] *= 0.5 * tr_dipoles_sqr[iband, jband, :]
+                        ALL_DELTAS[iband, jband, :, ienergy] *= 0.5 * tr_dipoles_sqr[iband, jband, ekidx]
                     else:
                         ALL_DELTAS[iband, jband, :, ienergy] *= 2.0
 

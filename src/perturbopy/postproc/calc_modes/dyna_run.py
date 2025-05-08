@@ -302,7 +302,7 @@ class DynaRun(CalcMode):
             Band structure in Rydberg units. Shape: num_kpoints x num_bands
 
         snap_array : np.ndarray
-            Array of carrier occupations. Shape: (num_steps, (num_kpoints x num_bands))
+            Array of carrier occupations. Shape: (num_steps, num_kpoints, num_bands)
 
         time_step_fs : float or np.ndarray
             Time step in fs. If float, the same time step is used for all runs.
@@ -345,6 +345,17 @@ class DynaRun(CalcMode):
             else:
                 raise FileExistsError(f'File {new_cdyna_filename} already exists. Set overwrite=True to overwrite it.')
 
+        if snap_array.ndim != 3:
+            raise ValueError("snap_array must be 3D. Shape: (num_steps, num_kpoints, num_bands)")
+        else:
+            num_steps_read, num_kpoints_read, num_bands_read = snap_array.shape
+            print("Occupations shape to write:")
+            print(f"num_steps: {num_steps_read}, num_kpoints: {num_kpoints_read}, num_bands: {num_bands_read}")
+
+            if num_kpoints_read < num_steps_read or num_kpoints_read < num_bands_read:
+                warnings.warn("The number of k-points of snap array to write is smaller "
+                              "than the number of time steps or bands.")
+
         new_cdyna_file = open_hdf5(new_cdyna_filename, 'w')
 
         new_cdyna_file.create_dataset('band_structure_ryd', data=band_structure_ryd)
@@ -374,7 +385,7 @@ class DynaRun(CalcMode):
             new_cdyna_file[dyn_str].create_dataset('time_step_fs', data=time_step_fs[irun - 1])
 
             for itime in range(snap_array.shape[0]):
-                new_cdyna_file[dyn_str].create_dataset(f'snap_t_{itime + offset}', data=snap_array[itime, :, np.newaxis])
+                new_cdyna_file[dyn_str].create_dataset(f'snap_t_{itime + offset}', data=snap_array[itime, :, :])
 
         close_hdf5(new_cdyna_file)
 
