@@ -496,11 +496,13 @@ class PumpPulse():
         Method to print the pump pulse excitation parameters.
         """
 
-        text = f'{" Pump pulse parameters ":*^60}\n'
+        carrier = 'hole' if self.hole else 'electron'
+        title = f'Pump pulse parameters ({carrier})'
+        text = f'{title:*^60}\n'
         text += f"{f'Pump energy ({self.pump_energy_units})':>30}: {self.pump_energy:.4f}\n"
         text += f"{f'Energy broadening FWHM ({self.spectral_width_fwhm_units})':>30}: {self.spectral_width_fwhm:.4f}\n"
         text += f"{f'Pulse duration FWHM ({self.pump_duration_fwhm_units})':>30}: {self.pump_duration_fwhm:.4f}\n"
-        text += f"{'Pump factor':>30}: {self.pump_factor}\n"
+        text += f"{'Pump factor':>30}: {self.pump_factor:.3e}\n"
         text += f"{'Number of steps':>30}: {self.num_steps}\n"
         text += f"{f'Time step ({self.pump_time_step_units})':>30}: {self.pump_time_step}\n"
         text += f"{'Hole':>30}: {self.hole}\n"
