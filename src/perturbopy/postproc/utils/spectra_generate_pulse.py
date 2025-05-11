@@ -517,6 +517,7 @@ def setup_pump_pulse(elec_pump_pulse_path, hole_pump_pulse_path,
         total_occ_hole_write = total_occ_hole.copy()
         total_occ_hole_write = total_occ_hole_write.T
         total_occ_hole_write = np.expand_dims(total_occ_hole_write, axis=0)
+        total_occ_hole_write = 1.0 - total_occ_hole_write
         hole_dyna_run.to_cdyna_h5(hole_dyna_run.prefix,
                                   hole_dyna_run._energies,
                                   total_occ_hole_write,
