@@ -158,7 +158,8 @@ prefix_popu.h5:
 
 pump_pulse.h5:
    type: HDF5
-   description: "[OPTIONAL] HDF5 file containing the pump pulse information, used if <code>pump_pulse=.true.</code>"
+   description: "[OPTIONAL] HDF5 file containing the pump pulse information, used if <code>pump_pulse=.true.</code>. The name of the pump pulse file can be specified with the <code>pump_pulse_fname</code> input parameter."
+   format example: mydoc_dynamics.html#pump_pulse_h5_file
 
 prefix.trans_coef:
    type: text
