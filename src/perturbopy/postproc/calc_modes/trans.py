@@ -114,7 +114,7 @@ class Trans(CalcMode):
                 self.seebeck[config_idx] = np.array(trans_dat[config_idx].pop('Seebeck coefficient')['tensor'])
             
             if self.thermal_cond is not None:
-                self.seebeck[config_idx] = np.array(trans_dat[config_idx].pop('thermal conductivity')['tensor'])
+                self.thermal_cond[config_idx] = np.array(trans_dat[config_idx].pop('thermal conductivity')['tensor'])
 
             if self.bfield is not None:
                 self.bfield[config_idx] = np.array(trans_dat[config_idx].pop('magnetic field'))
